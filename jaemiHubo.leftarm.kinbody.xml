@@ -15,7 +15,7 @@
     </Body>
     <Body name="Larm1" type="dynamic">
         <offsetfrom>Torso</offsetfrom>
-        <Translation>0.025 0.029 -0.28</Translation>
+        <Translation>0.023 0.031 0.007</Translation>
         <Geom type="trimesh">
             <Data>models/VRML/L_SHOULDER_PITCH.wrl 1.0</Data>
             <Render>models/VRML/L_SHOULDER_PITCH.wrl 1.0</Render>
@@ -24,12 +24,11 @@
             <total>1</total>
         </mass>
     </Body>
-
     <Joint name="LSP" type="hinge">
         <Body>Torso</Body>
         <Body>Larm1</Body>
         <offsetfrom>Larm1</offsetfrom>
-        <axis>1 0 0</axis>
+        <axis>0 -1 0</axis>
         <!-- Settings from WAM, will need to be updated-->
         <limitsdeg>-150 150</limitsdeg>
         <maxvel>1.5708</maxvel>
@@ -38,21 +37,21 @@
     </Joint>
     <Body name="Larm2" type="dynamic">
         <offsetfrom>Larm1</offsetfrom>
-        <Translation>0    0    0</Translation>
-        <RotationMat>1 0 0 0 0 1 0 -1 0</RotationMat>
+        <Translation>-0.024 0 0.077</Translation>
+
         <Geom type="trimesh">
-            <Data>models/VRML/Larm2.wrl    1.0</Data>
-            <Render>models/VRML/Larm2.wrl    1.0</Render>
+            <Data>models/VRML/L_SHOULDER_ROLL.wrl 1.0</Data>
+            <Render>models/VRML/L_SHOULDER_ROLL.wrl 1.0</Render>
         </Geom>
         <mass type="custom">
-            <total>4.8487</total>
+            <total>1</total>
         </mass>
     </Body>
     <Joint name="LSR" type="hinge">
         <Body>Larm1</Body>
         <Body>Larm2</Body>
         <offsetfrom>Larm2</offsetfrom>
-        <axis>1 0 0</axis>
+        <axis>-1 0 0</axis>
         <limitsdeg>-113 113</limitsdeg>
         <weight>0.91739941</weight>
         <maxvel>1.0472</maxvel>
@@ -60,20 +59,20 @@
     </Joint>
     <Body name="Larm3" type="dynamic">
         <offsetfrom>Larm2</offsetfrom>
-           
+        <Translation>0.031 -0.04 -0.003</Translation>
         <Geom type="trimesh">
-            <Data>models/VRML/Larm3.wrl    1.0</Data>
-            <Render>models/VRML/Larm3.wrl    1.0</Render>
+            <Data>models/VRML/L_SHOULDER_YAW.wrl    1.0</Data>
+            <Render>models/VRML/L_SHOULDER_YAW.wrl    1.0</Render>
         </Geom>
         <mass type="custom">
-            <total>1.7251</total>
+            <total>1</total>
         </mass>
     </Body>
     <Joint name="LSY" type="hinge">
         <Body>Larm2</Body>
         <Body>Larm3</Body>
         <offsetfrom>Larm3</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <limitsdeg>-157 157</limitsdeg>
         <weight>0.882397</weight>
         <maxvel>2.0944</maxvel>
