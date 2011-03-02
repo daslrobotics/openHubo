@@ -2,12 +2,15 @@
 
 <!-- Left arm kinematic body of the Jaemi Hubo humanoids -->
 
-<KinBody name="LeftArm">
+<KinBody name="LeftArm" makejoinedlinksadjacent="true">
+<modelsdir>../CAD/VRML</modelsdir>
     <Body name="Torso" type="dynamic">
         <Translation>0.03 0.7 0</Translation>
-        <Geom type="trimesh">
-            <Data>models/VRML/KHR4_Torso.wrl 1.0</Data>
-            <Render>models/VRML/KHR4_Torso.wrl    1.0</Render>
+        <Geom type="trimesh" render="true">
+            <Data>KHR-4_Torso.wrl 1.0</Data>
+            <render>KHR-4_Torso.wrl    1.0</render>
+            <diffusecolor>.1 1 .1</diffusecolor>
+            <ambientcolor>0 0 0</ambientcolor>
         </Geom>
         <mass type="custom">
             <total>1</total>
@@ -17,8 +20,10 @@
         <offsetfrom>Torso</offsetfrom>
         <Translation>0.023 0.031 0.007</Translation>
         <Geom type="trimesh">
-            <Data>models/VRML/L_SHOULDER_PITCH.wrl 1.0</Data>
-            <Render>models/VRML/L_SHOULDER_PITCH.wrl 1.0</Render>
+            <Data>L_SHOULDER_PITCH.wrl 1.0</Data>
+            <Render>L_SHOULDER_PITCH.wrl 1.0</Render>
+            <diffusecolor>.1 .9 .1</diffusecolor>
+            <ambientcolor>.1 .1 .1</ambientcolor>
         </Geom>
         <mass type="custom">
             <total>1</total>
@@ -40,8 +45,10 @@
         <Translation>-0.024 0 0.077</Translation>
 
         <Geom type="trimesh">
-            <Data>models/VRML/L_SHOULDER_ROLL.wrl 1.0</Data>
-            <Render>models/VRML/L_SHOULDER_ROLL.wrl 1.0</Render>
+            <Data>L_SHOULDER_ROLL.wrl 1.0</Data>
+            <Render>L_SHOULDER_ROLL.wrl 1.0</Render>
+            <diffusecolor>.1 .7 .1</diffusecolor>
+            <ambientcolor>.1 .1 .1</ambientcolor>
         </Geom>
         <mass type="custom">
             <total>1</total>
@@ -61,8 +68,10 @@
         <offsetfrom>Larm2</offsetfrom>
         <Translation>0.031 -0.04 -0.003</Translation>
         <Geom type="trimesh">
-            <Data>models/VRML/L_SHOULDER_YAW.wrl    1.0</Data>
-            <Render>models/VRML/L_SHOULDER_YAW.wrl    1.0</Render>
+            <Data>L_SHOULDER_YAW.wrl    1.0</Data>
+            <Render>L_SHOULDER_YAW.wrl    1.0</Render>
+            <diffusecolor>.2 .5 .1</diffusecolor>
+            <ambientcolor>.1 .1 .1</ambientcolor>
         </Geom>
         <mass type="custom">
             <total>1</total>
@@ -80,11 +89,12 @@
     </Joint>
     <Body name="Larm4" type="dynamic">
         <offsetfrom>Larm3</offsetfrom>
-        <Translation>0.045 0 0.55</Translation>
-        <RotationMat>1 0 0 0 0 1 0 -1 0</RotationMat>
+        <Translation>-0.026 -0.139 -0.017</Translation>
         <Geom type="trimesh">
-            <Data>models/VRML/Larm4.wrl    1.0</Data>
-            <Render>models/VRML/Larm4.wrl    1.0</Render>
+            <Data>L_ELBOW_PITCH.wrl    1.0</Data>
+            <Render>L_ELBOW_PITCH.wrl    1.0</Render>
+            <diffusecolor>.3 .3 .1</diffusecolor>
+            <ambientcolor>.1 .1 .1</ambientcolor>
         </Geom>
         <mass type="custom">
             <total>0.4809</total>
@@ -102,11 +112,12 @@
     </Joint>
     <Body name="Larm5" type="dynamic">
         <offsetfrom>Larm4</offsetfrom>
-        <Translation>-0.045 0 0</Translation>
-        <RotationMat>1 0 0 0 0 -1 0 1 0</RotationMat>
+        <Translation>0.022 -0.06 0.015</Translation>
         <Geom type="trimesh">
-            <Data>models/VRML/Larm5.wrl    1.0</Data>
-            <Render>models/VRML/Larm5.wrl    1.0</Render>
+            <Data>L_WRIST_YAW.wrl    1.0</Data>
+            <Render>L_WRIST_YAW.wrl    1.0</Render>
+            <diffusecolor>.4 .1 .1</diffusecolor>
+            <ambientcolor>.1 .1 .1</ambientcolor>
         </Geom>
         <mass type="custom">
             <total>1.6015</total>
@@ -123,54 +134,4 @@
         <resolution>1.11</resolution>
     </Joint>
 
-    <Body name="Larm6" type="dynamic">
-        <offsetfrom>Larm5</offsetfrom>
-        <Translation>0 0 0.3</Translation>
-        <RotationMat>1 0 0 0 0 1 0 -1 0</RotationMat>
-        <Geom type="trimesh">
-            <Data>models/VRML/Larm6.wrl    1.0</Data>
-            <Render>models/VRML/Larm6.wrl    1.0</Render>
-        </Geom>
-        <mass type="custom">
-            <total>0.3067</total>
-        </mass>
-    </Body>
-
-    <Joint name="Wrist_Pitch" type="hinge">
-        <Body>Larm5</Body>
-        <Body>Larm6</Body>
-        <offsetfrom>Larm6</offsetfrom>
-        <axis>0 0 1</axis>
-        <limitsdeg>-90 90</limitsdeg>
-        <weight>0.22841245</weight>
-        <maxvel>4.1888</maxvel>
-        <resolution>1.62</resolution>
-    </Joint>
-    <Body name="Larm7" type="dynamic">
-        <offsetfrom>Larm6</offsetfrom>
-        <Translation>0.0    0.0    0.0</Translation>
-        <RotationMat>1 0 0 0 0 -1 0 1 0</RotationMat>
-        <Geom type="trimesh">
-            <data>models/VRML/Larm7.wrl 1.0</data>
-            <Render>models/VRML/Larm7.wrl 1.0</Render>
-        </Geom>
-        <mass type="custom">
-            <total>1.18</total>
-        </mass>
-    </Body>
-
-    <Joint name="Wrist_Roll" type="hinge">
-        <Body>Larm6</Body>
-        <Body>Larm7</Body>
-        <offsetfrom>Larm7</offsetfrom>
-        <axis>0 0 1</axis>
-        <limitsdeg>-172 172</limitsdeg>
-        <weight>0.20178</weight>
-        <maxvel>1.0472</maxvel>
-        <resolution>1.62</resolution>
-    </Joint>
-
-    <adjacent>Larm1 Larm3</adjacent>
-    <adjacent>Larm4 Larm6</adjacent>
-    <adjacent>Larm4 Larm7</adjacent>
 </KinBody>
