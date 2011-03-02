@@ -9,8 +9,6 @@
         <Geom type="trimesh" render="true">
             <Data>KHR-4_Torso.wrl 1.0</Data>
             <render>KHR-4_Torso.wrl    1.0</render>
-            <diffusecolor>.1 1 .1</diffusecolor>
-            <ambientcolor>0 0 0</ambientcolor>
         </Geom>
         <mass type="custom">
             <total>1</total>
