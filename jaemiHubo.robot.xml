@@ -2,4 +2,17 @@
 
 <Robot name="jaemiHubo">
     <KinBody file="jaemiHubo.leftarm.kinbody.xml"/>
+
+  <Manipulator>
+    <base>Torso</base>
+    <effector>Larm5</effector>
+    <armjoints>L_SHOULDER_PITCH L_SHOULDER_ROLL L_SHOULDER_YAW L_ELBOW_PITCH L_WRIST_YAW</armjoints>
+    <iksolver>JaemiHubo</iksolver>
+    <joints>JF1 JF2 JF3 JF4 JF5</joints>
+    <!-- How does the closing direction work? is it an axis, or a sign for each joint?-->
+    <closingdirection>1 1 1</closingdirection>
+    <!-- this needs to be verified...WHat Csys is this in?-->
+    <palmdirection>0 0 1</palmdirection>
+  </Manipulator>
+
 </Robot>
