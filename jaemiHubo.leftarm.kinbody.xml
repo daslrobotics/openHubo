@@ -114,8 +114,6 @@
         <Geom type="trimesh">
             <Data>L_WRIST_YAW.wrl    1.0</Data>
             <Render>L_WRIST_YAW.wrl    1.0</Render>
-            <diffusecolor>.4 .1 .1</diffusecolor>
-            <ambientcolor>.1 .1 .1</ambientcolor>
         </Geom>
         <mass type="custom">
             <total>1.6015</total>
