@@ -132,27 +132,28 @@
     <!--Crude flappy fingers in box form for now, to complete IK chain-->
     <Body name="Hand_box" type="dynamic">
         <offsetfrom>Larm5</offsetfrom>
-        <Translation>0 -.20 0</Translation>
+        <Translation>0 -.22 0</Translation>
         <Rotationaxis>1 0 0 90</Rotationaxis>
         <Geom type="box">
-            <extents>.005 .005 .05</extents>
+            <extents>.008 .075 .06</extents>
             <Translation>.03 0 .025</Translation>
+            <RotationAxis>0 0 1 20</RotationAxis>
             <diffusecolor>.1 .1 .1</diffusecolor>
         </Geom>
         <Geom type="box">
-            <extents>.005 .005 .05</extents>
+            <extents>.008 .005 .06</extents>
             <Translation>0.01 0 .025</Translation>
             <diffusecolor>.3 .3 .3</diffusecolor>
         </Geom>
         <Geom type="box">
-            <extents>.005 .005 .05</extents>
+            <extents>.008 .005 .06</extents>
             <Translation>-0.01 0 .025</Translation>
             <diffusecolor>.5 .5 .5</diffusecolor>
         </Geom>
         <Geom type="box">
-            <extents>.01 .01 .05</extents>
-            <extents>.005 .005 .05</extents>
+            <extents>.008 .075 .06</extents>
             <Translation>-0.03 0 .025</Translation>
+            <RotationAxis>0 0 1 -20</RotationAxis>
             <diffusecolor>.7 .7 .7</diffusecolor>
         </Geom>
     </Body>

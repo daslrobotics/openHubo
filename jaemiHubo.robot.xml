@@ -7,7 +7,7 @@
     <base>Torso</base>
     <iksolver>jaemhubo_leftarm</iksolver>
     <effector>Hand_box</effector>
-    <direction>0 0 1</direction>
+    <direction>0 1 0</direction>
   </Manipulator>
 
 </Robot>
