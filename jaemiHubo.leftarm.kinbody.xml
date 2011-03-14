@@ -2,7 +2,7 @@
 
 <!-- Left arm kinematic body of the Jaemi Hubo humanoids -->
 
-<KinBody name="LeftArm" makejoinedlinksadjacent="true">
+<KinBody name="leftArm" makejoinedlinksadjacent="true">
 <modelsdir>../CAD/VRML</modelsdir>
     <Body name="Torso" type="dynamic">
         <Translation>0.03 0.7 0</Translation>
@@ -156,7 +156,7 @@
             <diffusecolor>.7 .7 .7</diffusecolor>
         </Geom>
     </Body>
-     <Joint name="L_WRIST_PITCH" type="hinge" circular="true">
+     <Joint name="LWP" type="hinge">
         <Body>Larm5</Body>
         <Body>Hand_box</Body>
         <offsetfrom>Hand_box</offsetfrom>
