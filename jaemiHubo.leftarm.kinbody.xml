@@ -129,5 +129,33 @@
         <maxvel>4.1888</maxvel>
         <resolution>1.11</resolution>
     </Joint>
+    <!--Crude flappy fingers in box form for now, to complete IK chain-->
+    <Body name="Hand_box" type="dynamic">
+        <offsetfrom>Larm5</offsetfrom>
+        <Translation>0 0 .3</Translation>
+        <Geom type="box">
+            <extents>.02 .02 .05</extents>
+            <Translation>.03 0 .025</Translation>
+        </Geom>
+        <Geom type="box">
+            <extents>.02 .02 .05</extents>
+            <Translation>0.01 0 .025</Translation>
+        </Geom>
+        <Geom type="box">
+            <extents>.02 .02 .05</extents>
+            <Translation>-0.01 0 .025</Translation>
+        </Geom>
+        <Geom type="box">
+            <extents>.02 .02 .05</extents>
+            <Translation>-0.03 0 .025</Translation>
+        </Geom>
+    </Body>
+     <Joint name="L_WRIST_PITCH" type="hinge">
+        <Body>Larm5</Body>
+        <Body>Hand_box</Body>
+        <anchor>0 0 0</anchor>
+        <axis>0 1 0</axis>
+        <Weight>1</Weight>
+    </Joint>
 
 </KinBody>
