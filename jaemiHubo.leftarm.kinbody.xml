@@ -132,29 +132,35 @@
     <!--Crude flappy fingers in box form for now, to complete IK chain-->
     <Body name="Hand_box" type="dynamic">
         <offsetfrom>Larm5</offsetfrom>
-        <Translation>0 0 .3</Translation>
+        <Translation>0 -.20 0</Translation>
+        <Rotationaxis>1 0 0 90</Rotationaxis>
         <Geom type="box">
-            <extents>.02 .02 .05</extents>
+            <extents>.005 .005 .05</extents>
             <Translation>.03 0 .025</Translation>
+            <diffusecolor>.1 .1 .1</diffusecolor>
         </Geom>
         <Geom type="box">
-            <extents>.02 .02 .05</extents>
+            <extents>.005 .005 .05</extents>
             <Translation>0.01 0 .025</Translation>
+            <diffusecolor>.3 .3 .3</diffusecolor>
         </Geom>
         <Geom type="box">
-            <extents>.02 .02 .05</extents>
+            <extents>.005 .005 .05</extents>
             <Translation>-0.01 0 .025</Translation>
+            <diffusecolor>.5 .5 .5</diffusecolor>
         </Geom>
         <Geom type="box">
-            <extents>.02 .02 .05</extents>
+            <extents>.01 .01 .05</extents>
+            <extents>.005 .005 .05</extents>
             <Translation>-0.03 0 .025</Translation>
+            <diffusecolor>.7 .7 .7</diffusecolor>
         </Geom>
     </Body>
-     <Joint name="L_WRIST_PITCH" type="hinge">
+     <Joint name="L_WRIST_PITCH" type="hinge" circular="true">
         <Body>Larm5</Body>
         <Body>Hand_box</Body>
-        <anchor>0 0 0</anchor>
-        <axis>0 1 0</axis>
+        <offsetfrom>Hand_box</offsetfrom>
+        <axis>1 0 0</axis>
         <Weight>1</Weight>
     </Joint>
 
