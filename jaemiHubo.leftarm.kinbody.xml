@@ -31,7 +31,7 @@
         <Body>Torso</Body>
         <Body>Larm1</Body>
         <offsetfrom>Larm1</offsetfrom>
-        <axis>0 -1 0</axis>
+        <axis>0 0 -1</axis>
         <!-- Settings from WAM, will need to be updated-->
         <limitsdeg>-150 150</limitsdeg>
         <maxvel>1.5708</maxvel>
@@ -79,7 +79,7 @@
         <Body>Larm2</Body>
         <Body>Larm3</Body>
         <offsetfrom>Larm3</offsetfrom>
-        <axis>0 0 -1</axis>
+        <axis>0 -1 0</axis>
         <limitsdeg>-157 157</limitsdeg>
         <weight>0.882397</weight>
         <maxvel>2.0944</maxvel>
@@ -102,7 +102,7 @@
         <Body>Larm3</Body>
         <Body>Larm4</Body>
         <offsetfrom>Larm4</offsetfrom>
-        <axis>0 1 0</axis>
+        <axis>0 0 1</axis>
         <limitsdeg>-50 180</limitsdeg>
         <weight>0.45504</weight>
         <maxvel>2.0944</maxvel>
@@ -123,7 +123,7 @@
         <Body>Larm4</Body>
         <Body>Larm5</Body>
         <offsetfrom>Larm5</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 1 0</axis>
         <limitsdeg>-275 75</limitsdeg>
         <weight>0.40141</weight>
         <maxvel>4.1888</maxvel>
