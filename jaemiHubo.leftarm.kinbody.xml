@@ -129,10 +129,25 @@
         <maxvel>4.1888</maxvel>
         <resolution>1.11</resolution>
     </Joint>
+    <Body name="Wrist_Ball" type="dynamic">
+        <offsetfrom>Larm5</offsetfrom>
+        <Translation>0 -.2 0</Translation>
+        <Geom type="sphere">
+            <radius>.01</radius> 
+            <diffusecolor>.3 .1 .1</diffusecolor>
+        </Geom>
+    </Body>
+    <Joint name="LWR" type="hinge">
+        <Body>Larm5</Body>
+        <Body>Wrist_Ball</Body>
+        <offsetfrom>Hand_box</offsetfrom>
+        <axis>0 1 0</axis>
+        <Weight>1</Weight>
+    </Joint>
     <!--Crude flappy fingers in box form for now, to complete IK chain-->
     <Body name="Hand_box" type="dynamic">
-        <offsetfrom>Larm5</offsetfrom>
-        <Translation>0 -.22 0</Translation>
+        <offsetfrom>Wrist_Ball</offsetfrom>
+        <Translation>0 -.03 0</Translation>
         <Rotationaxis>1 0 0 90</Rotationaxis>
         <Geom type="box">
             <extents>.008 .075 .06</extents>
@@ -157,8 +172,8 @@
             <diffusecolor>.7 .7 .7</diffusecolor>
         </Geom>
     </Body>
-     <Joint name="LWP" type="hinge">
-        <Body>Larm5</Body>
+    <Joint name="LWP" type="hinge">
+        <Body>Wrist_Ball</Body>
         <Body>Hand_box</Body>
         <offsetfrom>Hand_box</offsetfrom>
         <axis>1 0 0</axis>
