@@ -28,7 +28,7 @@
         <Body>Torso</Body>
         <Body>rightArm1</Body>
         <offsetfrom>rightArm1</offsetfrom>
-        <axis>0 0 -1</axis>
+        <axis>0 1 0</axis>
         <limitsdeg>-150 150</limitsdeg>
         <maxvel>1</maxvel>
         <weight>1</weight>
@@ -49,7 +49,7 @@
     <Joint name="RSR" type="hinge">
         <Body>rightArm1</Body>
         <Body>rightArm2</Body>
-        <offsetfrom>rightArm1</offsetfrom>
+        <offsetfrom>rightArm2</offsetfrom>
         <axis>-1 0 0</axis>
         <limitsdeg>-113 113</limitsdeg>
         <weight>1</weight>
@@ -70,7 +70,7 @@
     <Joint name="RSY" type="hinge">
         <Body>rightArm2</Body>
         <Body>rightArm3</Body>
-        <offsetfrom>rightArm2</offsetfrom>
+        <offsetfrom>rightArm3</offsetfrom>
         <axis>0 0 -1</axis>
         <limitsdeg>-157 157</limitsdeg>
         <weight>1</weight>
@@ -90,16 +90,16 @@
     <Joint name="REP" type="hinge">
         <Body>rightArm3</Body>
         <Body>rightArm4</Body>
-        <offsetfrom>rightArm3</offsetfrom>
+        <offsetfrom>rightArm4</offsetfrom>
         <axis>0 -1 0</axis>
-        <limitsdeg>-20 160</limitsdeg>
+        <limitsdeg>-20 150</limitsdeg>
         <weight>0.45504</weight>
         <maxvel>2.0944</maxvel>
         <resolution>.5</resolution>
     </Joint>
     <Body name="rightArm5" type="dynamic">
         <offsetfrom>rightArm4</offsetfrom>
-        <Translation>-.022001 -.0115 -.041</Translation>
+        <Translation>-.022001 .0115 -.041</Translation>
         <Geom type="trimesh">
             <Data>right_wrist_yaw.iv    1</Data>
             <Render>right_wrist_yaw.iv    1</Render>
@@ -111,7 +111,7 @@
     <Joint name="RWY" type="hinge">
         <Body>rightArm4</Body>
         <Body>rightArm5</Body>
-        <offsetfrom>rightArm4</offsetfrom>
+        <offsetfrom>rightArm5</offsetfrom>
         <axis>0 0 -1</axis>
         <limitsdeg>-160 160</limitsdeg>
         <weight>0.40141</weight>
@@ -130,8 +130,9 @@
         <Body>rightArm5</Body>
         <Body>right_ujoint</Body>
         <offsetfrom>right_ujoint</offsetfrom>
-        <axis>1 0 0</axis>
+        <axis>-1 0 0</axis>
         <Weight>1</Weight>
+        <limitsdeg>-30 30</limitsdeg>
     </Joint>
 
     <Body name="right_palm" type="dynamic">
@@ -145,8 +146,9 @@
     <Joint name="RWP" type="hinge">
         <Body>right_palm</Body>
         <Body>right_ujoint</Body>
-        <offsetfrom>right_ujoint</offsetfrom>
+        <offsetfrom>right_palm</offsetfrom>
         <axis>0 1 0</axis>
         <Weight>1</Weight>
+        <limitsdeg>-30 30</limitsdeg>
     </Joint>
 </KinBody>
