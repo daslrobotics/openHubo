@@ -3,7 +3,7 @@
 <!-- Right arm kinematic tree -->
 <!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
 <KinBody name="rightArm" makejoinedlinksadjacent="true">
-<modelsdir>../exportedModels/openInventor</modelsdir>
+<modelsdir>../exportedModels/VRML</modelsdir>
     <Body name="Torso" type="dynamic">
         <Geom type="trimesh" render="true">
             <Data>KHR-4_Torso.wrl 1</Data>
@@ -14,8 +14,8 @@
         <offsetfrom>Torso</offsetfrom>
         <Translation>0 -0.1425 0</Translation>
         <Geom type="trimesh">
-            <Data>right_shoulder_pitch.wrl 1</Data>
-            <Render>right_shoulder_pitch.wrl 1</Render>
+            <Data>Right_Shoulder_Pitch.wrl 1</Data>
+            <Render>Right_Shoulder_Pitch.wrl 1</Render>
         </Geom>
     </Body>
     <Joint name="RSP" type="hinge">
@@ -146,4 +146,5 @@
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>rightArm5 right_palm </adjacent>
 </KinBody>
