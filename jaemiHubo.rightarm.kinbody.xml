@@ -6,16 +6,16 @@
 <modelsdir>../exportedModels/openInventor</modelsdir>
     <Body name="Torso" type="dynamic">
         <Geom type="trimesh" render="true">
-            <Data>KHR-4_Torso.iv 1</Data>
-            <render>KHR-4_Torso.iv    1</render>
+            <Data>KHR-4_Torso.wrl 1</Data>
+            <render>KHR-4_Torso.wrl    1</render>
         </Geom>
     </Body>
     <Body name="rightArm1" type="dynamic">
         <offsetfrom>Torso</offsetfrom>
         <Translation>0 -0.1425 0</Translation>
         <Geom type="trimesh">
-            <Data>right_shoulder_pitch.iv 1</Data>
-            <Render>right_shoulder_pitch.iv 1</Render>
+            <Data>right_shoulder_pitch.wrl 1</Data>
+            <Render>right_shoulder_pitch.wrl 1</Render>
         </Geom>
     </Body>
     <Joint name="RSP" type="hinge">
@@ -33,8 +33,8 @@
         <Translation>.025 -.072 0</Translation>
 
         <Geom type="trimesh">
-            <Data>right_shoulder_roll.iv 1</Data>
-            <Render>right_shoulder_roll.iv 1</Render>
+            <Data>Right_Shoulder_Roll.wrl 1</Data>
+            <Render>Right_Shoulder_Roll.wrl 1</Render>
         </Geom>
     </Body>
     <Joint name="RSR" type="hinge">
@@ -51,8 +51,8 @@
         <offsetfrom>rightArm2</offsetfrom>
         <Translation>-0.0269 0.0 -0.0245</Translation>
         <Geom type="trimesh">
-            <Data>right_shoulder_yaw.iv    1</Data>
-            <Render>right_shoulder_yaw.iv    1</Render>
+            <Data>Right_Shoulder_Yaw.wrl    1</Data>
+            <Render>Right_Shoulder_Yaw.wrl    1</Render>
         </Geom>
         <mass type="custom">
             <total>1</total>
@@ -72,8 +72,8 @@
         <offsetfrom>rightArm3</offsetfrom>
         <Translation>.022279 -.0115 -.154441</Translation>
         <Geom type="trimesh">
-            <Data>right_elbow_pitch.iv    1</Data>
-            <Render>right_elbow_pitch.iv    1</Render>
+            <Data>Right_Elbow_Pitch.wrl    1</Data>
+            <Render>Right_Elbow_Pitch.wrl    1</Render>
         </Geom>
     </Body>
     <Joint name="REP" type="hinge">
@@ -90,8 +90,8 @@
         <offsetfrom>rightArm4</offsetfrom>
         <Translation>-.022001 .0115 -.041</Translation>
         <Geom type="trimesh">
-            <Data>right_wrist_yaw.iv    1</Data>
-            <Render>right_wrist_yaw.iv    1</Render>
+            <Data>Right_Wrist_Yaw.wrl    1</Data>
+            <Render>Right_Wrist_Yaw.wrl    1</Render>
         </Geom>
     </Body>
     <Joint name="RWY" type="hinge">
@@ -109,8 +109,8 @@
        <offsetfrom>rightArm5</offsetfrom> 
         <Translation>0 0 -.122</Translation> 
         <Geom type="trimesh">
-            <Data>right_wrist_ujoint.iv    1</Data>
-            <Render>right_wrist_ujoint.iv    1</Render>
+            <Data>Right_Wrist_UJoint.wrl    1</Data>
+            <Render>Right_Wrist_UJoint.wrl    1</Render>
         </Geom>
     </Body>
 
@@ -131,8 +131,8 @@
         <Translation>0 0 0</Translation> 
         <RotationAxis>0 0 1 180</RotationAxis>
         <Geom type="trimesh">
-            <Data>right_wrist_palm.iv    1</Data>
-            <Render>right_wrist_palm.iv    1</Render>
+            <Data>Right_Wrist_Palm.wrl    1</Data>
+            <Render>Right_Wrist_Palm.wrl    1</Render>
         </Geom>
     </Body>
 
