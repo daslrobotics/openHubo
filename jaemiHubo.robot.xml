@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Robot name="jaemiHubo">
-    <KinBody file="jaemiHubo.leftarm.kinbody.xml"/>
+    <KinBody file="jaemiHubo.rightarm.kinbody.xml"/>
 
-  <Manipulator name="testArm">
+  <Manipulator name="rightArm">
     <base>Torso</base>
-    <iksolver>jaemhubo_leftarm</iksolver>
-    <effector>Hand_box</effector>
-    <direction>0 1 0</direction>
+    <effector>right_palm</effector>
+    <direction>-1 -1 -1</direction>
   </Manipulator>
 
 </Robot>

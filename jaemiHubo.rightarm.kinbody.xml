@@ -9,9 +9,6 @@
             <Data>KHR-4_Torso.iv 1</Data>
             <render>KHR-4_Torso.iv    1</render>
         </Geom>
-        <mass type="custom">
-            <total>1</total>
-        </mass>
     </Body>
     <Body name="rightArm1" type="dynamic">
         <offsetfrom>Torso</offsetfrom>
@@ -20,9 +17,6 @@
             <Data>right_shoulder_pitch.iv 1</Data>
             <Render>right_shoulder_pitch.iv 1</Render>
         </Geom>
-        <mass type="custom">
-            <total>1</total>
-        </mass>
     </Body>
     <Joint name="RSP" type="hinge">
         <Body>Torso</Body>
@@ -31,8 +25,8 @@
         <axis>0 1 0</axis>
         <limitsdeg>-150 150</limitsdeg>
         <maxvel>1</maxvel>
+        <resolution>.5</resolution>
         <weight>1</weight>
-        <resolution>0.25</resolution>
     </Joint>
     <Body name="rightArm2" type="dynamic">
         <offsetfrom>rightArm1</offsetfrom>
@@ -42,9 +36,6 @@
             <Data>right_shoulder_roll.iv 1</Data>
             <Render>right_shoulder_roll.iv 1</Render>
         </Geom>
-        <mass type="custom">
-            <total>1</total>
-        </mass>
     </Body>
     <Joint name="RSR" type="hinge">
         <Body>rightArm1</Body>
@@ -52,9 +43,9 @@
         <offsetfrom>rightArm2</offsetfrom>
         <axis>-1 0 0</axis>
         <limitsdeg>-113 113</limitsdeg>
-        <weight>1</weight>
         <maxvel>1</maxvel>
-        <resolution>0.5</resolution>
+        <resolution>.5</resolution>
+        <weight>1</weight>
     </Joint>
     <Body name="rightArm3" type="dynamic">
         <offsetfrom>rightArm2</offsetfrom>
@@ -73,8 +64,9 @@
         <offsetfrom>rightArm3</offsetfrom>
         <axis>0 0 -1</axis>
         <limitsdeg>-157 157</limitsdeg>
+        <maxvel>1</maxvel>
+        <resolution>.5</resolution>
         <weight>1</weight>
-        <resolution>0.5</resolution>
     </Joint>
     <Body name="rightArm4" type="dynamic">
         <offsetfrom>rightArm3</offsetfrom>
@@ -83,9 +75,6 @@
             <Data>right_elbow_pitch.iv    1</Data>
             <Render>right_elbow_pitch.iv    1</Render>
         </Geom>
-        <mass type="custom">
-            <total>1</total>
-        </mass>
     </Body>
     <Joint name="REP" type="hinge">
         <Body>rightArm3</Body>
@@ -93,9 +82,9 @@
         <offsetfrom>rightArm4</offsetfrom>
         <axis>0 -1 0</axis>
         <limitsdeg>-20 150</limitsdeg>
-        <weight>0.45504</weight>
-        <maxvel>2.0944</maxvel>
+        <maxvel>1</maxvel>
         <resolution>.5</resolution>
+        <weight>1</weight>
     </Joint>
     <Body name="rightArm5" type="dynamic">
         <offsetfrom>rightArm4</offsetfrom>
@@ -104,9 +93,6 @@
             <Data>right_wrist_yaw.iv    1</Data>
             <Render>right_wrist_yaw.iv    1</Render>
         </Geom>
-        <mass type="custom">
-            <total>1.6015</total>
-        </mass>
     </Body>
     <Joint name="RWY" type="hinge">
         <Body>rightArm4</Body>
@@ -114,10 +100,11 @@
         <offsetfrom>rightArm5</offsetfrom>
         <axis>0 0 -1</axis>
         <limitsdeg>-160 160</limitsdeg>
-        <weight>0.40141</weight>
-        <maxvel>4.1888</maxvel>
-        <resolution>1.11</resolution>
-     </Joint>
+        <maxvel>1</maxvel>
+        <resolution>.5</resolution>
+        <weight>1</weight>
+    </Joint>
+
     <Body name="right_ujoint" type="dynamic">
        <offsetfrom>rightArm5</offsetfrom> 
         <Translation>0 0 -.122</Translation> 
@@ -126,6 +113,7 @@
             <Render>right_wrist_ujoint.iv    1</Render>
         </Geom>
     </Body>
+
     <Joint name="RWR" type="hinge">
         <Body>rightArm5</Body>
         <Body>right_ujoint</Body>
@@ -133,22 +121,29 @@
         <axis>-1 0 0</axis>
         <Weight>1</Weight>
         <limitsdeg>-30 30</limitsdeg>
+        <maxvel>1</maxvel>
+        <resolution>.5</resolution>
+        <weight>1</weight>
     </Joint>
 
     <Body name="right_palm" type="dynamic">
        <offsetfrom>right_ujoint</offsetfrom> 
         <Translation>0 0 0</Translation> 
+        <RotationAxis>0 0 1 180</RotationAxis>
         <Geom type="trimesh">
             <Data>right_wrist_palm.iv    1</Data>
             <Render>right_wrist_palm.iv    1</Render>
         </Geom>
     </Body>
+
     <Joint name="RWP" type="hinge">
         <Body>right_palm</Body>
         <Body>right_ujoint</Body>
         <offsetfrom>right_palm</offsetfrom>
         <axis>0 1 0</axis>
-        <Weight>1</Weight>
         <limitsdeg>-30 30</limitsdeg>
+        <maxvel>1</maxvel>
+        <resolution>.5</resolution>
+        <weight>1</weight>
     </Joint>
 </KinBody>
