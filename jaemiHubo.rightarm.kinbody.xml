@@ -3,7 +3,7 @@
 <!-- Right arm kinematic tree -->
 <!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
 <KinBody name="rightArm" makejoinedlinksadjacent="true">
-<modelsdir>exportedModels/VRML</modelsdir>
+<modelsdir>../exportedModels/VRML</modelsdir>
     <Body name="Torso" type="dynamic">
         <Geom type="trimesh" render="true">
             <Data>KHR-4_Torso.wrl 1</Data>
@@ -120,7 +120,7 @@
         <offsetfrom>right_ujoint</offsetfrom>
         <axis>-1 0 0</axis>
         <Weight>1</Weight>
-        <limitsdeg>-30 30</limitsdeg>
+        <limitsdeg>-20 20</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
@@ -141,7 +141,7 @@
         <Body>right_ujoint</Body>
         <offsetfrom>right_palm</offsetfrom>
         <axis>0 1 0</axis>
-        <limitsdeg>-30 30</limitsdeg>
+        <limitsdeg>-20 20</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
