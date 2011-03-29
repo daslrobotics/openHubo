@@ -1,93 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Right arm kinematic tree -->
+<!-- left arm kinematic tree -->
 <!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
-<KinBody name="rightArm" makejoinedlinksadjacent="true">
-<modelsdir>../exportedModels/VRML</modelsdir>
+<KinBody name="leftArm" makejoinedlinksadjacent="true">
+<modelsdir>exportedModels/VRML</modelsdir>
     <Body name="Torso" type="dynamic">
         <Geom type="trimesh" render="true">
             <Data>KHR-4_Torso.wrl 1</Data>
             <render>KHR-4_Torso.wrl    1</render>
         </Geom>
     </Body>
-    <Body name="rightArm1" type="dynamic">
+    <Body name="leftArm1" type="dynamic">
         <offsetfrom>Torso</offsetfrom>
-        <Translation>0 -0.1425 0</Translation>
+        <Translation>0 0.1425 0</Translation>
         <Geom type="trimesh">
-            <Data>Right_Shoulder_Pitch.wrl 1</Data>
-            <Render>Right_Shoulder_Pitch.wrl 1</Render>
+            <Data>Left_Shoulder_Pitch.wrl 1</Data>
+            <Render>Left_Shoulder_Pitch.wrl 1</Render>
         </Geom>
     </Body>
     <Joint name="RSP" type="hinge">
         <Body>Torso</Body>
-        <Body>rightArm1</Body>
-        <offsetfrom>rightArm1</offsetfrom>
+        <Body>leftArm1</Body>
+        <offsetfrom>leftArm1</offsetfrom>
         <axis>0 1 0</axis>
         <limitsdeg>-150 150</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
-    <Body name="rightArm2" type="dynamic">
-        <offsetfrom>rightArm1</offsetfrom>
-        <Translation>.025 -.072 0</Translation>
+    <Body name="leftArm2" type="dynamic">
+        <offsetfrom>leftArm1</offsetfrom>
+        <Translation>.025 .072 0</Translation>
 
         <Geom type="trimesh">
-            <Data>Right_Shoulder_Roll.wrl 1</Data>
-            <Render>Right_Shoulder_Roll.wrl 1</Render>
+            <Data>Left_Shoulder_Roll.wrl 1</Data>
+            <Render>Left_Shoulder_Roll.wrl 1</Render>
         </Geom>
     </Body>
     <Joint name="RSR" type="hinge">
-        <Body>rightArm1</Body>
-        <Body>rightArm2</Body>
-        <offsetfrom>rightArm2</offsetfrom>
+        <Body>leftArm1</Body>
+        <Body>leftArm2</Body>
+        <offsetfrom>leftArm2</offsetfrom>
         <axis>-1 0 0</axis>
         <limitsdeg>-113 113</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
-    <Body name="rightArm3" type="dynamic">
-        <offsetfrom>rightArm2</offsetfrom>
+    <Body name="leftArm3" type="dynamic">
+        <offsetfrom>leftArm2</offsetfrom>
         <Translation>-0.0269 0.0 -0.0245</Translation>
         <Geom type="trimesh">
-            <Data>Right_Shoulder_Yaw.wrl    1</Data>
-            <Render>Right_Shoulder_Yaw.wrl    1</Render>
+            <Data>Left_Shoulder_Yaw.wrl    1</Data>
+            <Render>Left_Shoulder_Yaw.wrl    1</Render>
         </Geom>
         <mass type="custom">
             <total>1</total>
         </mass>
     </Body>
     <Joint name="RSY" type="hinge">
-        <Body>rightArm2</Body>
-        <Body>rightArm3</Body>
-        <offsetfrom>rightArm3</offsetfrom>
+        <Body>leftArm2</Body>
+        <Body>leftArm3</Body>
+        <offsetfrom>leftArm3</offsetfrom>
         <axis>0 0 -1</axis>
         <limitsdeg>-157 157</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
-    <Body name="rightArm4" type="dynamic">
-        <offsetfrom>rightArm3</offsetfrom>
-        <Translation>.022279 -.0115 -.154441</Translation>
+    <Body name="leftArm4" type="dynamic">
+        <offsetfrom>leftArm3</offsetfrom>
+        <Translation>.022279 0.0115 -.154441</Translation>
         <Geom type="trimesh">
-            <Data>Right_Elbow_Pitch.wrl    1</Data>
-            <Render>Right_Elbow_Pitch.wrl    1</Render>
+            <Data>Left_Elbow_Pitch.wrl    1</Data>
+            <Render>Left_Elbow_Pitch.wrl    1</Render>
         </Geom>
     </Body>
     <Joint name="REP" type="hinge">
-        <Body>rightArm3</Body>
-        <Body>rightArm4</Body>
-        <offsetfrom>rightArm4</offsetfrom>
+        <Body>leftArm3</Body>
+        <Body>leftArm4</Body>
+        <offsetfrom>leftArm4</offsetfrom>
         <axis>0 -1 0</axis>
         <limitsdeg>-20 150</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
-    <Body name="rightArm5" type="dynamic">
-        <offsetfrom>rightArm4</offsetfrom>
+    <Body name="leftArm5" type="dynamic">
+        <offsetfrom>leftArm4</offsetfrom>
         <Translation>-.022001 .0115 -.041</Translation>
         <Geom type="trimesh">
             <Data>Right_Wrist_Yaw.wrl    1</Data>
@@ -95,9 +95,9 @@
         </Geom>
     </Body>
     <Joint name="RWY" type="hinge">
-        <Body>rightArm4</Body>
-        <Body>rightArm5</Body>
-        <offsetfrom>rightArm5</offsetfrom>
+        <Body>leftArm4</Body>
+        <Body>leftArm5</Body>
+        <offsetfrom>leftArm5</offsetfrom>
         <axis>0 0 -1</axis>
         <limitsdeg>-160 160</limitsdeg>
         <maxvel>1</maxvel>
@@ -105,8 +105,8 @@
         <weight>1</weight>
     </Joint>
 
-    <Body name="right_ujoint" type="dynamic">
-       <offsetfrom>rightArm5</offsetfrom> 
+    <Body name="left_ujoint" type="dynamic">
+       <offsetfrom>leftArm5</offsetfrom> 
         <Translation>0 0 -.122</Translation> 
         <Geom type="trimesh">
             <Data>Right_Wrist_UJoint.wrl    1</Data>
@@ -115,9 +115,9 @@
     </Body>
 
     <Joint name="RWR" type="hinge">
-        <Body>rightArm5</Body>
-        <Body>right_ujoint</Body>
-        <offsetfrom>right_ujoint</offsetfrom>
+        <Body>leftArm5</Body>
+        <Body>left_ujoint</Body>
+        <offsetfrom>left_ujoint</offsetfrom>
         <axis>-1 0 0</axis>
         <Weight>1</Weight>
         <limitsdeg>-30 30</limitsdeg>
@@ -126,25 +126,25 @@
         <weight>1</weight>
     </Joint>
 
-    <Body name="right_palm" type="dynamic">
-       <offsetfrom>right_ujoint</offsetfrom> 
+    <Body name="left_palm" type="dynamic">
+       <offsetfrom>left_ujoint</offsetfrom> 
         <Translation>0 0 0</Translation> 
         <RotationAxis>0 0 1 180</RotationAxis>
         <Geom type="trimesh">
-            <Data>Right_Wrist_Palm.wrl    1</Data>
-            <Render>Right_Wrist_Palm.wrl    1</Render>
+            <Data>Left_Wrist_Palm.wrl    1</Data>
+            <Render>Left_Wrist_Palm.wrl    1</Render>
         </Geom>
     </Body>
 
     <Joint name="RWP" type="hinge">
-        <Body>right_palm</Body>
-        <Body>right_ujoint</Body>
-        <offsetfrom>right_palm</offsetfrom>
+        <Body>left_palm</Body>
+        <Body>left_ujoint</Body>
+        <offsetfrom>left_palm</offsetfrom>
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
-    <adjacent>rightArm5 right_palm </adjacent>
+    <adjacent>leftArm5 left_palm </adjacent>
 </KinBody>
