@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Right arm kinematic tree -->
+<!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
+<KinBody name="Trunk" makejoinedlinksadjacent="true">
+<modelsdir>../exportedModels/VRML</modelsdir>
+    <Body name="Torso" type="dynamic">
+        <Geom type="trimesh" render="true">
+            <Data>KHR-4_Torso.wrl 1</Data>
+            <render>KHR-4_Torso.wrl    1</render>
+        </Geom>
+    </Body>
+    <Body name="hip" type="dynamic">
+        <offsetfrom>Torso</offsetfrom>
+        <Translation>.024974 0 -0.1915</Translation>
+	<RotationAxis>1 0 0 180</RotationAxis>
+        <Geom type="trimesh">
+            <Data>Hip.wrl 1</Data>
+            <Render>Hip.wrl 1</Render>
+        </Geom>
+    </Body>
+    <Joint name="TY" type="hinge">
+        <Body>Torso</Body>
+        <Body>hip</Body>
+        <offsetfrom>hip</offsetfrom>
+        <axis>0 0 1</axis>
+        <limitsdeg>-90 90</limitsdeg>
+        <maxvel>1</maxvel>
+        <resolution>.5</resolution>
+        <weight>1</weight>
+    </Joint>
+</KinBody>

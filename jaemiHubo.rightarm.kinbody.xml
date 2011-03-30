@@ -4,14 +4,10 @@
 <!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
 <KinBody name="rightArm" makejoinedlinksadjacent="true">
 <modelsdir>../exportedModels/VRML</modelsdir>
-    <Body name="Torso" type="dynamic">
-        <Geom type="trimesh" render="true">
-            <Data>KHR-4_Torso.wrl 1</Data>
-            <render>KHR-4_Torso.wrl    1</render>
-        </Geom>
+    <Body name="Torso_dummy2" type="dynamic">
     </Body>
     <Body name="rightArm1" type="dynamic">
-        <offsetfrom>Torso</offsetfrom>
+        <offsetfrom>Torso_dummy2</offsetfrom>
         <Translation>0 -0.1425 0</Translation>
         <Geom type="trimesh">
             <Data>Right_Shoulder_Pitch.wrl 1</Data>
@@ -19,7 +15,7 @@
         </Geom>
     </Body>
     <Joint name="RSP" type="hinge">
-        <Body>Torso</Body>
+        <Body>Torso_dummy2</Body>
         <Body>rightArm1</Body>
         <offsetfrom>rightArm1</offsetfrom>
         <axis>0 1 0</axis>
