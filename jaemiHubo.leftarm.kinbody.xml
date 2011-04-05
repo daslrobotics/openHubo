@@ -3,7 +3,7 @@
 <!-- left arm kinematic tree -->
 <!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
 <KinBody name="leftArm" makejoinedlinksadjacent="true">
-<modelsdir>exportedModels/VRML</modelsdir>
+<modelsdir>../exportedModels/VRML</modelsdir>
     <Body name="Torso_dummy1" type="dynamic">
     </Body>
     <Body name="leftArm1" type="dynamic">
@@ -127,8 +127,8 @@
         <Translation>0 0 0</Translation> 
         <RotationAxis>0 0 1 180</RotationAxis>
         <Geom type="trimesh">
-            <Data>Left_Wrist_Palm.wrl    1</Data>
-            <Render>Left_Wrist_Palm.wrl    1</Render>
+            <Data>Left_Palm.wrl    1</Data>
+            <Render>Left_Palm.wrl    1</Render>
         </Geom>
     </Body>
 
