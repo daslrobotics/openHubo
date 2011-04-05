@@ -14,7 +14,7 @@
             <Render>Left_Shoulder_Pitch.wrl 1</Render>
         </Geom>
     </Body>
-    <Joint name="RSP" type="hinge">
+    <Joint name="LSP" type="hinge">
         <Body>Torso_dummy1</Body>
         <Body>leftArm1</Body>
         <offsetfrom>leftArm1</offsetfrom>
@@ -33,7 +33,7 @@
             <Render>Left_Shoulder_Roll.wrl 1</Render>
         </Geom>
     </Body>
-    <Joint name="RSR" type="hinge">
+    <Joint name="LSR" type="hinge">
         <Body>leftArm1</Body>
         <Body>leftArm2</Body>
         <offsetfrom>leftArm2</offsetfrom>
@@ -54,7 +54,7 @@
             <total>1</total>
         </mass>
     </Body>
-    <Joint name="RSY" type="hinge">
+    <Joint name="LSY" type="hinge">
         <Body>leftArm2</Body>
         <Body>leftArm3</Body>
         <offsetfrom>leftArm3</offsetfrom>
@@ -72,7 +72,7 @@
             <Render>Left_Elbow_Pitch.wrl    1</Render>
         </Geom>
     </Body>
-    <Joint name="REP" type="hinge">
+    <Joint name="LEP" type="hinge">
         <Body>leftArm3</Body>
         <Body>leftArm4</Body>
         <offsetfrom>leftArm4</offsetfrom>
@@ -90,7 +90,7 @@
             <Render>Right_Wrist_Yaw.wrl    1</Render>
         </Geom>
     </Body>
-    <Joint name="RWY" type="hinge">
+    <Joint name="LWY" type="hinge">
         <Body>leftArm4</Body>
         <Body>leftArm5</Body>
         <offsetfrom>leftArm5</offsetfrom>
@@ -110,7 +110,7 @@
         </Geom>
     </Body>
 
-    <Joint name="RWR" type="hinge">
+    <Joint name="LWR" type="hinge">
         <Body>leftArm5</Body>
         <Body>left_ujoint</Body>
         <offsetfrom>left_ujoint</offsetfrom>
@@ -132,7 +132,7 @@
         </Geom>
     </Body>
 
-    <Joint name="RWP" type="hinge">
+    <Joint name="LWP" type="hinge">
         <Body>left_palm</Body>
         <Body>left_ujoint</Body>
         <offsetfrom>left_palm</offsetfrom>

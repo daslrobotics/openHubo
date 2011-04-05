@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="leftLeg" makejoinedlinksadjacent="true">
+<modelsdir>exportedModels/VRML</modelsdir>
+    <Body name="hipDummyLeft" type="dynamic">
+    </Body>
+    <Body name="leftHip" type="dynamic">
+        <offsetfrom>hipDummyLeft</offsetfrom>
+        <Translation>0 0.0885 -0.088469</Translation>
+        <Geom type="trimesh">
+            <Data>L_HIP_YAW.wrl 1</Data>
+            <Render>L_HIP_YAW.wrl 1</Render>
+        </Geom>
+    </Body>
+    <Joint name="LHY" type="hinge">
+        <Body>hipDummyLeft</Body>
+        <Body>leftHip</Body>
+        <offsetfrom>leftHip</offsetfrom>
+        <axis>0 1 0</axis>
+        <limitsdeg>-150 150</limitsdeg>
+        <maxvel>1</maxvel>
+        <resolution>.5</resolution>
+        <weight>1</weight>
+    </Joint>
+    <Body name="leftHipPitchRoll" type="dynamic">
+        <offsetfrom>leftHip</offsetfrom>
+        <Translation>0 0 -.0910</Translation>
+        <Geom type="trimesh">
+            <Data>L_HIP_ROLL.wrl 1</Data>
+            <Render>L_HIP_ROLL.wrl 1</Render>
+        </Geom>
+    </Body>
+    <Joint name="LHR" type="hinge">
+        <Body>leftHip</Body>
+        <Body>leftHipPitchRoll</Body>
+        <offsetfrom>leftHipPitchRol</offsetfrom>
+        <axis>1 0 0</axis>
+        <limitsdeg>-113 113</limitsdeg>
+        <maxvel>1</maxvel>
+        <resolution>.5</resolution>
+        <weight>1</weight>
+    </Joint>
+    <Body name="leftKneeUpper" type="dynamic">
+        <offsetfrom>leftHipPitchRoll</offsetfrom>
+        <Translation>0 -0.054 0</Translation>
+        <Geom type="trimesh">
+            <Data>L_KNEE_UPPER.wrl    1</Data>
+            <Render>L_KNEE_UPPER.wrl    1</Render>
+        </Geom>
+        <mass type="custom">
+            <total>1</total>
+        </mass>
+    </Body>
+    <Joint name="LHP" type="hinge">
+        <Body>leftHipPitchRoll</Body>
+        <Body>leftKneeUpper</Body>
+        <offsetfrom>leftKneeUpper</offsetfrom>
+        <axis>0 1 0</axis>
+        <limitsdeg>-157 157</limitsdeg>
+        <maxvel>1</maxvel>
+        <resolution>.5</resolution>
+        <weight>1</weight>
+    </Joint>
+    <Body name="leftKneeLower" type="dynamic">
+        <offsetfrom>leftKneeUpper</offsetfrom>
+        <Translation>-.001675 .074999 -.300542</Translation>
+        <Geom type="trimesh">
+            <Data>L_KNEE_LOWER.wrl    1</Data>
+            <Render>L_KNEE_LOWER.wrl    1</Render>
+        </Geom>
+    </Body>
+    <Joint name="LKP" type="hinge">
+        <Body>leftKneeUpper</Body>
+        <Body>leftKneeLower</Body>
+        <offsetfrom>leftKneeLower</offsetfrom>
+        <axis>0 -1 0</axis>
+        <limitsdeg>-20 150</limitsdeg>
+        <maxvel>1</maxvel>
+        <resolution>.5</resolution>
+        <weight>1</weight>
+    </Joint>
+    <Body name="leftAnklePitch" type="dynamic">
+        <offsetfrom>leftKneeLower</offsetfrom>
+        <Translation>.071999 -.021745 -.299942</Translation>
+        <Geom type="trimesh">
+            <Data>L_ANKLE_PITCH.wrl    1</Data>
+            <Render>L_ANKLE_PITCH.wrl    1</Render>
+        </Geom>
+    </Body>
+    <Joint name="LAP" type="hinge">
+        <Body>leftKneeLower</Body>
+        <Body>leftAnklePitch</Body>
+        <offsetfrom>leftAnklePitch</offsetfrom>
+        <axis>0 1 0</axis>
+        <limitsdeg>-160 160</limitsdeg>
+        <maxvel>1</maxvel>
+        <resolution>.5</resolution>
+        <weight>1</weight>
+    </Joint>
+
+    <Body name="leftFoot" type="dynamic">
+       <offsetfrom>leftAnklePitch</offsetfrom> 
+        <Translation>0 0 0</Translation> 
+        <Geom type="trimesh">
+            <Data>L_ANKLE_ROLL.wrl    1</Data>
+            <Render>L_ANKLE_ROLL.wrl    1</Render>
+        </Geom>
+    </Body>
+
+    <Joint name="RWR" type="hinge">
+        <Body>leftAnklePitch</Body>
+        <Body>leftFoot</Body>
+        <offsetfrom>leftFoot</offsetfrom>
+        <axis>-1 0 0</axis>
+        <Weight>1</Weight>
+        <limitsdeg>-30 30</limitsdeg>
+        <maxvel>1</maxvel>
+        <resolution>.5</resolution>
+        <weight>1</weight>
+    </Joint>
+
+</KinBody>
