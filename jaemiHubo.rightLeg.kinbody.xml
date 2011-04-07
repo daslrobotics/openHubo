@@ -8,11 +8,11 @@
         <offsetfrom>hipDummyRight</offsetfrom>
         <Translation>.024971 -0.0885 -0.277953</Translation>
         <Geom type="trimesh">
-            <Data>R_HIP_YAW.wrl 1</Data>
-            <Render>R_HIP_YAW.wrl 1</Render>
+            <Data>L_HIP_YAW.wrl 1</Data>
+            <Render>L_HIP_YAW.wrl 1</Render>
         </Geom>
     </Body>
-    <Joint name="LHY" type="hinge">
+    <Joint name="RHY" type="hinge">
         <Body>hipDummyRight</Body>
         <Body>rightHip</Body>
         <offsetfrom>rightHip</offsetfrom>
@@ -30,7 +30,7 @@
             <Render>R_HIP_ROLL.wrl 1</Render>
         </Geom>
     </Body>
-    <Joint name="LHR" type="hinge">
+    <Joint name="RHR" type="hinge">
         <Body>rightHip</Body>
         <Body>rightHipPitchRoll</Body>
         <offsetfrom>rightHipPitchRoll</offsetfrom>
@@ -51,7 +51,7 @@
             <total>1</total>
         </mass>
     </Body>
-    <Joint name="LHP" type="hinge">
+    <Joint name="RHP" type="hinge">
         <Body>rightHipPitchRoll</Body>
         <Body>rightKneeUpper</Body>
         <offsetfrom>rightKneeUpper</offsetfrom>
@@ -69,7 +69,7 @@
             <Render>R_KNEE_LOWER.wrl    1</Render>
         </Geom>
     </Body>
-    <Joint name="LKP" type="hinge">
+    <Joint name="RKP" type="hinge">
         <Body>rightKneeUpper</Body>
         <Body>rightKneeLower</Body>
         <offsetfrom>rightKneeLower</offsetfrom>
@@ -87,7 +87,7 @@
             <Render>R_ANKLE_PITCH.wrl    1</Render>
         </Geom>
     </Body>
-    <Joint name="LAP" type="hinge">
+    <Joint name="RAP" type="hinge">
         <Body>rightKneeLower</Body>
         <Body>rightAnklePitch</Body>
         <offsetfrom>rightAnklePitch</offsetfrom>
@@ -107,7 +107,7 @@
         </Geom>
     </Body>
 
-    <Joint name="LAR" type="hinge">
+    <Joint name="RAR" type="hinge">
         <Body>rightAnklePitch</Body>
         <Body>rightFoot</Body>
         <offsetfrom>rightFoot</offsetfrom>
