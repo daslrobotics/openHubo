@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<Robot name="jaemiHubo">
-    <KinBody file="jaemiHubo.trunk.kinbody.xml">
+<Robot name="jaemiHubo" >
+    <KinBody file="jaemiHubo.trunk.kinbody.xml" makejoinedlinksadjacent="true">
         <KinBody file="jaemiHubo.rightarm.kinbody.xml"/>
         <Joint name="rightTorsoDummy" type = "hinge" enable="false">
             <Body>Torso</Body>
