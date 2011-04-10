@@ -105,7 +105,6 @@
        <offsetfrom>leftArm5</offsetfrom> 
         <Translation>0 0 -.122</Translation> 
         <Geom type="trimesh">
-            <Data>Right_Wrist_UJoint.wrl    1</Data>
             <Render>Right_Wrist_UJoint.wrl    1</Render>
         </Geom>
     </Body>
