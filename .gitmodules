@@ -3,4 +3,4 @@
 	url = ssh://robEllenberg@dasl.mem.drexel.edu/home/robEllenberg/server/../../projects/hubo/CAD
 [submodule "exportedModels"]
 	path = exportedModels
-	url = ssh://robEllenberg@dasl.mem.drexel.edu/home/robEllenberg/server/../../projects/hubo/exportedModels
+	url = ssh://robEllenberg@dasl.mem.drexel.edu/home/projects/hubo/exportedModels
