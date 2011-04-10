@@ -3,7 +3,7 @@
 <!-- left arm kinematic tree -->
 <!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
 <KinBody name="leftArm" makejoinedlinksadjacent="true">
-<modelsdir>../exportedModels/VRML</modelsdir>
+<modelsdir>exportedModels/VRML</modelsdir>
     <Body name="Torso_dummy1" type="dynamic">
     </Body>
     <Body name="leftArm1" type="dynamic">

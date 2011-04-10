@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="rightArm" makejoinedlinksadjacent="true">
-<modelsdir>../exportedModels/VRML</modelsdir>
+<modelsdir>exportedModels/VRML</modelsdir>
     <Body name="Torso_dummy2" type="dynamic">
     </Body>
     <Body name="rightArm1" type="dynamic">
