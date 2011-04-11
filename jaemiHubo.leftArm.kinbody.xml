@@ -84,7 +84,7 @@
     </Joint>
     <Body name="leftArm5" type="dynamic">
         <offsetfrom>leftArm4</offsetfrom>
-        <Translation>-.022001 .0115 -.041</Translation>
+        <Translation>-.022001 -.0115 -.041</Translation>
         <Geom type="trimesh">
             <Data>Right_Wrist_Yaw.wrl    1</Data>
             <Render>Right_Wrist_Yaw.wrl    1</Render>
@@ -124,7 +124,6 @@
     <Body name="left_palm" type="dynamic">
        <offsetfrom>left_ujoint</offsetfrom> 
         <Translation>0 0 0</Translation> 
-        <RotationAxis>0 0 1 180</RotationAxis>
         <Geom type="trimesh">
             <Data>Left_Palm.wrl    1</Data>
             <Render>Left_Palm.wrl    1</Render>
