@@ -19,7 +19,7 @@
         <Body>leftArm1</Body>
         <offsetfrom>leftArm1</offsetfrom>
         <axis>0 1 0</axis>
-        <limitsdeg>-150 150</limitsdeg>
+        <limitsdeg>-180 180</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
@@ -114,7 +114,6 @@
         <Body>left_ujoint</Body>
         <offsetfrom>left_ujoint</offsetfrom>
         <axis>-1 0 0</axis>
-        <Weight>1</Weight>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>

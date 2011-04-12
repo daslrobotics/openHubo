@@ -112,7 +112,6 @@
         <Body>right_ujoint</Body>
         <offsetfrom>right_ujoint</offsetfrom>
         <axis>-1 0 0</axis>
-        <Weight>1</Weight>
         <limitsdeg>-20 20</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
