@@ -37,7 +37,7 @@
         <Body>leftArm1</Body>
         <Body>leftArm2</Body>
         <offsetfrom>leftArm2</offsetfrom>
-        <axis>-1 0 0</axis>
+        <axis>1 0 0</axis>
         <limitsdeg>-113 113</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
@@ -58,7 +58,7 @@
         <Body>leftArm2</Body>
         <Body>leftArm3</Body>
         <offsetfrom>leftArm3</offsetfrom>
-        <axis>0 0 -1</axis>
+        <axis>0 0 1</axis>
         <limitsdeg>-157 157</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
