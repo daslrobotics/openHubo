@@ -1,0 +1,411 @@
+<KinBody name="RightHand">
+  
+  <!-- Hand Base -->
+  <Body name="RightHandBase" type="dynamic">
+    <Geom type="box">
+      <!--rotation of the body specified as a rotation axis. First three 
+      numbers are the axis.
+      Example: <rotationaxis>1 0 0 90</rotationaxis>-->
+      <rotationaxis>0 0 0 0</rotationaxis>
+      <Translation>0 0 0</Translation>
+      <diffuseColor>0.5 0 1</diffuseColor>
+      <!-- Units are meters, how far it spreads from the center in each dimension -->
+      <extents>.03752 .01275 .0015</extents> <!-- width, finger-thumb, thickness -->
+     </Geom>
+  </Body>
+  
+  <!-- ***************************************************************** -->
+  
+  <!-- finger 0: Thumb-->
+  <Body name="Finger0-0" type="dynamic"> <!-- dynamic - can move within the environment -->
+    <offsetfrom>RightHandBase</offsetfrom>
+    <Translation>0.0285 -0.02125 -0.008</Translation> 
+    <Geom type="box">
+      <rotationaxis>0 0 0 0</rotationaxis>
+      <Translation>-0 -0.0165 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .0165 .008</extents>
+      <diffuseColor>0.02 0.5 1</diffuseColor><!-- Color values Red, Green, Blue -->
+    </Geom>
+  </Body>
+  
+   <!-- Joint between base and Finger0-0 -->
+  <Joint type="hinge" name="JBase_F0-0">
+    <Body>RightHandBase</Body>
+    <Body>Finger0-0</Body>
+    <offsetfrom>Finger0-0</offsetfrom>
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/4] -->
+    <axis>-1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+
+  <Body name="Finger0-1" type="dynamic" >
+    <offsetfrom>Finger0-0</offsetfrom>
+    <Translation>0 -0.033 0</Translation>
+    <Geom type="box">
+      <rotationaxis>0 0 0 0 </rotationaxis>
+      <Translation>0 -0.011 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .011 .008</extents>
+      <diffuseColor>0.02 0.7 1</diffuseColor>
+    </Geom>
+  </Body>
+
+ <!-- Joint between part 0 and 1 on finger 0 -->
+  <Joint type="hinge" name="JF0-0_F0-1" enable="false" mimic_pos="JBase_F0-0 *2/3" mimic_vel="|JBase_F0-0 0.67">
+    <Body>Finger0-0</Body>
+    <Body>Finger0-1</Body>
+    <offsetfrom>Finger0-1</offsetfrom>
+    <!--  <translation>0 -0.0110005 0</translation> -->
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/4] -->
+    <axis>-1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+
+  <Body name="Finger0-2" type="dynamic" >
+    <offsetfrom>Finger0-1</offsetfrom>
+    <Translation>0 -0.022 0</Translation>
+    <Geom type="box">
+      <rotationaxis>0 0 0 0 </rotationaxis>
+      <Translation>0 -0.01325 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .01325 .008</extents>
+      <diffuseColor>0.02 0.9 1</diffuseColor>
+    </Geom>
+  </Body>
+
+ <!-- Joint between part 1 and 2 on finger 0 -->
+  <Joint type="hinge" name="JF0-1_F0-2" enable="false" mimic_pos="JF0-0_F0-1 *2/3" mimic_vel="|JF0-0_F0-1 0.67">
+    <Body>Finger0-1</Body>
+    <Body>Finger0-2</Body>
+    <offsetfrom>Finger0-2</offsetfrom>
+    <!-- <translation>0 -0.005 0</translation> -->
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/41.1781] -->
+    <axis>-1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+  
+  <!-- ***************************************************************** -->
+  
+  <!-- finger 1: Pointer Finger-->
+  <!-- Create the pointer finger of the KHR4 right hand -->
+  <Body name="Finger1-0" type="dynamic"> <!-- dynamic - can move within the environment -->
+    <offsetfrom>RightHandBase</offsetfrom>
+    <Translation>0.0285 0.02125 -0.008</Translation> 
+    <Geom type="box">
+      <rotationaxis>0 0 0 0</rotationaxis>
+      <Translation>-0 0.0165 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .0165 .008</extents>
+      <diffuseColor>0.02 0.5 1</diffuseColor><!-- Color values Red, Green, Blue -->
+    </Geom>
+  </Body>
+  
+   <!-- Joint between base and Finger1-0 -->
+  <Joint type="hinge" name="JBase_F1-0">
+    <Body>RightHandBase</Body>
+    <Body>Finger1-0</Body>
+    <offsetfrom>Finger1-0</offsetfrom>
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/4] -->
+    <axis> 1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+
+  <Body name="Finger1-1" type="dynamic" >
+    <offsetfrom>Finger1-0</offsetfrom>
+    <Translation>0 0.033 0</Translation>
+    <Geom type="box">
+      <rotationaxis>0 0 0 0 </rotationaxis>
+      <Translation>0 0.011 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .011 .008</extents>
+      <diffuseColor>0.02 0.7 1</diffuseColor>
+    </Geom>
+  </Body>
+
+ <!-- Joint between part 0 and 1 on finger 1 -->
+  <Joint type="hinge" name="JF1-0_F1-1" enable="false" mimic_pos="JBase_F1-0 *2/3" mimic_vel="|JBase_F1-0 0.67">
+    <Body>Finger1-0</Body>
+    <Body>Finger1-1</Body>
+    <offsetfrom>Finger1-1</offsetfrom>
+    <!--  <translation>0 -0.0110005 0</translation> -->
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/4] -->
+    <axis>1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+
+  <Body name="Finger1-2" type="dynamic" >
+    <offsetfrom>Finger1-1</offsetfrom>
+    <Translation>0 0.022 0</Translation>
+    <Geom type="box">
+      <rotationaxis>0 0 0 0 </rotationaxis>
+      <Translation>0 0.01325 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .01325 .008</extents>
+      <diffuseColor>0.02 0.9 1</diffuseColor>
+    </Geom>
+  </Body>
+
+ <!-- Joint between part 1 and 2 on finger 1 -->
+  <Joint type="hinge" name="JF1-1_F1-2" enable="false" mimic_pos="JF1-0_F1-1 *2/3" mimic_vel="|JF1-0_F1-1 0.67">
+    <Body>Finger1-1</Body>
+    <Body>Finger1-2</Body>
+    <offsetfrom>Finger1-2</offsetfrom>
+    <!-- <translation>0 -0.005 0</translation> -->
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/41.1781] -->
+    <axis>1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+  
+  <!-- ***************************************************************** -->
+  
+  <!-- finger 2: Middle Finger-->
+  <Body name="Finger2-0" type="dynamic"> <!-- dynamic - can move within the environment -->
+    <offsetfrom>RightHandBase</offsetfrom>
+    <Translation>0.0095 0.02125 -0.008</Translation> 
+    <Geom type="box">
+      <rotationaxis>0 0 0 0</rotationaxis>
+      <Translation>-0 0.0165 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .0165 .008</extents>
+      <diffuseColor>0.02 0.5 1</diffuseColor><!-- Color values Red, Green, Blue -->
+    </Geom>
+  </Body>
+  
+   <!-- Joint between base and Finger2-0 -->
+  <Joint type="hinge" name="JBase_F2-0">
+    <Body>RightHandBase</Body>
+    <Body>Finger2-0</Body>
+    <offsetfrom>Finger2-0</offsetfrom>
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/4] -->
+    <axis>1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+
+  <Body name="Finger2-1" type="dynamic" >
+    <offsetfrom>Finger2-0</offsetfrom>
+    <Translation>0 0.033 0</Translation>
+    <Geom type="box">
+      <rotationaxis>0 0 0 0 </rotationaxis>
+      <Translation>0 0.011 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .011 .008</extents>
+      <diffuseColor>0.02 0.7 1</diffuseColor>
+    </Geom>
+  </Body>
+
+ <!-- Joint between part 0 and 1 on finger 2 -->
+  <Joint type="hinge" name="JF2-0_F2-1" enable="false" mimic_pos="JBase_F2-0 *2/3" mimic_vel="|JBase_F2-0 0.67">
+    <Body>Finger2-0</Body>
+    <Body>Finger2-1</Body>
+    <offsetfrom>Finger2-1</offsetfrom>
+    <!--  <translation>0 -0.0110005 0</translation> -->
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/4] -->
+    <axis>1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+
+  <Body name="Finger2-2" type="dynamic" >
+    <offsetfrom>Finger2-1</offsetfrom>
+    <Translation>0 0.022 0</Translation>
+    <Geom type="box">
+      <rotationaxis>0 0 0 0 </rotationaxis>
+      <Translation>0 0.01325 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .01325 .008</extents>
+      <diffuseColor>0.02 0.9 1</diffuseColor>
+    </Geom>
+  </Body>
+
+ <!-- Joint between part 1 and 2 on finger 2 -->
+  <Joint type="hinge" name="JF2-1_F2-2" enable="false" mimic_pos="JF2-0_F2-1 *2/3" mimic_vel="|JF2-0_F2-1 0.67">
+    <Body>Finger2-1</Body>
+    <Body>Finger2-2</Body>
+    <offsetfrom>Finger2-2</offsetfrom>
+    <!-- <translation>0 -0.005 0</translation> -->
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/41.1781] -->
+    <axis>1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+  
+  <!-- ***************************************************************** -->
+  
+  <!-- finger 3: Ring Finger-->
+  <Body name="Finger3-0" type="dynamic"> <!-- dynamic - can move within the environment -->
+    <offsetfrom>RightHandBase</offsetfrom>
+    <Translation>-0.0095 0.02125 -0.008</Translation> 
+    <Geom type="box">
+      <rotationaxis>0 0 0 0</rotationaxis>
+      <Translation>-0 0.0165 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .0165 .008</extents>
+      <diffuseColor>0.02 0.5 1</diffuseColor><!-- Color values Red, Green, Blue -->
+    </Geom>
+  </Body>
+  
+   <!-- Joint between base and Finger3-0 -->
+  <Joint type="hinge" name="JBase_F3-0">
+    <Body>RightHandBase</Body>
+    <Body>Finger3-0</Body>
+    <offsetfrom>Finger3-0</offsetfrom>
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/4] -->
+    <axis>1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+
+  <Body name="Finger3-1" type="dynamic" >
+    <offsetfrom>Finger3-0</offsetfrom>
+    <Translation>0 0.033 0</Translation>
+    <Geom type="box">
+      <rotationaxis>0 0 0 0 </rotationaxis>
+      <Translation>0 0.011 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .011 .008</extents>
+      <diffuseColor>0.02 0.7 1</diffuseColor>
+    </Geom>
+  </Body>
+
+ <!-- Joint between part 0 and 1 on finger 0 -->
+  <Joint type="hinge" name="JF3-0_F3-1" enable="false" mimic_pos="JBase_F3-0 *2/3" mimic_vel="|JBase_F3-0 0.67">
+    <Body>Finger3-0</Body>
+    <Body>Finger3-1</Body>
+    <offsetfrom>Finger3-1</offsetfrom>
+    <!--  <translation>0 -0.0110005 0</translation> -->
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/4] -->
+    <axis>1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+
+  <Body name="Finger3-2" type="dynamic" >
+    <offsetfrom>Finger3-1</offsetfrom>
+    <Translation>0 0.022 0</Translation>
+    <Geom type="box">
+      <rotationaxis>0 0 0 0 </rotationaxis>
+      <Translation>0 0.01325 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .01325 .008</extents>
+      <diffuseColor>0.02 0.9 1</diffuseColor>
+    </Geom>
+  </Body>
+
+ <!-- Joint between part 1 and 2 on finger 3 -->
+  <Joint type="hinge" name="JF3-1_F3-2" enable="false" mimic_pos="JF3-0_F3-1 *2/3" mimic_vel="|JF3-0_F3-1 0.67">
+    <Body>Finger3-1</Body>
+    <Body>Finger3-2</Body>
+    <offsetfrom>Finger3-2</offsetfrom>
+    <!-- <translation>0 -0.005 0</translation> -->
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/41.1781] -->
+    <axis>1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+  
+  <!-- ***************************************************************** -->
+  
+  <!-- finger 4: Pinkie Finger-->
+  <Body name="Finger4-0" type="dynamic"> <!-- dynamic - can move within the environment -->
+    <offsetfrom>RightHandBase</offsetfrom>
+    <Translation>-0.0285 0.02125 -0.008</Translation> 
+    <Geom type="box">
+      <rotationaxis>0 0 0 0</rotationaxis>
+      <Translation>-0 0.0165 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .0165 .008</extents>
+      <diffuseColor>0.02 0.5 1</diffuseColor><!-- Color values Red, Green, Blue -->
+    </Geom>
+  </Body>
+  
+   <!-- Joint between base and Finger4-0 -->
+  <Joint type="hinge" name="JBase_F4-0">
+    <Body>RightHandBase</Body>
+    <Body>Finger4-0</Body>
+    <offsetfrom>Finger4-0</offsetfrom>
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/4] -->
+    <axis>1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+
+  <Body name="Finger4-1" type="dynamic" >
+    <offsetfrom>Finger4-0</offsetfrom>
+    <Translation>0 0.033 0</Translation>
+    <Geom type="box">
+      <rotationaxis>0 0 0 0 </rotationaxis>
+      <Translation>0 0.011 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .011 .008</extents>
+      <diffuseColor>0.02 0.7 1</diffuseColor>
+    </Geom>
+  </Body>
+
+ <!-- Joint between part 0 and 1 on finger 4 -->
+  <Joint type="hinge" name="JF4-0_F4-1" enable="false" mimic_pos="JBase_F4-0 *2/3" mimic_vel="|JBase_F4-0 0.67">
+    <Body>Finger4-0</Body>
+    <Body>Finger4-1</Body>
+    <offsetfrom>Finger4-1</offsetfrom>
+    <!--  <translation>0 -0.0110005 0</translation> -->
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/4] -->
+    <axis>1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+
+  <Body name="Finger4-2" type="dynamic" >
+    <offsetfrom>Finger4-1</offsetfrom>
+    <Translation>0 0.022 0</Translation>
+    <Geom type="box">
+      <rotationaxis>0 0 0 0 </rotationaxis>
+      <Translation>0 0.01325 0</Translation> <!-- Set the center as the bottom of the body (the part connected to the joint) -->
+      <extents>.008006 .01325 .008</extents>
+      <diffuseColor>0.02 0.9 1</diffuseColor>
+    </Geom>
+  </Body>
+
+ <!-- Joint between part 1 and 2 on finger 4 -->
+  <Joint type="hinge" name="JF4-1_F4-2" enable="false" mimic_pos="JF4-0_F4-1 *2/3" mimic_vel="|JF4-0_F4-1 0.67">
+    <Body>Finger4-1</Body>
+    <Body>Finger4-2</Body>
+    <offsetfrom>Finger4-2</offsetfrom>
+    <!-- <translation>0 -0.005 0</translation> -->
+    <weight>0.5</weight>
+    <limits>0 2.3562</limits> <!-- [0,3*pi/41.1781] -->
+    <axis>1 0 0</axis>
+    <maxvel>2</maxvel>
+    <resolution>4.2</resolution>
+  </Joint>
+  
+  <!-- ***************************************************************** -->
+  
+  
+  <!-- add adjacent links, necessary in order to prevent bogus collisions -->
+    <adjacent>RighthandBase Finger0-0</adjacent>
+    <adjacent>Finger0-0 Finger0-1</adjacent>
+    <adjacent>Finger0-1 Finger0-2</adjacent>
+    
+    <adjacent>RighthandBase Finger1-0</adjacent>
+    <adjacent>Finger1-0 Finger1-1</adjacent>
+    <adjacent>Finger1-1 Finger1-2</adjacent>
+    
+    <adjacent>RighthandBase Finger2-0</adjacent>
+    <adjacent>Finger2-0 Finger2-1</adjacent>
+    <adjacent>Finger2-1 Finger2-2</adjacent>
+    
+    <adjacent>RighthandBase Finger3-0</adjacent>
+    <adjacent>Finger3-0 Finger3-1</adjacent>
+    <adjacent>Finger3-1 Finger3-2</adjacent>
+    
+    <adjacent>RighthandBase Finger4-0</adjacent>
+    <adjacent>Finger4-0 Finger4-1</adjacent>
+    <adjacent>Finger4-1 Finger4-2</adjacent>
+</KinBody>
