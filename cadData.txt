@@ -9,6 +9,19 @@ the (human) thumb direction.
 -0.707102	-0.707112	-0.000000	-57.994285
 0	0	0	1
 
+
+-7.351360
+-7.332236
+-57.994285
+
 SCALE THIS correctly!
+
+RPalm=[ 0.500004	-0.499996	-0.707107;
+        0.500004	-0.499996	0.707107;
+        -0.707102	-0.707112	-0.000000];
+
+RZ=[-1 0 0;
+    0 -1 0;
+    0 0 1]
 
 Also, test the scale by making a box that is .073 on a side, and transform it by the same rotation matrix as above.

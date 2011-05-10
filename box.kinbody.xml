@@ -1,0 +1,10 @@
+<KinBody name="smallbox">
+  <Body type="dynamic">
+    <Geom type="box">
+      <!--This makes a box symmetrical about the origin, with the definition of one corner like so...-->
+      <extents>0.0730 0.073 0.073</extents>
+      <diffusecolor>0.3 0 0.7</diffusecolor>
+    </Geom>        
+  </Body>
+
+</KinBody>
