@@ -138,5 +138,6 @@
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
-    <adjacent>rightArm5 right_palm </adjacent>
+    <adjacent>rightArm5 right_palm</adjacent>
+    <adjacent>right_ujoint right_palm</adjacent>
 </KinBody>
