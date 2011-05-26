@@ -29,15 +29,17 @@
             <Body>hipDummyRight</Body>
             <limits>0 0</limits>
         </Joint>
+        <adjacent>hip leftHip</adjacent>
+        <adjacent>hip rightHip</adjacent>
         -->
     </KinBody>
     
-    <Manipulator name="rightArm">
+    <Manipulator name="rightArmManip">
         <base>Torso</base>
         <effector>right_palm</effector>
         <direction>-1 -1 -1</direction>
     </Manipulator>
-    <Manipulator name="leftArm">
+    <Manipulator name="leftArmManip">
         <base>Torso</base>
         <effector>left_palm</effector>
         <direction>1 -1 -1</direction>
