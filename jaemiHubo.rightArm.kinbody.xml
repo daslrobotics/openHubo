@@ -8,7 +8,7 @@
         <offsetfrom>Torso_dummy2</offsetfrom>
         <Translation>0 -0.1425 0</Translation>
         <Geom type="trimesh">
-            <Data>Right_Shoulder_Pitch.wrl 1</Data>
+            <Data>collision_Right_Shoulder_Pitch.wrl 1</Data>
             <Render>Right_Shoulder_Pitch.wrl 1</Render>
         </Geom>
     </Body>
@@ -27,7 +27,7 @@
         <Translation>.025 -.072 0</Translation>
 
         <Geom type="trimesh">
-            <Data>Right_Shoulder_Roll.wrl 1</Data>
+            <Data>collision_Right_Shoulder_Roll.wrl 1</Data>
             <Render>Right_Shoulder_Roll.wrl 1</Render>
         </Geom>
     </Body>
@@ -45,7 +45,7 @@
         <offsetfrom>rightArm2</offsetfrom>
         <Translation>-0.0269 0.0 -0.0245</Translation>
         <Geom type="trimesh">
-            <Data>Right_Shoulder_Yaw.wrl    1</Data>
+            <Data>collision_Right_Shoulder_Yaw.wrl    1</Data>
             <Render>Right_Shoulder_Yaw.wrl    1</Render>
         </Geom>
         <mass type="custom">
@@ -66,7 +66,7 @@
         <offsetfrom>rightArm3</offsetfrom>
         <Translation>.022279 -.0115 -.154441</Translation>
         <Geom type="trimesh">
-            <Data>Right_Elbow_Pitch.wrl    1</Data>
+            <Data>collision_Right_Elbow_Pitch.wrl    1</Data>
             <Render>Right_Elbow_Pitch.wrl    1</Render>
         </Geom>
     </Body>
@@ -84,7 +84,7 @@
         <offsetfrom>rightArm4</offsetfrom>
         <Translation>-.022001 .0115 -.041</Translation>
         <Geom type="trimesh">
-            <Data>Right_Wrist_Yaw.wrl    1</Data>
+            <Data>collision_Right_Wrist_Yaw.wrl    1</Data>
             <Render>Right_Wrist_Yaw.wrl    1</Render>
         </Geom>
     </Body>
@@ -123,7 +123,7 @@
         <Translation>0 0 0</Translation> 
         <RotationAxis>0 0 1 180</RotationAxis>
         <Geom type="trimesh">
-            <Data>Right_Wrist_Palm.wrl    1</Data>
+            <Data>collision_Right_Wrist_Palm.wrl    1</Data>
             <Render>Right_Wrist_Palm.wrl    1</Render>
         </Geom>
     </Body>
