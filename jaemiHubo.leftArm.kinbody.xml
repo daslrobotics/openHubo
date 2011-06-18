@@ -10,7 +10,7 @@
         <offsetfrom>Torso_dummy1</offsetfrom>
         <Translation>0 0.1425 0</Translation>
         <Geom type="trimesh">
-            <Data>Left_Shoulder_Pitch.wrl 1</Data>
+            <Data>collision_Left_Shoulder_Pitch.wrl 1</Data>
             <Render>Left_Shoulder_Pitch.wrl 1</Render>
         </Geom>
     </Body>
@@ -29,7 +29,7 @@
         <Translation>.025 .072 0</Translation>
 
         <Geom type="trimesh">
-            <Data>Left_Shoulder_Roll.wrl 1</Data>
+            <Data>collision_Left_Shoulder_Roll.wrl 1</Data>
             <Render>Left_Shoulder_Roll.wrl 1</Render>
         </Geom>
     </Body>
@@ -47,7 +47,7 @@
         <offsetfrom>leftArm2</offsetfrom>
         <Translation>-0.0269 0.0 -0.0245</Translation>
         <Geom type="trimesh">
-            <Data>Left_Shoulder_Yaw.wrl    1</Data>
+            <Data>collision_Left_Shoulder_Yaw.wrl    1</Data>
             <Render>Left_Shoulder_Yaw.wrl    1</Render>
         </Geom>
         <mass type="custom">
@@ -68,7 +68,7 @@
         <offsetfrom>leftArm3</offsetfrom>
         <Translation>.022279 0.0115 -.154441</Translation>
         <Geom type="trimesh">
-            <Data>Left_Elbow_Pitch.wrl    1</Data>
+            <Data>collision_Left_Elbow_Pitch.wrl    1</Data>
             <Render>Left_Elbow_Pitch.wrl    1</Render>
         </Geom>
     </Body>
@@ -86,7 +86,7 @@
         <offsetfrom>leftArm4</offsetfrom>
         <Translation>-.022001 -.0115 -.041</Translation>
         <Geom type="trimesh">
-            <Data>Right_Wrist_Yaw.wrl    1</Data>
+            <Data>collision_Right_Wrist_Yaw.wrl    1</Data>
             <Render>Right_Wrist_Yaw.wrl    1</Render>
         </Geom>
     </Body>
@@ -124,7 +124,7 @@
        <offsetfrom>left_ujoint</offsetfrom> 
         <Translation>0 0 0</Translation> 
         <Geom type="trimesh">
-            <Data>Left_Palm.wrl    1</Data>
+            <Data>collision_Left_Palm.wrl    1</Data>
             <Render>Left_Palm.wrl    1</Render>
         </Geom>
     </Body>

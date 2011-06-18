@@ -8,7 +8,7 @@
         <offsetfrom>hipDummyRight</offsetfrom>
         <Translation>.024971 -0.0885 -0.277953</Translation>
         <Geom type="trimesh">
-            <Data>L_HIP_YAW.wrl 1</Data>
+            <Data>collision_L_HIP_YAW.wrl 1</Data>
             <Render>L_HIP_YAW.wrl 1</Render>
         </Geom>
     </Body>
@@ -26,7 +26,7 @@
         <offsetfrom>rightHip</offsetfrom>
         <Translation>0 0 -.0910</Translation>
         <Geom type="trimesh">
-            <Data>R_HIP_ROLL.wrl 1</Data>
+            <Data>collision_R_HIP_ROLL.wrl 1</Data>
             <Render>R_HIP_ROLL.wrl 1</Render>
         </Geom>
     </Body>
@@ -44,7 +44,7 @@
         <offsetfrom>rightHipPitchRoll</offsetfrom>
         <Translation>0 0.054 0</Translation>
         <Geom type="trimesh">
-            <Data>R_KNEE_UPPER.wrl    1</Data>
+            <Data>collision_R_KNEE_UPPER.wrl    1</Data>
             <Render>R_KNEE_UPPER.wrl    1</Render>
         </Geom>
         <mass type="custom">
@@ -65,7 +65,7 @@
         <offsetfrom>rightKneeUpper</offsetfrom>
         <Translation>-.001675 -0.074999 -.300542</Translation>
         <Geom type="trimesh">
-            <Data>R_KNEE_LOWER.wrl    1</Data>
+            <Data>collision_R_KNEE_LOWER.wrl    1</Data>
             <Render>R_KNEE_LOWER.wrl    1</Render>
         </Geom>
     </Body>
@@ -83,7 +83,7 @@
         <offsetfrom>rightKneeLower</offsetfrom>
         <Translation>.000045 -.024755 -.299942</Translation>
         <Geom type="trimesh">
-            <Data>R_ANKLE_PITCH.wrl    1</Data>
+            <Data>collision_R_ANKLE_PITCH.wrl    1</Data>
             <Render>R_ANKLE_PITCH.wrl    1</Render>
         </Geom>
     </Body>
@@ -102,7 +102,7 @@
        <offsetfrom>rightAnklePitch</offsetfrom> 
         <Translation>0.071244 0.0465 -.000016</Translation> 
         <Geom type="trimesh">
-            <Data>R_ANKLE_ROLL.wrl    1</Data>
+            <Data>collision_R_ANKLE_ROLL.wrl    1</Data>
             <Render>R_ANKLE_ROLL.wrl    1</Render>
         </Geom>
     </Body>
