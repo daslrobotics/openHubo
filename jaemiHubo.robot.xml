@@ -16,7 +16,6 @@
         </Joint>
         <adjacent>Torso leftArm1</adjacent>
         <adjacent>Torso rightArm1</adjacent>
-        <!--
         <KinBody file="jaemiHubo.leftLeg.kinbody.xml"/>
         <Joint name="leftHipYawDummy" type = "hinge" enable="false">
             <Body>hip</Body>
@@ -44,7 +43,6 @@
         <effector>left_palm</effector>
         <direction>1 -1 -1</direction>
     </Manipulator>
-    <!--
     <Manipulator name="rightLeg">
         <base>hip</base>
         <effector>rightFoot</effector>
@@ -55,5 +53,4 @@
         <effector>leftFoot</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
-    -->
 </Robot>
