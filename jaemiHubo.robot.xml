@@ -30,7 +30,6 @@
         </Joint>
         <adjacent>hip leftHip</adjacent>
         <adjacent>hip rightHip</adjacent>
-        -->
     </KinBody>
     
     <Manipulator name="rightArmManip">
