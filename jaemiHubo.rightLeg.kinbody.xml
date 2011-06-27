@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="rightLeg" makejoinedlinksadjacent="true">
-<modelsdir>exportedModels/VRML</modelsdir>
+<modelsdir>models</modelsdir>
     <Body name="hipDummyRight" type="dynamic">
     </Body>
     <Body name="rightHip" type="dynamic">
