@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="rightArm" makejoinedlinksadjacent="true">
-<modelsdir>exportedModels/VRML</modelsdir>
+<modelsdir>models</modelsdir>
     <Body name="Torso_dummy2" type="dynamic">
     </Body>
     <Body name="rightArm1" type="dynamic">
         <offsetfrom>Torso_dummy2</offsetfrom>
         <Translation>0 -0.1425 0</Translation>
+        <Geom type="sphere" render="false">
+            <Translation>0 -.064 0 </Translation>
+            <radius>.080</radius>
+        </Geom>
         <Geom type="trimesh">
-            <Data>Right_Shoulder_Pitch.wrl 1</Data>
-            <Render>Right_Shoulder_Pitch.wrl 1</Render>
+            <Render>Right_Shoulder_Pitch.wrl    1</Render>
         </Geom>
     </Body>
     <Joint name="RSP" type="hinge">
@@ -25,10 +28,14 @@
     <Body name="rightArm2" type="dynamic">
         <offsetfrom>rightArm1</offsetfrom>
         <Translation>.025 -.072 0</Translation>
-
         <Geom type="trimesh">
-            <Data>Right_Shoulder_Roll.wrl 1</Data>
-            <Render>Right_Shoulder_Roll.wrl 1</Render>
+            <Render>Right_Shoulder_Roll.wrl    1</Render>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>-0.026 0 -0.038</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>0.045</radius>
+            <height>0.076</height>
         </Geom>
     </Body>
     <Joint name="RSR" type="hinge">
@@ -45,12 +52,18 @@
         <offsetfrom>rightArm2</offsetfrom>
         <Translation>-0.0269 0.0 -0.0245</Translation>
         <Geom type="trimesh">
-            <Data>Right_Shoulder_Yaw.wrl    1</Data>
             <Render>Right_Shoulder_Yaw.wrl    1</Render>
         </Geom>
-        <mass type="custom">
-            <total>1</total>
-        </mass>
+        <Geom type="cylinder" render="false">
+            <Translation>0 0 -0.073</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>0.045</radius>
+            <height>0.146</height>
+        </Geom>
+        <Geom type="sphere" render="false">
+            <Translation>0.010 0.000 -0.146</Translation>
+            <radius>.045</radius>
+        </Geom>
     </Body>
     <Joint name="RSY" type="hinge">
         <Body>rightArm2</Body>
@@ -66,8 +79,17 @@
         <offsetfrom>rightArm3</offsetfrom>
         <Translation>.022279 -.0115 -.154441</Translation>
         <Geom type="trimesh">
-            <Data>Right_Elbow_Pitch.wrl    1</Data>
             <Render>Right_Elbow_Pitch.wrl    1</Render>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>-0.022 0.012 -0.025</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>0.044</radius>
+            <height>0.051</height>
+        </Geom>
+        <Geom type="sphere" render="false">
+            <Translation>-0.018 0.011 0</Translation>
+            <radius>0.049</radius>
         </Geom>
     </Body>
     <Joint name="REP" type="hinge">
@@ -84,8 +106,13 @@
         <offsetfrom>rightArm4</offsetfrom>
         <Translation>-.022001 .0115 -.041</Translation>
         <Geom type="trimesh">
-            <Data>Right_Wrist_Yaw.wrl    1</Data>
             <Render>Right_Wrist_Yaw.wrl    1</Render>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>0 0 -.064</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>0.045</radius>
+            <height>0.127</height>
         </Geom>
     </Body>
     <Joint name="RWY" type="hinge">
@@ -102,6 +129,9 @@
     <Body name="right_ujoint" type="dynamic">
        <offsetfrom>rightArm5</offsetfrom> 
         <Translation>0 0 -.122</Translation> 
+       <Geom type="box" render="false">
+           <extents>.01 .01 .01</extents>
+       </Geom>
         <Geom type="trimesh">
             <Render>Right_Wrist_UJoint.wrl    1</Render>
         </Geom>
@@ -112,8 +142,7 @@
         <Body>right_ujoint</Body>
         <offsetfrom>right_ujoint</offsetfrom>
         <axis>-1 0 0</axis>
-        <Weight>1</Weight>
-        <limitsdeg>-20 20</limitsdeg>
+        <limitsdeg>-60 60</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
@@ -124,8 +153,8 @@
         <Translation>0 0 0</Translation> 
         <RotationAxis>0 0 1 180</RotationAxis>
         <Geom type="trimesh">
-            <Data>Right_Wrist_Palm.wrl    1</Data>
             <Render>Right_Wrist_Palm.wrl    1</Render>
+            <Data>collision_Right_Wrist_Palm.wrl    1</Data>
         </Geom>
     </Body>
 
@@ -134,10 +163,12 @@
         <Body>right_ujoint</Body>
         <offsetfrom>right_palm</offsetfrom>
         <axis>0 1 0</axis>
-        <limitsdeg>-20 20</limitsdeg>
+        <limitsdeg>-60 60</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
-    <adjacent>rightArm5 right_palm </adjacent>
+    <adjacent>rightArm5 right_palm</adjacent>
+    <adjacent>rightArm3 rightArm5</adjacent>
+    <adjacent>right_ujoint right_palm</adjacent>
 </KinBody>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Kinbody name="leftPalmDemo"> 
+    <modelsdir>exportedModels/VRML</modelsdir>
+    <Body name="rightPalm" type="dynamic">
+       <offsetfrom>right_ujoint</offsetfrom> 
+        <Translation>0 0 0</Translation> 
+        <RotationAxis>0 0 1 180</RotationAxis>
+        <Geom type="trimesh">
+            <Data>Right_Wrist_Palm.wrl    1</Data>
+            <Render>Right_Wrist_Palm.wrl    1</Render>
+        </Geom>
+    </Body>
+
+</Kinbody>

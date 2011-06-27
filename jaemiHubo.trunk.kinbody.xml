@@ -3,20 +3,54 @@
 <!-- Right arm kinematic tree -->
 <!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
 <KinBody name="Trunk" makejoinedlinksadjacent="true">
-<modelsdir>exportedModels/VRML</modelsdir>
+<modelsdir>models</modelsdir>
     <Body name="Torso" type="dynamic">
         <Geom type="trimesh" render="true">
-            <Data>KHR-4_Torso.wrl 1</Data>
             <render>KHR-4_Torso.wrl    1</render>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>-0.032 -0.051 -0.064</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>.114</radius>
+            <height>.254</height>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>0.032 -0.051 -0.064</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>.114</radius>
+            <height>.254</height>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>-0.032 0.051 -0.064</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>.114</radius>
+            <height>.254</height>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>0.032 0.051 -0.064</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>.114</radius>
+            <height>.254</height>
         </Geom>
     </Body>
     <Body name="hip" type="dynamic">
         <offsetfrom>Torso</offsetfrom>
-        <Translation>.024974 0 -0.1915</Translation>
-	<RotationAxis>1 0 0 180</RotationAxis>
+        <Translation>0 0 -0.1915</Translation>
+    	<RotationAxis>1 0 0 180</RotationAxis>
         <Geom type="trimesh">
-            <Data>Hip.wrl 1</Data>
             <Render>Hip.wrl 1</Render>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>-0.003 0.038 0.052</Translation>
+            <RotationAxis>1 0 0 -90</RotationAxis>
+            <radius>.121</radius>
+            <height>.105</height>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>-0.003 -0.038 0.052</Translation>
+            <RotationAxis>1 0 0 -90</RotationAxis>
+            <radius>.121</radius>
+            <height>.105</height>
         </Geom>
     </Body>
     <Joint name="TY" type="hinge">
