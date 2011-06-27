@@ -129,6 +129,9 @@
     <Body name="right_ujoint" type="dynamic">
        <offsetfrom>rightArm5</offsetfrom> 
         <Translation>0 0 -.122</Translation> 
+       <Geom type="box" render="false">
+           <extents>.01 .01 .01</extents>
+       </Geom>
         <Geom type="trimesh">
             <Render>Right_Wrist_UJoint.wrl    1</Render>
         </Geom>
