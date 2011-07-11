@@ -147,7 +147,7 @@
         <Body>left_ujoint</Body>
         <offsetfrom>left_ujoint</offsetfrom>
         <axis>-1 0 0</axis>
-        <limitsdeg>-60 60</limitsdeg>
+        <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
@@ -167,7 +167,7 @@
         <Body>left_ujoint</Body>
         <offsetfrom>left_palm</offsetfrom>
         <axis>0 1 0</axis>
-        <limitsdeg>-60 60</limitsdeg>
+        <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
