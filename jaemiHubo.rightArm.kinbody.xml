@@ -19,7 +19,7 @@
         <Body>Torso_dummy2</Body>
         <Body>rightArm1</Body>
         <offsetfrom>rightArm1</offsetfrom>
-        <axis>0 1 0</axis>
+        <axis>0 -1 0</axis>
         <limitsdeg>-150 150</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
@@ -141,7 +141,7 @@
         <Body>rightArm5</Body>
         <Body>right_ujoint</Body>
         <offsetfrom>right_ujoint</offsetfrom>
-        <axis>-1 0 0</axis>
+        <axis>1 0 0</axis>
         <limitsdeg>-60 60</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>

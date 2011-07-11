@@ -16,7 +16,7 @@
         <Body>hipDummyRight</Body>
         <Body>rightHip</Body>
         <offsetfrom>rightHip</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <limitsdeg>-50 50</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
@@ -34,7 +34,7 @@
         <Body>rightHip</Body>
         <Body>rightHipPitchRoll</Body>
         <offsetfrom>rightHipPitchRoll</offsetfrom>
-        <axis>1 0 0</axis>
+        <axis>-1 0 0</axis>
         <limitsdeg>-30 90</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
@@ -111,7 +111,7 @@
         <Body>rightAnklePitch</Body>
         <Body>rightFoot</Body>
         <offsetfrom>rightFoot</offsetfrom>
-        <axis>-1 0 0</axis>
+        <axis>1 0 0</axis>
         <Weight>1</Weight>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
