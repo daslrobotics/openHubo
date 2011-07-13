@@ -34,13 +34,13 @@
     
     <Manipulator name="rightArmManip">
         <base>Torso</base>
-        <effector>right_palm</effector>
-        <direction>-1 -1 -1</direction>
+        <effector>rightPalmShell</effector>
+        <direction>0 1 0</direction>
     </Manipulator>
     <Manipulator name="leftArmManip">
         <base>Torso</base>
-        <effector>left_palm</effector>
-        <direction>1 -1 -1</direction>
+        <effector>leftPalmShell</effector>
+        <direction>0 -1 0</direction>
     </Manipulator>
     <Manipulator name="rightLeg">
         <base>hip</base>

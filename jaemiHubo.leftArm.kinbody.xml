@@ -131,7 +131,7 @@
         <weight>1</weight>
     </Joint>
 
-    <Body name="left_ujoint" type="dynamic">
+    <Body name="leftUJoint" type="dynamic">
        <offsetfrom>leftArm5</offsetfrom> 
        <Translation>0 0 -.122</Translation> 
        <Geom type="box" render="false">
@@ -144,8 +144,8 @@
 
     <Joint name="LWR" type="hinge">
         <Body>leftArm5</Body>
-        <Body>left_ujoint</Body>
-        <offsetfrom>left_ujoint</offsetfrom>
+        <Body>leftUJoint</Body>
+        <offsetfrom>leftUJoint</offsetfrom>
         <axis>-1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
@@ -153,8 +153,8 @@
         <weight>1</weight>
     </Joint>
 
-    <Body name="left_palm" type="dynamic">
-       <offsetfrom>left_ujoint</offsetfrom> 
+    <Body name="leftPalm" type="dynamic">
+       <offsetfrom>leftUJoint</offsetfrom> 
         <Translation>0 0 0</Translation> 
         <Geom type="trimesh">
             <Data>collision_Left_Palm.wrl    1</Data>
@@ -163,15 +163,30 @@
     </Body>
 
     <Joint name="LWP" type="hinge">
-        <Body>left_palm</Body>
-        <Body>left_ujoint</Body>
-        <offsetfrom>left_palm</offsetfrom>
+        <Body>leftPalm</Body>
+        <Body>leftUJoint</Body>
+        <offsetfrom>leftPalm</offsetfrom>
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
-    <adjacent>leftArm5 left_palm</adjacent>
-    <adjacent>left_ujoint left_palm</adjacent>
+    <Body name="leftPalmShell" type="dynamic" >
+        <offsetfrom>leftPalm</offsetfrom> 
+        <!--From Pro/E transformation matrix-->
+        <Translation>0.009326346	-0.009307222	-0.060858088</Translation>
+        <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
+        <Geom type="trimesh">
+           <Data>Left_Palm_Shell.wrl    .001</Data>
+        </Geom>
+    </Body>
+    <Joint name="palmFixed" type="hinge" enabled="false">
+        <Body>leftPalmShell</Body>
+        <Body>leftPalm</Body>
+        <limitsdeg>0 0</limitsdeg>
+    </Joint>
+    <adjacent>leftArm5 leftPalm</adjacent>
+    <adjacent>leftArm3 leftArm5</adjacent>
+    <adjacent>leftUJoint leftPalm</adjacent>
 </KinBody>

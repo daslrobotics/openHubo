@@ -168,16 +168,20 @@
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
-    <Body name="rightPalmShell" >
-
+    <Body name="rightPalmShell" type="dynamic" >
        <offsetfrom>rightPalm</offsetfrom> 
        <!--From Pro/E transformation matrix-->
        <Translation>-0.009326346	-0.009307222	-0.060858088</Translation>
        <RotationMat>0.5000	-0.5000	-0.7071	0.5000	-0.5000	0.7071	-0.7071	-0.7071	0.0000</RotationMat>
        <Geom type="trimesh">
-            <Data>Right_Palm_Shell.wrl    1</Data>
+            <Data>Right_Palm_Shell.wrl    .001</Data>
        </Geom>
     </Body>
+    <Joint name="palmFixed" type="hinge" enabled="false">
+        <Body>rightPalmShell</Body>
+        <Body>rightPalm</Body>
+        <limitsdeg>0 0</limitsdeg>
+    </Joint>
     <adjacent>rightArm5 rightPalm</adjacent>
     <adjacent>rightArm3 rightArm5</adjacent>
     <adjacent>rightUJoint rightPalm</adjacent>
