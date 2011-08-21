@@ -52,4 +52,9 @@
         <effector>leftFoot</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
+    <Manipulator name="rightArmTorsoManip">
+        <base>hip</base>
+        <effector>rightPalmShell</effector>
+        <direction>0 1 0</direction>
+    </Manipulator>
 </Robot>

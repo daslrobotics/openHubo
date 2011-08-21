@@ -177,7 +177,7 @@
             <Data>Right_Palm_Shell.wrl    .001</Data>
        </Geom>
     </Body>
-    <Joint name="palmFixed" type="hinge" enabled="false">
+    <Joint name="rightPalmFixed" type="hinge" enabled="false">
         <Body>rightPalmShell</Body>
         <Body>rightPalm</Body>
         <limitsdeg>0 0</limitsdeg>
