@@ -3,31 +3,40 @@
 <Robot name="jaemiHubo" >
     <KinBody file="jaemiHubo.trunk.kinbody.xml" makejoinedlinksadjacent="true">
         <KinBody file="jaemiHubo.leftArm.kinbody.xml"/>
+        
         <Joint name="leftTorsoDummy" type = "hinge" enable="false">
             <Body>Torso</Body>
             <Body>Torso_dummy1</Body>
             <limits>0 0</limits>
         </Joint>
+
         <KinBody file="jaemiHubo.rightArm.kinbody.xml"/>
+
         <Joint name="rightTorsoDummy" type = "hinge" enable="false">
             <Body>Torso</Body>
             <Body>Torso_dummy2</Body>
             <limits>0 0</limits>
         </Joint>
+
         <adjacent>Torso leftArm1</adjacent>
         <adjacent>Torso rightArm1</adjacent>
+
         <KinBody file="jaemiHubo.leftLeg.kinbody.xml"/>
+
         <Joint name="leftHipYawDummy" type = "hinge" enable="false">
             <Body>hip</Body>
             <Body>hipDummyLeft</Body>
             <limits>0 0</limits>
         </Joint>
+
         <KinBody file="jaemiHubo.rightLeg.kinbody.xml"/>
+
         <Joint name="rightHipYawDummy" type = "hinge" enable="false">
             <Body>hip</Body>
             <Body>hipDummyRight</Body>
             <limits>0 0</limits>
         </Joint>
+
         <adjacent>hip leftHip</adjacent>
         <adjacent>hip rightHip</adjacent>
     </KinBody>
@@ -37,24 +46,29 @@
         <effector>rightPalmShell</effector>
         <direction>0 1 0</direction>
     </Manipulator>
+
     <Manipulator name="leftArmManip">
         <base>Torso</base>
         <effector>leftPalmShell</effector>
         <direction>0 -1 0</direction>
     </Manipulator>
+
     <Manipulator name="rightLeg">
         <base>hip</base>
         <effector>rightFoot</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
+
     <Manipulator name="leftLeg">
         <base>hip</base>
-        <effector>leftFoot</effector>
+        <effector>leftFootBase</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
+
     <Manipulator name="rightArmTorsoManip">
         <base>hip</base>
         <effector>rightPalmShell</effector>
         <direction>0 1 0</direction>
     </Manipulator>
+
 </Robot>

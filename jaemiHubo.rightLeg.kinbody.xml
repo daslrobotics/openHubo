@@ -19,7 +19,7 @@
         <axis>0 0 -1</axis>
         <limitsdeg>-50 50</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
     <Body name="rightHipPitchRoll" type="dynamic">
@@ -37,7 +37,7 @@
         <axis>-1 0 0</axis>
         <limitsdeg>-30 90</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
     <Body name="rightKneeUpper" type="dynamic">
@@ -58,7 +58,7 @@
         <axis>0 1 0</axis>
         <limitsdeg>-120 120</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
     <Body name="rightKneeLower" type="dynamic">
@@ -76,7 +76,7 @@
         <axis>0 -1 0</axis>
         <limitsdeg>-2 120</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
     <Body name="rightAnklePitch" type="dynamic">
@@ -94,7 +94,7 @@
         <axis>0 1 0</axis>
         <limitsdeg>-100 100</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
 
@@ -115,8 +115,26 @@
         <Weight>1</Weight>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
+    </Joint>
+
+    <Body name="rightFootBase" type="dynamic">
+       <offsetfrom>rightFoot</offsetfrom> 
+        <Translation>-.04 0 -.1</Translation> 
+        <Geom type="box" >
+            <Translation>0 -.005 0.004</Translation> 
+            <extents>.11 .065 .004</extents>
+            <transparency>0.3</transparency>
+            <diffuseColor>0.3 0.3 0.0</diffuseColor>
+        </Geom>
+    </Body>
+
+    <Joint name="rightFootDummy" type="hinge" enabled="false">
+        <Body>rightFoot</Body>
+        <Body>rightFootBase</Body>
+        <offsetfrom>rightFootBase</offsetfrom>
+        <limitsdeg>0 0</limitsdeg>
     </Joint>
 
 </KinBody>
