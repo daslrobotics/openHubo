@@ -23,9 +23,6 @@
         <offsetfrom>leftArm1</offsetfrom>
         <axis>0 -1 0</axis>
         <limitsdeg>-180 180</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
     <Body name="leftArm2" type="dynamic">
         <offsetfrom>leftArm1</offsetfrom>
@@ -46,9 +43,6 @@
         <offsetfrom>leftArm2</offsetfrom>
         <axis>1 0 0</axis>
         <limitsdeg>-113 113</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
     <Body name="leftArm3" type="dynamic">
         <offsetfrom>leftArm2</offsetfrom>
@@ -76,9 +70,6 @@
         <offsetfrom>leftArm3</offsetfrom>
         <axis>0 0 1</axis>
         <limitsdeg>-157 157</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
     <Body name="leftArm4" type="dynamic">
         <offsetfrom>leftArm3</offsetfrom>
@@ -103,9 +94,6 @@
         <offsetfrom>leftArm4</offsetfrom>
         <axis>0 -1 0</axis>
         <limitsdeg>-20 150</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
     <Body name="leftArm5" type="dynamic">
         <offsetfrom>leftArm4</offsetfrom>
@@ -126,9 +114,6 @@
         <offsetfrom>leftArm5</offsetfrom>
         <axis>0 0 1</axis>
         <limitsdeg>-160 160</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
 
     <Body name="leftUJoint" type="dynamic">
@@ -148,9 +133,6 @@
         <offsetfrom>leftUJoint</offsetfrom>
         <axis>-1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
 
     <Body name="leftPalm" type="dynamic">
@@ -163,14 +145,11 @@
     </Body>
 
     <Joint name="LWP" type="hinge">
-        <Body>leftPalm</Body>
         <Body>leftUJoint</Body>
+        <Body>leftPalm</Body>
         <offsetfrom>leftPalm</offsetfrom>
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
     <Body name="leftPalmShell" type="dynamic" >
         <offsetfrom>leftPalm</offsetfrom> 
@@ -181,9 +160,11 @@
            <Data>Left_Palm_Shell.wrl    .001</Data>
         </Geom>
     </Body>
-    <Joint name="palmFixed" type="hinge" enabled="false">
-        <Body>leftPalmShell</Body>
+    <Joint name="leftPalmBody" type="hinge" enabled="false">
         <Body>leftPalm</Body>
+        <Body>leftPalmShell</Body>
+        <offsetfrom>leftPalmShell</offsetfrom>
+        <axis>1 0 0</axis>
         <limitsdeg>0 0</limitsdeg>
     </Joint>
     <adjacent>leftArm5 leftPalm</adjacent>
