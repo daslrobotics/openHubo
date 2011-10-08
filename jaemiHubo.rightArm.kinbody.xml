@@ -115,7 +115,7 @@
        <offsetfrom>rightArm5</offsetfrom> 
         <Translation>0 0 -.122</Translation> 
        <Geom type="box" render="false">
-           <extents>.01 .01 .01</extents>
+           <extents>.005 .005 .005</extents>
        </Geom>
         <Geom type="trimesh">
             <Render>Right_Wrist_UJoint.wrl    1</Render>
@@ -127,7 +127,7 @@
         <Body>rightUJoint</Body>
         <offsetfrom>rightUJoint</offsetfrom>
         <axis>1 0 0</axis>
-        <limitsdeg>-90 90</limitsdeg>
+        <limitsdeg>-30 30</limitsdeg>
     </Joint>
 
     <Body name="rightPalm" type="dynamic">
@@ -160,10 +160,9 @@
         <Body>rightPalm</Body>
         <Body>rightPalmShell</Body>
         <offsetfrom>rightPalmShell</offsetfrom>
-        <axis>1 0 0</axis>
         <limitsdeg>0 0</limitsdeg>
     </Joint>
-    <adjacent>rightArm5 rightPalm</adjacent>
     <adjacent>rightArm3 rightArm5</adjacent>
-    <adjacent>rightUJoint rightPalm</adjacent>
+    <adjacent>rightArm5 rightPalm</adjacent>
+    <adjacent>rightArm5 rightPalmShell</adjacent>
 </KinBody>
