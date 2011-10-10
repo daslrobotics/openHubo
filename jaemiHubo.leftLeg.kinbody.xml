@@ -55,7 +55,7 @@
         <Body>leftHipPitchRoll</Body>
         <Body>leftKneeUpper</Body>
         <offsetfrom>leftKneeUpper</offsetfrom>
-        <axis>0 1 0</axis>
+        <axis>0 -1 0</axis>
         <limitsdeg>-120 120</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.1</resolution>
@@ -73,7 +73,7 @@
         <Body>leftKneeUpper</Body>
         <Body>leftKneeLower</Body>
         <offsetfrom>leftKneeLower</offsetfrom>
-        <axis>0 -1 0</axis>
+        <axis>0 1 0</axis>
         <limitsdeg>-2 120</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.1</resolution>
@@ -91,7 +91,7 @@
         <Body>leftKneeLower</Body>
         <Body>leftAnklePitch</Body>
         <offsetfrom>leftAnklePitch</offsetfrom>
-        <axis>0 1 0</axis>
+        <axis>0 -1 0</axis>
         <limitsdeg>-100 100</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.1</resolution>
