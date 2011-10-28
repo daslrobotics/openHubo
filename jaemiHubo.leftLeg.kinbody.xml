@@ -30,6 +30,7 @@
         <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>hipDummyLeft leftHip</adjacent>
 
     <Body name="leftHipPitchRoll" type="dynamic">
         <offsetfrom>leftHip</offsetfrom>
@@ -162,6 +163,7 @@
         <weight>1</weight>
     </Joint>
     <adjacent>leftAnklePitch leftFoot</adjacent>
+    <adjacent>leftKneeLower leftFoot</adjacent>
 
     <Body name="leftFootBase" type="dynamic">
         <offsetfrom>leftFoot</offsetfrom> 

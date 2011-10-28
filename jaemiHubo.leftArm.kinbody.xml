@@ -165,8 +165,6 @@
         </Geom>
         <Mass type="custom">
             <total>0.003017047</total>
-            <Translation>-0.000000000 0.000000000 -0.000000000</Translation>
-            <inertia>0.000000032 -0.000000000 0.000000000 -0.000000000 0.000000040 -0.000000000 0.000000000 -0.000000000 0.000000064</inertia>
         </Mass>
     </Body>
 
@@ -189,7 +187,6 @@
         <Mass type="custom">
             <total>0.384010339</total>
             <Translation>-0.000123302 0.003029044 -0.060093031</Translation>
-
         </Mass>
     </Body>
 
@@ -201,6 +198,7 @@
         <limitsdeg>-30 30</limitsdeg>
     </Joint>
     <adjacent>leftUJoint leftPalm</adjacent>
+    <adjacent>Body_LWY leftPalm</adjacent>
 
     <Body name="leftPalmShell" type="dynamic" >
         <offsetfrom>leftPalm</offsetfrom> 
@@ -211,13 +209,13 @@
            <Data>Left_Palm_Shell.wrl    .001</Data>
         </Geom>
     </Body>
+
     <Joint name="leftPalmBody" type="hinge" enabled="false">
         <Body>leftPalm</Body>
         <Body>leftPalmShell</Body>
         <offsetfrom>leftPalmShell</offsetfrom>
         <limitsdeg>0 0</limitsdeg>
     </Joint>
-    <adjacent>Body_LWY leftPalm</adjacent>
     <adjacent>Body_LWY leftPalmShell</adjacent>
-    <adjacent>leftUJoint leftPalmShell</adjacent>
+    <adjacent>leftPalm leftPalmShell</adjacent>
 </KinBody>
