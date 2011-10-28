@@ -6,6 +6,7 @@
 <modelsdir>models</modelsdir>
     <Body name="Torso_dummy1" type="dynamic">
     </Body>
+
     <Body name="Body_LSP" type="dynamic">
         <offsetfrom>Torso_dummy1</offsetfrom>
         <Translation>0 0.1425 0</Translation>
@@ -22,6 +23,7 @@
             <inertia>0.000915048 -0.000172338 -0.000000272 -0.000172338 0.000937024 -0.000000272 -0.000000272 -0.000000272 0.001287655</inertia>
         </Mass>
     </Body>
+
     <Joint name="LSP" type="hinge">
         <Body>Torso_dummy1</Body>
         <Body>Body_LSP</Body>
@@ -29,6 +31,7 @@
         <axis>0 -1 0</axis>
         <limitsdeg>-180 180</limitsdeg>
     </Joint>
+
     <Body name="Body_LSR" type="dynamic">
         <offsetfrom>Body_LSP</offsetfrom>
         <Translation>.025 .072 0</Translation>
@@ -47,6 +50,7 @@
             <inertia>0.000273479 0.000007678 0.000009906 0.000007678 0.000247752 -0.000010681 0.000009906 -0.000010681 0.000216759</inertia>
         </Mass>
     </Body>
+
     <Joint name="LSR" type="hinge">
         <Body>Body_LSP</Body>
         <Body>Body_LSR</Body>
@@ -54,6 +58,8 @@
         <axis>1 0 0</axis>
         <limitsdeg>-113 113</limitsdeg>
     </Joint>
+    <adjacent>Body_LSP Body_LSR</adjacent>
+
     <Body name="Body_LSY" type="dynamic">
         <offsetfrom>Body_LSR</offsetfrom>
         <Translation>-0.0269 0.0 -0.0245</Translation>
@@ -73,9 +79,10 @@
         <Mass type="custom">
             <total>1.407493330</total>
             <Translation>0.007506423 -0.001888922 -0.089712642</Translation>
-            <inertia>0.004747016 -0.000156016 0.000828753 -0.000156016 0.004659410 -0.000254437 0.000828753 -0.000254437 0.000149840</inertia>
+
         </Mass>
     </Body>
+
     <Joint name="LSY" type="hinge">
         <Body>Body_LSR</Body>
         <Body>Body_LSY</Body>
@@ -83,6 +90,9 @@
         <axis>0 0 1</axis>
         <limitsdeg>-157 157</limitsdeg>
     </Joint>
+    <adjacent>Body_LSP Body_LSY</adjacent>
+    <adjacent>Body_LSR Body_LSY</adjacent>
+
     <Body name="Body_LEP" type="dynamic">
         <offsetfrom>Body_LSY</offsetfrom>
         <Translation>.022279 0.0115 -.154441</Translation>
@@ -105,6 +115,7 @@
             <inertia>0.000067021 -0.000002584 -0.000013385 -0.000002584 0.000075166 -0.000004623 -0.000013385 -0.000004623 0.000077705</inertia>
         </Mass>
     </Body>
+
     <Joint name="LEP" type="hinge">
         <Body>Body_LSY</Body>
         <Body>Body_LEP</Body>
@@ -112,6 +123,8 @@
         <axis>0 -1 0</axis>
         <limitsdeg>-20 150</limitsdeg>
     </Joint>
+    <adjacent>Body_LSY Body_LEP</adjacent>
+    
     <Body name="Body_LWY" type="dynamic">
         <offsetfrom>Body_LEP</offsetfrom>
         <Translation>-.022001 -.0115 -.041</Translation>
@@ -130,6 +143,7 @@
             <inertia>0.000458115 -0.000000401 -0.000015682 -0.000000401 0.000449915 0.000000059 -0.000015682 0.000000059 0.000200816</inertia>
         </Mass>
     </Body>
+
     <Joint name="LWY" type="hinge">
         <Body>Body_LEP</Body>
         <Body>Body_LWY</Body>
@@ -137,6 +151,8 @@
         <axis>0 0 1</axis>
         <limitsdeg>-160 160</limitsdeg>
     </Joint>
+    <adjacent>Body_LEP Body_LWY</adjacent>
+    <adjacent>Body_LSY Body_LWY</adjacent>
 
     <Body name="leftUJoint" type="dynamic">
         <offsetfrom>Body_LWY</offsetfrom> 
@@ -161,6 +177,7 @@
         <axis>-1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
     </Joint>
+    <adjacent>Body_LWY leftUJoint</adjacent>
 
     <Body name="leftPalm" type="dynamic">
         <offsetfrom>leftUJoint</offsetfrom> 
@@ -172,7 +189,7 @@
         <Mass type="custom">
             <total>0.384010339</total>
             <Translation>-0.000123302 0.003029044 -0.060093031</Translation>
-            <inertia>-0.003602344 -0.000150037 -0.001589843 -0.000150037 -0.004219152 0.000325223 -0.001589843 0.000325223 -0.000567140</inertia>
+
         </Mass>
     </Body>
 
@@ -183,6 +200,8 @@
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
     </Joint>
+    <adjacent>leftUJoint leftPalm</adjacent>
+
     <Body name="leftPalmShell" type="dynamic" >
         <offsetfrom>leftPalm</offsetfrom> 
         <!--From Pro/E transformation matrix-->
@@ -198,7 +217,7 @@
         <offsetfrom>leftPalmShell</offsetfrom>
         <limitsdeg>0 0</limitsdeg>
     </Joint>
-    <adjacent>Body_LSY Body_LWY</adjacent>
     <adjacent>Body_LWY leftPalm</adjacent>
     <adjacent>Body_LWY leftPalmShell</adjacent>
+    <adjacent>leftUJoint leftPalmShell</adjacent>
 </KinBody>
