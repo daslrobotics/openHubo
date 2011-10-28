@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<KinBody name="leftLeg" makejoinedlinksadjacent="true">
+<KinBody name="leftLeg">
     <modelsdir>models</modelsdir>
+
     <Body name="hipDummyLeft" type="dynamic">
     </Body>
+
     <Body name="leftHip" type="dynamic">
         <offsetfrom>hipDummyLeft</offsetfrom>
         <Translation>0 0.0885 -0.277953</Translation>
@@ -17,6 +19,7 @@
             <inertia>0.000863427 0.000001238 0.000042545 0.000001238 0.002029641 0.000000627 0.000042545 0.000000627 0.001473105</inertia>
         </Mass>
     </Body>
+
     <Joint name="LHY" type="hinge">
         <Body>hipDummyLeft</Body>
         <Body>leftHip</Body>
@@ -27,6 +30,7 @@
         <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+
     <Body name="leftHipPitchRoll" type="dynamic">
         <offsetfrom>leftHip</offsetfrom>
         <Translation>0 0 -.0910</Translation>
@@ -40,6 +44,7 @@
             <inertia>0.004385578 0.000224243 -0.000447015 0.000224243 0.004633453 -0.000377898 -0.000447015 -0.000377898 0.004398642</inertia>
         </Mass>
     </Body>
+
     <Joint name="LHR" type="hinge">
         <Body>leftHip</Body>
         <Body>leftHipPitchRoll</Body>
@@ -50,6 +55,8 @@
         <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>leftHip leftHipPitchRoll</adjacent>
+
     <Body name="leftKneeUpper" type="dynamic">
         <offsetfrom>leftHipPitchRoll</offsetfrom>
         <Translation>0 -0.054 0</Translation>
@@ -63,6 +70,7 @@
             <inertia>0.036844807 0.000255530 -0.000624748 0.000255530 0.034557057 0.000952212 -0.000624748 0.000952212 0.009238020</inertia>
         </Mass>
     </Body>
+
     <Joint name="LHP" type="hinge">
         <Body>leftHipPitchRoll</Body>
         <Body>leftKneeUpper</Body>
@@ -73,6 +81,9 @@
         <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>leftHipPitchRoll leftKneeUpper</adjacent>
+    <adjacent>leftHip leftKneeUpper</adjacent>
+
     <Body name="leftKneeLower" type="dynamic">
         <offsetfrom>leftKneeUpper</offsetfrom>
         <Translation>-.001675 .074999 -.300542</Translation>
@@ -86,6 +97,7 @@
             <inertia>0.022011968 0.000117575 -0.000867941 0.000117575 0.020299002 0.002037181 -0.000867941 0.002037181 0.005045442</inertia>
         </Mass>
     </Body>
+
     <Joint name="LKP" type="hinge">
         <Body>leftKneeUpper</Body>
         <Body>leftKneeLower</Body>
@@ -96,6 +108,8 @@
         <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>leftKneeUpper leftKneeLower</adjacent>
+
     <Body name="leftAnklePitch" type="dynamic">
         <offsetfrom>leftKneeLower</offsetfrom>
         <Translation>.000045 .024755 -.299942</Translation>
@@ -109,6 +123,7 @@
             <inertia>0.002342287 0.000114531 0.000316185 0.000114531 0.003019600 0.000107388 0.000316185 0.000107388 0.002846142</inertia>
         </Mass>
     </Body>
+
     <Joint name="LAP" type="hinge">
         <Body>leftKneeLower</Body>
         <Body>leftAnklePitch</Body>
@@ -119,6 +134,7 @@
         <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>leftKneeLower leftAnklePitch</adjacent>
 
     <Body name="leftFoot" type="dynamic">
         <offsetfrom>leftAnklePitch</offsetfrom> 
@@ -145,6 +161,7 @@
         <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>leftAnklePitch leftFoot</adjacent>
 
     <Body name="leftFootBase" type="dynamic">
         <offsetfrom>leftFoot</offsetfrom> 
@@ -163,5 +180,6 @@
         <offsetfrom>leftFootBase</offsetfrom>
         <limitsdeg>0 0</limitsdeg>
     </Joint>
+    <adjacent>leftFoot leftFootBase</adjacent>
 
 </KinBody>
