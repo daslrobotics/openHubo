@@ -1,0 +1,67 @@
+#VRML V2.0 utf8
+
+# This file was authored with Blender (http://www.blender.org/)
+# Blender version 249
+# Blender file 
+# Exported using VRML97 exporter v1.55 (2006/01/17)
+
+
+NavigationInfo {
+	headlight FALSE
+	visibilityLimit 100.0
+	type ["EXAMINE", "ANY"]
+	avatarSize [0.25, 1.75, 0.75]
+} 
+ 
+Background {
+	groundColor 0.0565629 0.2208154 0.4
+	skyColor 0.0565629 0.2208154 0.4
+}
+
+DEF OB_Cube Transform {
+	translation 0.000000 0.000000 0.000000
+	rotation 1.000000 0.000000 0.000000 0.000000
+	scale 1.000000 1.000000 1.000000
+	children [
+		DEF ME_Cube Group {
+			children [
+				Shape {
+					appearance Appearance {
+						material DEF MA_Material Material {
+							diffuseColor 0.8 0.8 0.8
+							ambientIntensity 0.1666667
+							specularColor 0.4012008 0.4012008 0.4012008
+							emissiveColor  0.0 0.0 0.0
+							shininess 0.0976563
+							transparency 0.0
+						}
+					}
+					geometry IndexedFaceSet {
+						solid TRUE
+						coord DEF coord_Cube Coordinate {
+							point [
+1.0 -1.0 -0.999999940395
+ 1.0 -1.0 1.0
+ -1.00000011921 -1.0 0.999999821186
+ -0.999999642372 -1.0 -1.00000035763
+ 1.00000047684 1.0 -0.999999463558
+ 0.999999344349 1.0 1.00000059605
+ -1.00000035763 1.0 0.999999642372
+ -0.999999940395 1.0 -1.0
+ 							]
+						}
+						
+						coordIndex [
+0 1 2 3 -1, 
+4 7 6 5 -1, 
+0 4 5 1 -1, 
+1 5 6 2 -1, 
+2 6 7 3 -1, 
+4 0 3 7 -1, 
+						]
+					}
+				}
+			]
+		}
+	]
+}

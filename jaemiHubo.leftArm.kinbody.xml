@@ -13,9 +13,12 @@
         <Geom type="sphere" render="false">
             <Translation>0 .064 0 </Translation>
             <radius>.080</radius>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="trimesh">
             <Render>Left_Shoulder_Pitch.wrl 1</Render>
+            <data>dummyBox.wrl .002</data>
         </Geom>
         <Mass type="custom">
             <total>0.696196989</total>
@@ -43,6 +46,9 @@
         </Geom>
         <Geom type="trimesh">
             <Render>Left_Shoulder_Roll.wrl 1</Render>
+            <data>dummyBox.wrl .002</data>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Mass type="custom">
             <total>0.348180156</total>
@@ -68,13 +74,18 @@
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>0.045</radius>
             <height>0.146</height>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="sphere" render="false">
             <Translation>0.010 0.000 -0.146</Translation>
             <radius>.045</radius>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="trimesh">
             <Render>Left_Shoulder_Yaw.wrl    1</Render>
+            <data>dummyBox.wrl .002</data>
         </Geom>
         <Mass type="custom">
             <total>1.407493330</total>
@@ -101,13 +112,18 @@
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>0.044</radius>
             <height>0.051</height>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="sphere" render="false">
             <Translation>-0.018 -0.011 0</Translation>
             <radius>0.049</radius>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="trimesh">
             <Render>Left_Elbow_Pitch.wrl    1</Render>
+            <data>dummyBox.wrl .002</data>
         </Geom>
         <Mass type="custom">
             <total>0.090349046</total>
@@ -133,9 +149,12 @@
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>0.045</radius>
             <height>0.127</height>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="trimesh">
             <Render>Right_Wrist_Yaw.wrl    1</Render>
+            <data>dummyBox.wrl .002</data>
         </Geom>
         <Mass type="custom">
             <total>0.278223950</total>
@@ -159,9 +178,12 @@
         <Translation>0 0 -.122</Translation> 
         <Geom type="box" render="false">
             <extents>.005 .005 .005</extents>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="trimesh">
             <Render>Right_Wrist_UJoint.wrl    1</Render>
+            <data>dummyBox.wrl .001</data>
         </Geom>
         <Mass type="custom">
             <total>0.003017047</total>
@@ -206,7 +228,7 @@
         <Translation>0.009326346	-0.009307222	-0.060858088</Translation>
         <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
         <Geom type="trimesh">
-           <Data>Left_Palm_Shell.wrl    .001</Data>
+           <render>Left_Palm_Shell.wrl    .001</render>
         </Geom>
     </Body>
 
