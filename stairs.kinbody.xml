@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="stairCase">
+    <Body name="step1" type="static">
+        <translation>0 0 0.04575</translation>
+        <Geom type="box">
+            <extents>.5 .25 .04575</extents>
+            <diffuseColor>.2 .2 .3</diffuseColor>
+            <ambientColor>0.6 0.6 0.6</ambientColor>
+        </Geom>
+    </Body>
+
+    <Body name="step2" type="static">
+        <translation>.22 0 0.13725</translation>
+        <Geom type="box">
+            <extents>.5 .25 .04575</extents>
+            <diffuseColor>.4 .2 .3</diffuseColor>
+            <ambientColor>0.6 0.6 0.6</ambientColor>
+        </Geom>
+    </Body>
+
+    <Body name="step3" type="static">
+        <translation>.44 0 0.22875</translation>
+        <Geom type="box">
+            <extents>.5 .25 .04575</extents>
+            <diffuseColor>.6 .2 .3</diffuseColor>
+            <ambientColor>0.6 0.6 0.6</ambientColor>
+        </Geom>
+    </Body>
+
+</KinBody>
+

@@ -3,10 +3,11 @@
 <!-- Right arm kinematic tree -->
 <!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
 <KinBody name="Trunk" makejoinedlinksadjacent="true">
-<modelsdir>models</modelsdir>
+    <modelsdir>models</modelsdir>
     <Body name="Torso" type="dynamic">
         <Geom type="trimesh" render="true">
             <Render>Body_Torso.wrl    1</Render>
+            <data>dummyBox.wrl .002</data>
         </Geom>
         <Geom type="cylinder" render="false">
             <Translation>-0.032 -0.051 -0.064</Translation>
@@ -32,13 +33,20 @@
             <radius>.114</radius>
             <height>.254</height>
         </Geom>
+        <Mass type="custom">
+            <total>7.957477863</total>
+            <Translation>-0.005494756 -0.000506882 -0.048924021</Translation>
+            <inertia>0.083564229 -0.000067976 0.002493728 -0.000067976 0.052235277 -0.001207207 0.002493728 -0.001207207 0.075754072</inertia>
+        </Mass>
     </Body>
+
     <Body name="hip" type="dynamic">
         <offsetfrom>Torso</offsetfrom>
         <Translation>0 0 -0.1915</Translation>
         <Geom type="trimesh">
     	    <RotationAxis>1 0 0 180</RotationAxis>
             <Render>Body_Hip.wrl 1</Render>
+            <data>dummyBox.wrl .002</data>
         </Geom>
         <Geom type="cylinder" render="false">
             <Translation>0.003 0.038 -0.052</Translation>
@@ -52,6 +60,11 @@
             <radius>.121</radius>
             <height>.105</height>
         </Geom>
+        <Mass type="custom">
+            <total>4.436339231</total>
+            <Translation>-0.011804276 -0.000018681 -0.044394816</Translation>
+            <inertia>0.022766841 0.000053624 -0.000164219 0.000053624 0.009418222 -0.000010039 -0.000164219 -0.000010039 0.026610520</inertia>
+        </Mass>
     </Body>
     <Joint name="TY" type="hinge">
         <Body>Torso</Body>
@@ -63,4 +76,5 @@
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>Torso hip</adjacent>
 </KinBody>

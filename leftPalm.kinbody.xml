@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<Kinbody name="leftPalmDemo">
-    <modelsdir>exportedModels/VRML</modelsdir>
-    <Body name="left_palm" type="dynamic">
-       <offsetfrom>left_ujoint</offsetfrom> 
-        <Translation>0 0 0</Translation> 
+<Kinbody name="leftPalmDummy">
+    <modelsdir>models</modelsdir>
+    <Body name="leftPalmShell" type="dynamic">
         <Geom type="trimesh">
-            <Data>Left_Palm.wrl    1</Data>
-            <Render>Left_Palm.wrl    1</Render>
+            <Data>Left_Palm_Shell.wrl    0.001</Data>
         </Geom>
     </Body>
 </Kinbody>

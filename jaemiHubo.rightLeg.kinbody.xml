@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="rightLeg" makejoinedlinksadjacent="true">
-<modelsdir>models</modelsdir>
+    <modelsdir>models</modelsdir>
     <Body name="hipDummyRight" type="dynamic">
     </Body>
+
     <Body name="rightHip" type="dynamic">
         <offsetfrom>hipDummyRight</offsetfrom>
         <Translation>0 -0.0885 -0.277953</Translation>
@@ -11,7 +12,13 @@
             <Data>convhull_LHY.wrl 1</Data>
             <Render>Body_LHY.wrl 1</Render>
         </Geom>
+        <Mass type="custom">
+            <total>0.483118742</total>
+            <Translation>0.006789681 -0.000063656 -0.053769264</Translation>
+            <inertia>0.000863427 -0.000001238 0.000042545 -0.000001238 0.002029641 -0.000000627 0.000042545 -0.000000627 0.001473105</inertia>
+        </Mass>
     </Body>
+
     <Joint name="RHY" type="hinge">
         <Body>hipDummyRight</Body>
         <Body>rightHip</Body>
@@ -19,9 +26,10 @@
         <axis>0 0 -1</axis>
         <limitsdeg>-50 50</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+
     <Body name="rightHipPitchRoll" type="dynamic">
         <offsetfrom>rightHip</offsetfrom>
         <Translation>0 0 -.0910</Translation>
@@ -29,7 +37,13 @@
             <Data>convhull_RHR.wrl 1</Data>
             <Render>Body_RHR.wrl 1</Render>
         </Geom>
+        <Mass type="custom">
+            <total>2.644641101</total>
+            <Translation>0.013849443 -0.010901509 -0.011973269</Translation>
+            <inertia>0.004385578 -0.000224243 -0.000447015 -0.000224243 0.004633453 0.000377898 -0.000447015 0.000377898 0.004398642</inertia>
+        </Mass>
     </Body>
+
     <Joint name="RHR" type="hinge">
         <Body>rightHip</Body>
         <Body>rightHipPitchRoll</Body>
@@ -37,9 +51,11 @@
         <axis>-1 0 0</axis>
         <limitsdeg>-30 90</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>rightHip rightHipPitchRoll</adjacent>
+
     <Body name="rightKneeUpper" type="dynamic">
         <offsetfrom>rightHipPitchRoll</offsetfrom>
         <Translation>0 0.054 0</Translation>
@@ -47,10 +63,13 @@
             <Data>convhull_RHP.wrl    1</Data>
             <Render>Body_RHP.wrl    1</Render>
         </Geom>
-        <mass type="custom">
-            <total>1</total>
-        </mass>
+        <Mass type="custom">
+            <total>3.098799394</total>
+            <Translation>0.019867805 -0.058794402 -0.188774904</Translation>
+            <inertia>0.036844807 -0.000255530 -0.000624748 -0.000255530 0.034557057 -0.000952212 -0.000624748 -0.000952212 0.009238020</inertia>
+        </Mass>
     </Body>
+
     <Joint name="RHP" type="hinge">
         <Body>rightHipPitchRoll</Body>
         <Body>rightKneeUpper</Body>
@@ -58,9 +77,12 @@
         <axis>0 1 0</axis>
         <limitsdeg>-120 120</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>rightHipPitchRoll rightKneeUpper</adjacent>
+    <adjacent>rightHip rightKneeUpper</adjacent>
+
     <Body name="rightKneeLower" type="dynamic">
         <offsetfrom>rightKneeUpper</offsetfrom>
         <Translation>-.001675 -0.074999 -.300542</Translation>
@@ -68,7 +90,13 @@
             <Data>convhull_RKP.wrl    1</Data>
             <Render>Body_RKP.wrl    1</Render>
         </Geom>
+        <Mass type="custom">
+            <total>1.559604102</total>
+            <Translation>0.018120466 0.013914964 -0.152406046</Translation>
+            <inertia>0.022011968 -0.000117575 -0.000867941 -0.000117575 0.020299002 -0.002037181 -0.000867941 -0.002037181 0.005045442</inertia>
+        </Mass>
     </Body>
+    
     <Joint name="RKP" type="hinge">
         <Body>rightKneeUpper</Body>
         <Body>rightKneeLower</Body>
@@ -76,9 +104,11 @@
         <axis>0 -1 0</axis>
         <limitsdeg>-2 120</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>rightKneeUpper rightKneeLower</adjacent>
+
     <Body name="rightAnklePitch" type="dynamic">
         <offsetfrom>rightKneeLower</offsetfrom>
         <Translation>.000045 -.024755 -.299942</Translation>
@@ -86,7 +116,13 @@
             <Data>convhull_RAP.wrl    1</Data>
             <Render>Body_RAP.wrl    1</Render>
         </Geom>
+        <Mass type="custom">
+            <total>1.674918070</total>
+            <Translation>0.019150497 0.042957865 0.009380757</Translation>
+            <inertia>0.002342287 -0.000114531 0.000316185 -0.000114531 0.003019600 -0.000107388 0.000316185 -0.000107388 0.002846142</inertia>
+        </Mass>
     </Body>
+
     <Joint name="RAP" type="hinge">
         <Body>rightKneeLower</Body>
         <Body>rightAnklePitch</Body>
@@ -94,17 +130,23 @@
         <axis>0 1 0</axis>
         <limitsdeg>-100 100</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>rightKneeLower rightAnklePitch</adjacent>
 
     <Body name="rightFoot" type="dynamic">
-       <offsetfrom>rightAnklePitch</offsetfrom> 
+        <offsetfrom>rightAnklePitch</offsetfrom> 
         <Translation>0.071244 0.0465 -.000016</Translation> 
         <Geom type="trimesh">
             <Data>convhull_RAR.wrl    1</Data>
             <Render>Body_RAR.wrl    1</Render>
         </Geom>
+        <Mass type="custom">
+            <total>0.525134235</total>
+            <Translation>-0.043321613 -0.001919520 -0.055938224</Translation>
+            <inertia>0.001299926 0.000003599 -0.000096266 0.000003599 0.002701794 -0.000026851 -0.000096266 -0.000026851 0.002753586</inertia>
+        </Mass>
     </Body>
 
     <Joint name="RAR" type="hinge">
@@ -115,8 +157,29 @@
         <Weight>1</Weight>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
-        <resolution>.5</resolution>
+        <resolution>.1</resolution>
         <weight>1</weight>
     </Joint>
+    <adjacent>rightAnklePitch rightFoot</adjacent>
+    <adjacent>rightKneeLower rightFoot</adjacent>
+
+    <Body name="rightFootBase" type="dynamic">
+        <offsetfrom>rightFoot</offsetfrom> 
+        <Translation>-.04 0 -.1</Translation> 
+        <Geom type="box" >
+            <Translation>0 -.005 0.004</Translation> 
+            <extents>.11 .065 .004</extents>
+            <transparency>0.3</transparency>
+            <diffuseColor>0.3 0.3 0.0</diffuseColor>
+        </Geom>
+    </Body>
+
+    <Joint name="rightFootDummy" type="hinge" enabled="false">
+        <Body>rightFoot</Body>
+        <Body>rightFootBase</Body>
+        <offsetfrom>rightFootBase</offsetfrom>
+        <limitsdeg>0 0</limitsdeg>
+    </Joint>
+    <adjacent>rightFoot rightFootBase</adjacent>
 
 </KinBody>

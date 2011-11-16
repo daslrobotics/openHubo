@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="leftFootDummy" makejoinedlinksadjacent="true">
+
+    <Body name="leftFootBase" type="dynamic">
+        <Geom type="box" >
+            <Translation>0 .005 0.004</Translation> 
+            <extents>.11 .065 .004</extents>
+            <transparency>0.3</transparency>
+            <diffuseColor>0.3 0.3 0.0</diffuseColor>
+        </Geom>
+    </Body>
+
+</KinBody>

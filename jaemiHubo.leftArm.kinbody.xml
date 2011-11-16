@@ -6,29 +6,37 @@
 <modelsdir>models</modelsdir>
     <Body name="Torso_dummy1" type="dynamic">
     </Body>
-    <Body name="leftArm1" type="dynamic">
+
+    <Body name="Body_LSP" type="dynamic">
         <offsetfrom>Torso_dummy1</offsetfrom>
         <Translation>0 0.1425 0</Translation>
         <Geom type="sphere" render="false">
             <Translation>0 .064 0 </Translation>
             <radius>.080</radius>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="trimesh">
             <Render>Body_LSP.wrl 1</Render>
+            <data>dummyBox.wrl .002</data>
         </Geom>
+        <Mass type="custom">
+            <total>0.696196989</total>
+            <Translation>0.017375862 0.056462706 -0.000002143</Translation>
+            <inertia>0.000915048 -0.000172338 -0.000000272 -0.000172338 0.000937024 -0.000000272 -0.000000272 -0.000000272 0.001287655</inertia>
+        </Mass>
     </Body>
+
     <Joint name="LSP" type="hinge">
         <Body>Torso_dummy1</Body>
-        <Body>leftArm1</Body>
-        <offsetfrom>leftArm1</offsetfrom>
+        <Body>Body_LSP</Body>
+        <offsetfrom>Body_LSP</offsetfrom>
         <axis>0 -1 0</axis>
         <limitsdeg>-180 180</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
-    <Body name="leftArm2" type="dynamic">
-        <offsetfrom>leftArm1</offsetfrom>
+
+    <Body name="Body_LSR" type="dynamic">
+        <offsetfrom>Body_LSP</offsetfrom>
         <Translation>.025 .072 0</Translation>
         <Geom type="cylinder" render="false">
             <Translation>-0.026 0 -0.038</Translation>
@@ -38,140 +46,198 @@
         </Geom>
         <Geom type="trimesh">
             <Render>Body_LSR.wrl 1</Render>
+            <data>dummyBox.wrl .002</data>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
+        <Mass type="custom">
+            <total>0.348180156</total>
+            <Translation>-0.032544374 -0.002402058 -0.004360644</Translation>
+            <inertia>0.000273479 0.000007678 0.000009906 0.000007678 0.000247752 -0.000010681 0.000009906 -0.000010681 0.000216759</inertia>
+        </Mass>
     </Body>
+
     <Joint name="LSR" type="hinge">
-        <Body>leftArm1</Body>
-        <Body>leftArm2</Body>
-        <offsetfrom>leftArm2</offsetfrom>
+        <Body>Body_LSP</Body>
+        <Body>Body_LSR</Body>
+        <offsetfrom>Body_LSR</offsetfrom>
         <axis>1 0 0</axis>
         <limitsdeg>-113 113</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
-    <Body name="leftArm3" type="dynamic">
-        <offsetfrom>leftArm2</offsetfrom>
+    <adjacent>Body_LSP Body_LSR</adjacent>
+
+    <Body name="Body_LSY" type="dynamic">
+        <offsetfrom>Body_LSR</offsetfrom>
         <Translation>-0.0269 0.0 -0.0245</Translation>
         <Geom type="cylinder" render="false">
             <Translation>0 0 -0.073</Translation>
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>0.045</radius>
             <height>0.146</height>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="sphere" render="false">
             <Translation>0.010 0.000 -0.146</Translation>
             <radius>.045</radius>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="trimesh">
             <Render>Body_LSY.wrl    1</Render>
+            <data>dummyBox.wrl .002</data>
         </Geom>
-        <mass type="custom">
-            <total>1</total>
-        </mass>
+        <Mass type="custom">
+            <total>1.407493330</total>
+            <Translation>0.007506423 -0.001888922 -0.089712642</Translation>
+
+        </Mass>
     </Body>
+
     <Joint name="LSY" type="hinge">
-        <Body>leftArm2</Body>
-        <Body>leftArm3</Body>
-        <offsetfrom>leftArm3</offsetfrom>
+        <Body>Body_LSR</Body>
+        <Body>Body_LSY</Body>
+        <offsetfrom>Body_LSY</offsetfrom>
         <axis>0 0 1</axis>
         <limitsdeg>-157 157</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
-    <Body name="leftArm4" type="dynamic">
-        <offsetfrom>leftArm3</offsetfrom>
+    <adjacent>Body_LSP Body_LSY</adjacent>
+    <adjacent>Body_LSR Body_LSY</adjacent>
+
+    <Body name="Body_LEP" type="dynamic">
+        <offsetfrom>Body_LSY</offsetfrom>
         <Translation>.022279 0.0115 -.154441</Translation>
         <Geom type="cylinder" render="false">
             <Translation>-0.022 -0.012 -0.025</Translation>
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>0.044</radius>
             <height>0.051</height>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="sphere" render="false">
             <Translation>-0.018 -0.011 0</Translation>
             <radius>0.049</radius>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="trimesh">
             <Render>Body_LEP.wrl    1</Render>
+            <data>dummyBox.wrl .002</data>
         </Geom>
+        <Mass type="custom">
+            <total>0.090349046</total>
+            <Translation>-0.013771295 -0.006562470 -0.019735321</Translation>
+            <inertia>0.000067021 -0.000002584 -0.000013385 -0.000002584 0.000075166 -0.000004623 -0.000013385 -0.000004623 0.000077705</inertia>
+        </Mass>
     </Body>
+
     <Joint name="LEP" type="hinge">
-        <Body>leftArm3</Body>
-        <Body>leftArm4</Body>
-        <offsetfrom>leftArm4</offsetfrom>
+        <Body>Body_LSY</Body>
+        <Body>Body_LEP</Body>
+        <offsetfrom>Body_LEP</offsetfrom>
         <axis>0 -1 0</axis>
         <limitsdeg>-20 150</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
-    <Body name="leftArm5" type="dynamic">
-        <offsetfrom>leftArm4</offsetfrom>
+    <adjacent>Body_LSY Body_LEP</adjacent>
+    
+    <Body name="Body_LWY" type="dynamic">
+        <offsetfrom>Body_LEP</offsetfrom>
         <Translation>-.022001 -.0115 -.041</Translation>
         <Geom type="cylinder" render="false">
             <Translation>0 0 -.064</Translation>
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>0.045</radius>
             <height>0.127</height>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
         </Geom>
         <Geom type="trimesh">
             <Render>Body_RWY.wrl    1</Render>
+            <data>dummyBox.wrl .002</data>
         </Geom>
+        <Mass type="custom">
+            <total>0.278223950</total>
+            <Translation>-0.003372725 -0.000033462 -0.039374046</Translation>
+            <inertia>0.000458115 -0.000000401 -0.000015682 -0.000000401 0.000449915 0.000000059 -0.000015682 0.000000059 0.000200816</inertia>
+        </Mass>
     </Body>
+
     <Joint name="LWY" type="hinge">
-        <Body>leftArm4</Body>
-        <Body>leftArm5</Body>
-        <offsetfrom>leftArm5</offsetfrom>
+        <Body>Body_LEP</Body>
+        <Body>Body_LWY</Body>
+        <offsetfrom>Body_LWY</offsetfrom>
         <axis>0 0 1</axis>
         <limitsdeg>-160 160</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
+    <adjacent>Body_LEP Body_LWY</adjacent>
+    <adjacent>Body_LSY Body_LWY</adjacent>
 
-    <Body name="left_ujoint" type="dynamic">
-       <offsetfrom>leftArm5</offsetfrom> 
-       <Translation>0 0 -.122</Translation> 
-       <Geom type="box" render="false">
-           <extents>.01 .01 .01</extents>
-       </Geom>
+    <Body name="leftUJoint" type="dynamic">
+        <offsetfrom>Body_LWY</offsetfrom> 
+        <Translation>0 0 -.122</Translation> 
+        <Geom type="box" render="false">
+            <extents>.005 .005 .005</extents>
+            <transparency>.6</transparency>
+            <diffusecolor>.7 .5 .5</diffusecolor>
+        </Geom>
         <Geom type="trimesh">
             <Render>Body_UJoint.wrl    1</Render>
+            <data>dummyBox.wrl .001</data>
         </Geom>
+        <Mass type="custom">
+            <total>0.003017047</total>
+        </Mass>
     </Body>
 
     <Joint name="LWR" type="hinge">
-        <Body>leftArm5</Body>
-        <Body>left_ujoint</Body>
-        <offsetfrom>left_ujoint</offsetfrom>
+        <Body>Body_LWY</Body>
+        <Body>leftUJoint</Body>
+        <offsetfrom>leftUJoint</offsetfrom>
         <axis>-1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
+    <adjacent>Body_LWY leftUJoint</adjacent>
 
-    <Body name="left_palm" type="dynamic">
-       <offsetfrom>left_ujoint</offsetfrom> 
+    <Body name="leftPalm" type="dynamic">
+        <offsetfrom>leftUJoint</offsetfrom> 
         <Translation>0 0 0</Translation> 
         <Geom type="trimesh">
             <Data>convhull_L_Palm.wrl    1</Data>
             <Render>Body_L_Palm.wrl    1</Render>
         </Geom>
+        <Mass type="custom">
+            <total>0.384010339</total>
+            <Translation>-0.000123302 0.003029044 -0.060093031</Translation>
+        </Mass>
     </Body>
 
     <Joint name="LWP" type="hinge">
-        <Body>left_palm</Body>
-        <Body>left_ujoint</Body>
-        <offsetfrom>left_palm</offsetfrom>
+        <Body>leftUJoint</Body>
+        <Body>leftPalm</Body>
+        <offsetfrom>leftPalm</offsetfrom>
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
-        <maxvel>1</maxvel>
-        <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
-    <adjacent>leftArm5 left_palm</adjacent>
-    <adjacent>left_ujoint left_palm</adjacent>
+    <adjacent>leftUJoint leftPalm</adjacent>
+    <adjacent>Body_LWY leftPalm</adjacent>
+
+    <Body name="leftPalmShell" type="dynamic" >
+        <offsetfrom>leftPalm</offsetfrom> 
+        <!--From Pro/E transformation matrix-->
+        <Translation>0.009326346	-0.009307222	-0.060858088</Translation>
+        <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
+        <Geom type="trimesh">
+           <render>Left_Palm_Shell.wrl    .001</render>
+        </Geom>
+    </Body>
+
+    <Joint name="leftPalmBody" type="hinge" enabled="false">
+        <Body>leftPalm</Body>
+        <Body>leftPalmShell</Body>
+        <offsetfrom>leftPalmShell</offsetfrom>
+        <limitsdeg>0 0</limitsdeg>
+    </Joint>
+    <adjacent>Body_LWY leftPalmShell</adjacent>
+    <adjacent>leftPalm leftPalmShell</adjacent>
 </KinBody>
