@@ -40,22 +40,21 @@
         </Mass>
     </Body>
 
-    <Body name="hip" type="dynamic">
+    <Body name="Hip" type="dynamic">
         <offsetfrom>Torso</offsetfrom>
         <Translation>0 0 -0.1915</Translation>
         <Geom type="trimesh">
-    	    <RotationAxis>1 0 0 180</RotationAxis>
-            <Render>Body_Hip.wrl 1</Render>
+            <Render>convhull_Hip.wrl 1</Render>
             <data>dummyBox.wrl .002</data>
         </Geom>
         <Geom type="cylinder" render="false">
-            <Translation>0.003 0.038 -0.052</Translation>
+            <Translation>-0.003 0.038 -0.052</Translation>
             <RotationAxis>1 0 0 -90</RotationAxis>
             <radius>.121</radius>
             <height>.105</height>
         </Geom>
         <Geom type="cylinder" render="false">
-            <Translation>0.003 -0.038 -0.052</Translation>
+            <Translation>-0.003 -0.038 -0.052</Translation>
             <RotationAxis>1 0 0 -90</RotationAxis>
             <radius>.121</radius>
             <height>.105</height>
@@ -68,13 +67,13 @@
     </Body>
     <Joint name="TY" type="hinge">
         <Body>Torso</Body>
-        <Body>hip</Body>
-        <offsetfrom>hip</offsetfrom>
+        <Body>Hip</Body>
+        <offsetfrom>Hip</offsetfrom>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
         <weight>1</weight>
     </Joint>
-    <adjacent>Torso hip</adjacent>
+    <adjacent>Torso Hip</adjacent>
 </KinBody>

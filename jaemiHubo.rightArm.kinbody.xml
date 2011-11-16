@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="rightArm" makejoinedlinksadjacent="true">
-<modelsdir>models</modelsdir>
+    <modelsdir>models</modelsdir>
     <Body name="Torso_dummy2" type="dynamic">
     </Body>
 
     <Body name="Body_RSP" type="dynamic">
         <offsetfrom>Torso_dummy2</offsetfrom>
         <Translation>0 -0.1425 0</Translation>
-        <Geom type="sphere" render="false">
-            <Translation>0 -.064 0 </Translation>
-            <radius>.080</radius>
+        <Geom type="cylinder" render="false">
+            <RotationAxis>0 0 1 90</RotationAxis>
+            <Translation>-0.005 -.064 0</Translation>
+            <radius>.055</radius>
+            <height>.130</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
         <Geom type="trimesh">
             <Render>Body_RSP.wrl    1</Render>
@@ -35,6 +39,7 @@
     <Body name="Body_RSR" type="dynamic">
         <offsetfrom>Body_RSP</offsetfrom>
         <Translation>.025 -.072 0</Translation>
+        <RotationAxis>1 0 0 -90</RotationAxis>
         <Geom type="trimesh">
             <Render>Body_RSR.wrl    1</Render>
             <data>dummyBox.wrl .002</data>
@@ -44,6 +49,8 @@
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>0.045</radius>
             <height>0.076</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
         <Mass type="custom">
             <total>0.348180156</total>
@@ -74,10 +81,15 @@
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>0.045</radius>
             <height>0.146</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
-        <Geom type="sphere" render="false">
-            <Translation>0.010 0.000 -0.146</Translation>
-            <radius>.045</radius>
+        <Geom type="cylinder" render="false">
+            <Translation>0.023 0.000 -0.155</Translation>
+            <radius>.027</radius>
+            <height>.085</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
         <Mass type="custom">
             <total>1.407493330</total>
@@ -93,8 +105,8 @@
         <axis>0 0 -1</axis>
         <limitsdeg>-157 157</limitsdeg>
     </Joint>
-    <adjacent>Body_LSP Body_LSY</adjacent>
-    <adjacent>Body_LSR Body_LSY</adjacent>
+    <adjacent>Body_RSP Body_RSY</adjacent>
+    <adjacent>Body_RSR Body_RSY</adjacent>
 
     <Body name="Body_REP" type="dynamic">
         <offsetfrom>Body_RSY</offsetfrom>
@@ -108,16 +120,20 @@
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>0.044</radius>
             <height>0.051</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
         <Geom type="sphere" render="false">
             <Translation>-0.018 0.011 0</Translation>
             <radius>0.049</radius>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
-<Mass type="custom">
-	<total>0.090349046</total>
-	<Translation>-0.013771295 0.006562470 -0.019735321</Translation>
-	<inertia>0.000067021 0.000002584 -0.000013385 0.000002584 0.000075166 0.000004623 -0.000013385 0.000004623 0.000077705</inertia>
-</Mass>
+        <Mass type="custom">
+            <total>0.090349046</total>
+            <Translation>-0.013771295 0.006562470 -0.019735321</Translation>
+            <inertia>0.000067021 0.000002584 -0.000013385 0.000002584 0.000075166 0.000004623 -0.000013385 0.000004623 0.000077705</inertia>
+        </Mass>
     </Body>
 
     <Joint name="REP" type="hinge">
@@ -141,6 +157,8 @@
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>0.045</radius>
             <height>0.127</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
         <Mass type="custom">
             <total>0.278223950</total>
@@ -164,6 +182,8 @@
         <Translation>0 0 -.122</Translation> 
         <Geom type="box" render="false">
             <extents>.005 .005 .005</extents>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
         <Geom type="trimesh">
             <Render>Body_UJoint.wrl    1</Render>
@@ -186,7 +206,6 @@
     <Body name="rightPalm" type="dynamic">
         <offsetfrom>rightUJoint</offsetfrom> 
         <Translation>0 0 0</Translation> 
-        <RotationAxis>0 0 1 180</RotationAxis>
         <Geom type="trimesh">
             <Render>Body_R_Palm.wrl    1</Render>
             <Data>convhull_R_Palm.wrl    1</Data>
@@ -211,8 +230,11 @@
     <Body name="rightPalmShell" type="dynamic" >
         <offsetfrom>rightPalm</offsetfrom> 
         <!--From Pro/E transformation matrix-->
-        <Translation>-0.009326346	-0.009307222	-0.060858088</Translation>
+        
+        <Translation>0.009326346	0.009307222	-0.060858088</Translation>
         <RotationMat>0.5 -0.50 -0.7071 0.5 -0.5 0.7071	-0.7071	-0.7071	0</RotationMat>
+
+        <RotationAxis>0 0 1 180</RotationAxis>
         <Geom type="trimesh">
             <render>Right_Palm_Shell.wrl    .001</render>
         </Geom>

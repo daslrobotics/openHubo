@@ -23,7 +23,7 @@
         <KinBody file="jaemiHubo.leftLeg.kinbody.xml"/>
 
         <Joint name="leftHipYawDummy" type="hinge" enable="false">
-            <Body>hip</Body>
+            <Body>Hip</Body>
             <Body>hipDummyLeft</Body>
             <limits>0 0</limits>
         </Joint>
@@ -31,15 +31,15 @@
         <KinBody file="jaemiHubo.rightLeg.kinbody.xml"/>
 
         <Joint name="rightHipYawDummy" type="hinge" enable="false">
-            <Body>hip</Body>
+            <Body>Hip</Body>
             <Body>hipDummyRight</Body>
             <limits>0 0</limits>
         </Joint>
 
-        <adjacent>hip leftHipPitchRoll</adjacent>
-        <adjacent>hip rightHipPitchRoll</adjacent>
-        <adjacent>hip leftHip</adjacent>
-        <adjacent>hip rightHip</adjacent>
+        <adjacent>Hip leftHipPitchRoll</adjacent>
+        <adjacent>Hip rightHipPitchRoll</adjacent>
+        <adjacent>Hip leftHip</adjacent>
+        <adjacent>Hip rightHip</adjacent>
 
     </KinBody>
     
@@ -56,7 +56,7 @@
     </Manipulator>
 
     <Manipulator name="leftFootManip">
-        <base>hip</base>
+        <base>Hip</base>
         <effector>leftFootBase</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
