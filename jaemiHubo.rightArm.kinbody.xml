@@ -12,7 +12,7 @@
             <radius>.080</radius>
         </Geom>
         <Geom type="trimesh">
-            <Render>Right_Shoulder_Pitch.wrl    1</Render>
+            <Render>Body_RSP.wrl    1</Render>
         </Geom>
     </Body>
     <Joint name="RSP" type="hinge">
@@ -29,7 +29,7 @@
         <offsetfrom>rightArm1</offsetfrom>
         <Translation>.025 -.072 0</Translation>
         <Geom type="trimesh">
-            <Render>Right_Shoulder_Roll.wrl    1</Render>
+            <Render>Body_RSR.wrl    1</Render>
         </Geom>
         <Geom type="cylinder" render="false">
             <Translation>-0.026 0 -0.038</Translation>
@@ -52,7 +52,7 @@
         <offsetfrom>rightArm2</offsetfrom>
         <Translation>-0.0269 0.0 -0.0245</Translation>
         <Geom type="trimesh">
-            <Render>Right_Shoulder_Yaw.wrl    1</Render>
+            <Render>Body_RSY.wrl    1</Render>
         </Geom>
         <Geom type="cylinder" render="false">
             <Translation>0 0 -0.073</Translation>
@@ -79,7 +79,7 @@
         <offsetfrom>rightArm3</offsetfrom>
         <Translation>.022279 -.0115 -.154441</Translation>
         <Geom type="trimesh">
-            <Render>Right_Elbow_Pitch.wrl    1</Render>
+            <Render>Body_REP.wrl    1</Render>
         </Geom>
         <Geom type="cylinder" render="false">
             <Translation>-0.022 0.012 -0.025</Translation>
@@ -106,7 +106,7 @@
         <offsetfrom>rightArm4</offsetfrom>
         <Translation>-.022001 .0115 -.041</Translation>
         <Geom type="trimesh">
-            <Render>Right_Wrist_Yaw.wrl    1</Render>
+            <Render>Body_RWY.wrl    1</Render>
         </Geom>
         <Geom type="cylinder" render="false">
             <Translation>0 0 -.064</Translation>
@@ -133,7 +133,7 @@
            <extents>.01 .01 .01</extents>
        </Geom>
         <Geom type="trimesh">
-            <Render>Right_Wrist_UJoint.wrl    1</Render>
+            <Render>Body_UJoint.wrl    1</Render>
         </Geom>
     </Body>
 
@@ -153,8 +153,8 @@
         <Translation>0 0 0</Translation> 
         <RotationAxis>0 0 1 180</RotationAxis>
         <Geom type="trimesh">
-            <Render>Right_Wrist_Palm.wrl    1</Render>
-            <Data>collision_Right_Wrist_Palm.wrl    1</Data>
+            <Render>Body_R_Palm.wrl    1</Render>
+            <Data>convhull_R_Palm.wrl    1</Data>
         </Geom>
     </Body>
 

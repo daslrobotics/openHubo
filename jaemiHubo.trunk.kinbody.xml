@@ -6,7 +6,7 @@
 <modelsdir>models</modelsdir>
     <Body name="Torso" type="dynamic">
         <Geom type="trimesh" render="true">
-            <render>KHR-4_Torso.wrl    1</render>
+            <Render>Body_Torso.wrl    1</Render>
         </Geom>
         <Geom type="cylinder" render="false">
             <Translation>-0.032 -0.051 -0.064</Translation>
@@ -36,18 +36,18 @@
     <Body name="hip" type="dynamic">
         <offsetfrom>Torso</offsetfrom>
         <Translation>0 0 -0.1915</Translation>
-    	<RotationAxis>1 0 0 180</RotationAxis>
         <Geom type="trimesh">
-            <Render>Hip.wrl 1</Render>
+    	    <RotationAxis>1 0 0 180</RotationAxis>
+            <Render>Body_Hip.wrl 1</Render>
         </Geom>
         <Geom type="cylinder" render="false">
-            <Translation>-0.003 0.038 0.052</Translation>
+            <Translation>0.003 0.038 -0.052</Translation>
             <RotationAxis>1 0 0 -90</RotationAxis>
             <radius>.121</radius>
             <height>.105</height>
         </Geom>
         <Geom type="cylinder" render="false">
-            <Translation>-0.003 -0.038 0.052</Translation>
+            <Translation>0.003 -0.038 -0.052</Translation>
             <RotationAxis>1 0 0 -90</RotationAxis>
             <radius>.121</radius>
             <height>.105</height>

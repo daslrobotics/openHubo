@@ -8,8 +8,8 @@
         <offsetfrom>hipDummyLeft</offsetfrom>
         <Translation>0 0.0885 -0.277953</Translation>
         <Geom type="trimesh">
-            <Data>collision_L_HIP_YAW.wrl 1</Data>
-            <Render>L_HIP_YAW.wrl 1</Render>
+            <Data>convhull_LHY.wrl 1</Data>
+            <Render>Body_LHY.wrl 1</Render>
         </Geom>
     </Body>
     <Joint name="LHY" type="hinge">
@@ -26,8 +26,8 @@
         <offsetfrom>leftHip</offsetfrom>
         <Translation>0 0 -.0910</Translation>
         <Geom type="trimesh">
-            <Data>collision_L_HIP_ROLL.wrl 1</Data>
-            <Render>L_HIP_ROLL.wrl 1</Render>
+            <Data>convhull_LHR.wrl 1</Data>
+            <Render>Body_LHR.wrl 1</Render>
         </Geom>
     </Body>
     <Joint name="LHR" type="hinge">
@@ -44,8 +44,8 @@
         <offsetfrom>leftHipPitchRoll</offsetfrom>
         <Translation>0 -0.054 0</Translation>
         <Geom type="trimesh">
-            <Data>collision_L_KNEE_UPPER.wrl    1</Data>
-            <Render>L_KNEE_UPPER.wrl    1</Render>
+            <Data>convhull_LHP.wrl    1</Data>
+            <Render>Body_LHP.wrl    1</Render>
         </Geom>
         <mass type="custom">
             <total>1</total>
@@ -65,8 +65,8 @@
         <offsetfrom>leftKneeUpper</offsetfrom>
         <Translation>-.001675 .074999 -.300542</Translation>
         <Geom type="trimesh">
-            <Data>collision_L_KNEE_LOWER.wrl    1</Data>
-            <Render>L_KNEE_LOWER.wrl    1</Render>
+            <Data>convhull_LKP.wrl    1</Data>
+            <Render>Body_LKP.wrl    1</Render>
         </Geom>
     </Body>
     <Joint name="LKP" type="hinge">
@@ -83,8 +83,8 @@
         <offsetfrom>leftKneeLower</offsetfrom>
         <Translation>.000045 .024755 -.299942</Translation>
         <Geom type="trimesh">
-            <Data>collision_L_ANKLE_PITCH.wrl    1</Data>
-            <Render>L_ANKLE_PITCH.wrl    1</Render>
+            <Data>convhull_LAP.wrl    1</Data>
+            <Render>Body_LAP.wrl    1</Render>
         </Geom>
     </Body>
     <Joint name="LAP" type="hinge">
@@ -102,8 +102,8 @@
        <offsetfrom>leftAnklePitch</offsetfrom> 
         <Translation>0.071244 -.0465 -.000016</Translation> 
         <Geom type="trimesh">
-            <Data>collision_L_ANKLE_ROLL.wrl    1</Data>
-            <Render>L_ANKLE_ROLL.wrl    1</Render>
+            <Data>convhull_LAR.wrl    1</Data>
+            <Render>Body_LAR.wrl    1</Render>
         </Geom>
     </Body>
 

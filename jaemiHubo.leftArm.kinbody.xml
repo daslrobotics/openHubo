@@ -14,7 +14,7 @@
             <radius>.080</radius>
         </Geom>
         <Geom type="trimesh">
-            <Render>Left_Shoulder_Pitch.wrl 1</Render>
+            <Render>Body_LSP.wrl 1</Render>
         </Geom>
     </Body>
     <Joint name="LSP" type="hinge">
@@ -37,7 +37,7 @@
             <height>0.076</height>
         </Geom>
         <Geom type="trimesh">
-            <Render>Left_Shoulder_Roll.wrl 1</Render>
+            <Render>Body_LSR.wrl 1</Render>
         </Geom>
     </Body>
     <Joint name="LSR" type="hinge">
@@ -64,7 +64,7 @@
             <radius>.045</radius>
         </Geom>
         <Geom type="trimesh">
-            <Render>Left_Shoulder_Yaw.wrl    1</Render>
+            <Render>Body_LSY.wrl    1</Render>
         </Geom>
         <mass type="custom">
             <total>1</total>
@@ -94,7 +94,7 @@
             <radius>0.049</radius>
         </Geom>
         <Geom type="trimesh">
-            <Render>Left_Elbow_Pitch.wrl    1</Render>
+            <Render>Body_LEP.wrl    1</Render>
         </Geom>
     </Body>
     <Joint name="LEP" type="hinge">
@@ -117,7 +117,7 @@
             <height>0.127</height>
         </Geom>
         <Geom type="trimesh">
-            <Render>Right_Wrist_Yaw.wrl    1</Render>
+            <Render>Body_RWY.wrl    1</Render>
         </Geom>
     </Body>
     <Joint name="LWY" type="hinge">
@@ -138,7 +138,7 @@
            <extents>.01 .01 .01</extents>
        </Geom>
         <Geom type="trimesh">
-            <Render>Right_Wrist_UJoint.wrl    1</Render>
+            <Render>Body_UJoint.wrl    1</Render>
         </Geom>
     </Body>
 
@@ -157,8 +157,8 @@
        <offsetfrom>left_ujoint</offsetfrom> 
         <Translation>0 0 0</Translation> 
         <Geom type="trimesh">
-            <Data>collision_Left_Palm.wrl    1</Data>
-            <Render>Left_Palm.wrl    1</Render>
+            <Data>convhull_L_Palm.wrl    1</Data>
+            <Render>Body_L_Palm.wrl    1</Render>
         </Geom>
     </Body>
 
