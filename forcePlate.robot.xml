@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Robot name="forcePlate">
+    <KinBody name="plateAssembly" makejoinedlinksadjacent="false">
+
+        <Body name="basePlate" type="static">
+            <Translation>0 0 0.05</Translation>
+            <Geom type="Box">
+                <extents>.5 .5 .05</extents>    
+                <diffusecolor>.2 .2 .2</diffusecolor>
+            </Geom>
+        </Body>
+
+        <Body name="Plate" type="dynamic">
+            <offsetfrom>basePlate</offsetfrom>
+            <Translation>0 0 0.1</Translation>
+            <Geom type="Box">
+                <extents>.5 .5 .05</extents>    
+                <diffusecolor>.5 .3 .3</diffusecolor>
+            </Geom>
+        </Body>
+
+        <Body name="topPlate" type="dynamic">
+            <offsetfrom>Plate</offsetfrom>
+            <Translation>0 0 0.1</Translation>
+            <Geom type="Box">
+                <extents>.5 .5 .05</extents>    
+                <diffusecolor>.8 .8 .3</diffusecolor>
+            </Geom>
+        </Body>
+
+        <Joint name="measureJoint" type="hinge">
+            <Body>basePlate</Body>
+            <Body>Plate</Body>
+            <limitsdeg>0 0</limitsdeg>
+        </Joint>
+
+        <Joint name="j2" type="hinge">
+            <Body>Plate</Body>
+            <Body>topPlate</Body>
+            <limitsdeg>0 0</limitsdeg>
+        </Joint>
+    </KinBody>
+
+    <AttachedSensor name="basePlateForces">
+        <link>Plate</link>
+        <sensor type="ForceSensor">
+            <joint>measureJoint</joint>
+        </sensor>
+    </AttachedSensor>
+
+</Robot>

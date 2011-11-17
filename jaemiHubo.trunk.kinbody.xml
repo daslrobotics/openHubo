@@ -76,4 +76,25 @@
         <weight>1</weight>
     </Joint>
     <adjacent>Torso Hip</adjacent>
+
+    <Body name="Head" type="dynamic">
+        <offsetfrom>Torso</offsetfrom>
+        <Translation>0 0 .167</Translation>
+        <Geom type="trimesh">
+            <Translation>0 0 -.122</Translation>
+            <Render>Body_Head.wrl 1</Render>
+            <data>convhull_Head.wrl 1</data>
+        </Geom>
+	
+    </Body>
+
+    <Joint name="HYP" type="hinge2">
+        <Body>Torso</Body>
+        <Body>Head</Body>
+        <offsetfrom>Head</offsetfrom>
+        <axis1>0 0 1</axis1>
+        <axis2>0 1 0</axis2>
+        <limitsdeg>-90 90 -30 30</limitsdeg>
+    </Joint>
+
 </KinBody>
