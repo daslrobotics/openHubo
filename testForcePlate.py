@@ -24,12 +24,11 @@ if __name__ == "__main__":
             robot = env.GetRobots()[0]
             robot.SetController(RaveCreateController(env,'odevelocity'),range(robot.GetDOF()),0)
             env.StopSimulation()
-            env.StartSimulation(timestep=0.001 )
-
-
-        for i in xrange(10000):
+            env.StartSimulation(timestep=0.0001 )
             velocities = numpy.zeros(robot.GetDOF())
             robot.GetController().SendCommand('setvelocity '+' '.join(str(f) for f in velocities))
+
+        for i in xrange(10000):
             data = forceSensor.GetSensorData()
             [force,torque] = env.GetPhysicsEngine().GetLinkForceTorque( robot.GetLink('Plate') )
             print data.force, data.torque, force, torque
