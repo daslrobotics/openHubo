@@ -34,7 +34,7 @@
         <Body>Body_RSP</Body>
         <offsetfrom>Body_RSP</offsetfrom>
             <anchor>-0.017375862 0.056462706 0.000002143</anchor>
-        <axis>0 -1 0</axis>
+        <axis>0 1 0</axis>
         <limitsdeg>-150 150</limitsdeg>
     </Joint>
     <adjacent>Body_RSP Body_RSR</adjacent>
@@ -70,7 +70,7 @@
         <Body>Body_RSR</Body>
         <offsetfrom>Body_RSR</offsetfrom>
             <anchor>0.032544374 -0.002402058 0.004360644</anchor>
-        <axis>-1 0 0</axis>
+        <axis>1 0 0</axis>
         <limitsdeg>-113 113</limitsdeg>
     </Joint>
     <adjacent>Body_RSR Body_RSY</adjacent>
@@ -114,7 +114,7 @@
         <Body>Body_RSY</Body>
         <offsetfrom>Body_RSY</offsetfrom>
             <anchor>-0.007506423 -0.001888922 0.089712642</anchor>
-        <axis>0 0 -1</axis>
+        <axis>0 0 1</axis>
         <limitsdeg>-157 157</limitsdeg>
     </Joint>
     <adjacent>Body_RSP Body_RSY</adjacent>
@@ -157,8 +157,8 @@
         <Body>Body_REP</Body>
         <offsetfrom>Body_REP</offsetfrom>
             <anchor>0.013771295 -0.006562470 0.019735321</anchor>
-        <axis>0 -1 0</axis>
-        <limitsdeg>-20 150</limitsdeg>
+        <axis>0 1 0</axis>
+        <limitsdeg>-144 20</limitsdeg>
     </Joint>
     <adjacent>Body_RSY Body_REP</adjacent>
 
@@ -192,7 +192,7 @@
         <Body>Body_RWY</Body>
         <offsetfrom>Body_RWY</offsetfrom>
             <anchor>0.003372725 -0.000033462 0.039374046</anchor>
-        <axis>0 0 -1</axis>
+        <axis>0 0 1</axis>
         <limitsdeg>-160 160</limitsdeg>
     </Joint>
     <adjacent>Body_REP Body_RWY</adjacent>
@@ -245,7 +245,7 @@
         <Body>rightPalm</Body>
         <offsetfrom>rightPalm</offsetfrom>
         <anchor>0.000123302 0.003029044 0.060093031</anchor>
-        <axis>0 -1 0</axis>
+        <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
     </Joint>
     <adjacent>rightUJoint rightPalm</adjacent>

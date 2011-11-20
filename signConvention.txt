@@ -1,0 +1,5 @@
+The new sign convention is based on the Hubo lab strategy:
+
+All joint axes are positive, branching outward from the TORSO. Therefore, each
+successive joint rotates about the POSITIVE X (roll), Y (pitch) or Z (yaw)
+axis.

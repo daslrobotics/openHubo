@@ -7,7 +7,7 @@ Transform {
 			appearance Appearance{
 			material Material {
 				ambientIntensity 1.000000
-				diffuseColor 0.800000 0.700000 0.700000
+				diffuseColor 0.700000 0.700000 0.700000
 				specularColor 0.800000 0.800000 0.800000
 				shininess 0.600000
 				}

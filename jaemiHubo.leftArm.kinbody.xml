@@ -34,7 +34,7 @@
         <Body>Body_LSP</Body>
         <anchor>-0.017375862 -0.056462706 0.000002143</anchor>
         <offsetfrom>Body_LSP</offsetfrom>
-        <axis>0 -1 0</axis>
+        <axis>0 1 0</axis>
         <limitsdeg>-180 180</limitsdeg>
     </Joint>
 
@@ -157,8 +157,8 @@
         <Body>Body_LEP</Body>
         <anchor>0.013771295 0.006562470 0.019735321</anchor>
         <offsetfrom>Body_LEP</offsetfrom>
-        <axis>0 -1 0</axis>
-        <limitsdeg>-20 150</limitsdeg>
+        <axis>0 1 0</axis>
+        <limitsdeg>-144 20</limitsdeg>
     </Joint>
     <adjacent>Body_LSY Body_LEP</adjacent>
     
@@ -220,7 +220,7 @@
         <Body>Body_LWY</Body>
         <Body>leftUJoint</Body>
         <offsetfrom>leftUJoint</offsetfrom>
-        <axis>-1 0 0</axis>
+        <axis>1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
     </Joint>
     <adjacent>Body_LWY leftUJoint</adjacent>
