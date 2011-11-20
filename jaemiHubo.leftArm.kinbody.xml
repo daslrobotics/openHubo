@@ -178,7 +178,7 @@
         </Geom>
         <Geom type="trimesh">
             <Translation>0.003372725 0.000033462 0.039374046</Translation>
-            <Render>Body_RWY.wrl    1</Render>
+            <Render>Body_LWY.wrl    1</Render>
             <data>dummyBox.wrl .002</data>
         </Geom>
         <Mass type="custom">
