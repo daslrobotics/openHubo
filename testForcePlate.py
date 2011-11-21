@@ -9,7 +9,6 @@ if __name__ == "__main__":
         env = Environment()
         env.SetViewer('qtcoin')
         env.Load('forcePlate.env.xml') 
-        time.sleep(1)
         
         robot = env.GetRobots()[0]
         forceSensor = robot.GetAttachedSensors()[0].GetSensor()
@@ -25,9 +24,9 @@ if __name__ == "__main__":
             robot.SetController(RaveCreateController(env,'odevelocity'),range(robot.GetDOF()),0)
             env.StopSimulation()
             env.StartSimulation(timestep=0.0001 )
+
             velocities = numpy.zeros(robot.GetDOF())
             robot.GetController().SendCommand('setvelocity '+' '.join(str(f) for f in velocities))
-
         for i in xrange(10000):
             data = forceSensor.GetSensorData()
             [force,torque] = env.GetPhysicsEngine().GetLinkForceTorque( robot.GetLink('Plate') )
