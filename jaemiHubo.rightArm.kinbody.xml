@@ -2,11 +2,11 @@
 
 <KinBody name="rightArm" makejoinedlinksadjacent="true">
     <modelsdir>models</modelsdir>
-    <Body name="Torso_dummy2" type="dynamic">
+    <Body name="rightTorsoDummy" type="dynamic">
     </Body>
 
     <Body name="Body_RSP" type="dynamic">
-        <offsetfrom>Torso_dummy2</offsetfrom>
+        <offsetfrom>rightTorsoDummy</offsetfrom>
         <Translation>0 -0.1425 0</Translation>
         <Translation>0.017375862 -0.056462706 -0.000002143</Translation>
         <Geom type="cylinder" render="false">
@@ -30,21 +30,23 @@
     </Body>
 
     <Joint name="RSP" type="hinge">
-        <Body>Torso_dummy2</Body>
+        <Body>rightTorsoDummy</Body>
         <Body>Body_RSP</Body>
         <offsetfrom>Body_RSP</offsetfrom>
             <anchor>-0.017375862 0.056462706 0.000002143</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-150 150</limitsdeg>
+        <resolution>.5</resolution>
+        <maxvel>4</maxvel>
     </Joint>
     <adjacent>Body_RSP Body_RSR</adjacent>
 
     <Body name="Body_RSR" type="dynamic">
         <offsetfrom>Body_RSP</offsetfrom>
-            <Translation>-0.017375862 0.056462706 0.000002143</Translation>
+        <Translation>-0.017375862 0.056462706 0.000002143</Translation>
         <Translation>.025 -.072 0</Translation>
         <Translation>-0.032544374 0.002402058 -0.004360644</Translation>
-        <RotationAxis>1 0 0 -90</RotationAxis>
+
         <Geom type="trimesh">
             <Translation>0.032544374 -0.002402058 0.004360644</Translation>
             <Render>Body_RSR.wrl    1</Render>
@@ -72,6 +74,7 @@
             <anchor>0.032544374 -0.002402058 0.004360644</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-113 113</limitsdeg>
+        <maxvel>4</maxvel>
     </Joint>
     <adjacent>Body_RSR Body_RSY</adjacent>
     <adjacent>Body_RSP Body_RSY</adjacent>
@@ -105,7 +108,7 @@
         </Geom>
         <Mass type="custom">
             <total>1.407493330</total>
-
+            <inertia>0.004747016 0.000156016 0.000828753 0.000156016 0.000149840 0.000254437 0.000828753 0.000254437 -0.000156016</inertia>
         </Mass>
     </Body>
 
@@ -116,6 +119,7 @@
             <anchor>-0.007506423 -0.001888922 0.089712642</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-157 157</limitsdeg>
+        <maxvel>4</maxvel>
     </Joint>
     <adjacent>Body_RSP Body_RSY</adjacent>
     <adjacent>Body_RSR Body_RSY</adjacent>
@@ -159,6 +163,7 @@
             <anchor>0.013771295 -0.006562470 0.019735321</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-144 20</limitsdeg>
+        <maxvel>4</maxvel>
     </Joint>
     <adjacent>Body_RSY Body_REP</adjacent>
 
@@ -194,6 +199,7 @@
             <anchor>0.003372725 -0.000033462 0.039374046</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-160 160</limitsdeg>
+        <maxvel>2</maxvel>
     </Joint>
     <adjacent>Body_REP Body_RWY</adjacent>
     <adjacent>Body_RSY Body_RWY</adjacent>
@@ -222,6 +228,7 @@
         <offsetfrom>rightUJoint</offsetfrom>
         <axis>1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
+        <maxvel>1</maxvel>
     </Joint>
     <adjacent>Body_RWY rightUJoint</adjacent>
 
@@ -235,8 +242,8 @@
             <Data>convhull_R_Palm.wrl    1</Data>
         </Geom>
         <Mass type="custom">
-            <total>0.384010339</total>
-            <!--TODO: Inertia data here-->
+            <total>0.164997896</total>
+            <inertia>0.000243946 -0.000011081 -0.000074294 -0.000011081 0.000176830 -0.000061330 -0.000074294 -0.000061330 0.000011081</inertia>
         </Mass>
     </Body>
 
@@ -247,6 +254,7 @@
         <anchor>0.000123302 0.003029044 0.060093031</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
+        <maxvel>1</maxvel>
     </Joint>
     <adjacent>rightUJoint rightPalm</adjacent>
     <adjacent>Body_RWY rightPalm</adjacent>
@@ -264,7 +272,6 @@
     </Body>
 
     <Joint name="rightPalmBody" type="hinge" enabled="false">
-        <!--TODO: DOes this mess up any IK solvers?-->
         <Body>rightPalm</Body>
         <Body>rightPalmShell</Body>
         <offsetfrom>rightPalmShell</offsetfrom>

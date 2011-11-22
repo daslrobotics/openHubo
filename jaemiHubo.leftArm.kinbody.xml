@@ -4,11 +4,11 @@
 <!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
 <KinBody name="leftArm" makejoinedlinksadjacent="true">
     <modelsdir>models</modelsdir>
-    <Body name="Torso_dummy1" type="dynamic">
+    <Body name="leftTorsoDummy" type="dynamic">
     </Body>
 
     <Body name="Body_LSP" type="dynamic">
-        <offsetfrom>Torso_dummy1</offsetfrom>
+        <offsetfrom>leftTorsoDummy</offsetfrom>
         <Translation>0 0.1425 0</Translation>
         <Translation>0.017375862 0.056462706 -0.000002143</Translation>
         <Geom type="sphere" render="false">
@@ -30,12 +30,13 @@
     </Body>
 
     <Joint name="LSP" type="hinge">
-        <Body>Torso_dummy1</Body>
+        <Body>leftTorsoDummy</Body>
         <Body>Body_LSP</Body>
         <anchor>-0.017375862 -0.056462706 0.000002143</anchor>
         <offsetfrom>Body_LSP</offsetfrom>
         <axis>0 1 0</axis>
         <limitsdeg>-180 180</limitsdeg>
+        <maxvel>4</maxvel>
     </Joint>
 
     <Body name="Body_LSR" type="dynamic">
@@ -44,7 +45,6 @@
         <Translation>-0.017375862 -0.056462706 0.000002143</Translation>
             <Translation>-0.032544374 -0.002402058 -0.004360644</Translation>
 
-        <RotationAxis>1 0 0 90</RotationAxis>
         <Geom type="cylinder" render="false">
             <Translation>0.032544374 0.002402058 0.004360644</Translation>
             <Translation>-0.026 0 -0.038</Translation>
@@ -72,6 +72,7 @@
             <anchor>0.032544374 0.002402058 0.004360644</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-113 113</limitsdeg>
+        <maxvel>4</maxvel>
     </Joint>
     <adjacent>Body_LSP Body_LSR</adjacent>
 
@@ -104,8 +105,7 @@
         </Geom>
         <Mass type="custom">
             <total>1.407493330</total>
-            <Translation>0.007506423 -0.001888922 -0.089712642</Translation>
-            <!--TODO: Add Inertia Here-->
+            <inertia>0.004747016 -0.000156016 0.000828753 -0.000156016 0.000149840 -0.000254437 0.000828753 -0.000254437 -0.000156016</inertia>
         </Mass>
     </Body>
 
@@ -116,6 +116,7 @@
             <anchor>-0.007506423 0.001888922 0.089712642</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-157 157</limitsdeg>
+        <maxvel>4</maxvel>
     </Joint>
     <adjacent>Body_LSP Body_LSY</adjacent>
     <adjacent>Body_LSR Body_LSY</adjacent>
@@ -159,6 +160,7 @@
         <offsetfrom>Body_LEP</offsetfrom>
         <axis>0 1 0</axis>
         <limitsdeg>-144 20</limitsdeg>
+        <maxvel>4</maxvel>
     </Joint>
     <adjacent>Body_LSY Body_LEP</adjacent>
     
@@ -194,6 +196,7 @@
             <anchor>0.003372725 0.000033462 0.039374046</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-160 160</limitsdeg>
+        <maxvel>2</maxvel>
     </Joint>
     <adjacent>Body_LEP Body_LWY</adjacent>
     <adjacent>Body_LSY Body_LWY</adjacent>
@@ -222,6 +225,7 @@
         <offsetfrom>leftUJoint</offsetfrom>
         <axis>1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
+        <maxvel>1</maxvel>
     </Joint>
     <adjacent>Body_LWY leftUJoint</adjacent>
 
@@ -235,7 +239,8 @@
             <Render>Body_L_Palm.wrl    1</Render>
         </Geom>
         <Mass type="custom">
-            <total>0.384010339</total>
+            <total>0.164997896</total>
+            <inertia>0.000243946 0.000011081 -0.000074294 0.000011081 0.000176830 0.000061330 -0.000074294 0.000061330 0.000011081</inertia>       <total>0.384010339</total>
         </Mass>
     </Body>
 
@@ -246,6 +251,7 @@
         <anchor>0.000123302 -0.003029044 0.060093031</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
+        <maxvel>1</maxvel>
     </Joint>
     <adjacent>leftUJoint leftPalm</adjacent>
     <adjacent>Body_LWY leftPalm</adjacent>

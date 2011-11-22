@@ -2,9 +2,10 @@
 <Kinbody name="rightPalmDummy"> 
     <modelsdir>models</modelsdir>
     <Body name="rightPalmShell" type="dynamic">
-        <Geom type="trimesh">
-            <Render>Right_Palm_Shell.wrl    0.001</Render>
-            <Data>Right_Palm_Shell.wrl    0.001</Data>
+        <Geom type="sphere">
+            <radius>.05</radius>
+            <diffuseColor>.3 .1 .1</diffuseColor>
+            <specularColor>.6 .6 .6</specularColor>
         </Geom>
     </Body>
 </Kinbody>

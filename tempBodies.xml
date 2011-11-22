@@ -1,0 +1,196 @@
+<Body name="Body_Left_Palm">
+<Mass type="custom">
+	<Translation>-0.004467773 0.006594802 -0.046425450</Translation>
+	<total>0.164997896</total>
+	<inertia>0.000243946 0.000011081 -0.000074294 0.000011081 0.000268875 0.000061330 -0.000074294 0.000061330 0.000176830</inertia>
+</Mass>
+</Body>
+<Body name="Body_LWR">
+<Mass type="custom">
+	<Translation>0.000000000 0.000000000 0.000000000</Translation>
+	<total>0.003017047</total>
+	<inertia>0.000000032 0.000000000 0.000000000 0.000000000 0.000000040 0.000000000 0.000000000 0.000000000 0.000000064</inertia>
+</Mass>
+</Body>
+<Body name="Body_LWY">
+<Mass type="custom">
+	<Translation>-0.003372725 -0.000033462 -0.039374046</Translation>
+	<total>0.278223950</total>
+	<inertia>0.000458115 -0.000000401 -0.000015682 -0.000000401 0.000449915 0.000000059 -0.000015682 0.000000059 0.000200816</inertia>
+</Mass>
+</Body>
+<Body name="Body_LEP">
+<Mass type="custom">
+	<Translation>-0.013771295 -0.006562470 -0.019735321</Translation>
+	<total>0.090349046</total>
+	<inertia>0.000067021 -0.000002584 -0.000013385 -0.000002584 0.000075166 -0.000004623 -0.000013385 -0.000004623 0.000077705</inertia>
+</Mass>
+</Body>
+<Body name="Body_LSY">
+<Mass type="custom">
+	<Translation>0.007506423 -0.001888922 -0.089712642</Translation>
+	<total>1.407493330</total>
+	<inertia>0.004747016 -0.000156016 0.000828753 -0.000156016 0.004659410 -0.000254437 0.000828753 -0.000254437 0.000149840</inertia>
+</Mass>
+</Body>
+<Body name="Body_LSR">
+<Mass type="custom">
+	<Translation>-0.032544374 -0.002402058 -0.004360644</Translation>
+	<total>0.348180156</total>
+	<inertia>0.000273479 0.000007678 0.000009906 0.000007678 0.000247752 -0.000010681 0.000009906 -0.000010681 0.000216759</inertia>
+</Mass>
+</Body>
+<Body name="Body_LSP">
+<Mass type="custom">
+	<Translation>0.017375862 0.056462706 -0.000002143</Translation>
+	<total>0.696196989</total>
+	<inertia>0.000915048 -0.000172338 -0.000000272 -0.000172338 0.000937024 -0.000000272 -0.000000272 -0.000000272 0.001287655</inertia>
+</Mass>
+</Body>
+<Body name="Body_LAR">
+<Mass type="custom">
+	<Translation>-0.047814592 0.001783967 -0.051987952</Translation>
+	<total>0.565035788</total>
+	<inertia>0.001437101 -0.000008128 0.000035714 -0.000008128 0.002989538 0.000030833 0.000035714 0.000030833 0.002925426</inertia>
+</Mass>
+</Body>
+<Body name="Body_LAP">
+<Mass type="custom">
+	<Translation>0.018049727 -0.043128744 0.011360988</Translation>
+	<total>1.758776893</total>
+	<inertia>0.002680631 0.000108974 0.000347672 0.000108974 0.003480188 0.000120538 0.000347672 0.000120538 0.003165507</inertia>
+</Mass>
+</Body>
+<Body name="Body_LHR">
+<Mass type="custom">
+	<Translation>0.013851967 0.010904681 -0.011975671</Translation>
+	<total>2.644641101</total>
+	<inertia>0.004384970 0.000223925 -0.000447357 0.000223925 0.004632750 -0.000378321 -0.000447357 -0.000378321 0.004398334</inertia>
+</Mass>
+</Body>
+<Body name="Body_LHY">
+<Mass type="custom">
+	<Translation>0.006789681 0.000063656 -0.053769264</Translation>
+	<total>0.483118742</total>
+	<inertia>0.000863427 0.000001238 0.000042545 0.000001238 0.002029641 0.000000627 0.000042545 0.000000627 0.001473105</inertia>
+</Mass>
+</Body>
+<Body name="Body_LHP">
+<Mass type="custom">
+	<Translation>0.019867805 0.058794402 -0.188774904</Translation>
+	<total>3.098799394</total>
+	<inertia>0.036844807 0.000255530 -0.000624748 0.000255530 0.034557057 0.000952212 -0.000624748 0.000952212 0.009238020</inertia>
+</Mass>
+</Body>
+<Body name="Body_LKP">
+<Mass type="custom">
+	<Translation>0.017450486 -0.020008908 -0.150701407</Translation>
+	<total>1.366883237</total>
+	<inertia>0.020182416 0.000141698 -0.000671066 0.000141698 0.018594267 0.001827119 -0.000671066 0.001827119 0.004111716</inertia>
+</Mass>
+</Body>
+<Body name="Body_Hip">
+<Mass type="custom">
+	<Translation>-0.011804276 -0.000018681 -0.044394816</Translation>
+	<total>4.436339231</total>
+	<inertia>0.022766841 0.000053624 -0.000164219 0.000053624 0.009418222 -0.000010039 -0.000164219 -0.000010039 0.026610520</inertia>
+</Mass>
+</Body>
+<Body name="Body_Torso">
+<Mass type="custom">
+	<Translation>-0.005491508 -0.000506882 -0.048936988</Translation>
+	<total>7.957477863</total>
+	<inertia>0.083562403 -0.000067989 0.002483494 -0.000067989 0.052227956 -0.001207161 0.002483494 -0.001207161 0.075748578</inertia>
+</Mass>
+</Body>
+<Body name="Body_Left_Palm">
+<Mass type="custom">
+	<Translation>-0.004467773 0.006594802 -0.046425450</Translation>
+	<total>0.164997896</total>
+	<inertia>0.000243946 -0.000011081 -0.000074294 -0.000011081 0.000268875 -0.000061330 -0.000074294 -0.000061330 0.000176830</inertia>
+</Mass>
+</Body>
+<Body name="Body_LWR">
+<Mass type="custom">
+	<Translation>0.000000000 0.000000000 0.000000000</Translation>
+	<total>0.003017047</total>
+	<inertia>0.000000032 0.000000000 0.000000000 0.000000000 0.000000040 0.000000000 0.000000000 0.000000000 0.000000064</inertia>
+</Mass>
+</Body>
+<Body name="Body_LWY">
+<Mass type="custom">
+	<Translation>-0.003372725 -0.000033462 -0.039374046</Translation>
+	<total>0.278223950</total>
+	<inertia>0.000458115 0.000000401 -0.000015682 0.000000401 0.000449915 -0.000000059 -0.000015682 -0.000000059 0.000200816</inertia>
+</Mass>
+</Body>
+<Body name="Body_LEP">
+<Mass type="custom">
+	<Translation>-0.013771295 -0.006562470 -0.019735321</Translation>
+	<total>0.090349046</total>
+	<inertia>0.000067021 0.000002584 -0.000013385 0.000002584 0.000075166 0.000004623 -0.000013385 0.000004623 0.000077705</inertia>
+</Mass>
+</Body>
+<Body name="Body_LSY">
+<Mass type="custom">
+	<Translation>0.007506423 -0.001888922 -0.089712642</Translation>
+	<total>1.407493330</total>
+	<inertia>0.004747016 0.000156016 0.000828753 0.000156016 0.004659410 0.000254437 0.000828753 0.000254437 0.000149840</inertia>
+</Mass>
+</Body>
+<Body name="Body_LSR">
+<Mass type="custom">
+	<Translation>-0.032544374 -0.002402058 -0.004360644</Translation>
+	<total>0.348180156</total>
+	<inertia>0.000273479 -0.000007678 0.000009906 -0.000007678 0.000247752 0.000010681 0.000009906 0.000010681 0.000216759</inertia>
+</Mass>
+</Body>
+<Body name="Body_LSP">
+<Mass type="custom">
+	<Translation>0.017375862 0.056462706 -0.000002143</Translation>
+	<total>0.696196989</total>
+	<inertia>0.000915048 0.000172338 -0.000000272 0.000172338 0.000937024 0.000000272 -0.000000272 0.000000272 0.001287655</inertia>
+</Mass>
+</Body>
+<Body name="Body_LAR">
+<Mass type="custom">
+	<Translation>-0.047814592 0.001783967 -0.051987952</Translation>
+	<total>0.565035788</total>
+	<inertia>0.001437101 0.000008128 0.000035714 0.000008128 0.002989538 -0.000030833 0.000035714 -0.000030833 0.002925426</inertia>
+</Mass>
+</Body>
+<Body name="Body_LAP">
+<Mass type="custom">
+	<Translation>0.018049727 -0.043128744 0.011360988</Translation>
+	<total>1.758776893</total>
+	<inertia>0.002680631 -0.000108974 0.000347672 -0.000108974 0.003480188 -0.000120538 0.000347672 -0.000120538 0.003165507</inertia>
+</Mass>
+</Body>
+<Body name="Body_LHR">
+<Mass type="custom">
+	<Translation>0.013851967 0.010904681 -0.011975671</Translation>
+	<total>2.644641101</total>
+	<inertia>0.004384970 -0.000223925 -0.000447357 -0.000223925 0.004632750 0.000378321 -0.000447357 0.000378321 0.004398334</inertia>
+</Mass>
+</Body>
+<Body name="Body_LHY">
+<Mass type="custom">
+	<Translation>0.006789681 0.000063656 -0.053769264</Translation>
+	<total>0.483118742</total>
+	<inertia>0.000863427 -0.000001238 0.000042545 -0.000001238 0.002029641 -0.000000627 0.000042545 -0.000000627 0.001473105</inertia>
+</Mass>
+</Body>
+<Body name="Body_LHP">
+<Mass type="custom">
+	<Translation>0.019867805 0.058794402 -0.188774904</Translation>
+	<total>3.098799394</total>
+	<inertia>0.036844807 -0.000255530 -0.000624748 -0.000255530 0.034557057 -0.000952212 -0.000624748 -0.000952212 0.009238020</inertia>
+</Mass>
+</Body>
+<Body name="Body_LKP">
+<Mass type="custom">
+	<Translation>0.017450486 -0.020008908 -0.150701407</Translation>
+	<total>1.366883237</total>
+	<inertia>0.020182416 -0.000141698 -0.000671066 -0.000141698 0.018594267 -0.001827119 -0.000671066 -0.001827119 0.004111716</inertia>
+</Mass>
+</Body>

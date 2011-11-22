@@ -4,25 +4,25 @@
     <KinBody file="jaemiHubo.trunk.kinbody.xml" makejoinedlinksadjacent="true">
         <KinBody file="jaemiHubo.leftArm.kinbody.xml"/>
         
-        <Joint name="leftTorsoDummy" type ="hinge" enable="false">
+        <Joint name="leftTorsoJoint" type ="hinge" enable="false">
             <Body>Torso</Body>
-            <Body>Torso_dummy1</Body>
+            <Body>leftTorsoDummy</Body>
             <limits>0 0</limits>
         </Joint>
         <adjacent>Torso Body_LSP</adjacent>
 
         <KinBody file="jaemiHubo.rightArm.kinbody.xml"/>
 
-        <Joint name="rightTorsoDummy" type ="hinge" enable="false">
+        <Joint name="rightTorsoJoint" type ="hinge" enable="false">
             <Body>Torso</Body>
-            <Body>Torso_dummy2</Body>
+            <Body>rightTorsoDummy</Body>
             <limits>0 0</limits>
         </Joint>
         <adjacent>Torso Body_RSP</adjacent>
 
         <KinBody file="jaemiHubo.leftLeg.kinbody.xml"/>
 
-        <Joint name="leftHipYawDummy" type="hinge" enable="false">
+        <Joint name="leftHipYawJoint" type="hinge" enable="false">
             <Body>Hip</Body>
             <Body>hipDummyLeft</Body>
             <limits>0 0</limits>
@@ -30,7 +30,7 @@
 
         <KinBody file="jaemiHubo.rightLeg.kinbody.xml"/>
 
-        <Joint name="rightHipYawDummy" type="hinge" enable="false">
+        <Joint name="rightHipYawJoint" type="hinge" enable="false">
             <Body>Hip</Body>
             <Body>hipDummyRight</Body>
             <limits>0 0</limits>
@@ -45,7 +45,7 @@
     
     <Manipulator name="rightArmManip">
         <base>Torso</base>
-        <effector>rightPalmShell</effector>
+        <effector>rightPalm</effector>
         <direction>0 1 0</direction>
     </Manipulator>
 
