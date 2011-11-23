@@ -43,16 +43,16 @@
 
     </KinBody>
     
-    <Manipulator name="rightArmManip">
-        <base>Torso</base>
-        <effector>rightPalm</effector>
-        <direction>0 1 0</direction>
-    </Manipulator>
-
     <Manipulator name="leftArmManip">
         <base>Torso</base>
         <effector>leftPalmShell</effector>
         <direction>0 -1 0</direction>
+    </Manipulator>
+
+    <Manipulator name="rightArmManip">
+        <base>rightTorsoDummy</base>
+        <effector>rightPalm</effector>
+        <direction>0 1 0</direction>
     </Manipulator>
 
     <Manipulator name="leftFootManip">
@@ -61,4 +61,9 @@
         <direction>0 0 -1</direction>
     </Manipulator>
 
+    <Manipulator name="rightFootManip">
+        <base>Hip</base>
+        <effector>rightFootBase</effector>
+        <direction>0 0 -1</direction>
+    </Manipulator>
 </Robot>

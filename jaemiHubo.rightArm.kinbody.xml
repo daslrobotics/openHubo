@@ -73,7 +73,7 @@
         <offsetfrom>Body_RSR</offsetfrom>
             <anchor>0.032544374 -0.002402058 0.004360644</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-113 113</limitsdeg>
+        <limitsdeg>-180 10</limitsdeg>
         <maxvel>4</maxvel>
     </Joint>
     <adjacent>Body_RSR Body_RSY</adjacent>
@@ -108,7 +108,6 @@
         </Geom>
         <Mass type="custom">
             <total>1.407493330</total>
-            <inertia>0.004747016 0.000156016 0.000828753 0.000156016 0.000149840 0.000254437 0.000828753 0.000254437 -0.000156016</inertia>
         </Mass>
     </Body>
 
@@ -243,7 +242,7 @@
         </Geom>
         <Mass type="custom">
             <total>0.164997896</total>
-            <inertia>0.000243946 -0.000011081 -0.000074294 -0.000011081 0.000176830 -0.000061330 -0.000074294 -0.000061330 0.000011081</inertia>
+            <inertia>0.000243946 -0.000011081 -0.000074294 -0.000011081 0.000268875 -0.000061330 -0.000074294 -0.000061330 0.000176830</inertia>
         </Mass>
     </Body>
 
