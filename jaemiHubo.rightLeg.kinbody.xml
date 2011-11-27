@@ -28,6 +28,7 @@
         <axis>0 0 1</axis>
         <limitsdeg>-90 50</limitsdeg>
         <maxvel>2</maxvel>
+        <maxaccel>60</maxaccel>
     </Joint>
 
     <Body name="rightHipPitchRoll" type="dynamic">
@@ -54,6 +55,7 @@
         <axis>1 0 0</axis>
         <limitsdeg>-90 30</limitsdeg>
         <maxvel>2</maxvel>
+        <maxaccel>60</maxaccel>
     </Joint>
     <adjacent>rightHip rightHipPitchRoll</adjacent>
 
@@ -81,6 +83,7 @@
         <axis>0 1 0</axis>
         <limitsdeg>-90 90</limitsdeg>
         <maxvel>5</maxvel>
+        <maxaccel>375</maxaccel>
     </Joint>
     <adjacent>rightHipPitchRoll rightKneeUpper</adjacent>
     <adjacent>rightHip rightKneeUpper</adjacent>
@@ -109,6 +112,7 @@
         <axis>0 1 0</axis>
         <limitsdeg>-2 120</limitsdeg>
         <maxvel>5</maxvel>
+        <maxaccel>375</maxaccel>
     </Joint>
     <adjacent>rightKneeUpper rightKneeLower</adjacent>
 
@@ -136,6 +140,7 @@
         <axis>0 1 0</axis>
         <limitsdeg>-100 100</limitsdeg>
         <maxvel>5</maxvel>
+        <maxaccel>375</maxaccel>
     </Joint>
     <adjacent>rightKneeLower rightAnklePitch</adjacent>
 
@@ -164,6 +169,7 @@
         <Weight>1</Weight>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>2</maxvel>
+        <maxaccel>60</maxaccel>
     </Joint>
     <adjacent>rightAnklePitch rightFoot</adjacent>
     <adjacent>rightKneeLower rightFoot</adjacent>

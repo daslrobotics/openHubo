@@ -29,6 +29,7 @@
         <axis>0 0 1</axis>
         <limitsdeg>-50 90</limitsdeg>
         <maxvel>2</maxvel>
+        <maxaccel>60</maxaccel>
     </Joint>
     <adjacent>hipDummyLeft leftHip</adjacent>
 
@@ -56,6 +57,7 @@
         <axis>1 0 0</axis>
         <limitsdeg>-30 90</limitsdeg>
         <maxvel>2</maxvel>
+        <maxaccel>60</maxaccel>
     </Joint>
     <adjacent>leftHip leftHipPitchRoll</adjacent>
 
@@ -83,6 +85,7 @@
         <axis>0 -1 0</axis>
         <limitsdeg>-90 90</limitsdeg>
         <maxvel>5</maxvel>
+        <maxaccel>375</maxaccel>
     </Joint>
     <adjacent>leftHipPitchRoll leftKneeUpper</adjacent>
     <adjacent>leftHip leftKneeUpper</adjacent>
@@ -111,6 +114,7 @@
         <axis>0 1 0</axis>
         <limitsdeg>-2 120</limitsdeg>
         <maxvel>5</maxvel>
+        <maxaccel>375</maxaccel>
     </Joint>
     <adjacent>leftKneeUpper leftKneeLower</adjacent>
 
@@ -138,6 +142,7 @@
         <axis>0 -1 0</axis>
         <limitsdeg>-100 100</limitsdeg>
         <maxvel>5</maxvel>
+        <maxaccel>375</maxaccel>
     </Joint>
     <adjacent>leftKneeLower leftAnklePitch</adjacent>
 
@@ -166,6 +171,7 @@
         <Weight>1</Weight>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>2</maxvel>
+        <maxaccel>60</maxaccel>
     </Joint>
     <adjacent>leftAnklePitch leftFoot</adjacent>
     <adjacent>leftKneeLower leftFoot</adjacent>

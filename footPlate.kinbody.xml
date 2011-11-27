@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Kinbody name="footPlateDummy"> 
+    <modelsdir>models</modelsdir>
+    <Body name="footPlate" type="dynamic">
+        <Geom type="box" >
+            <Translation>0 .005 0.004</Translation> 
+            <extents>.11 .065 .004</extents>
+            <diffuseColor>0.6 0.4 0.0</diffuseColor>
+        </Geom>
+    </Body>
+</Kinbody>
