@@ -56,7 +56,7 @@
     </Manipulator>
 
     <Manipulator name="leftFootManip">
-        <base>Hip</base>
+        <base>Torso</base>
         <effector>leftFootBase</effector>
         <direction>0 0 -1</direction>
     </Manipulator>

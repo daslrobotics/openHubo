@@ -83,7 +83,6 @@
         <limitsdeg>-90 90</limitsdeg>
         <maxvel>1</maxvel>
         <resolution>.5</resolution>
-        <weight>1</weight>
     </Joint>
     <adjacent>Torso Hip</adjacent>
 

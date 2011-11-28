@@ -28,8 +28,7 @@
             <anchor>-0.006789681 -0.000063656 0.053769264</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-50 90</limitsdeg>
-        <maxvel>2</maxvel>
-        <maxaccel>60</maxaccel>
+        <maxvel>1</maxvel>
     </Joint>
     <adjacent>hipDummyLeft leftHip</adjacent>
 
@@ -56,8 +55,7 @@
             <anchor>-0.013849443 -0.010901509 0.011973269</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-30 90</limitsdeg>
-        <maxvel>2</maxvel>
-        <maxaccel>60</maxaccel>
+        <maxvel>1</maxvel>
     </Joint>
     <adjacent>leftHip leftHipPitchRoll</adjacent>
 
@@ -82,10 +80,9 @@
         <Body>leftKneeUpper</Body>
         <offsetfrom>leftKneeUpper</offsetfrom>
             <anchor>-0.019867805 -0.058794402 0.188774904</anchor>
-        <axis>0 -1 0</axis>
+        <axis>0 1 0</axis>
         <limitsdeg>-90 90</limitsdeg>
-        <maxvel>5</maxvel>
-        <maxaccel>375</maxaccel>
+        <maxvel>1</maxvel>
     </Joint>
     <adjacent>leftHipPitchRoll leftKneeUpper</adjacent>
     <adjacent>leftHip leftKneeUpper</adjacent>
@@ -113,8 +110,7 @@
             <anchor>-0.018120466 0.013914964 0.152406046</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-2 120</limitsdeg>
-        <maxvel>5</maxvel>
-        <maxaccel>375</maxaccel>
+        <maxvel>1</maxvel>
     </Joint>
     <adjacent>leftKneeUpper leftKneeLower</adjacent>
 
@@ -139,10 +135,9 @@
         <Body>leftAnklePitch</Body>
         <offsetfrom>leftAnklePitch</offsetfrom>
             <anchor>-0.019150497 0.042957865 -0.009380757</anchor>
-        <axis>0 -1 0</axis>
+        <axis>0 1 0</axis>
         <limitsdeg>-100 100</limitsdeg>
-        <maxvel>5</maxvel>
-        <maxaccel>375</maxaccel>
+        <maxvel>1</maxvel>
     </Joint>
     <adjacent>leftKneeLower leftAnklePitch</adjacent>
 
@@ -167,11 +162,10 @@
         <Body>leftFoot</Body>
         <offsetfrom>leftFoot</offsetfrom>
             <anchor>0.043321613 -0.001919520 0.055938224</anchor>
-        <axis>-1 0 0</axis>
+        <axis>1 0 0</axis>
         <Weight>1</Weight>
         <limitsdeg>-30 30</limitsdeg>
-        <maxvel>2</maxvel>
-        <maxaccel>60</maxaccel>
+        <maxvel>1</maxvel>
     </Joint>
     <adjacent>leftAnklePitch leftFoot</adjacent>
     <adjacent>leftKneeLower leftFoot</adjacent>

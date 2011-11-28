@@ -105,6 +105,7 @@
         </Geom>
         <Mass type="custom">
             <total>1.407493330</total>
+            <radius>.045</radius>
         </Mass>
     </Body>
 
@@ -213,8 +214,9 @@
             <Render>Body_UJoint.wrl    1</Render>
             <data>dummyBox.wrl .001</data>
         </Geom>
-        <Mass type="custom">
+        <Mass type="box">
             <total>0.003017047</total>
+            <extents>.005 .005 .005</extents>
         </Mass>
     </Body>
 
