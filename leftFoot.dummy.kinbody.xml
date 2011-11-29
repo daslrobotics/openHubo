@@ -4,7 +4,7 @@
 
     <Body name="leftFootBase" type="dynamic">
         <Geom type="box" >
-            <Translation>0 .005 0.004</Translation> 
+            <Translation>0 .005 -0.004</Translation> 
             <extents>.11 .065 .004</extents>
             <transparency>0.3</transparency>
             <diffuseColor>0.3 0.3 0.0</diffuseColor>
