@@ -10,11 +10,11 @@
         <Translation>0 -0.1425 0</Translation>
         <Translation>0.017375862 -0.056462706 -0.000002143</Translation>
         <Geom type="cylinder" render="false">
-            <Translation>-0.005 -.064 0</Translation>
+            <Translation>-0.0045 -.070 0</Translation>
             <Translation>-0.017375862 0.056462706 0.000002143</Translation>
             <RotationAxis>0 0 1 90</RotationAxis>
             <radius>.055</radius>
-            <height>.130</height>
+            <height>.133</height>
             <Transparency>.3</Transparency>
             <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
@@ -80,20 +80,15 @@
 
     <Body name="Body_RSY" type="dynamic">
         <offsetfrom>Body_RSR</offsetfrom>
-            <Translation>0.032544374 -0.002402058 0.004360644</Translation>
+        <Translation>0.032544374 -0.002402058 0.004360644</Translation>
         <Translation>-0.0269 0.0 -0.0245</Translation>
-            <Translation>0.007506423 0.001888922 -0.089712642</Translation>
-        <Geom type="trimesh">
-            <Translation>-0.007506423 -0.001888922 0.089712642</Translation>
-            <Render>Body_RSY.wrl    1</Render>
-            <data>dummyBox.wrl .002</data>
-        </Geom>
+        <Translation>0.007506423 0.001888922 -0.089712642</Translation>
         <Geom type="cylinder" render="false">
             <Translation>-0.007506423 -0.001888922 0.089712642</Translation>
-            <Translation>0 0 -0.073</Translation>
             <RotationAxis>1 0 0 90</RotationAxis>
-            <radius>0.045</radius>
-            <height>0.146</height>
+            <Translation>0.001 0 -0.101</Translation>
+            <radius>0.0445</radius>
+            <height>0.10</height>
             <Transparency>.3</Transparency>
             <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
@@ -104,6 +99,11 @@
             <height>.085</height>
             <Transparency>.3</Transparency>
             <Diffusecolor>.8 .8 .5</Diffusecolor>
+        </Geom>
+        <Geom type="trimesh">
+            <Translation>-0.007506423 -0.001888922 0.089712642</Translation>
+            <Render>Body_RSY.wrl    1</Render>
+            <data>dummyBox.wrl .002</data>
         </Geom>
         <Mass type="sphere">
             <total>1.407493330</total>
@@ -142,13 +142,6 @@
             <Transparency>.3</Transparency>
             <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
-        <Geom type="sphere" render="false">
-            <Translation>0.013771295 -0.006562470 0.019735321</Translation>
-            <Translation>-0.018 0.011 0</Translation>
-            <radius>0.049</radius>
-            <Transparency>.3</Transparency>
-            <Diffusecolor>.8 .8 .5</Diffusecolor>
-        </Geom>
         <Mass type="custom">
             <total>0.090349046</total>
             <inertia>0.000067021 0.000002584 -0.000013385 0.000002584 0.000075166 0.000004623 -0.000013385 0.000004623 0.000077705</inertia>
@@ -178,10 +171,10 @@
         </Geom>
         <Geom type="cylinder" render="false">
             <Translation>0.003372725 -0.000033462 0.039374046</Translation>
-            <Translation>0 0 -.064</Translation>
+            <Translation>0 0 -.066</Translation>
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>0.045</radius>
-            <height>0.127</height>
+            <height>0.112</height>
             <Transparency>.3</Transparency>
             <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>

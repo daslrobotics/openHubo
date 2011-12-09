@@ -20,7 +20,7 @@
         </Geom>
         <Geom type="cylinder" render="false">
             <Translation>0.005494756 0.000506882 0.048924021</Translation>
-            <Translation>0.032 -0.051 -0.064</Translation>
+            <Translation>0.015 -0.051 -0.064</Translation>
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>.114</radius>
             <height>.254</height>
@@ -34,7 +34,7 @@
         </Geom>
         <Geom type="cylinder" render="false">
             <Translation>0.005494756 0.000506882 0.048924021</Translation>
-            <Translation>0.032 0.051 -0.064</Translation>
+            <Translation>0.015 0.051 -0.064</Translation>
             <RotationAxis>1 0 0 90</RotationAxis>
             <radius>.114</radius>
             <height>.254</height>
@@ -56,17 +56,17 @@
             <data>dummyBox.wrl .002</data>
         </Geom>
         <Geom type="cylinder" render="false">
-            <Translation>-0.003 0.038 -0.052</Translation>
+            <Translation>-0.007 0.040 -0.052</Translation>
             <Translation>0.011804276 0.000018681 0.044394816</Translation>
             <RotationAxis>1 0 0 -90</RotationAxis>
-            <radius>.121</radius>
+            <radius>.117</radius>
             <height>.105</height>
         </Geom>
         <Geom type="cylinder" render="false">
-            <Translation>-0.003 -0.038 -0.052</Translation>
+            <Translation>-0.007 -0.040 -0.052</Translation>
             <Translation>0.011804276 0.000018681 0.044394816</Translation>
             <RotationAxis>1 0 0 -90</RotationAxis>
-            <radius>.121</radius>
+            <radius>.117</radius>
             <height>.105</height>
         </Geom>
         <Mass type="custom">

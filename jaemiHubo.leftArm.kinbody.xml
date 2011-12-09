@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- left arm kinematic tree -->
-<!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
 <KinBody name="leftArm" makejoinedlinksadjacent="true">
     <modelsdir>models</modelsdir>
     <Body name="leftTorsoDummy" type="dynamic">
@@ -11,10 +9,12 @@
         <offsetfrom>leftTorsoDummy</offsetfrom>
         <Translation>0 0.1425 0</Translation>
         <Translation>0.017375862 0.056462706 -0.000002143</Translation>
-        <Geom type="sphere" render="false">
+        <Geom type="cylinder" render="false">
+            <Translation>-0.0045 .070 0</Translation>
             <Translation>-0.017375862 -0.056462706 0.000002143</Translation>
-            <Translation>0 .064 0 </Translation>
-            <radius>.050</radius>
+            <RotationAxis>0 0 1 90</RotationAxis>
+            <radius>.055</radius>
+            <height>.133</height>
             <Transparency>.3</Transparency>
             <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
@@ -78,15 +78,15 @@
 
     <Body name="Body_LSY" type="dynamic">
         <offsetfrom>Body_LSR</offsetfrom>
-        <Translation>-0.0269 0.0 -0.0245</Translation>
         <Translation>0.032544374 0.002402058 0.004360644</Translation>
+        <Translation>-0.0269 0.0 -0.0245</Translation>
         <Translation>0.007506423 -0.001888922 -0.089712642</Translation>
         <Geom type="cylinder" render="false">
-            <Translation>0 0 -0.073</Translation>
             <Translation>-0.007506423 0.001888922 0.089712642</Translation>
             <RotationAxis>1 0 0 90</RotationAxis>
-            <radius>0.045</radius>
-            <height>0.146</height>
+            <Translation>0 0 -0.101</Translation>
+            <radius>0.0445</radius>
+            <height>0.1</height>
             <Transparency>.3</Transparency>
             <Diffusecolor>.8 .8 .5</Diffusecolor>
         </Geom>
