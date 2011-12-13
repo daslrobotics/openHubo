@@ -66,4 +66,19 @@
         <effector>rightFootBase</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
+
+    <AttachedSensor name="leftFootForceSensor">
+        <link>leftFoot</link>
+        <sensor type="ForceSensor">
+            <joint>leftFootDummy</joint>
+        </sensor>
+    </AttachedSensor>
+    
+    <AttachedSensor name="rightFootForceSensor">
+        <link>rightFoot</link>
+        <sensor type="ForceSensor">
+            <joint>rightFootDummy</joint>
+        </sensor>
+    </AttachedSensor>
+
 </Robot>

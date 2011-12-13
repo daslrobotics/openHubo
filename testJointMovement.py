@@ -8,7 +8,7 @@ if __name__ == "__main__":
         
         env = Environment()
         env.SetViewer('qtcoin')
-        env.Load('jaemiHubo.robot.xml') 
+        env.Load('jaemiHubo.fullDOF.robot.xml') 
         time.sleep(1)
         
         physics = RaveCreatePhysicsEngine(env,'ode')

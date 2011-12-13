@@ -76,9 +76,16 @@
         <direction>0 0 -1</direction>
     </Manipulator>
 
-    <Manipulator name="hipManip">
+    <Manipulator name="affineManip">
         <base>base</base>
         <effector>Torso</effector>
         <direction>0 0 1</direction>
     </Manipulator>
+
+    <Manipulator name="headManip">
+        <base>Torso</base>
+        <effector>Head</effector>
+        <direction>0 0 1</direction>
+    </Manipulator>
+    
 </Robot>

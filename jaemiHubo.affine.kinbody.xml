@@ -14,6 +14,7 @@
         <Body>base</Body>
         <Body>X</Body>
         <axis>1 0 0</axis>
+        <maxforce>0</maxforce>
     </Joint>
 
     <Body name="Y" type="dynamic">
@@ -24,6 +25,7 @@
         <Body>X</Body>
         <Body>Y</Body>
         <axis>0 1 0</axis>
+        <maxforce>0</maxforce>
     </Joint>
 
     <Body name="Z" type="dynamic">
@@ -34,28 +36,31 @@
         <Body>Y</Body>
         <Body>Z</Body>
         <axis>0 0 1</axis>
+        <maxforce>0</maxforce>
     </Joint>
 
     <Body name="RX" type="dynamic">
         <offsetfrom>Z</offsetfrom>
     </Body>
 
-    <Joint name="jRX" type="hinge">
+    <Joint name="jRX" type="hinge" circular="true">
         <Body>Z</Body>
         <Body>RX</Body>
         <offsetfrom>Z</offsetfrom>
         <axis>1 0 0</axis>
+        <maxforce>0</maxforce>
     </Joint>
 
     <Body name="RY" type="dynamic">
         <offsetfrom>RX</offsetfrom>
     </Body>
 
-    <Joint name="jRY" type="hinge">
+    <Joint name="jRY" type="hinge" circular="true">
         <Body>RX</Body>
         <Body>RY</Body>
         <offsetfrom>RY</offsetfrom>
         <axis>0 1 0</axis>
+        <maxforce>0</maxforce>
     </Joint>
 
 </KinBody>
