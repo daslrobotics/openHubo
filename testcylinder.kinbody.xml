@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinBody name="cylinder">
+
+    <Body name="body" type="dynamic">
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>0.030</radius>
+            <height>0.150</height>
+            <diffusecolor>0.5 0 0.8</diffusecolor>
+        </Geom>        
+    </Body>
+
+</KinBody>

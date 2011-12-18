@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinBody name="box">
+
+    <Body name="body" type="dynamic">
+        <Geom type="box">
+            <!--This makes a box symmetrical about the origin, with the definition of one corner like so...-->
+            <extents>0.060 0.06 0.06</extents>
+            <diffusecolor>0.5 0 0.8</diffusecolor>
+        </Geom>        
+    </Body>
+
+</KinBody>

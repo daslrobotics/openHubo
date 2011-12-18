@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Kinbody name="rightPalmDummy"> 
-    <modelsdir>models</modelsdir>
-    <Body name="rightPalmShell" type="dynamic">
+<Kinbody name="ball"> 
+
+    <Body name="body" type="dynamic">
         <Geom type="sphere">
             <radius>.05</radius>
             <diffuseColor>.3 .1 .1</diffuseColor>
-            <specularColor>.6 .6 .6</specularColor>
+            <specularColor>.5 0 .8</specularColor>
         </Geom>
     </Body>
+
 </Kinbody>
