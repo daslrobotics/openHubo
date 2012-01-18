@@ -60,7 +60,7 @@
 
     <Manipulator name="rightArmManip">
         <base>rightTorsoDummy</base>
-        <effector>rightPalm</effector>
+        <effector>rightPalmShell</effector>
         <direction>0 1 0</direction>
     </Manipulator>
 

@@ -25,8 +25,9 @@ if __name__ == "__main__":
             env.StopSimulation()
             env.StartSimulation(timestep=0.0001 )
 
-            velocities = numpy.zeros(robot.GetDOF())
-            robot.GetController().SendCommand('setvelocity '+' '.join(str(f) for f in velocities))
+
+        velocities = numpy.zeros(robot.GetDOF())
+        robot.GetController().SendCommand('setvelocity '+' '.join(str(f) for f in velocities))
         for i in xrange(10000):
             data = forceSensor.GetSensorData()
             [force,torque] = env.GetPhysicsEngine().GetLinkForceTorque( robot.GetLink('Plate') )

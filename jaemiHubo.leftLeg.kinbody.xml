@@ -2,7 +2,6 @@
 
 <KinBody name="leftLeg">
     <modelsdir>models</modelsdir>
-
     <Body name="hipDummyLeft" type="dynamic">
     </Body>
 
@@ -16,7 +15,6 @@
             <Data>dummyBox.wrl .001</Data>
             <Render>Body_LHY.wrl 1</Render>
         </Geom>
-
         <Geom render="false" name="LHY1" type="cylinder">
             <Translation>-0.006789681 -0.000063656 0.053769264</Translation>
             <Translation>0.00635000 0.00000000 -0.09100400</Translation>
@@ -142,6 +140,7 @@
             <Radius>0.05088000</Radius>
             <Height>0.15494000</Height>
         </Geom>
+
         <Mass type="custom">
             <total>3.098799394</total>
             <inertia>0.036844807 0.000255530 -0.000624748 0.000255530 0.034557057 0.000952212 -0.000624748 0.000952212 0.009238020</inertia>
@@ -170,6 +169,7 @@
             <Data>dummyBox.wrl    0.001</Data>
             <Render>Body_LKP.wrl    1</Render>
         </Geom>
+
         <Geom render="false" name="LKP11" type="cylinder">
             <Translation>-0.018120466 0.013914964 0.152406046</Translation>
             <Translation>0.00048260 -0.01587500 -0.00012700</Translation>
@@ -269,9 +269,10 @@
         </Geom>
 
         <Geom render="false" name="LAP21" type="cylinder">
+            <RotationAxis>0 0 1 90</RotationAxis>
             <Translation>-0.019150497 0.042957865 -0.009380757</Translation>
             <Translation>0.0101 -0.04650000 0.00000000</Translation>
-            <RotationAxis>0 0 1 90</RotationAxis>
+
             <Radius>0.044</Radius>
             <Height>0.14224000</Height>
         </Geom>
@@ -323,6 +324,7 @@
             <Translation>-0.03967600 0.00438100 -0.07295800</Translation>
             <Extents>0.13012500 0.07584500 0.00952500</Extents>
         </Geom>
+
         <Mass type="custom">
             <total>0.525134235</total>
             <inertia>0.001299926 -0.000003599 -0.000096266 -0.000003599 0.002701794 0.000026851 -0.000096266 0.000026851 0.002753586</inertia>

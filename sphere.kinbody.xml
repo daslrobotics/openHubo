@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<KinBody name="testSphere" makejoinedlinksadjacent="true">
+
+    <Body name="Sphere" type="dynamic">
+
+        <Geom type="sphere" render="true">
+            <radius>.1</radius>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
+        </Geom>
+
+        <Mass type="mimicgeom">
+            <total>1</total>
+        </Mass>
+    </Body>
+
+</KinBody>

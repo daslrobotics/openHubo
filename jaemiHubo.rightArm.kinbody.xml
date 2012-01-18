@@ -33,7 +33,7 @@
         <Body>rightTorsoDummy</Body>
         <Body>Body_RSP</Body>
         <offsetfrom>Body_RSP</offsetfrom>
-            <anchor>-0.017375862 0.056462706 0.000002143</anchor>
+        <anchor>-0.017375862 0.056462706 0.000002143</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-150 150</limitsdeg>
         <maxvel>1</maxvel>
@@ -51,6 +51,7 @@
             <Render>Body_RSR.wrl    1</Render>
             <data>dummyBox.wrl .002</data>
         </Geom>
+
         <Geom type="cylinder" render="false">
             <Translation>0.032544374 -0.002402058 0.004360644</Translation>
             <Translation>-0.026 0 -0.038</Translation>
@@ -70,7 +71,7 @@
         <Body>Body_RSP</Body>
         <Body>Body_RSR</Body>
         <offsetfrom>Body_RSR</offsetfrom>
-            <anchor>0.032544374 -0.002402058 0.004360644</anchor>
+        <anchor>0.032544374 -0.002402058 0.004360644</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-180 10</limitsdeg>
         <maxvel>1</maxvel>
@@ -115,7 +116,7 @@
         <Body>Body_RSR</Body>
         <Body>Body_RSY</Body>
         <offsetfrom>Body_RSY</offsetfrom>
-            <anchor>-0.007506423 -0.001888922 0.089712642</anchor>
+        <anchor>-0.007506423 -0.001888922 0.089712642</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-157 157</limitsdeg>
         <maxvel>1</maxvel>
@@ -125,9 +126,9 @@
 
     <Body name="Body_REP" type="dynamic">
         <offsetfrom>Body_RSY</offsetfrom>
-            <Translation>-0.007506423 -0.001888922 0.089712642</Translation>
+        <Translation>-0.007506423 -0.001888922 0.089712642</Translation>
         <Translation>.022279 -.0115 -.154441</Translation>
-            <Translation>-0.013771295 0.006562470 -0.019735321</Translation>
+        <Translation>-0.013771295 0.006562470 -0.019735321</Translation>
         <Geom type="trimesh">
             <Translation>0.013771295 -0.006562470 0.019735321</Translation>
             <Render>Body_REP.wrl    1</Render>
@@ -152,7 +153,7 @@
         <Body>Body_RSY</Body>
         <Body>Body_REP</Body>
         <offsetfrom>Body_REP</offsetfrom>
-            <anchor>0.013771295 -0.006562470 0.019735321</anchor>
+        <anchor>0.013771295 -0.006562470 0.019735321</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-144 20</limitsdeg>
         <maxvel>1</maxvel>
@@ -161,9 +162,9 @@
 
     <Body name="Body_RWY" type="dynamic">
         <offsetfrom>Body_REP</offsetfrom>
-            <Translation>0.013771295 -0.006562470 0.019735321</Translation>
+        <Translation>0.013771295 -0.006562470 0.019735321</Translation>
         <Translation>-.022001 .0115 -.041</Translation>
-            <Translation>-0.003372725 0.000033462 -0.039374046</Translation>
+        <Translation>-0.003372725 0.000033462 -0.039374046</Translation>
         <Geom type="trimesh">
             <Translation>0.003372725 -0.000033462 0.039374046</Translation>
             <Render>Body_RWY.wrl    1</Render>
@@ -188,7 +189,7 @@
         <Body>Body_REP</Body>
         <Body>Body_RWY</Body>
         <offsetfrom>Body_RWY</offsetfrom>
-            <anchor>0.003372725 -0.000033462 0.039374046</anchor>
+        <anchor>0.003372725 -0.000033462 0.039374046</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-160 160</limitsdeg>
         <maxvel>1</maxvel>
@@ -198,7 +199,7 @@
 
     <Body name="rightUJoint" type="dynamic">
         <offsetfrom>Body_RWY</offsetfrom> 
-            <Translation>0.003372725 -0.000033462 0.039374046</Translation>
+        <Translation>0.003372725 -0.000033462 0.039374046</Translation>
         <Translation>0 0 -.122</Translation> 
         <Geom type="box" render="false">
             <extents>.005 .005 .005</extents>
@@ -230,13 +231,14 @@
         <Translation>-0.000123302 -0.003029044 -0.060093031</Translation>
 
         <Geom type="trimesh">
-        <Translation>0.000123302 0.003029044 0.060093031</Translation>
+            <Translation>0.000123302 0.003029044 0.060093031</Translation>
             <Render>Body_R_Palm.wrl    1</Render>
             <Data>convhull_R_Palm.wrl    1</Data>
         </Geom>
         <Mass type="custom">
             <total>0.164997896</total>
-            <inertia>0.000243946 -0.000011081 -0.000074294 -0.000011081 0.000268875 -0.000061330 -0.000074294 -0.000061330 0.000176830</inertia>
+            <inertia>0.000243946 0.000011081 -0.000074294 0.000011081 0.000268875 0.000061330 -0.000074294 0.000061330 0.000176830</inertia>
+
         </Mass>
     </Body>
 
@@ -253,15 +255,18 @@
     <adjacent>Body_RWY rightPalm</adjacent>
 
     <Body name="rightPalmShell" type="dynamic" >
+
         <offsetfrom>rightPalm</offsetfrom> 
         <Translation>0.000123302 0.003029044 0.060093031</Translation>
         <Translation>0.009326346	0.009307222	-0.060858088</Translation>
         <RotationMat>0.5 -0.50 -0.7071 0.5 -0.5 0.7071	-0.7071	-0.7071	0</RotationMat>
 
         <RotationAxis>0 0 1 180</RotationAxis>
+
         <Geom type="trimesh">
             <render>Right_Palm_Shell.wrl    .001</render>
         </Geom>
+
     </Body>
 
     <Joint name="rightPalmBody" type="hinge" enabled="false">

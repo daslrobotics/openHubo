@@ -27,6 +27,7 @@
             <Translation>0.00716000 0.00000000 -0.02501400</Translation>
             <Extents>0.07535000 0.02500000 0.02501450</Extents>
         </Geom>
+
         <Mass type="custom">
             <total>0.483118742</total>
             <inertia>0.000863427 -0.000001238 0.000042545 -0.000001238 0.002029641 -0.000000627 0.000042545 -0.000000627 0.001473105</inertia>
@@ -42,6 +43,7 @@
         <limitsdeg>-90 50</limitsdeg>
         <maxvel>1</maxvel>
     </Joint>
+    <adjacent>hipDummyRight rightHip</adjacent>
 
     <Body name="rightHipPitchRoll" type="dynamic">
         <offsetfrom>rightHip</offsetfrom>
@@ -351,10 +353,6 @@
             <transparency>0.3</transparency>
             <diffuseColor>0.3 0.3 0.0</diffuseColor>
         </Geom>
-        <Mass type="mimicgeom">
-            <!-- Fake mass -->
-            <total>.001</total>
-        </Mass>
     </Body>
 
     <Joint name="rightFootDummy" type="hinge" enabled="false">
