@@ -5,10 +5,11 @@
 
         <KinBody file="jaemiHubo.trunk.kinbody.xml" makejoinedlinksadjacent="true"/>
         
-        <Joint name="jRZ" type="hinge" circular="true">
+        <Joint name="jRZ" type="hinge" >
             <Body>RY</Body>
             <Body>Torso</Body>
             <axis>0 0 1</axis>
+        <limitsdeg>-180 180</limitsdeg>
         </Joint>
 
         <KinBody file="jaemiHubo.leftArm.kinbody.xml"/>

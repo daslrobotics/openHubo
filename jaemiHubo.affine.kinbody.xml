@@ -15,6 +15,7 @@
         <Body>X</Body>
         <axis>1 0 0</axis>
         <maxforce>0</maxforce>
+        <limits>-3 3</limits>
     </Joint>
 
     <Body name="Y" type="dynamic">
@@ -26,6 +27,7 @@
         <Body>Y</Body>
         <axis>0 1 0</axis>
         <maxforce>0</maxforce>
+        <limits>-3 3</limits>
     </Joint>
 
     <Body name="Z" type="dynamic">
@@ -37,30 +39,33 @@
         <Body>Z</Body>
         <axis>0 0 1</axis>
         <maxforce>0</maxforce>
+        <limits>-3 3</limits>
     </Joint>
 
     <Body name="RX" type="dynamic">
         <offsetfrom>Z</offsetfrom>
     </Body>
 
-    <Joint name="jRX" type="hinge" circular="true">
+    <Joint name="jRX" type="hinge">
         <Body>Z</Body>
         <Body>RX</Body>
         <offsetfrom>Z</offsetfrom>
         <axis>1 0 0</axis>
         <maxforce>0</maxforce>
+        <limitsdeg>-180 180</limitsdeg>
     </Joint>
 
     <Body name="RY" type="dynamic">
         <offsetfrom>RX</offsetfrom>
     </Body>
 
-    <Joint name="jRY" type="hinge" circular="true">
+    <Joint name="jRY" type="hinge">
         <Body>RX</Body>
         <Body>RY</Body>
         <offsetfrom>RY</offsetfrom>
         <axis>0 1 0</axis>
         <maxforce>0</maxforce>
+        <limitsdeg>-180 180</limitsdeg>
     </Joint>
 
 </KinBody>
