@@ -53,7 +53,7 @@
         <Translation>0.013849443 0.010901509 -0.011973269</Translation>
         <Geom type="trimesh">
             <Translation>-0.013849443 -0.010901509 0.011973269</Translation>
-            <Data>convhull_LHR.wrl 1</Data>
+            <Data>dummyBox.wrl .001</Data>
             <Render>Body_LHR.wrl 1</Render>
         </Geom>
 

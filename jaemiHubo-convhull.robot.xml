@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Robot name="jaemiHubo" >
-    <KinBody file="trunk.kinbody.xml" makejoinedlinksadjacent="true">
-        <KinBody file="leftarm.kinbody.xml"/>
+    <KinBody file="jaemiHubo.affine.kinbody.xml" makejoinedlinksadjacent="true">
+
+        <KinBody file="trunk.convhull.kinbody.xml" makejoinedlinksadjacent="true"/>
+        
+        <Joint name="jRZ" type="hinge" >
+            <Body>RY</Body>
+            <Body>Torso</Body>
+            <axis>0 0 1</axis>
+        <limitsdeg>-180 180</limitsdeg>
+        </Joint>
+
+        <KinBody file="leftarm.convhull.kinbody.xml"/>
         
         <Joint name="leftTorsoJoint" type ="hinge" enable="false">
             <Body>Torso</Body>
@@ -11,7 +21,7 @@
         </Joint>
         <adjacent>Torso Body_LSP</adjacent>
 
-        <KinBody file="rightarm.kinbody.xml"/>
+        <KinBody file="rightarm.convhull.kinbody.xml"/>
 
         <Joint name="rightTorsoJoint" type ="hinge" enable="false">
             <Body>Torso</Body>
@@ -20,7 +30,7 @@
         </Joint>
         <adjacent>Torso Body_RSP</adjacent>
 
-        <KinBody file="leftleg.kinbody.xml"/>
+        <KinBody file="leftleg.convhull.kinbody.xml"/>
 
         <Joint name="leftHipYawJoint" type="hinge" enable="false">
             <Body>Hip</Body>
@@ -28,7 +38,7 @@
             <limits>0 0</limits>
         </Joint>
 
-        <KinBody file="rightleg.kinbody.xml"/>
+        <KinBody file="rightleg.convhull.kinbody.xml"/>
 
         <Joint name="rightHipYawJoint" type="hinge" enable="false">
             <Body>Hip</Body>
@@ -67,18 +77,16 @@
         <direction>0 0 -1</direction>
     </Manipulator>
 
-    <AttachedSensor name="leftFootForceSensor">
-        <link>leftFoot</link>
-        <sensor type="ForceSensor">
-            <joint>leftFootDummy</joint>
-        </sensor>
-    </AttachedSensor>
-    
-    <AttachedSensor name="rightFootForceSensor">
-        <link>rightFoot</link>
-        <sensor type="ForceSensor">
-            <joint>rightFootDummy</joint>
-        </sensor>
-    </AttachedSensor>
+    <Manipulator name="affineManip">
+        <base>base</base>
+        <effector>Torso</effector>
+        <direction>0 0 1</direction>
+    </Manipulator>
 
+    <Manipulator name="headManip">
+        <base>Torso</base>
+        <effector>Head</effector>
+        <direction>0 0 1</direction>
+    </Manipulator>
+    
 </Robot>

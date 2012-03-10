@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Robot name="jaemiHubo" >
-    <KinBody file="jaemiHubo.affine.kinbody.xml" makejoinedlinksadjacent="true">
+    <KinBody file="affine.kinbody.xml" makejoinedlinksadjacent="true">
 
-        <KinBody file="jaemiHubo.trunk.kinbody.xml" makejoinedlinksadjacent="true"/>
+        <KinBody file="trunk.kinbody.xml" makejoinedlinksadjacent="true"/>
         
         <Joint name="jRZ" type="hinge" >
             <Body>RY</Body>
@@ -12,7 +12,7 @@
         <limitsdeg>-180 180</limitsdeg>
         </Joint>
 
-        <KinBody file="jaemiHubo.leftArm.kinbody.xml"/>
+        <KinBody file="leftarm.kinbody.xml"/>
         
         <Joint name="leftTorsoJoint" type ="hinge" enable="false">
             <Body>Torso</Body>
@@ -21,7 +21,7 @@
         </Joint>
         <adjacent>Torso Body_LSP</adjacent>
 
-        <KinBody file="jaemiHubo.rightArm.kinbody.xml"/>
+        <KinBody file="rightarm.kinbody.xml"/>
 
         <Joint name="rightTorsoJoint" type ="hinge" enable="false">
             <Body>Torso</Body>
@@ -30,7 +30,7 @@
         </Joint>
         <adjacent>Torso Body_RSP</adjacent>
 
-        <KinBody file="jaemiHubo.leftLeg.kinbody.xml"/>
+        <KinBody file="leftleg.kinbody.xml"/>
 
         <Joint name="leftHipYawJoint" type="hinge" enable="false">
             <Body>Hip</Body>
@@ -38,7 +38,7 @@
             <limits>0 0</limits>
         </Joint>
 
-        <KinBody file="jaemiHubo.rightLeg.kinbody.xml"/>
+        <KinBody file="rightleg.kinbody.xml"/>
 
         <Joint name="rightHipYawJoint" type="hinge" enable="false">
             <Body>Hip</Body>

@@ -1,9 +1,17 @@
 #VRML V2.0 utf8
 
-DEF VRML/collision_Right_Wrist_UJoint
+DEF convhull_UJoint
 Transform {
 	children [
 		 Shape {
+			appearance Appearance{
+			material Material {
+				ambientIntensity 1.000000
+				diffuseColor 0.800000 0.800000 0.500000
+				specularColor 0.800000 0.850000 0.800000
+				shininess 0.300000
+				}
+			}
 			geometry IndexedFaceSet {
 				coord Coordinate {
 					point [
