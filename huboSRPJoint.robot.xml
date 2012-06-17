@@ -1,0 +1,139 @@
+<Robot name="huboSRPJoint">
+	<KinBody name="SRPWaistJoint">
+		<modelsdir>models</modelsdir>
+		
+		<Body name="SRPBase" type="dynamic">
+			<Translation>0 0 -0.01272</Translation>
+			<RotationAxis>1 0 0 90</RotationAxis>
+			<Geom type="cylinder">
+				<radius>0.07632</radius>
+				<height>0.02544</height>
+				<Diffusecolor>1 0 0</Diffusecolor>
+			</Geom>
+		</Body>
+		
+		<Body name="SRPBaseWedge" type="dynamic">
+			<Geom type="trimesh">
+				<Render>Base_Assembly_Shrinkwrap_1.wrl    1</Render>
+			</Geom>
+		</Body>
+		
+		<Body name="SRPCenterWedge" type="dynamic">
+			<Translation>0.004826 0.00000254 0.0646938</Translation>
+			<RotationAxis>0 1 0 15</RotationAxis>
+			<Geom type="trimesh">
+				<Render>Center_Assembly_Shrinkwrap_1.wrl    1</Render>
+			</Geom>
+		</Body>
+		
+		<Body name="SRPTopWedge" type="dynamic">
+			<Translation>0.0052578 0.0004318 0.1140714</Translation>
+			<RotationAxis>1 0 0 -15</RotationAxis>
+			<Geom type="trimesh">
+				<Render>Top_Assembly_Shrinkwrap_1.wrl    1</Render>
+			</Geom>
+		</Body>
+		
+		<!-- Body Shells -->
+		<Body name="Torso" type="dynamic">
+			<offsetfrom>SRPTopWedge</offsetfrom>
+			<Translation>-0.005494756 -0.000506882 -0.048924021</Translation>
+			<RotationAxis>1 0 0 15</RotationAxis>
+			<Geom type="trimesh" render="true">
+				<!-- <Translation>0.005494756 0.000506882 0.048924021</Translation> -->
+				<Translation>0.005494756 0.02 0.28</Translation>
+				<Render>Body_Torso.wrl    1</Render>
+				<data>dummyBox.wrl .002</data>
+			</Geom>
+		</Body>
+		
+		<Body name="HeadYaw" type="dynamic">
+			<offsetfrom>Torso</offsetfrom>
+			<Translation>0 0 .122</Translation>
+			<Translation>0.005494756 0.02 0.28</Translation>
+			<Geom type="trimesh">
+				<render>Body_UJoint.wrl 1</render>
+			</Geom>
+		</Body>
+		
+		<Body name="Head" type="dynamic">
+			<offsetfrom>HeadYaw</offsetfrom>
+			<Translation>0 0 -.122</Translation>
+			<Geom type="trimesh">
+				<Translation>0 0 .0425</Translation>
+				<Render>Body_Head.wrl 1</Render>
+				<data>convhull_Head.wrl 1</data>
+			</Geom>
+		</Body>
+		
+		<!-- SRP Joint Definitions -->
+		<Joint name="SRPBaseJoint" type="hinge">
+			<Body>SRPBase</Body>
+			<Body>SRPBaseWedge</Body>
+			<offsetfrom>SRPBaseWedge</offsetfrom>
+			<axis>0 0 1</axis>
+		</Joint>
+		
+		<Joint name="SRPCenterJoint" type="hinge">
+			<Body>SRPBaseWedge</Body>
+			<Body>SRPCenterWedge</Body>
+			<offsetfrom>SRPCenterWedge</offsetfrom>
+			<axis>0 0 1</axis>
+		</Joint>
+		
+		<Joint name="SRPTopJoint" type="hinge">
+			<Body>SRPCenterWedge</Body>
+			<Body>SRPTopWedge</Body>
+			<offsetfrom>SRPTopWedge</offsetfrom>
+			<axis>0 0 1</axis>
+		</Joint>
+		
+		<!-- Body Joints -->
+		<Joint name="SRPBodyInterface" type="hinge" enable="false">
+			<Body>SRPTopWedge</Body>
+			<Body>Torso</Body>
+			<offsetfrom>SRPTopWedge</offsetfrom>
+			<axis>0 0 1</axis>
+		</Joint>
+		
+		<Joint name="HY" type="hinge" enable="false">
+			<Body>Torso</Body>
+			<Body>HeadYaw</Body>
+			<offsetfrom>HeadYaw</offsetfrom>
+			<axis>0 0 1</axis>
+			<limitsdeg>-90 90</limitsdeg>
+		</Joint>
+
+		<Joint name="HP" type="hinge" enable="false">
+			<Body>HeadYaw</Body>
+			<Body>Head</Body>
+			<offsetfrom>Head</offsetfrom>
+			<axis>0 1 0</axis>
+			<limitsdeg>-90 90</limitsdeg>
+		</Joint>
+		
+		<!-- Left Arm -->
+		<KinBody file="leftArm.kinbody.xml">
+			<Translation>0.005 0.005 0.34</Translation>
+		</KinBody>
+		
+		<Joint name="leftTorsoJoint" type ="hinge">
+			<Body>Torso</Body>
+			<Body>leftTorsoDummy</Body>
+			<limits>0 0</limits>
+		</Joint>
+		
+		<!-- Right Arm -->
+		<KinBody file="rightArm.kinbody.xml">
+			<Translation>0.005 0.01 0.34</Translation>
+		</KinBody>
+		
+		<Joint name="rightTorsoJoint" type ="hinge">
+			<Body>Torso</Body>
+			<Body>rightTorsoDummy</Body>
+			<limits>0 0</limits>
+		</Joint>
+		
+	</KinBody>
+	
+</Robot>

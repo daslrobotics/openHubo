@@ -1,0 +1,58 @@
+<Robot name="SRPJoint">
+	<KinBody name="SRPWaistJoint">
+		<modelsdir>models</modelsdir>
+		
+		<Body name="SRPBase" type="dynamic">
+			<Translation>0 0 -0.01272</Translation>
+			<RotationAxis>1 0 0 90</RotationAxis>
+			<Geom type="cylinder">
+				<radius>0.07632</radius>
+				<height>0.02544</height>
+				<Diffusecolor>1 0 0</Diffusecolor>
+			</Geom>
+		</Body>
+		
+		<Body name="SRPBaseWedge" type="dynamic">
+			<Geom type="trimesh">
+				<Render>Base_Assembly_Shrinkwrap_1.wrl    1</Render>
+			</Geom>
+		</Body>
+		
+		<Body name="SRPCenterWedge" type="dynamic">
+			<Translation>0.004826 0.00000254 0.0646938</Translation>
+			<RotationAxis>0 1 0 15</RotationAxis>
+			<Geom type="trimesh">
+				<Render>Center_Assembly_Shrinkwrap_1.wrl    1</Render>
+			</Geom>
+		</Body>
+		
+		<Body name="SRPTopWedge" type="dynamic">
+			<Translation>0.0052578 0.0004318 0.1140714</Translation>
+			<RotationAxis>1 0 0 -15</RotationAxis>
+			<Geom type="trimesh">
+				<Render>Top_Assembly_Shrinkwrap_1.wrl    1</Render>
+			</Geom>
+		</Body>
+		
+		<Joint name="SRPBaseJoint" type="hinge">
+			<Body>SRPBase</Body>
+			<Body>SRPBaseWedge</Body>
+			<offsetfrom>SRPBaseWedge</offsetfrom>
+			<axis>0 0 1</axis>
+		</Joint>
+		
+		<Joint name="SRPCenterJoint" type="hinge">
+			<Body>SRPBaseWedge</Body>
+			<Body>SRPCenterWedge</Body>
+			<offsetfrom>SRPCenterWedge</offsetfrom>
+			<axis>0 0 1</axis>
+		</Joint>
+		
+		<Joint name="SRPTopJoint" type="hinge">
+			<Body>SRPCenterWedge</Body>
+			<Body>SRPTopWedge</Body>
+			<offsetfrom>SRPTopWedge</offsetfrom>
+			<axis>0 0 1</axis>
+		</Joint>
+	</KinBody>
+</Robot>
