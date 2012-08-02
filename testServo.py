@@ -43,9 +43,9 @@ def run():
         file_env = 'simpleFloor.env.xml'
 
     env = Environment()
-    env.Load(file_env)
     env.SetViewer('qtcoin')
     env.SetDebugLevel(5)
+    env.Load(file_env)
 
     #-- Set the robot controller and start the simulation
     with env:
@@ -55,9 +55,6 @@ def run():
         env.SetCollisionChecker(collisionChecker)
 
         #define ODE physics engine and set gravity
-        physics = RaveCreatePhysicsEngine(env,'ode')
-        physics.SetGravity([0,0,-9.8])
-        env.SetPhysicsEngine(physics)
         env.StopSimulation()
         env.StartSimulation(timestep=0.001)
 
