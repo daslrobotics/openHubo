@@ -8,18 +8,16 @@ if __name__ == "__main__":
 
         env = Environment()
         env.SetViewer('qtcoin')
-        env.Load('simpleFloor.env.xml') 
+        env.Load('forcePlate.env.xml') 
 
         robot = env.GetRobots()[0]
 
         with env:
             robot = env.GetRobots()[0]
-            robot.SetController(RaveCreateController(env,'odevelocity'),range(robot.GetDOF()),0)
+            #robot.SetController(RaveCreateController(env,'odevelocity'),range(robot.GetDOF()),0)
             time.sleep(1)
             
-            #Define collision checker as pqp
-            collisionChecker = RaveCreateCollisionChecker(env,'pqp')
-            collisionChecker.SetCollisionOptions(CollisionOptions.Distance|CollisionOptions.Contacts)
+            collisionChecker = RaveCreateCollisionChecker(env,'ode')
             env.SetCollisionChecker(collisionChecker)
 
             #define ODE physics engine and set gravity

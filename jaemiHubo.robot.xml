@@ -45,39 +45,39 @@
     
     <Manipulator name="leftArmManip">
         <base>Torso</base>
-        <effector>leftPalmShell</effector>
+        <effector>leftPalm</effector>
         <direction>0 -1 0</direction>
     </Manipulator>
 
     <Manipulator name="rightArmManip">
         <base>rightTorsoDummy</base>
-        <effector>rightPalmShell</effector>
+        <effector>rightPalm</effector>
         <direction>0 1 0</direction>
     </Manipulator>
 
     <Manipulator name="leftFootManip">
         <base>Torso</base>
-        <effector>leftFootBase</effector>
+        <effector>leftFoot</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
 
     <Manipulator name="rightFootManip">
         <base>Hip</base>
-        <effector>rightFootBase</effector>
+        <effector>rightFoot</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
 
     <AttachedSensor name="leftFootForceSensor">
         <link>leftFoot</link>
         <sensor type="ForceSensor">
-            <joint>leftFootDummy</joint>
+            <joint>LAR</joint>
         </sensor>
     </AttachedSensor>
     
     <AttachedSensor name="rightFootForceSensor">
         <link>rightFoot</link>
         <sensor type="ForceSensor">
-            <joint>rightFootDummy</joint>
+            <joint>RAR</joint>
         </sensor>
     </AttachedSensor>
 

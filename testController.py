@@ -17,8 +17,7 @@ if __name__ == "__main__":
             robot.SetController(RaveCreateController(env,'odevelocity'),range(robot.GetDOF()),0)
             time.sleep(1)
             
-            #Define collision checker as pqp
-            collisionChecker = RaveCreateCollisionChecker(env,'pqp')
+            collisionChecker = RaveCreateCollisionChecker(env,'bullet')
             collisionChecker.SetCollisionOptions(CollisionOptions.Distance|CollisionOptions.Contacts)
             env.SetCollisionChecker(collisionChecker)
 
@@ -34,9 +33,9 @@ if __name__ == "__main__":
         time.sleep(1)
 
         #(Un)comment the 3 lines below to see the effect of the velocity controller
-        #velocities = numpy.zeros(robot.GetDOF())
-        #print velocities
-        #robot.GetController().SendCommand('setvelocity '+' '.join(str(f) for f in velocities))
+        velocities = numpy.zeros(robot.GetDOF())
+        print velocities
+        robot.GetController().SendCommand('setvelocity '+' '.join(str(f) for f in velocities))
         raw_input('')
 
     finally:
