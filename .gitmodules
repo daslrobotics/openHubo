@@ -7,3 +7,6 @@
 [submodule "forceSensor"]
 	path = forceSensor
 	url = git://github.com/robEllenberg/forceSensor.git
+[submodule "comps-plugins"]
+	path = comps-plugins
+	url = git://github.com/robEllenberg/comps-plugins.git
