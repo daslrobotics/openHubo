@@ -29,7 +29,9 @@ make
 make install
 
 cd $BASE_DIR/forceSensor
-cmake .
+[ -d build ] || mkdir build
+cd build
+cmake ../
 make
 make install
 
