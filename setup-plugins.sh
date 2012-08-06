@@ -1,5 +1,23 @@
 #!/bin/bash
 
+function verify-dep()
+{
+    local RESULT=`dpkg-query -l $1 | grep "ii"`
+    local INSTALL_MISSING_DEP=''
+    if [[ ${#RESULT} == 0 ]]
+    then
+        read -p "Install missing dependency $1 [Y/n]?" INSTALL_MISSING_DEP
+        if [[ $INSTALL_MISSING_DEP == 'n' || $INSTALL_MISSING_DEP == 'N' ]]
+        then
+            echo "WARNING: skipping dependency $1..."
+        else
+            sudo apt-get install $1
+        fi
+    else
+        echo "Dependency $1 is installed..."
+    fi
+}
+
 BASE_DIR=`git rev-parse --show-toplevel`
 
 git submodule update --init
@@ -14,6 +32,13 @@ cd $BASE_DIR/forceSensor
 cmake .
 make
 make install
+
+#CoMPS prereqs and build steps
+
+for dep in libqhull-dev libqhull5 libnewmat10-dev libnewmat10ldbl
+do
+    verify-dep $dep
+done
 
 for pkg in generalik cbirrt2 manipulation2
 do
