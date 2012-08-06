@@ -63,7 +63,11 @@ if [[ ${#SOURCED_SEARCH} == 0 ]]
 then
     echo "source $BASE_DIR/env.sh" >> ~/.bashrc
 fi
-
+ 
+#Strip out base folder definition and update with current
+sed -i "s,\( OPENHUBO_DIR=\).*,\1," env.sh
+sed -i "s,\( OPENHUBO_DIR=\),\1$BASE_DIR," env.sh
+echo "OpenHubo base folder is $BASE_DIR"
 source env.sh
 
 for f in `ls plugins/*.so`
