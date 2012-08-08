@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="KHRfinger" makejoinedlinksadjacent="true">
+    <modelsdir>models</modelsdir>
+
+    <Body name="Proximal" type="dynamic">
+	    <Geom type="box">
+		    <extents> 0.016	0.008 0.008</extents>
+	    </Geom>
+    </Body>
+
+    <Body name="Medial" type="dynamic">
+	    <Geom type="box">
+		    <extents> 0.011	0.008 0.008</extents>
+	    </Geom>
+    </Body>
+    <Body name="Distal" type="dynamic">
+	    <Geom type="box">
+		    <extents> 0.014	0.008 0.008</extents>
+	    </Geom>
+    </Body>
+
+    <Joint name="Knuckle2" type="hinge">
+        <Body>Proximal</Body>
+        <Body>Medial</Body>
+	<offsetfrom>Proximal</offsetfrom>
+	<anchor>0.16 0 0<anchor>
+        <axis>0 1 0</axis>
+    </Joint>
+
+    <Joint name="Knuckle3" type="hinge">
+        <Body>Medial</Body>
+        <Body>Distal</Body>
+        <offsetfrom>Medial</offsetfrom>
+	<anchor>0.11 0 0<anchor>
+        <axis>0 1 0</axis>
+    </Joint>
+
+</KinBody>
