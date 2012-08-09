@@ -41,6 +41,30 @@
         <adjacent>Hip leftHip</adjacent>
         <adjacent>Hip rightHip</adjacent>
 
+        <KinBody file="lefthand.kinbody.xml"/>
+
+        <Body name="leftPalm">
+            <offsetfrom>leftPalmDummy</offsetfrom> 
+        </Body>
+
+        <Joint name="attachLeftHand" type="hinge" enabled="false">
+            <Body>leftPalmDummy</Body>
+            <Body>leftPalm</Body>
+            <limits>0 0</limits>
+        </Joint>
+
+        <KinBody file="righthand.kinbody.xml"/>
+
+        <Body name="rightPalm">
+            <offsetfrom>rightPalmDummy</offsetfrom> 
+        </Body>
+
+        <Joint name="attachRightHand" type="hinge" enabled="false">
+            <Body>rightPalmDummy</Body>
+            <Body>rightPalm</Body>
+            <limits>0 0</limits>
+        </Joint>
+
     </KinBody>
     
     <Manipulator name="leftArmManip">
