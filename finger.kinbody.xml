@@ -7,14 +7,14 @@
         <Translation>0.016 0 0</Translation>
         <Geom type="box">
             <extents> 0.016	0.008 0.008</extents>
-            <DiffuseColor>0.8 0.9 0.8</DiffuseColor>
+            <DiffuseColor>0.6 0.6 0.7</DiffuseColor>
         </Geom>
         <Geom type="cylinder">
             <RotationAxis>1 0 0 90</RotationAxis>
             <Translation>0.016 0 0</Translation>
             <radius> 0.008</radius>
             <height>0.016</height>
-            <DiffuseColor>0.8 0.9 0.8</DiffuseColor>
+            <DiffuseColor>0.6 0.6 0.7</DiffuseColor>
         </Geom>
         <Mass type="mimicgeom">
             <total>0.012</total>
@@ -26,14 +26,14 @@
         <Translation> 0.027 0 0</Translation>
         <Geom type="box">
             <extents> 0.011	0.008 0.008</extents>
-            <DiffuseColor>0.8 0.9 0.7</DiffuseColor>
+            <DiffuseColor>0.6 0.6 0.8</DiffuseColor>
         </Geom>
         <Geom type="cylinder">
             <RotationAxis>1 0 0 90</RotationAxis>
             <Translation>0.011 0 0</Translation>
             <radius> 0.008</radius>
             <height>0.016</height>
-            <DiffuseColor>0.8 0.9 0.7</DiffuseColor>
+            <DiffuseColor>0.6 0.6 0.8</DiffuseColor>
         </Geom>
         <Mass type="mimicgeom">
             <total>0.006</total>
@@ -46,14 +46,14 @@
         <Geom type="box">
             <Translation>-0.004 0 0</Translation>
             <extents> 0.010	0.008 0.008</extents>
-            <DiffuseColor>0.7 0.9 0.7</DiffuseColor>
+            <DiffuseColor>0.6 0.6 0.9</DiffuseColor>
         </Geom>
         <Geom type="cylinder">
             <RotationAxis>1 0 0 90</RotationAxis>
             <Translation>0.006 0 0</Translation>
             <radius> 0.008</radius>
             <height>0.016</height>
-            <DiffuseColor>0.7 0.9 0.7</DiffuseColor>
+            <DiffuseColor>0.6 0.6 0.9</DiffuseColor>
         </Geom>
         <Mass type="mimicgeom">
             <total>0.010</total>

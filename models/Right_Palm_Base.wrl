@@ -6,8 +6,8 @@ DEF VTRight_Palm_Base Transform {
 	appearance Appearance{
 	material Material {
 		ambientIntensity 1.000000
-		diffuseColor 0.700000 0.700000 0.700000
-		specularColor 0.800000 0.800000 0.830000
+		diffuseColor 0.500000 0.700000 0.500000
+		specularColor 0.800000 0.900000 0.800000
 		shininess 0.300000
 		}
 	}

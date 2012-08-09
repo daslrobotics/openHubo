@@ -22,6 +22,7 @@
             <Translation>-0.017375862 0.056462706 0.000002143</Translation>
             <Render>Body_RSP.wrl    1</Render>
             <data>dummyBox.wrl .0002</data>
+            <diffusecolor>.5 .5 .5</diffusecolor>
         </Geom>
         <Mass type="custom">
             <total>0.696196989</total>
