@@ -4,27 +4,64 @@
     <modelsdir>models</modelsdir>
 
     <Body name="Proximal" type="dynamic">
-	    <Geom type="box">
-		    <extents> 0.016	0.008 0.008</extents>
-	    </Geom>
+        <Translation>0.016 0 0</Translation>
+        <Geom type="box">
+            <extents> 0.016	0.008 0.008</extents>
+            <DiffuseColor>0.8 0.9 0.8</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <Translation>0.016 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.8 0.9 0.8</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.012</total>
+        </Mass>
     </Body>
 
     <Body name="Medial" type="dynamic">
-	    <Geom type="box">
-		    <extents> 0.011	0.008 0.008</extents>
-	    </Geom>
+        <offsetfrom>Proximal</offsetfrom>
+        <Translation> 0.027 0 0</Translation>
+        <Geom type="box">
+            <extents> 0.011	0.008 0.008</extents>
+            <DiffuseColor>0.8 0.9 0.7</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <Translation>0.011 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.8 0.9 0.7</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.006</total>
+        </Mass>
     </Body>
+
     <Body name="Distal" type="dynamic">
-	    <Geom type="box">
-		    <extents> 0.014	0.008 0.008</extents>
-	    </Geom>
+        <offsetfrom>Medial</offsetfrom>
+        <Translation> 0.025 0 0</Translation>
+        <Geom type="box">
+            <Translation>-0.004 0 0</Translation>
+            <extents> 0.010	0.008 0.008</extents>
+            <DiffuseColor>0.7 0.9 0.7</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <Translation>0.006 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.7 0.9 0.7</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.010</total>
+        </Mass>
     </Body>
 
     <Joint name="Knuckle2" type="hinge">
         <Body>Proximal</Body>
         <Body>Medial</Body>
-	<offsetfrom>Proximal</offsetfrom>
-	<anchor>0.16 0 0<anchor>
+        <offsetfrom>Proximal</offsetfrom>
+        <anchor>0.016 0 0</anchor>
         <axis>0 1 0</axis>
     </Joint>
 
@@ -32,7 +69,7 @@
         <Body>Medial</Body>
         <Body>Distal</Body>
         <offsetfrom>Medial</offsetfrom>
-	<anchor>0.11 0 0<anchor>
+        <anchor>0.011 0 0</anchor>
         <axis>0 1 0</axis>
     </Joint>
 
