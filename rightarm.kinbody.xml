@@ -226,31 +226,18 @@
     </Joint>
     <adjacent>Body_RWY rightUJoint</adjacent>
 
-    <Body name="rightPalm" type="dynamic">
+    <Body name="rightPalmDummy" type="dynamic">
         <offsetfrom>rightUJoint</offsetfrom> 
-        <Translation>-0.000123302 -0.003029044 -0.060093031</Translation>
-
-        <Geom type="trimesh">
-            <Translation>0.000123302 0.003029044 0.060093031</Translation>
-            <Render>Body_R_Palm.wrl    1</Render>
-            <Data>convhull_R_Palm.wrl    1</Data>
-        </Geom>
-        <Mass type="custom">
-            <total>0.164997896</total>
-            <inertia>0.000243946 0.000011081 -0.000074294 0.000011081 0.000268875 0.000061330 -0.000074294 0.000061330 0.000176830</inertia>
-
-        </Mass>
     </Body>
 
     <Joint name="RWP" type="hinge">
         <Body>rightUJoint</Body>
-        <Body>rightPalm</Body>
-        <offsetfrom>rightPalm</offsetfrom>
-        <anchor>0.000123302 0.003029044 0.060093031</anchor>
+        <Body>rightPalmDummy</Body>
+        <offsetfrom>rightPalmDummy</offsetfrom>
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
     </Joint>
-    <adjacent>rightUJoint rightPalm</adjacent>
-    <adjacent>Body_RWY rightPalm</adjacent>
+    <adjacent>rightUJoint rightPalmDummy</adjacent>
+    <adjacent>Body_RWY rightPalmDummy</adjacent>
 </KinBody>

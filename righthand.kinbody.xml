@@ -17,13 +17,13 @@
 
     </Body>
 
-    <Kinbody prefix="rightIndex" name="rightIndexFinger" file="finger.kinbody.xml">
+    <KinBody prefix="rightIndex" name="rightIndexFinger" file="finger.kinbody.xml">
         <RotationAxis>1 0 0 180</RotationAxis>
         <Translation>  0.0182626   -0.0331978   -0.0649224  </Translation>
         <RotationMat>0.5 -0.50 -0.7071 0.5 -0.5 0.7071	-0.7071	-0.7071	0</RotationMat>
         <RotationAxis>0 0 1 180</RotationAxis>
         <Translation>-.005657 0.005657 0 </Translation>
-    </Kinbody>
+    </KinBody>
 
     <Joint name="rightIndexKnuckle1" type="hinge">
         <Body>rightPalm</Body>
@@ -34,13 +34,13 @@
         <anchor></anchor>
     </Joint>
 
-    <Kinbody prefix="rightMiddle" name="rightMiddleFinger" file="finger.kinbody.xml">
+    <KinBody prefix="rightMiddle" name="rightMiddleFinger" file="finger.kinbody.xml">
         <RotationAxis>1 0 0 180</RotationAxis>
         <Translation>   0.0048514   -0.0197866   -0.0649224  </Translation>
         <RotationMat>0.5 -0.50 -0.7071 0.5 -0.5 0.7071	-0.7071	-0.7071	0</RotationMat>
         <RotationAxis>0 0 1 180</RotationAxis>
         <Translation>-.005657 0.005657 0 </Translation>
-    </Kinbody>
+    </KinBody>
 
     <Joint name="rightMiddleKnuckle1" type="hinge">
         <Body>rightPalm</Body>
@@ -51,13 +51,13 @@
         <anchor></anchor>
     </Joint>
 
-    <Kinbody prefix="rightRing" name="rightIndexFinger" file="finger.kinbody.xml">
+    <KinBody prefix="rightRing" name="rightIndexFinger" file="finger.kinbody.xml">
         <RotationAxis>1 0 0 180</RotationAxis>
         <Translation>   -0.0086106  -0.0063246   -0.0649224  </Translation>
         <RotationMat>0.5 -0.50 -0.7071 0.5 -0.5 0.7071	-0.7071	-0.7071	0</RotationMat>
         <RotationAxis>0 0 1 180</RotationAxis>
         <Translation>-.005657 0.005657 0 </Translation>
-    </Kinbody>
+    </KinBody>
 
     <Joint name="rightRingKnuckle1" type="hinge">
         <Body>rightPalm</Body>
@@ -68,13 +68,13 @@
         <anchor></anchor>
     </Joint>
 
-    <Kinbody prefix="rightPinky" name="rightPinkyFinger" file="finger.kinbody.xml">
+    <KinBody prefix="rightPinky" name="rightPinkyFinger" file="finger.kinbody.xml">
         <RotationAxis>1 0 0 180</RotationAxis>
         <Translation>   -0.0220472  0.007112   -0.0649224  </Translation>
         <RotationMat>0.5 -0.50 -0.7071 0.5 -0.5 0.7071	-0.7071	-0.7071	0</RotationMat>
         <RotationAxis>0 0 1 180</RotationAxis>
         <Translation>-.005657 0.005657 0 </Translation>
-    </Kinbody>
+    </KinBody>
 
     <Joint name="rightPinkyKnuckle1" type="hinge">
         <Body>rightPalm</Body>
@@ -85,14 +85,14 @@
         <anchor></anchor>
     </Joint>
 
-    <Kinbody prefix="rightThumb" name="rightThumbFinger" file="finger.kinbody.xml">
+    <KinBody prefix="rightThumb" name="rightThumbFinger" file="finger.kinbody.xml">
         <RotationAxis>1 0 0 180</RotationAxis>
         <Translation>   0.0210312   -0.0035306  -0.0369824  </Translation>
         <RotationMat>0.5 -0.50 -0.7071 0.5 -0.5 0.7071	-0.7071	-0.7071	0</RotationMat>
         <RotationAxis>0 0 1 180</RotationAxis>
         <Translation>.005657 0.005657 0 </Translation>
         <RotationAxis>-.7071 .7071 0 180</RotationAxis>
-    </Kinbody>
+    </KinBody>
 
     <Joint name="rightThumbKnuckle1" type="hinge">
         <Body>rightPalm</Body>
