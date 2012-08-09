@@ -8,7 +8,7 @@
 
         <Geom type="trimesh">
             <Translation>0.000123302 -0.003029044 0.060093031</Translation>
-            <Render>Body_L_Palm.wrl    1</Render>
+            <Render>Left_Palm_Base.wrl    1</Render>
         </Geom>
         <Mass type="custom">
             <total>0.164997896</total>
