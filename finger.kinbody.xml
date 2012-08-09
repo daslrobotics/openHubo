@@ -10,6 +10,7 @@
             <DiffuseColor>0.8 0.9 0.8</DiffuseColor>
         </Geom>
         <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
             <Translation>0.016 0 0</Translation>
             <radius> 0.008</radius>
             <height>0.016</height>
@@ -28,6 +29,7 @@
             <DiffuseColor>0.8 0.9 0.7</DiffuseColor>
         </Geom>
         <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
             <Translation>0.011 0 0</Translation>
             <radius> 0.008</radius>
             <height>0.016</height>
@@ -47,6 +49,7 @@
             <DiffuseColor>0.7 0.9 0.7</DiffuseColor>
         </Geom>
         <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
             <Translation>0.006 0 0</Translation>
             <radius> 0.008</radius>
             <height>0.016</height>
@@ -62,7 +65,7 @@
         <Body>Medial</Body>
         <offsetfrom>Proximal</offsetfrom>
         <anchor>0.016 0 0</anchor>
-        <axis>0 1 0</axis>
+        <axis>0 0 -1</axis>
     </Joint>
 
     <Joint name="Knuckle3" type="hinge">
@@ -70,7 +73,7 @@
         <Body>Distal</Body>
         <offsetfrom>Medial</offsetfrom>
         <anchor>0.011 0 0</anchor>
-        <axis>0 1 0</axis>
+        <axis>0 0 -1</axis>
     </Joint>
 
 </KinBody>
