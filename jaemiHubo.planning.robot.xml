@@ -173,6 +173,8 @@
         <base>rightTorsoDummy</base>
         <effector>rightPalmShell</effector>
         <direction>0 1 0</direction>
+        <gripperjoints>rightIndexKnuckle1 rightIndexKnuckle2 rightIndexKnuckle3 rightThumbKnuckle1 rightThumbKnuckle2 rightThumbKnuckle3</gripperjoints>
+        <closingdirection>0 1 1 0 1 1</closingdirection>
     </Manipulator>
 
     <Manipulator name="leftFootManip">

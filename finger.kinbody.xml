@@ -68,7 +68,7 @@
         <axis>0 0 -1</axis>
     </Joint>
 
-    <Joint name="Knuckle3" type="hinge">
+    <Joint name="Knuckle3" type="hinge" enable="false" mimic_pos="Knuckle2/2" mimic_vel="|Knuckle2 .5">
         <Body>Medial</Body>
         <Body>Distal</Body>
         <offsetfrom>Medial</offsetfrom>
