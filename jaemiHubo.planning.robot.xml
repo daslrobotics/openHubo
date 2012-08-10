@@ -44,7 +44,7 @@
             </Geom>
         </Body>
 
-        <Joint name="leftFootDummy" type="hinge" enabled="false">
+        <Joint name="leftFootDummy" type="hinge" enable="false">
             <Body>leftFoot</Body>
             <Body>leftFootBase</Body>
             <offsetfrom>leftFootBase</offsetfrom>
@@ -75,7 +75,7 @@
             </Geom>
         </Body>
 
-        <Joint name="rightFootDummy" type="hinge" enabled="false">
+        <Joint name="rightFootDummy" type="hinge" enable="false">
             <Body>rightFoot</Body>
             <Body>rightFootBase</Body>
             <offsetfrom>rightFootBase</offsetfrom>
@@ -94,11 +94,11 @@
 
         <KinBody file="kinbody/lefthand.kinbody.xml"/>
 
-        <Body name="leftPalm">
+        <Body name="leftPalm" type="dynamic">
             <offsetfrom>leftPalmDummy</offsetfrom> 
         </Body>
 
-        <Joint name="attachLeftHand" type="hinge" enabled="false">
+        <Joint name="attachLeftHand" type="hinge" enable="false">
             <Body>leftPalmDummy</Body>
             <Body>leftPalm</Body>
             <limits>0 0</limits>
@@ -117,7 +117,7 @@
 
         </Body>
 
-        <Joint name="leftPalmBody" type="hinge" enabled="false">
+        <Joint name="leftPalmBody" type="hinge" enable="false">
             <Body>leftPalm</Body>
             <Body>leftPalmShell</Body>
             <offsetfrom>leftPalmShell</offsetfrom>
@@ -127,15 +127,16 @@
 
         <KinBody file="kinbody/righthand.kinbody.xml"/>
 
-        <Body name="rightPalm">
+        <Body name="rightPalm" type="dynamic">
             <offsetfrom>rightPalmDummy</offsetfrom> 
         </Body>
 
-        <Joint name="attachRightHand" type="hinge" enabled="false">
+        <Joint name="attachRightHand" type="hinge" enable="false">
             <Body>rightPalmDummy</Body>
             <Body>rightPalm</Body>
-            <limits>0 0</limits>
+            <limitsdeg>0 0</limitsdeg>
         </Joint>
+
         <adjacent>Body_RWY rightPalm</adjacent>
 
         <Body name="rightPalmShell" type="dynamic" >
@@ -152,7 +153,7 @@
 
         </Body>
 
-        <Joint name="rightPalmBody" type="hinge" enabled="false">
+        <Joint name="rightPalmBody" type="hinge" enable="false">
             <Body>rightPalm</Body>
             <Body>rightPalmShell</Body>
             <offsetfrom>rightPalmShell</offsetfrom>
