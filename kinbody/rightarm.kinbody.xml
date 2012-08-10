@@ -38,6 +38,7 @@
         <axis>0 1 0</axis>
         <limitsdeg>-150 150</limitsdeg>
         <maxvel>1</maxvel>
+        <maxaccel>100</maxaccel>
     </Joint>
     <adjacent>Body_RSP Body_RSR</adjacent>
 
@@ -76,6 +77,7 @@
         <axis>1 0 0</axis>
         <limitsdeg>-180 10</limitsdeg>
         <maxvel>1</maxvel>
+        <maxaccel>100</maxaccel>
     </Joint>
     <adjacent>Body_RSR Body_RSY</adjacent>
     <adjacent>Body_RSP Body_RSY</adjacent>
@@ -121,6 +123,7 @@
         <axis>0 0 1</axis>
         <limitsdeg>-157 157</limitsdeg>
         <maxvel>1</maxvel>
+        <maxaccel>100</maxaccel>
     </Joint>
     <adjacent>Body_RSP Body_RSY</adjacent>
     <adjacent>Body_RSR Body_RSY</adjacent>
@@ -158,6 +161,7 @@
         <axis>0 1 0</axis>
         <limitsdeg>-144 20</limitsdeg>
         <maxvel>1</maxvel>
+        <maxaccel>100</maxaccel>
     </Joint>
     <adjacent>Body_RSY Body_REP</adjacent>
 
@@ -194,6 +198,7 @@
         <axis>0 0 1</axis>
         <limitsdeg>-160 160</limitsdeg>
         <maxvel>1</maxvel>
+        <maxaccel>100</maxaccel>
     </Joint>
     <adjacent>Body_REP Body_RWY</adjacent>
     <adjacent>Body_RSY Body_RWY</adjacent>
@@ -224,6 +229,7 @@
         <axis>1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
+        <maxaccel>100</maxaccel>
     </Joint>
     <adjacent>Body_RWY rightUJoint</adjacent>
 
@@ -238,6 +244,7 @@
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
+        <maxaccel>100</maxaccel>
     </Joint>
     <adjacent>rightUJoint rightPalmDummy</adjacent>
     <adjacent>Body_RWY rightPalmDummy</adjacent>
