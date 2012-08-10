@@ -20,7 +20,28 @@ function verify-dep()
 
 BASE_DIR=`git rev-parse --show-toplevel`
 
-git submodule update --init
+
+#Check if submodules have changed and ask user to decide whether to checkout
+#specified version in parent repository.
+FOUND_PLUGIN_CHANGES=$(git submodule foreach --quiet 'git diff')
+
+if [ ${#FOUND_PLUGIN_CHANGES} -gt 0 ]
+then 
+    echo "-----------------------------------------------------"
+    echo "Would you like to update dependent submodules to the "
+    echo "version specified by this openHubo version?"
+    echo "Choose Yes (y) if this is the first time you're building the"
+    echo "plugins, or if you have recently pulled updates to openHubo from github"
+    echo "Choose No (n) if you are making your own  changes and want to build the plugins as-is"
+    read -p "Enter your choice [Y/n]?" SUBMODULE_UPDATE
+    if [[ $SUBMODULE_UPDATE == 'n' || $SUBMODULE_UPDATE == 'N' ]]
+    then
+        echo "Submodule update skipped, Using present versions of dependent plugins..."
+    else
+        echo "Updating plugin submodules to match the current openHubo commit..."
+        git submodule update --init
+    fi
+fi
 cd $BASE_DIR/openmr/
 [ -d build ] || mkdir build
 cd build
