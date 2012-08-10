@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export OPENHUBO_DIR=/home/rwe24/openHubo
+export OPENHUBO_DIR=
 
 if [[ ${#OPENRAVE_PLUGINS} == 0 ]]
 then
@@ -12,3 +12,5 @@ fi
 
 source `openrave-config --share-dir`/openrave_completion.bash
 complete -F "_complete_openravepy" -o filenames -o plusdirs "openrave"
+
+export MATLABPATH=$MATLABPATH:$OPENHUBO_DIR/comps-plugins/matlab

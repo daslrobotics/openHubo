@@ -12,7 +12,7 @@ activedofs = [manips{2}.armjoints];
 orRobotSetActiveDOFs(robotid,activedofs);
 orRobotSetActiveDOFs(robotid,activedofs);
 
-objectid = orEnvCreateKinBody('Target','testBall.kinbody.xml');
+objectid = orEnvCreateKinBody('Target','kinbody/testBall.kinbody.xml');
 
 %create the problem instances we need
 probs.cbirrt = orEnvCreateProblem('CBiRRT','jaemiHubo');
