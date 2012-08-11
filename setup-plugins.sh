@@ -20,7 +20,7 @@ function verify-dep()
 
 BASE_DIR=`git rev-parse --show-toplevel`
 
-git submodule update --init
+#git submodule update --init
 cd $BASE_DIR/openmr/
 [ -d build ] || mkdir build
 cd build
