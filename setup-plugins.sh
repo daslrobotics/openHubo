@@ -6,15 +6,15 @@ function verify-dep()
     local INSTALL_MISSING_DEP=''
     if [[ ${#RESULT} == 0 ]]
     then
-        read -p "Install missing dependency $1 [Y/n]?" INSTALL_MISSING_DEP
+        read -p "Install missing dependent package/library $1 [Y/n]?" INSTALL_MISSING_DEP
         if [[ $INSTALL_MISSING_DEP == 'n' || $INSTALL_MISSING_DEP == 'N' ]]
         then
-            echo "WARNING: skipping dependency $1..."
+            echo "WARNING: skipping dependent package/library $1..."
         else
             sudo apt-get install $1
         fi
     else
-        echo "Dependency $1 is installed..."
+        echo "package/library $1 is installed"
     fi
 }
 
@@ -42,6 +42,11 @@ then
         git submodule update --init
     fi
 fi
+
+echo ""
+echo "Building OpenMR Servo Controller Plugin..."
+echo ""
+
 cd $BASE_DIR/openmr/
 [ -d build ] || mkdir build
 cd build
@@ -49,12 +54,20 @@ cmake ../src/
 make
 make install
 
+echo ""
+echo "Building OpenGRASP ForceSensor plugin..."
+echo ""
+
 cd $BASE_DIR/forceSensor
 [ -d build ] || mkdir build
 cd build
 cmake ../
 make
 make install
+
+echo ""
+echo "Building CoMPS plugins..."
+echo ""
 
 #CoMPS prereqs and build steps
 
@@ -75,12 +88,9 @@ done
 
 cd $BASE_DIR
 
-SOURCED_SEARCH=`grep $BASE_DIR/env.sh ~/.bashrc`
+ENV_SOURCED_SEARCH=`grep $BASE_DIR/env.sh ~/.bashrc`
 
-#Setup base folder in env script
-#sed "s,\$BASE_DIR,$BASE_DIR,g" <"./misc/plugins_folder" >env.sh
-
-if [[ ${#SOURCED_SEARCH} == 0 ]]
+if [[ ${#ENV_SOURCED_SEARCH} == 0 ]]
 then
     echo "source $BASE_DIR/env.sh" >> ~/.bashrc
 fi
@@ -88,6 +98,7 @@ fi
 #Strip out base folder definition and update with current
 sed -i "s,\( OPENHUBO_DIR=\).*,\1," env.sh
 sed -i "s,\( OPENHUBO_DIR=\),\1$BASE_DIR," env.sh
+echo ""
 echo "OpenHubo base folder is $BASE_DIR"
 source env.sh
 
