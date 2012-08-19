@@ -3,7 +3,7 @@
 <!-- Right arm kinematic tree -->
 <!-- The torso is defined in multiple places, weventually need to find a good structure to join arms-->
 <KinBody name="Trunk" makejoinedlinksadjacent="true">
-    <modelsdir>models</modelsdir>
+    <modelsdir>../models</modelsdir>
     <Body name="Torso" type="dynamic">
             <Translation>-0.005494756 -0.000506882 -0.048924021</Translation>
         <Geom type="trimesh" render="true">

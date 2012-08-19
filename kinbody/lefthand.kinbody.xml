@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="KHRLeftHand" makejoinedlinksadjacent="true">
-    <modelsdir>models</modelsdir>
+    <modelsdir>../models</modelsdir>
 
     <Body name="leftPalm" type="dynamic">
         <Translation>-0.000123302 0.003029044 -0.060093031</Translation>
