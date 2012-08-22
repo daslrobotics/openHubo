@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Robot name="leg" >
+
+        <KinBody file="kinbody/leftleg.kinbody.xml"/>
+
+
+    <Manipulator name="leftFootManip">
+        <base>hipDummyLeft</base>
+        <effector>leftFoot</effector>
+        <direction>0 0 -1</direction>
+    </Manipulator>
+
+</Robot>
