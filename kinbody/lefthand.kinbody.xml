@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="KHRLeftHand" makejoinedlinksadjacent="true">
+    <modelsdir>../models</modelsdir>
+
+    <Body name="leftPalm" type="dynamic">
+        <Translation>-0.000123302 0.003029044 -0.060093031</Translation>
+
+        <Geom type="trimesh">
+            <Translation>0.000123302 -0.003029044 0.060093031</Translation>
+            <Render>Left_Palm_Base.wrl    1</Render>
+        </Geom>
+        <Mass type="custom">
+            <total>0.164997896</total>
+            <inertia>0.000243946 0.000011081 -0.000074294 0.000011081 0.000268875 0.000061330 -0.000074294 0.000061330 0.000176830</inertia>
+        </Mass>
+    </Body>
+
+    <Kinbody prefix="leftIndex" name="leftIndexFinger" file="finger.kinbody.xml">
+        <Translation>   0.0182626   0.0331978   -0.0649224  </Translation>
+        <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
+        <Translation>-.005657 -0.005657 0 </Translation>
+    </Kinbody>
+
+    <Joint name="leftIndexKnuckle1" type="hinge">
+        <Body>leftPalm</Body>
+        <Body>leftIndexProximal</Body>
+        <anchor>    .018385902  0.030168756 -0.004829369    </anchor>
+        <offsetfrom>leftPalm</offsetfrom>
+        <axis>-.7071 -.7071 0</axis>
+        <anchor></anchor>
+    </Joint>
+
+    <Kinbody prefix="leftMiddle" name="leftMiddleFinger" file="finger.kinbody.xml">
+        <Translation>   0.0048514   0.0197866   -0.0649224  </Translation>
+        <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
+        <Translation>-.005657 -0.005657 0 </Translation>
+    </Kinbody>
+
+    <Joint name="leftMiddleKnuckle1" type="hinge">
+        <Body>leftPalm</Body>
+        <Body>leftMiddleProximal</Body>
+        <anchor>    .018385902  0.030168756 -0.004829369    </anchor>
+        <offsetfrom>leftPalm</offsetfrom>
+        <axis>-.7071 -.7071 0</axis>
+        <anchor></anchor>
+    </Joint>
+
+    <Kinbody prefix="leftRing" name="leftIndexFinger" file="finger.kinbody.xml">
+
+        <Translation>   -0.0086106  0.0063246   -0.0649224  </Translation>
+        <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
+        <Translation>-.005657 -0.005657 0 </Translation>
+    </Kinbody>
+
+    <Joint name="leftRingKnuckle1" type="hinge">
+        <Body>leftPalm</Body>
+        <Body>leftRingProximal</Body>
+        <anchor>    .018385902  0.030168756 -0.004829369    </anchor>
+        <offsetfrom>leftPalm</offsetfrom>
+        <axis>-.7071 -.7071 0</axis>
+        <anchor></anchor>
+    </Joint>
+    <Kinbody prefix="leftPinky" name="leftPinkyFinger" file="finger.kinbody.xml">
+        <Translation>   -0.0220472  -0.007112   -0.0649224  </Translation>
+        <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
+        <Translation>-.005657 -0.005657 0 </Translation>
+    </Kinbody>
+    <Joint name="leftPinkyKnuckle1" type="hinge">
+        <Body>leftPalm</Body>
+        <Body>leftPinkyProximal</Body>
+        <anchor>    .018385902  0.030168756 -0.004829369    </anchor>
+        <offsetfrom>leftPalm</offsetfrom>
+        <axis>-.7071 -.7071 0</axis>
+        <anchor></anchor>
+    </Joint>
+
+    <Kinbody prefix="leftThumb" name="leftThumbFinger" file="finger.kinbody.xml">
+        <Translation>   0.0210312   -0.0035306  -0.0369824  </Translation>
+        <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
+        <Translation>.005657 0.005657 0 </Translation>
+        <RotationAxis>-.7071 -.7071 0 180</RotationAxis>
+    </Kinbody>
+    <Joint name="leftThumbKnuckle1" type="hinge">
+        <Body>leftPalm</Body>
+        <Body>leftThumbProximal</Body>
+        <anchor>    0.021154502 -0.006559644    0.023110631 </anchor>
+        <offsetfrom>leftPalm</offsetfrom>
+        <axis>-.7071 -.7071 0</axis>
+        <anchor></anchor>
+    </Joint>
+
+</KinBody>

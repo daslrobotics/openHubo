@@ -1,12 +1,9 @@
-[submodule "exportedModels"]
-	path = exportedModels
-	url = ssh://robEllenberg@dasl.mem.drexel.edu/home/projects/hubo/exportedModels
-[submodule "openmr"]
-	path = openmr
-	url = git://github.com/robEllenberg/openmr.git
 [submodule "forceSensor"]
 	path = forceSensor
 	url = git://github.com/robEllenberg/forceSensor.git
 [submodule "comps-plugins"]
 	path = comps-plugins
 	url = git://github.com/robEllenberg/comps-plugins.git
+[submodule "openmr"]
+	path = openmr
+	url = git://github.com/robEllenberg/openmr.git

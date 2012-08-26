@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Robot name="jaemiHubo" >
-    <KinBody file="affine.kinbody.xml" makejoinedlinksadjacent="true">
+    <KinBody file="kinbody/affine.kinbody.xml" makejoinedlinksadjacent="true">
 
-        <KinBody file="trunk.kinbody.xml" makejoinedlinksadjacent="true"/>
+        <KinBody file="kinbody/trunk.kinbody.xml" makejoinedlinksadjacent="true"/>
 
         <Joint name="jRZ" type="hinge" >
             <Body>RY</Body>
@@ -12,30 +12,7 @@
             <limitsdeg>-180 180</limitsdeg>
         </Joint>
 
-        <KinBody file="leftarm.kinbody.xml"/>
-
-        <Body name="leftPalmShell" type="dynamic" >
-
-            <offsetfrom>leftPalm</offsetfrom> 
-            <Translation>0.000123302 -0.003029044 0.060093031</Translation>
-            <Translation>0.009326346	-0.009307222	-0.060858088</Translation>
-            <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
-
-            <Geom type="trimesh">
-                <render>Left_Palm_Shell.wrl    .001</render>
-            </Geom>
-
-        </Body>
-
-        <Joint name="leftPalmBody" type="hinge" enabled="false">
-            <Body>leftPalm</Body>
-            <Body>leftPalmShell</Body>
-            <offsetfrom>leftPalmShell</offsetfrom>
-            <limitsdeg>0 0</limitsdeg>
-        </Joint>
-        <adjacent>Body_LWY leftPalmShell</adjacent>
-        <adjacent>leftPalm leftPalmShell</adjacent>
-
+        <KinBody file="kinbody/leftarm.kinbody.xml"/>
 
         <Joint name="leftTorsoJoint" type ="hinge" enable="false">
             <Body>Torso</Body>
@@ -44,30 +21,7 @@
         </Joint>
         <adjacent>Torso Body_LSP</adjacent>
 
-        <KinBody file="rightarm.kinbody.xml"/>
-
-        <Body name="rightPalmShell" type="dynamic" >
-
-            <offsetfrom>rightPalm</offsetfrom> 
-            <Translation>0.000123302 0.003029044 0.060093031</Translation>
-            <Translation>0.009326346	0.009307222	-0.060858088</Translation>
-            <RotationMat>0.5 -0.50 -0.7071 0.5 -0.5 0.7071	-0.7071	-0.7071	0</RotationMat>
-
-            <RotationAxis>0 0 1 180</RotationAxis>
-            <Geom type="trimesh">
-                <Render>Right_Palm_Shell.wrl    .001</Render>
-            </Geom>
-
-        </Body>
-
-        <Joint name="rightPalmBody" type="hinge" enabled="false">
-            <Body>rightPalm</Body>
-            <Body>rightPalmShell</Body>
-            <offsetfrom>rightPalmShell</offsetfrom>
-            <limitsdeg>0 0</limitsdeg>
-        </Joint>
-        <adjacent>Body_RWY rightPalmShell</adjacent>
-        <adjacent>rightPalm rightPalmShell</adjacent>
+        <KinBody file="kinbody/rightarm.kinbody.xml"/>
 
         <Joint name="rightTorsoJoint" type ="hinge" enable="false">
             <Body>Torso</Body>
@@ -76,7 +30,7 @@
         </Joint>
         <adjacent>Torso Body_RSP</adjacent>
 
-        <KinBody file="leftleg.kinbody.xml"/>
+        <KinBody file="kinbody/leftleg.kinbody.xml"/>
 
         <Body name="leftFootBase" type="dynamic">
             <offsetfrom>leftFoot</offsetfrom> 
@@ -90,7 +44,7 @@
             </Geom>
         </Body>
 
-        <Joint name="leftFootDummy" type="hinge" enabled="false">
+        <Joint name="leftFootDummy" type="hinge" enable="false">
             <Body>leftFoot</Body>
             <Body>leftFootBase</Body>
             <offsetfrom>leftFootBase</offsetfrom>
@@ -107,7 +61,7 @@
         <adjacent>Hip leftHipPitchRoll</adjacent>
         <adjacent>Hip leftHip</adjacent>
 
-        <KinBody file="rightleg.kinbody.xml"/>
+        <KinBody file="kinbody/rightleg.kinbody.xml"/>
 
         <Body name="rightFootBase" type="dynamic">
             <offsetfrom>rightFoot</offsetfrom> 
@@ -121,7 +75,7 @@
             </Geom>
         </Body>
 
-        <Joint name="rightFootDummy" type="hinge" enabled="false">
+        <Joint name="rightFootDummy" type="hinge" enable="false">
             <Body>rightFoot</Body>
             <Body>rightFootBase</Body>
             <offsetfrom>rightFootBase</offsetfrom>
@@ -138,6 +92,76 @@
         <adjacent>Hip rightHipPitchRoll</adjacent>
         <adjacent>Hip rightHip</adjacent>
 
+        <KinBody file="kinbody/lefthand.kinbody.xml"/>
+
+        <Body name="leftPalm" type="dynamic">
+            <offsetfrom>leftPalmDummy</offsetfrom> 
+        </Body>
+
+        <Joint name="attachLeftHand" type="hinge" enable="false">
+            <Body>leftPalmDummy</Body>
+            <Body>leftPalm</Body>
+            <limits>0 0</limits>
+        </Joint>
+
+        <Body name="leftPalmShell" type="dynamic" >
+
+            <offsetfrom>leftPalm</offsetfrom> 
+            <Translation>0.000123302 -0.003029044 0.060093031</Translation>
+            <Translation>0.009326346	-0.009307222	-0.060858088</Translation>
+            <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
+
+            <Geom type="trimesh">
+                <render>Left_Palm_Shell.wrl    .001</render>
+            </Geom>
+
+        </Body>
+
+        <Joint name="leftPalmBody" type="hinge" enable="false">
+            <Body>leftPalm</Body>
+            <Body>leftPalmShell</Body>
+            <offsetfrom>leftPalmShell</offsetfrom>
+            <limitsdeg>0 0</limitsdeg>
+        </Joint>
+        <adjacent>Body_LWY leftPalm</adjacent>
+
+        <KinBody file="kinbody/righthand.kinbody.xml"/>
+
+        <Body name="rightPalm" type="dynamic">
+            <offsetfrom>rightPalmDummy</offsetfrom> 
+        </Body>
+
+        <Joint name="attachRightHand" type="hinge" enable="false">
+            <Body>rightPalmDummy</Body>
+            <Body>rightPalm</Body>
+            <limitsdeg>0 0</limitsdeg>
+        </Joint>
+
+        <adjacent>Body_RWY rightPalm</adjacent>
+
+        <Body name="rightPalmShell" type="dynamic" >
+
+            <offsetfrom>rightPalm</offsetfrom> 
+            <Translation>0.000123302 0.003029044 0.060093031</Translation>
+            <Translation>0.009326346	0.009307222	-0.060858088</Translation>
+            <RotationMat>0.5 -0.50 -0.7071 0.5 -0.5 0.7071	-0.7071	-0.7071	0</RotationMat>
+
+            <RotationAxis>0 0 1 180</RotationAxis>
+            <Geom type="trimesh">
+                <Render>Right_Palm_Shell.wrl    .001</Render>
+            </Geom>
+
+        </Body>
+
+        <Joint name="rightPalmBody" type="hinge" enable="false">
+            <Body>rightPalm</Body>
+            <Body>rightPalmShell</Body>
+            <offsetfrom>rightPalmShell</offsetfrom>
+            <limitsdeg>0 0</limitsdeg>
+        </Joint>
+        <adjacent>Body_RWY rightPalmShell</adjacent>
+        <adjacent>rightPalm rightPalmShell</adjacent>
+
     </KinBody>
 
     <Manipulator name="leftArmManip">
@@ -150,6 +174,8 @@
         <base>rightTorsoDummy</base>
         <effector>rightPalmShell</effector>
         <direction>0 1 0</direction>
+        <gripperjoints>rightIndexKnuckle1 rightIndexKnuckle2 rightIndexKnuckle3 rightThumbKnuckle1 rightThumbKnuckle2 rightThumbKnuckle3</gripperjoints>
+        <closingdirection>0 1 1 0 1 1</closingdirection>
     </Manipulator>
 
     <Manipulator name="leftFootManip">

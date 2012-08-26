@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Kinbody name="rightPalmDummy"> 
+    <modelsdir>../models</modelsdir>
+    <Body name="rightPalmShell" type="dynamic">
+        <Geom type="trimesh">
+            <Render>Right_Palm_Shell.wrl    0.001</Render>
+            <Data>Right_Palm_Shell.wrl    0.001</Data>
+        </Geom>
+    </Body>
+</Kinbody>

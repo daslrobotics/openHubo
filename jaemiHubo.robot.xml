@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Robot name="jaemiHubo" >
-    <KinBody file="trunk.kinbody.xml" makejoinedlinksadjacent="true">
-        <KinBody file="leftarm.kinbody.xml"/>
+    <KinBody file="kinbody/trunk.kinbody.xml" makejoinedlinksadjacent="true">
+        <KinBody file="kinbody/leftarm.kinbody.xml"/>
         
         <Joint name="leftTorsoJoint" type ="hinge" enable="false">
             <Body>Torso</Body>
@@ -11,7 +11,7 @@
         </Joint>
         <adjacent>Torso Body_LSP</adjacent>
 
-        <KinBody file="rightarm.kinbody.xml"/>
+        <KinBody file="kinbody/rightarm.kinbody.xml"/>
 
         <Joint name="rightTorsoJoint" type ="hinge" enable="false">
             <Body>Torso</Body>
@@ -20,7 +20,7 @@
         </Joint>
         <adjacent>Torso Body_RSP</adjacent>
 
-        <KinBody file="leftleg.kinbody.xml"/>
+        <KinBody file="kinbody/leftleg.kinbody.xml"/>
 
         <Joint name="leftHipYawJoint" type="hinge" enable="false">
             <Body>Hip</Body>
@@ -28,7 +28,7 @@
             <limits>0 0</limits>
         </Joint>
 
-        <KinBody file="rightleg.kinbody.xml"/>
+        <KinBody file="kinbody/rightleg.kinbody.xml"/>
 
         <Joint name="rightHipYawJoint" type="hinge" enable="false">
             <Body>Hip</Body>
@@ -40,6 +40,30 @@
         <adjacent>Hip rightHipPitchRoll</adjacent>
         <adjacent>Hip leftHip</adjacent>
         <adjacent>Hip rightHip</adjacent>
+
+        <KinBody file="kinbody/lefthand.kinbody.xml"/>
+
+        <Body name="leftPalm" type="dynamic">
+            <offsetfrom>leftPalmDummy</offsetfrom> 
+        </Body>
+
+        <Joint name="attachLeftHand" type="hinge" enable="false">
+            <Body>leftPalmDummy</Body>
+            <Body>leftPalm</Body>
+            <limits>0 0</limits>
+        </Joint>
+
+        <KinBody file="kinbody/righthand.kinbody.xml"/>
+
+        <Body name="rightPalm" type="dynamic">
+            <offsetfrom>rightPalmDummy</offsetfrom> 
+        </Body>
+
+        <Joint name="attachRightHand" type="hinge" enable="false">
+            <Body>rightPalmDummy</Body>
+            <Body>rightPalm</Body>
+            <limits>0 0</limits>
+        </Joint>
 
     </KinBody>
     
