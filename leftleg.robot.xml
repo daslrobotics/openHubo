@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<Robot name="leg" >
+<Robot name="leftleg" >
 
-        <KinBody file="kinbody/leftleg.kinbody.xml"/>
-
+    <KinBody file="kinbody/leftleg.kinbody.xml"/>
 
     <Manipulator name="leftFootManip">
         <base>hipDummyLeft</base>
