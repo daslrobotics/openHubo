@@ -31,6 +31,9 @@
         <adjacent>Torso Body_RSP</adjacent>
 
         <KinBody file="kinbody/leftleg.kinbody.xml"/>
+        <Body name="hipDummyLeft" type="dynamic">
+            <offsetfrom>Hip</offsetfrom> 
+        </Body>
 
         <Body name="leftFootBase" type="dynamic">
             <offsetfrom>leftFoot</offsetfrom> 
@@ -62,6 +65,10 @@
         <adjacent>Hip leftHip</adjacent>
 
         <KinBody file="kinbody/rightleg.kinbody.xml"/>
+
+        <Body name="hipDummyRight" type="dynamic">
+            <offsetfrom>Hip</offsetfrom> 
+        </Body>
 
         <Body name="rightFootBase" type="dynamic">
             <offsetfrom>rightFoot</offsetfrom> 
