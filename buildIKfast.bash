@@ -2,13 +2,15 @@
 
 [[ -d ikfast ]] || mkdir ikfast
 
-openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=leftArmManip
-openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=rightArmManip
-openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=leftFootManip --freejoint='TY'
-openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=rightFootManip
-openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=affineManip
+#TODO: sanitize arguments to avoid messy errors
+openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=leftArmManip $1
+openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=rightArmManip $1
+openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=leftFootManip --freejoint='TY' $1
+openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=rightFootManip $1
+openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=affineManip $1
 
 #Find cached file names from previous generation 
+
 #TODO: error checks here
 LA_IK_FILE=`openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=leftArmManip --getfilename` 
 RA_IK_FILE=`openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=rightArmManip --getfilename`
@@ -17,8 +19,8 @@ RL_IK_FILE=`openrave.py --database inversekinematics --robot=./jaemiHubo.plannin
 AFF_IK_FILE=`openrave.py --database inversekinematics --robot=./jaemiHubo.planning.robot.xml --manipname=affineManip --getfilename`
 
 #Not sure if there's a better way to do this, since the plugins are always hashed, but at least this names things conveniently
-cp $LA_IK_FILE ./ikfast/leftArmManip.ikfast.so
-cp $RA_IK_FILE ./ikfast/rightArmManip.ikfast.so
-cp $LL_IK_FILE ./ikfast/leftFootManip.ikfast.so
-cp $RL_IK_FILE ./ikfast/rightFootManip.ikfast.so
-cp $AFF_IK_FILE ./ikfast/affineManip.ikfast.so
+ln -s $LA_IK_FILE ./ikfast/leftArm.ikfast.so
+ln -s $RA_IK_FILE ./ikfast/rightArm.ikfast.so
+ln -s $LL_IK_FILE ./ikfast/leftFoot.ikfast.so
+ln -s $RL_IK_FILE ./ikfast/rightFoot.ikfast.so
+ln -s $AFF_IK_FILE ./ikfast/affine.ikfast.so
