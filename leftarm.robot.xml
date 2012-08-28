@@ -37,7 +37,7 @@
         <adjacent>Body_LWY leftPalm</adjacent>
     </KinBody>
 
-    <Manipulator name="leftArmManip">
+    <Manipulator name="leftArmReverse">
         <base>leftPalmShell</base>
         <effector>leftTorsoDummy</effector>
         <direction>0 1 0</direction>

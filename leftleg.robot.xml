@@ -4,9 +4,9 @@
 
     <KinBody file="kinbody/leftleg.kinbody.xml"/>
 
-    <Manipulator name="leftFootManip">
-        <base>hipDummyLeft</base>
-        <effector>leftFoot</effector>
+    <Manipulator name="leftLegReverse">
+        <base>leftFoot</base>
+        <effector>hipDummyLeft</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
 

@@ -42,7 +42,7 @@
 
     </KinBody>
 
-    <Manipulator name="rightArmManip">
+    <Manipulator name="rightArmReverse">
         <base>rightPalmShell</base>
         <effector>rightTorsoDummy</effector>
         <direction>0 1 0</direction>
