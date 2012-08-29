@@ -81,7 +81,6 @@
             <anchor>0.011804276 0.000018681 0.044394816</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
-        <maxvel>1</maxvel>
         <resolution>.5</resolution>
     </Joint>
     <adjacent>Torso Hip</adjacent>

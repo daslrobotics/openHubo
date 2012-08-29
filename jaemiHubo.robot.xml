@@ -58,6 +58,8 @@
             <Body>leftPalm</Body>
             <limits>0 0</limits>
         </Joint>
+        <adjacent>leftUJoint leftPalm</adjacent>
+        <adjacent>Body_LWY leftPalm</adjacent>
 
         <KinBody file="kinbody/righthand.kinbody.xml"/>
 

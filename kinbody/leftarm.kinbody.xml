@@ -39,7 +39,6 @@
         <limitsdeg>-180 180</limitsdeg>
         <maxvel>1</maxvel>
     </Joint>
-    <adjacent>Body_LSP Body_LSR</adjacent>
 
     <Body name="Body_LSR" type="dynamic">
         <offsetfrom>Body_LSP</offsetfrom>
@@ -77,8 +76,7 @@
         <limitsdeg>-10 180</limitsdeg>
         <maxvel>1</maxvel>
     </Joint>
-    <adjacent>Body_LSR Body_LSY</adjacent>
-    <adjacent>Body_LSP Body_LSY</adjacent>
+    <adjacent>Body_LSP Body_LSR</adjacent>
 
     <Body name="Body_LSY" type="dynamic">
         <offsetfrom>Body_LSR</offsetfrom>
@@ -239,6 +237,4 @@
         <limitsdeg>-30 30</limitsdeg>
         <maxvel>1</maxvel>
     </Joint>
-    <adjacent>leftUJoint leftPalmDummy</adjacent>
-    <adjacent>Body_LWY leftPalmDummy</adjacent>
 </KinBody>
