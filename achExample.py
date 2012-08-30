@@ -29,31 +29,41 @@ def run():
         #define ODE physics engine and set gravity
 
         env.StopSimulation()
-        env.StartSimulation(timestep=0.0005)
+        env.StartSimulation(timestep=0.001)
     time.sleep(2)
 
     setACHReference(robot,{'LSR':50,'RSR':-50,'REP':-20,'LEP':-20})
+    itrs=10000
+    starttime=time.time();
 
-    while True:
+    for i in range(itrs):
         setACHReference(robot,readACHPacket())
         time.sleep(.1)
-    
+
+    endtime=time.time()
+    print "Elapsed time for {} commands is {}".format(itrs,endtime-starttime)
+    print "Average cmd time is {}".format((endtime-starttime)/itrs)
 
 
 def setACHReference(robot,refPos):
     for x in refPos.keys():
-        print "setting joint ",x,"to angle ",refPos[x]
+        #print "setting joint ",x,"to angle ",refPos[x]
         ind=robot.GetJointIndex(x)
+        #This command has less overhead than a full set of angles, though maybe
+        # not for only manipulator
         cmd="setpos1 {0} {1}".format(ind,refPos[x])
-        print cmd
+        #print cmd
         robot.GetController().SendCommand(cmd)
 
 def readACHPacket():
     #Eventually use this function to access the ACH channel and get the most
     #recent set point. For now, make up random values to send
     setPoint={'LSP':0.0,'LSR':80.0,'LSY':0.0,'LEP':-50,'LWY':0.0,'LWP':0.0}
+    t=time.time();
+    omega=2*numpy.pi/2
+    A=numpy.sin(omega*t)*20.0
     for x in setPoint.keys():
-        setPoint[x]+=numpy.random.rand()*20.0-10.0
+        setPoint[x]+=A
         #TODO: figure out why robot explodes when setpoint is too far past limit
         #(probably have to query limits to fix this).
 
