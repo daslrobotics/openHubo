@@ -22,11 +22,6 @@ if __name__ == "__main__":
             collisionChecker = RaveCreateCollisionChecker(env,'ode')
             env.SetCollisionChecker(collisionChecker)
 
-            #define ODE physics engine and set gravity
-            physics = RaveCreatePhysicsEngine(env,'ode')
-            physics.SetGravity([0,0,-9.8])
-            env.SetPhysicsEngine(physics)
-
             env.StopSimulation()
             print env.GetViewer()
             env.StartSimulation(timestep=0.001 )
