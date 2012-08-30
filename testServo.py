@@ -27,6 +27,7 @@ __license__ = 'GPLv3 license'
 from openravepy import *
 from numpy import *
 import time
+import datetime
 import sys
 
 def trans(T,x,y,z):
@@ -62,17 +63,16 @@ def run():
         env.StopSimulation()
         env.StartSimulation(timestep=0.001)
 
-    starttime = time.time()
     robot.GetController().SendCommand('setpos1 4 10 ')
-    robot.GetController().SendCommand('setpos1 6 -45 ')
-    time.sleep(2)
+    time.sleep(1)
 
-    robot.GetController().SendCommand('Setgains 50 .5 1 .5')
-    time.sleep(.1)
+    robot.GetController().SendCommand('setgains 8.3 0 1 .90 .6')
+    robot.GetController().SendCommand("record_on")
 
-    robot.GetController().SendCommand('setpos1 6 -90 ')
-
-    raw_input('')
+    robot.GetController().SendCommand('setpos1 6 -60 ')
+    time.sleep(5.0)
+    filename="servodata_{}.txt".format(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+    robot.GetController().SendCommand("record_off {} 6".format(filename))
 
 if __name__=='__main__':
     run()
