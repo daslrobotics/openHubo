@@ -55,21 +55,24 @@ def run():
         env.SetCollisionChecker(collisionChecker)
 
         #define ODE physics engine and set gravity
+        #physics = RaveCreatePhysicsEngine(env,'ode')
+        #physics.SetGravity([0,0,0])
+        #env.SetPhysicsEngine(physics)
+
         env.StopSimulation()
         env.StartSimulation(timestep=0.001)
 
     starttime = time.time()
-    while True:
-        #-- Set the servo 0 position to 45 degrees
-        robot.GetController().SendCommand('setpos1 0 45 ')
-        robot.GetController().SendCommand('setpos1 3 45 ')
-        time.sleep(1.0)
+    robot.GetController().SendCommand('setpos1 4 10 ')
+    robot.GetController().SendCommand('setpos1 6 -45 ')
+    time.sleep(2)
 
+    robot.GetController().SendCommand('Setgains 50 .5 1 .5')
+    time.sleep(.1)
 
-        #-- Set the servos0 position to -45
-        robot.GetController().SendCommand('setpos1 0 -45 ')
-        robot.GetController().SendCommand('setpos1 3 -45 ')
-        time.sleep(1.0)
+    robot.GetController().SendCommand('setpos1 6 -90 ')
+
+    raw_input('')
 
 if __name__=='__main__':
     run()

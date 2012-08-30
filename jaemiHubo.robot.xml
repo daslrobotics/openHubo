@@ -21,6 +21,9 @@
         <adjacent>Torso Body_RSP</adjacent>
 
         <KinBody file="kinbody/leftleg.kinbody.xml"/>
+        <Body name="hipDummyLeft" type="dynamic">
+            <offsetfrom>Hip</offsetfrom> 
+        </Body>
 
         <Joint name="leftHipYawJoint" type="hinge" enable="false">
             <Body>Hip</Body>
@@ -29,6 +32,9 @@
         </Joint>
 
         <KinBody file="kinbody/rightleg.kinbody.xml"/>
+        <Body name="hipDummyRight" type="dynamic">
+            <offsetfrom>Hip</offsetfrom> 
+        </Body>
 
         <Joint name="rightHipYawJoint" type="hinge" enable="false">
             <Body>Hip</Body>
@@ -52,6 +58,8 @@
             <Body>leftPalm</Body>
             <limits>0 0</limits>
         </Joint>
+        <adjacent>leftUJoint leftPalm</adjacent>
+        <adjacent>Body_LWY leftPalm</adjacent>
 
         <KinBody file="kinbody/righthand.kinbody.xml"/>
 
