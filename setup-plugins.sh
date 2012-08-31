@@ -30,9 +30,10 @@ then
     echo "-----------------------------------------------------"
     echo "Would you like to update dependent submodules to the "
     echo "version specified by this openHubo version?"
+    echo ""
     echo "Choose Yes (y) if this is the first time you're building the"
-    echo "plugins, or if you have recently pulled updates to openHubo from github"
-    echo "Choose No (n) if you are making your own  changes and want to build the plugins as-is"
+    echo "   plugins, or if you have recently pulled updates to openHubo from github"
+    echo "Choose No (n) if you are making your own changes and want to build the plugins as-is"
     read -p "Enter your choice [Y/n]?" SUBMODULE_UPDATE
     if [[ $SUBMODULE_UPDATE == 'n' || $SUBMODULE_UPDATE == 'N' ]]
     then

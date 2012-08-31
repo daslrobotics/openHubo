@@ -7,7 +7,11 @@
 
     <Body name="leftHip" type="dynamic">
         <offsetfrom>hipDummyLeft</offsetfrom>
+
         <Translation>0 0.0885 -0.277953</Translation>
+        <Translation>0 0 0.1915</Translation>
+        <Translation>0.011804276 0.000018681 0.044394816</Translation>
+
         <Translation>0.006789681 0.000063656 -0.053769264</Translation>
 
         <Geom type="trimesh">
