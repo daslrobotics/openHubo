@@ -8,18 +8,18 @@ if __name__ == "__main__":
     try:
 
         env = Environment()
+        env.SetViewer('qtcoin')
+        env.Load('forcePlate.env.xml') 
 
         with env:
-            collisionChecker = RaveCreateCollisionChecker(env,'ode')
-            env.SetCollisionChecker(collisionChecker)
-            env.SetViewer('qtcoin')
-            env.SetDebugLevel(4)
-            env.Load('surftest.env.xml') 
+            robot = env.GetRobots()[0]
+            
             collisionChecker = RaveCreateCollisionChecker(env,'bullet')
             env.SetCollisionChecker(collisionChecker)
+
             env.StopSimulation()
-            robot = env.GetRobots()[0]
             env.StartSimulation(timestep=0.001 )
+
 
         raw_input('')
 

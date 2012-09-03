@@ -40,7 +40,7 @@ def run():
     with env:
         robot = env.GetRobots()[0]
         robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'bullet')
+        collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
 
         env.StopSimulation()

@@ -56,6 +56,7 @@ if __name__ == "__main__":
             data = forceSensor.GetSensorData()
             #tilt hips back and forth
             setJoints(robot,{'RAP':A,'LAP':A})
+            #Optionally compare to the force/torque data from the force plate
             [force,torque] = env.GetPhysicsEngine().GetLinkForceTorque( plate.GetLink('Plate') )
             print data.force, data.torque
             time.sleep(.05)

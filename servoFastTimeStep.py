@@ -54,7 +54,8 @@ def run():
     robot.GetController().SendCommand('setpos1 4 10 ')
     time.sleep(3)
 
-    robot.GetController().SendCommand('setgains 50 0 5 .1 .1')
+    # Avoid setting servo Kp higher than about 1/20 of the update frequency
+    robot.GetController().SendCommand('setgains 50 0 5   .1 .1')
     robot.GetController().SendCommand("record_on")
 
     robot.GetController().SendCommand('setpos1 6 -60 ')
