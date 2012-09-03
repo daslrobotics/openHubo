@@ -37,7 +37,6 @@
         <offsetfrom>Body_LSP</offsetfrom>
         <axis>0 1 0</axis>
         <limitsdeg>-180 180</limitsdeg>
-        <maxvel>1</maxvel>
     </Joint>
     <adjacent>Body_LSP Body_LSR</adjacent>
 
@@ -157,7 +156,6 @@
         <offsetfrom>Body_LEP</offsetfrom>
         <axis>0 1 0</axis>
         <limitsdeg>-144 20</limitsdeg>
-        <maxvel>1</maxvel>
     </Joint>
     <adjacent>Body_LSY Body_LEP</adjacent>
 

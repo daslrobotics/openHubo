@@ -13,4 +13,4 @@ fi
 source `openrave-config --share-dir`/openrave_completion.bash
 complete -F "_complete_openravepy" -o filenames -o plusdirs "openrave"
 
-export MATLABPATH=$MATLABPATH:$OPENHUBO_DIR/comps-plugins/matlab
+export MATLABPATH=$MATLABPATH:$OPENHUBO_DIR/comps-plugins/matlab:$OPENHUBO_DIR/matlab

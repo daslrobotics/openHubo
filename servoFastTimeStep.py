@@ -33,30 +33,37 @@ def run():
 
     env = Environment()
     env.SetViewer('qtcoin')
-    env.SetDebugLevel(4)
+    env.SetDebugLevel(5)
     env.Load(file_env)
 
     #-- Set the robot controller and start the simulation
     with env:
         robot = env.GetRobots()[0]
         robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
+        collisionChecker = RaveCreateCollisionChecker(env,'bullet')
         env.SetCollisionChecker(collisionChecker)
 
+        #define ODE physics engine and set gravity
+        #physics = RaveCreatePhysicsEngine(env,'ode')
+        #physics.SetGravity([0,0,0])
+        #env.SetPhysicsEngine(physics)
+
         env.StopSimulation()
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        env.StartSimulation(timestep=0.0005)
+        env.StartSimulation(timestep=0.001)
 
     robot.GetController().SendCommand('setpos1 4 10 ')
     time.sleep(3)
 
-    robot.GetController().SendCommand('setgains 100 0 5 .01 .05')
+    # Avoid setting servo Kp higher than about 1/20 of the update frequency
+    robot.GetController().SendCommand('setgains 50 0 5   .1 .1')
     robot.GetController().SendCommand("record_on")
 
     robot.GetController().SendCommand('setpos1 6 -60 ')
-    time.sleep(6.0)
+    time.sleep(4.0)
     filename="servodata_{}.txt".format(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
     robot.GetController().SendCommand("record_off {} 6 6".format(filename))
 
 if __name__=='__main__':
     run()
+
+

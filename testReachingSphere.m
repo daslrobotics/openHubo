@@ -39,11 +39,11 @@ for k=1:50
 
     T0_object = MakeTransform(eye(3),t_can);
     T0_w=T0_object;
+    
     orRobotSetDOFValues(robotid,initDOFValues,activedofs);
     orBodySetTransform(objectid, [GetRot(T0_object) GetTrans(T0_object)]');
 
-    orEnvWait();
-    pause(1)
+    orEnvWait(robot.id);
 
     orBodySetTransform(objectid, [GetRot(T0_w) GetTrans(T0_w)]');
     pause(.5)
@@ -62,7 +62,7 @@ for k=1:50
 
     TSRstring2 = SerializeTSR(1,'NULL',T0_w,Tw_e2,Bw);
     TSRChainString2 = SerializeTSRChain(0,1,0,1,TSRstring2,'NULL',[]);
-
+    
     %call the cbirrt planner, it will generate a file with the trajectory called 'cmovetraj.txt'
     soln=orProblemSendCommand(['RunCBiRRT psample 0.25 timelimit 60' TSRChainString1 ' '  TSRChainString2],probs.cbirrt)
         orEnvWait(robotid);
