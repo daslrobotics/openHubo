@@ -3,8 +3,7 @@
 <Robot name="jaemiHubo" >
     <KinBody file="kinbody/affine.kinbody.xml" makejoinedlinksadjacent="true">
 
-        <KinBody file="kinbody/trunk.kinbody.xml" makejoinedlinksadjacent="true"/>
-
+        <Body name="Torso" type="dynamic"/>
         <Joint name="jRZ" type="hinge" >
             <Body>RY</Body>
             <Body>Torso</Body>
@@ -12,7 +11,10 @@
             <limitsdeg>-180 180</limitsdeg>
         </Joint>
 
+        <KinBody file="kinbody/trunk.kinbody.xml" makejoinedlinksadjacent="true"/>
+
         <KinBody file="kinbody/leftarm.kinbody.xml"/>
+        <Body name="Torso" type="dynamic"/>
 
         <Joint name="leftTorsoJoint" type ="hinge" enable="false">
             <Body>Torso</Body>
@@ -119,7 +121,7 @@
             <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
 
             <Geom type="trimesh">
-                <render>Left_Palm_Shell.wrl    .001</render>
+                <render>models/Left_Palm_Shell.wrl    .001</render>
             </Geom>
 
         </Body>
@@ -155,7 +157,7 @@
 
             <RotationAxis>0 0 1 180</RotationAxis>
             <Geom type="trimesh">
-                <Render>Right_Palm_Shell.wrl    .001</Render>
+                <Render>models/Right_Palm_Shell.wrl    .001</Render>
             </Geom>
 
         </Body>
@@ -208,5 +210,19 @@
         <effector>Head</effector>
         <direction>0 0 1</direction>
     </Manipulator>
+
+    <AttachedSensor name="leftFootForceSensor">
+        <link>leftFoot</link>
+        <sensor type="ForceSensor">
+            <joint>LAR</joint>
+        </sensor>
+    </AttachedSensor>
+    
+    <AttachedSensor name="rightFootForceSensor">
+        <link>rightFoot</link>
+        <sensor type="ForceSensor">
+            <joint>RAR</joint>
+        </sensor>
+    </AttachedSensor>
 
 </Robot>

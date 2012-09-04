@@ -36,27 +36,33 @@ def run():
     env.SetDebugLevel(4)
     env.Load(file_env)
 
+
     #-- Set the robot controller and start the simulation
     with env:
         robot = env.GetRobots()[0]
         robot.SetController(RaveCreateController(env,'servocontroller'))
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
+        LSR=robot.GetJoint('LSR').GetDOFIndex()
+        LEP=robot.GetJoint('LEP').GetDOFIndex()
 
         env.StopSimulation()
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
         env.StartSimulation(timestep=0.0005)
 
-    robot.GetController().SendCommand('setpos1 4 10 ')
+    
+
+    robot.GetController().SendCommand('setpos1 {} 10 '.format(LSR))
     time.sleep(3)
 
     robot.GetController().SendCommand('setgains 100 0 5 .01 .05')
     robot.GetController().SendCommand("record_on")
 
-    robot.GetController().SendCommand('setpos1 6 -60 ')
+    robot.GetController().SendCommand('setpos1 {} -60 '.format(LEP))
     time.sleep(6.0)
     filename="servodata_{}.txt".format(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-    robot.GetController().SendCommand("record_off {} 6 6".format(filename))
+
+    robot.GetController().SendCommand("record_off {} {} {}".format(filename,LEP,LEP))
 
 if __name__=='__main__':
     run()
