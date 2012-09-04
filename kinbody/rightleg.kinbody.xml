@@ -2,11 +2,10 @@
 
 <KinBody name="rightLeg" makejoinedlinksadjacent="true">
     <modelsdir>../models</modelsdir>
-    <Body name="hipDummyRight" type="dynamic">
-    </Body>
+    <Body name="Hip" type="dynamic"/>
 
     <Body name="rightHip" type="dynamic">
-        <offsetfrom>hipDummyRight</offsetfrom>
+        <offsetfrom>Hip</offsetfrom>
 
         <Translation>0 -0.0885 -0.277953</Translation>
         <Translation>0 0 0.1915</Translation>
@@ -39,7 +38,7 @@
     </Body>
 
     <Joint name="RHY" type="hinge">
-        <Body>hipDummyRight</Body>
+        <Body>Hip</Body>
         <Body>rightHip</Body>
         <offsetfrom>rightHip</offsetfrom>
         <anchor>-0.006789681 0.000063656 0.053769264</anchor>
@@ -47,7 +46,7 @@
         <limitsdeg>-90 50</limitsdeg>
         <maxvel>1</maxvel>
     </Joint>
-    <adjacent>hipDummyRight rightHip</adjacent>
+    <adjacent>Hip rightHip</adjacent>
 
     <Body name="rightHipPitchRoll" type="dynamic">
         <offsetfrom>rightHip</offsetfrom>
