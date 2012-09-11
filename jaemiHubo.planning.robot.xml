@@ -9,6 +9,7 @@
             <Body>Torso</Body>
             <axis>0 0 1</axis>
             <limitsdeg>-180 180</limitsdeg>
+            <maxtorque>0</maxtorque>
         </Joint>
 
         <KinBody file="kinbody/trunk.kinbody.xml" makejoinedlinksadjacent="true"/>
