@@ -102,6 +102,7 @@
             <limitsdeg>0 0</limitsdeg>
         </Joint>
         <adjacent>Body_LWY leftPalm</adjacent>
+        <adjacent>Body_LWY leftPalmShell</adjacent>
 
         <KinBody file="kinbody/righthand.kinbody.xml"/>
 
