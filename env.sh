@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export OPENHUBO_DIR=
+export OPENHUBO_DIR=/home/rwe24/openHubo
 
 if [[ ${#OPENRAVE_PLUGINS} == 0 ]]
 then

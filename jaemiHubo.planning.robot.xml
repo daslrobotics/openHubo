@@ -117,6 +117,7 @@
         </Joint>
 
         <adjacent>Body_RWY rightPalm</adjacent>
+        <adjacent>Body_RWY rightPalmShell</adjacent>
 
         <Body name="rightPalmShell" type="dynamic" >
 
