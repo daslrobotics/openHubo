@@ -3,49 +3,17 @@
 <Robot name="jaemiHubo" >
     <KinBody file="kinbody/trunk.kinbody.xml" makejoinedlinksadjacent="true">
         <KinBody file="kinbody/leftarm.kinbody.xml"/>
-        
-        <Joint name="leftTorsoJoint" type ="hinge" enable="false">
-            <Body>Torso</Body>
-            <Body>leftTorsoDummy</Body>
-            <limits>0 0</limits>
-        </Joint>
         <adjacent>Torso Body_LSP</adjacent>
 
         <KinBody file="kinbody/rightarm.kinbody.xml"/>
-
-        <Joint name="rightTorsoJoint" type ="hinge" enable="false">
-            <Body>Torso</Body>
-            <Body>rightTorsoDummy</Body>
-            <limits>0 0</limits>
-        </Joint>
         <adjacent>Torso Body_RSP</adjacent>
 
         <KinBody file="kinbody/leftleg.kinbody.xml"/>
-        <Body name="hipDummyLeft" type="dynamic">
-            <offsetfrom>Hip</offsetfrom> 
-        </Body>
-
-        <Joint name="leftHipYawJoint" type="hinge" enable="false">
-            <Body>Hip</Body>
-            <Body>hipDummyLeft</Body>
-            <limits>0 0</limits>
-        </Joint>
 
         <KinBody file="kinbody/rightleg.kinbody.xml"/>
-        <Body name="hipDummyRight" type="dynamic">
-            <offsetfrom>Hip</offsetfrom> 
-        </Body>
-
-        <Joint name="rightHipYawJoint" type="hinge" enable="false">
-            <Body>Hip</Body>
-            <Body>hipDummyRight</Body>
-            <limits>0 0</limits>
-        </Joint>
 
         <adjacent>Hip leftHipPitchRoll</adjacent>
         <adjacent>Hip rightHipPitchRoll</adjacent>
-        <adjacent>Hip leftHip</adjacent>
-        <adjacent>Hip rightHip</adjacent>
 
         <KinBody file="kinbody/lefthand.kinbody.xml"/>
 
@@ -82,7 +50,7 @@
     </Manipulator>
 
     <Manipulator name="rightArmManip">
-        <base>rightTorsoDummy</base>
+        <base>Torso</base>
         <effector>rightPalm</effector>
         <direction>0 1 0</direction>
     </Manipulator>

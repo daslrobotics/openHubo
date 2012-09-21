@@ -2,11 +2,10 @@
 
 <KinBody name="leftLeg">
     <modelsdir>../models</modelsdir>
-    <Body name="hipDummyLeft" type="dynamic">
-    </Body>
+    <Body name="Hip" type="dynamic"/>
 
     <Body name="leftHip" type="dynamic">
-        <offsetfrom>hipDummyLeft</offsetfrom>
+        <offsetfrom>Hip</offsetfrom>
 
         <Translation>0 0.0885 -0.277953</Translation>
         <Translation>0 0 0.1915</Translation>
@@ -40,7 +39,7 @@
     </Body>
 
     <Joint name="LHY" type="hinge">
-        <Body>hipDummyLeft</Body>
+        <Body>Hip</Body>
         <Body>leftHip</Body>
         <offsetfrom>leftHip</offsetfrom>
         <anchor>-0.006789681 -0.000063656 0.053769264</anchor>
@@ -48,7 +47,7 @@
         <limitsdeg>-50 90</limitsdeg>
         <maxvel>1</maxvel>
     </Joint>
-    <adjacent>hipDummyLeft leftHip</adjacent>
+    <adjacent>Hip leftHip</adjacent>
 
     <Body name="leftHipPitchRoll" type="dynamic">
         <offsetfrom>leftHip</offsetfrom>

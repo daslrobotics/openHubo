@@ -2,11 +2,14 @@
 
 <KinBody name="rightArm" makejoinedlinksadjacent="true">
     <modelsdir>../models</modelsdir>
-    <Body name="rightTorsoDummy" type="dynamic">
+    <Body name="Torso" type="dynamic">
     </Body>
 
     <Body name="Body_RSP" type="dynamic">
-        <offsetfrom>rightTorsoDummy</offsetfrom>
+        <offsetfrom>Torso</offsetfrom>
+
+        <Translation>0.005494756 0.000506882 0.048924021</Translation>
+
         <Translation>0 -0.1425 0</Translation>
         <Translation>0.017375862 -0.056462706 -0.000002143</Translation>
         <Geom type="cylinder" render="false">
@@ -31,7 +34,7 @@
     </Body>
 
     <Joint name="RSP" type="hinge">
-        <Body>rightTorsoDummy</Body>
+        <Body>Torso</Body>
         <Body>Body_RSP</Body>
         <offsetfrom>Body_RSP</offsetfrom>
         <anchor>-0.017375862 0.056462706 0.000002143</anchor>

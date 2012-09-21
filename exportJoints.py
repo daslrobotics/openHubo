@@ -17,10 +17,8 @@ __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
 from openravepy import *
-from numpy import *
-import time
-import datetime
 import sys
+import csv
 
 def run():
 
@@ -29,40 +27,29 @@ def run():
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'simpleFloor.env.xml'
+        file_env = 'jaemiHubo.robot.xml'
 
     env = Environment()
-    env.SetViewer('qtcoin')
-    env.SetDebugLevel(4)
     env.Load(file_env)
 
-
-    #-- Set the robot controller and start the simulation
     with env:
         robot = env.GetRobots()[0]
-        robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
-        LSR=robot.GetJoint('LSR').GetDOFIndex()
-        LEP=robot.GetJoint('LEP').GetDOFIndex()
 
-        env.StopSimulation()
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        env.StartSimulation(timestep=0.0005)
+    jointMap={}
 
-    
+    #Strip off the xml suffix to create a file prefix
+    file_prefix=file_env[:-4]
 
-    robot.GetController().SendCommand('setpos1 {} 10 '.format(LSR))
-    time.sleep(3)
-
-    robot.GetController().SendCommand('setgains 100 0 5 .01 .05')
-    robot.GetController().SendCommand("record_on")
-
-    robot.GetController().SendCommand('setpos1 {} -60 '.format(LEP))
-    time.sleep(6.0)
-    filename="servodata_{}.txt".format(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-
-    robot.GetController().SendCommand("record_off {} {} {}".format(filename,LEP,LEP))
+    #Open a "standard" file name to store the joint mapping
+    with open('{}.joints.csv'.format(file_prefix),'wb') as f:
+        writer=csv.writer(f,delimiter=' ') 
+        for k in robot.GetJoints():
+            # The line below builds a dictionary of joint names and DOF indices 
+            jointMap[k.GetName()]=k.GetDOFIndex()
+            # Print the same data to the screen with a formatted string
+            print "{}:{}".format(k.GetName(),k.GetDOFIndex())
+            # Use the CSV writer to export the data by row
+            writer.writerow([k.GetName(),jointMap[k.GetName()]])
 
 if __name__=='__main__':
     run()

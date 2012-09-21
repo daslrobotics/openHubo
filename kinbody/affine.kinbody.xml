@@ -14,7 +14,7 @@
         <Body>base</Body>
         <Body>X</Body>
         <axis>1 0 0</axis>
-        <maxforce>0</maxforce>
+        <maxtorque>0</maxtorque>
         <limits>-3 3</limits>
     </Joint>
 
@@ -26,7 +26,7 @@
         <Body>X</Body>
         <Body>Y</Body>
         <axis>0 1 0</axis>
-        <maxforce>0</maxforce>
+        <maxtorque>0</maxtorque>
         <limits>-3 3</limits>
     </Joint>
 
@@ -38,7 +38,7 @@
         <Body>Y</Body>
         <Body>Z</Body>
         <axis>0 0 1</axis>
-        <maxforce>0</maxforce>
+        <maxtorque>0</maxtorque>
         <limits>-3 3</limits>
     </Joint>
 
@@ -51,7 +51,7 @@
         <Body>RX</Body>
         <offsetfrom>Z</offsetfrom>
         <axis>1 0 0</axis>
-        <maxforce>0</maxforce>
+        <maxtorque>0</maxtorque>
         <limitsdeg>-180 180</limitsdeg>
     </Joint>
 
@@ -64,7 +64,7 @@
         <Body>RY</Body>
         <offsetfrom>RY</offsetfrom>
         <axis>0 1 0</axis>
-        <maxforce>0</maxforce>
+        <maxtorque>0</maxtorque>
         <limitsdeg>-180 180</limitsdeg>
     </Joint>
 
