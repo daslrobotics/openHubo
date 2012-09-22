@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="rightLeg" makejoinedlinksadjacent="true">
+    <modelsdir>models</modelsdir>
+    <Body name="Hip" type="dynamic"></Body>
+	
+	<Body name="Body_RHY" type="dynamic">
+        <offsetfrom>Hip</offsetfrom>
+		<!-- Hip Center of Mass to Base -->
+		<Translation>0.014522910106 0.000034266017 0.035304579825</Translation>
+		<!-- Hip Base to RHY Base -->
+        <Translation>0.000434676873 -0.088498932513 -0.076468867147</Translation>
+		<!-- RHY Base to Center of Mass -->
+		<Translation>0.037134260361 -0.000039535868 -0.072170220666</Translation>
+        <Geom type="trimesh">
+			<!-- RHY Center of Mass to Base -->
+			<Translation>-0.037134260361 0.000039535868 0.072170220666</Translation>
+            <Render>Body_RHY.wrl 1</Render>
+        </Geom>
+		<Mass type="custom">
+			<total>0.783987492087</total>
+			<inertia>
+				0.001450032893 -0.000002209479 0.000416862297
+				-0.000002209479 0.002544622829 0.000000143295
+				0.000416862297 0.000000143295 0.001811173018
+			</inertia>
+		</Mass>
+    </Body>
+
+    <Joint name="RHY" type="hinge">
+        <Body>Hip</Body>
+        <Body>Body_RHY</Body>
+        <offsetfrom>Body_RHY</offsetfrom>
+        <axis>0 0 1</axis>
+		<anchor>-0.037134260361 0.000039535868 0.072170220666</anchor>
+        <limitsdeg>-90 50</limitsdeg>
+        <maxvel>1</maxvel>
+    </Joint>
+	
+	<Body name="Body_RHR" type="dynamic">
+        <offsetfrom>Body_RHY</offsetfrom>
+		<!-- RHY Center of Mass to Base -->
+		<Translation>-0.037134260361 0.000039535868 0.072170220666</Translation>
+		<!-- RHY Base to RHR Base -->
+		<Translation>0.051999372777 0.000255403363 -0.091008513464</Translation>
+		<!-- RHR Base to Center of Mass -->
+		<Translation>-0.049274223881 -0.013049612318 -0.016528115799</Translation>
+        <Geom type="trimesh">
+			<!-- RHR Center of Mass to Base -->
+			<Translation>0.049274223881 0.013049612318 0.016528115799</Translation>
+            <Render>Body_RHR.wrl 1</Render>
+        </Geom>
+		<Mass type="custom">
+			<total>1.811269966169</total>
+			<inertia>
+				0.003457848062 -0.000078471729 -0.000096848585
+				-0.000078471729 0.002739094472 0.000606480342
+				-0.000096848585 0.000606480342 0.002902537445
+			</inertia>
+		</Mass>
+    </Body>
+
+    <Joint name="RHR" type="hinge">
+        <Body>Body_RHY</Body>
+        <Body>Body_RHR</Body>
+        <offsetfrom>Body_RHR</offsetfrom>
+        <axis>1 0 0</axis>
+		<anchor>0.049274223881 0.013049612318 0.016528115799</anchor>
+        <limitsdeg>-90 30</limitsdeg>
+        <maxvel>1</maxvel>
+    </Joint>
+	
+	<Body name="Body_RHP" type="dynamic">
+        <offsetfrom>Body_RHR</offsetfrom>
+		<!-- RHR Center of Mass to Base -->
+		<Translation>0.049274223881 0.013049612318 0.016528115799</Translation>
+		<!-- RHR Base to RHP Base -->
+        <Translation>-0.052677650710 -0.065759524905 0.000099999999</Translation>
+		<!-- RHP Base to Center of Mass -->
+		<Translation>0.015397089451 0.059598179933 -0.185516058679</Translation>
+        <Geom type="trimesh">
+			<!-- RHP Center of Mass to Base -->
+			<Translation>-0.015397089451 -0.059598179933 0.185516058679</Translation>
+            <Render>Body_RHP.wrl 1</Render>
+        </Geom>
+		<Mass type="custom">
+			<total>2.049026368163</total>
+			<inertia>
+				0.021604007374 -0.000159628730 -0.000181950133
+				-0.000159628730 0.020082265452 -0.000710409821
+				-0.000181950133 -0.000710409821 0.004921682942
+			</inertia>
+		</Mass>
+    </Body>
+
+    <Joint name="RHP" type="hinge">
+        <Body>Body_RHR</Body>
+        <Body>Body_RHP</Body>
+        <offsetfrom>Body_RHP</offsetfrom>
+        <axis>0 1 0</axis>
+		<anchor>-0.015397089451 -0.059598179933 0.185516058679</anchor>
+        <limitsdeg>-90 90</limitsdeg>
+        <maxvel>1</maxvel>
+    </Joint>
+	
+	<Body name="Body_RKP" type="dynamic">
+        <offsetfrom>Body_RHP</offsetfrom>
+		<!-- RHP Center of Mass to Base -->
+		<Translation>-0.015397089451 -0.059598179933 0.185516058679</Translation>
+		<!-- RHP Base to RKP Base -->
+        <Translation>0.008826314672 0.044543888644 -0.279862216578</Translation>
+		<!-- RKP Base to Center of Mass -->
+		<Translation>0.010208384713 0.006268322696 -0.178004558493</Translation>
+        <Geom type="trimesh">
+			<!-- RKP Center of Mass to Base -->
+			<Translation>-0.010208384713 -0.006268322696 0.178004558493</Translation>
+            <Render>Body_RKP.wrl 1</Render>
+        </Geom>
+		<Mass type="custom">
+			<total>1.265651876095</total>
+			<inertia>
+				0.017528780439 -0.000191442987 -0.000643282530
+				-0.000191442987 0.015699049040 -0.002366230350
+				-0.000643282530 -0.002366230350 0.003350547806
+			</inertia>
+		</Mass>
+    </Body>
+
+    <Joint name="RKP" type="hinge">
+        <Body>Body_RHP</Body>
+        <Body>Body_RKP</Body>
+        <offsetfrom>Body_RKP</offsetfrom>
+        <axis>0 1 0</axis>
+		<anchor>-0.010208384713 -0.006268322696 0.178004558493</anchor>
+        <limitsdeg>-2 120</limitsdeg>
+        <maxvel>1</maxvel>
+    </Joint>
+	
+	<Body name="Body_RAP" type="dynamic">
+        <offsetfrom>Body_RKP</offsetfrom>
+		<!-- RKP Center of Mass to Base -->
+		<Translation>-0.010208384713 -0.006268322696 0.178004558493</Translation>
+		<!-- RKP Base to RAP Base -->
+        <Translation>0.000121589112 -0.024755184674 -0.279942486074</Translation>
+		<!-- RAP Base to Center of Mass -->
+		<basetocom>0.019138554834 0.045870716684 0.010909001666</basetocom>
+        <Geom type="trimesh">
+			<!-- RAP Center of Mass to Base -->
+			<comtobase>-0.019138554834 -0.045870716684 -0.010909001666</comtobase>
+            <Render>Body_RAP.wrl 1</Render>
+        </Geom>
+		<Mass type="custom">
+			<total>1.521743128295</total>
+			<inertia>
+				0.001910170141 -0.000019755696 0.000337526526
+				-0.000019755696 0.002768268826 -0.000066187081
+				0.000337526526 -0.000066187081 0.002426960271
+			</inertia>
+		</Mass>
+    </Body>
+
+    <Joint name="RAP" type="hinge">
+        <Body>Body_RKP</Body>
+        <Body>Body_RAP</Body>
+        <offsetfrom>Body_RAP</offsetfrom>
+        <axis>0 1 0</axis>
+		<!-- <anchor>-0.019138554834 -0.045870716684 -0.010909001666</anchor> -->
+        <limitsdeg>-100 100</limitsdeg>
+        <maxvel>1</maxvel>
+    </Joint>
+	
+	<Body name="Body_RAR" type="dynamic">
+        <offsetfrom>Body_RAP</offsetfrom>
+		<!-- RAP Center of Mass to Base -->
+		<comtobase>-0.019138554834 -0.045870716684 -0.010909001666</comtobase>
+		<!-- RAP Base to RAR Base -->
+        <Translation>0.071015184678 0.046849363499 0.000000000001</Translation>
+		<!-- RAR Base to Center of Mass -->
+		<basetocom>-0.053600477927 -0.002025260192 -0.071164251708</basetocom>
+        <Geom type="trimesh">
+			<!-- RAR Center of Mass to Base -->
+			<comtobase>0.053600477927 0.002025260192 0.071164251708</comtobase>
+            <Render>Body_RAR.wrl 1</Render>
+        </Geom>
+		<Mass type="custom">
+			<total>1.073238191617</total>
+			<inertia>
+				0.002550250683 -0.000021475105 0.000264496470
+				-0.000021475105 0.004499529216 -0.000055215910
+				0.000264496470 -0.000055215910 0.004333440218
+			</inertia>
+		</Mass>
+    </Body>
+
+    <Joint name="RAR" type="hinge">
+        <Body>Body_RAP</Body>
+        <Body>Body_RAR</Body>
+        <offsetfrom>Body_RAR</offsetfrom>
+        <axis>1 0 0</axis>
+		<!-- <anchor>0.053600477927 0.002025260192 0.071164251708</anchor> -->
+        <limitsdeg>-180 180</limitsdeg>
+        <maxvel>1</maxvel>
+    </Joint>
+</KinBody>
+	

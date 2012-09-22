@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Robot name="huboPlus">
+    <!-- Hubo+ Torso -->
+    <KinBody file="huboPlus.trunk.kinbody.xml" makejoinedlinksadjacent="true">
+
+        <!-- Hubo+ Left Arm -->
+        <KinBody file="huboPlus.leftArm.kinbody.xml"/>
+
+        <!-- Hubo+ Right Arm -->
+        <KinBody file="huboPlus.rightArm.kinbody.xml"/>
+
+        <!-- Hubo+ Left Leg -->
+        <KinBody file="huboPlus.leftLeg.kinbody.xml"/>
+
+        <!-- Hubo+ Right Leg -->
+        <KinBody file="huboPlus.rightLeg.kinbody.xml"/>
+
+        <!-- Hubo+ Left Hand -->
+        <KinBody file="lefthand.kinbody.xml"/>
+
+        <Body name="Body_LWP" type="dynamic">
+            <offsetfrom>Body_LWY</offsetfrom>
+            <!-- LWY Center of Mass to Base -->
+            <Translation>0.000043017762 0.000232875770 0.029039847946</Translation>
+            <!-- LWY Base to LWP Base -->
+            <Translation>0.000001729730 -0.010000000000 -0.052549999972</Translation>
+            <!-- LWP Base to Center of Mass -->
+            <Translation>0.000000902705 0.001277512407 -0.015074884096</Translation>
+        </Body>
+
+        <Joint name="leftHandDummy" type="hinge" enable="false">
+            <Body>Body_LWP_placeholder</Body>
+            <Body>Body_LWP</Body>
+            <Limits>0 0</Limits>
+        </Joint>
+
+        <!-- Hubo+ Right Hand -->
+        <KinBody file="righthand.kinbody.xml"/>
+        <Body name="Body_RWP" type="dynamic">
+            <offsetfrom>Body_RWP_placeholder</offsetfrom>
+            <!-- RWY Center of Mass to Base -->
+            <Translation>0.000043017762 -0.000232875770 0.029039847946</Translation>
+            <!-- RWY Base to RWP Base -->
+            <Translation>0.000001729730 0.010000000000 -0.052549999972</Translation>
+            <!-- RWP Base to Center of Mass -->
+            <Translation>0.000000902705 -0.001277512407 -0.015074884096</Translation>
+        </Body>
+
+        <Joint name="rightHandDummy" type="hinge" enable="false">
+            <Body>Body_RWP_placeholder</Body>
+            <Body>Body_RWP</Body>
+            <Limits>0 0</Limits>
+        </Joint>
+
+    </KinBody>
+
+</Robot>
