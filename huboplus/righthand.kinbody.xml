@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="plusRightHand" makejoinedlinksadjacent="true">
+    <modelsdir>models</modelsdir>
+
+    <Body name="Body_RWP" type="dynamic">
+        <Geom type="trimesh">
+            <!-- RWP Center of Mass to Base -->
+            <Translation>-0.000000902705 0.001277512407 0.015074884096</Translation>
+            <Render>Body_RWP.wrl 1</Render>
+        </Geom>
+        <Mass type="custom">
+            <total>0.131348780105</total>
+            <inertia>
+                0.000065155476 0.000000015535 -0.000000934265
+                0.000000015535 0.000100789379 -0.000003189369
+                -0.000000934265 -0.000003189369 0.000073129151
+            </inertia>
+        </Mass>
+    </Body>
+
+    <KinBody prefix="rightIndex" name="rightIndexFinger" file="finger.kinbody.xml">
+        <!-- RWP Center of Mass to Base -->
+        <Translation>-0.000000902705 0.001277512407 0.015074884096</Translation>
+        <Translation>	0.035501	-0.020686	-0.077924	</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 -1 90</RotationAxis>
+        <RotationAxis>1 0 0 45</RotationAxis>
+        <Translation> -.008 0 0</Translation>
+    </KinBody>
+
+    <Joint name="rightIndexKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightIndexProximal</Body>
+        <offsetfrom>rightIndexProximal</offsetfrom>
+        <axis>0 0 1</axis>
+        <anchor>-.016 0 0</anchor>
+    </Joint>
+
+    <KinBody prefix="rightMiddle" name="rightMiddleFinger" file="finger.kinbody.xml">
+        <!-- RWP Center of Mass to Base -->
+        <Translation>-0.000000902705 0.001277512407 0.015074884096</Translation>
+        <Translation>	0.016521	-0.020686	-0.077924	</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 -1 90</RotationAxis>
+        <RotationAxis>1 0 0 45</RotationAxis>
+        <Translation> -.008 0 0</Translation>
+    </KinBody>
+
+    <Joint name="rightMiddleKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightMiddleProximal</Body>
+        <offsetfrom>rightMiddleProximal</offsetfrom>
+        <axis>0 0 1</axis>
+        <anchor>-.016 0 0</anchor>
+    </Joint>
+
+    <KinBody prefix="rightRing" name="rightIndexFinger" file="finger.kinbody.xml">
+        <!-- RWP Center of Mass to Base -->
+        <Translation>-0.000000902705 0.001277512407 0.015074884096</Translation>
+        <Translation>	-0.002519	-0.020686	-0.077924	</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 -1 90</RotationAxis>
+        <RotationAxis>1 0 0 45</RotationAxis>
+        <Translation> -.008 0 0</Translation>
+    </KinBody>
+
+    <Joint name="rightRingKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightRingProximal</Body>
+        <offsetfrom>rightRingProximal</offsetfrom>
+        <axis>0 0 1</axis>
+        <anchor>-.016 0 0</anchor>
+    </Joint>
+
+    <KinBody prefix="rightPinky" name="rightPinkyFinger" file="finger.kinbody.xml">
+        <!-- RWP Center of Mass to Base -->
+        <Translation>-0.000000902705 0.001277512407 0.015074884096</Translation>
+        <Translation>	-0.021519	-0.020686	-0.077924	</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 -1 90</RotationAxis>
+        <RotationAxis>1 0 0 45</RotationAxis>
+        <Translation> -.008 0 0</Translation>
+    </KinBody>
+
+    <Joint name="rightPinkyKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightPinkyProximal</Body>
+        <offsetfrom>rightPinkyProximal</offsetfrom>
+        <axis>0 0 1</axis>
+        <anchor>-.016 0 0</anchor>
+    </Joint>
+
+    <KinBody prefix="rightThumb" name="rightThumbFinger" file="finger.kinbody.xml">
+        <!-- RWP Center of Mass to Base -->
+        <Translation>-0.000000902705 0.001277512407 0.015074884096</Translation>
+        <Translation>	0.011481	0.007255	-0.049993	</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 1 90</RotationAxis>
+        <RotationAxis>1 0 0 45</RotationAxis>
+        <Translation> .008 0 0</Translation>
+    </KinBody>
+
+    <Joint name="rightThumbKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightThumbProximal</Body>
+        <offsetfrom>rightThumbProximal</offsetfrom>
+        <axis>0 0 1</axis>
+        <anchor>-.016 0 0</anchor>
+    </Joint>
+
+</KinBody>

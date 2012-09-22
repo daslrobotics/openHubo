@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="plusRightHand" makejoinedlinksadjacent="true">
+    <modelsdir>models</modelsdir>
+
+    <Body name="Body_LWP" type="dynamic">
+        <Geom type="trimesh">
+            <!-- LWP Center of Mass to Base -->
+            <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
+            <Render>Body_LWP.wrl 1</Render>
+        </Geom>
+        <Mass type="custom">
+            <total>0.131348780105</total>
+            <inertia>
+                0.000065155476 -0.000000015535 -0.000000934265
+                -0.000000015535 0.000100789379 0.000003189369
+                -0.000000934265 0.000003189369 0.000073129151
+            </inertia>
+        </Mass>
+    </Body>
+
+    <KinBody prefix="leftIndex" name="leftIndexFinger" file="finger.kinbody.xml">
+        <!-- LWP Center of Mass to Base -->
+        <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
+        <Translation>	0.035501	0.020686	-0.077924	</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 1 90</RotationAxis>
+        <RotationAxis>1 0 0 -45</RotationAxis>
+        <Translation> -.008 0 0</Translation>
+    </KinBody>
+
+    <Joint name="leftIndexKnuckle1" type="hinge">
+        <Body>Body_LWP</Body>
+        <Body>leftIndexProximal</Body>
+        <offsetfrom>Body_LWP</offsetfrom>
+        <axis>1 0 0</axis>
+        <anchor>	0.035501	0.020686	-0.077924	</anchor>
+    </Joint>
+
+    <KinBody prefix="leftMiddle" name="leftMiddleFinger" file="finger.kinbody.xml">
+        <!-- LWP Center of Mass to Base -->
+        <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
+        <Translation>	0.016521	0.020686	-0.077924	</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 1 90</RotationAxis>
+        <RotationAxis>1 0 0 -45</RotationAxis>
+        <Translation> -.008 0 0</Translation>
+    </KinBody>
+
+    <Joint name="leftMiddleKnuckle1" type="hinge">
+        <Body>Body_LWP</Body>
+        <Body>leftMiddleProximal</Body>
+        <offsetfrom>Body_LWP</offsetfrom>
+        <axis>1 0 0</axis>
+    </Joint>
+
+    <KinBody prefix="leftRing" name="leftIndexFinger" file="finger.kinbody.xml">
+        <!-- LWP Center of Mass to Base -->
+        <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
+        <Translation>	-0.002519	0.020686	-0.077924	</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 1 90</RotationAxis>
+        <RotationAxis>1 0 0 -45</RotationAxis>
+        <Translation> -.008 0 0</Translation>
+    </KinBody>
+
+    <Joint name="leftRingKnuckle1" type="hinge">
+        <Body>Body_LWP</Body>
+        <Body>leftRingProximal</Body>
+        <offsetfrom>Body_LWP</offsetfrom>
+        <axis>1 0 0</axis>
+    </Joint>
+
+    <KinBody prefix="leftPinky" name="leftPinkyFinger" file="finger.kinbody.xml">
+        <!-- LWP Center of Mass to Base -->
+        <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
+        <Translation>	-0.021519	0.020686	-0.077924	</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 1 90</RotationAxis>
+        <RotationAxis>1 0 0 -45</RotationAxis>
+        <Translation> -.008 0 0</Translation>
+    </KinBody>
+
+    <Joint name="leftPinkyKnuckle1" type="hinge">
+        <Body>Body_LWP</Body>
+        <Body>leftPinkyProximal</Body>
+        <offsetfrom>Body_LWP</offsetfrom>
+        <axis>1 0 0</axis>
+    </Joint>
+
+    <KinBody prefix="leftThumb" name="leftThumbFinger" file="finger.kinbody.xml">
+        <!-- LWP Center of Mass to Base -->
+        <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
+        <Translation>	0.011481	-0.007255	-0.049993	</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 1 90</RotationAxis>
+        <RotationAxis>1 0 0 135</RotationAxis>
+        <Translation> .008 0 0</Translation>
+    </KinBody>
+
+    <Joint name="leftThumbKnuckle1" type="hinge">
+        <Body>Body_LWP</Body>
+        <Body>leftThumbProximal</Body>
+        <offsetfrom>Body_LWP</offsetfrom>
+        <axis>1 0 0</axis>
+        <anchor>	0.011481	-0.007255	-0.049993	</anchor>
+    </Joint>
+
+</KinBody>
