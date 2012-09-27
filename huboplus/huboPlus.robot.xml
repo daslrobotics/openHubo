@@ -55,4 +55,27 @@
 
     </KinBody>
 
+    <Manipulator name="leftArm">
+        <Base>Torso</Base>
+        <Effector>Body_LWP</Effector>
+        <direction>0 -1 -1</direction>
+    </Manipulator>
+
+    <Manipulator name="rightArm">
+        <Base>Torso</Base>
+        <Effector>Body_RWP</Effector>
+        <direction>0 1 -1</direction>
+    </Manipulator>
+
+    <Manipulator name="leftLeg">
+        <Base>Torso</Base>
+        <Effector>Body_LAR</Effector>
+        <direction>0 0 -1</direction>
+    </Manipulator>
+
+    <Manipulator name="rightLeg">
+        <Base>Torso</Base>
+        <Effector>Body_RAR</Effector>
+        <direction>0 0 -1</direction>
+    </Manipulator>
 </Robot>
