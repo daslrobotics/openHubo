@@ -298,7 +298,7 @@
         <Translation>-0.043321613 -0.001919520 -0.055938224</Translation>
         <Geom type="trimesh">
             <Translation>0.043321613 0.001919520 0.055938224</Translation>
-            <Data>conHull_RAR.wrl    1</Data>
+            <Data>convhull_RAR.wrl    1</Data>
             <Render>Body_RAR.wrl    1</Render>
         </Geom>
 
