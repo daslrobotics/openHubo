@@ -77,7 +77,6 @@
         <anchor>0.032544374 0.002402058 0.004360644</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-10 180</limitsdeg>
-        <maxvel>1</maxvel>
     </Joint>
     <adjacent>Body_LSR Body_LSY</adjacent>
     <adjacent>Body_LSP Body_LSY</adjacent>
@@ -122,7 +121,6 @@
         <anchor>-0.007506423 0.001888922 0.089712642</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-157 157</limitsdeg>
-        <maxvel>1</maxvel>
     </Joint>
     <adjacent>Body_LSP Body_LSY</adjacent>
     <adjacent>Body_LSR Body_LSY</adjacent>
@@ -194,7 +192,6 @@
         <anchor>0.003372725 0.000033462 0.039374046</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-160 160</limitsdeg>
-        <maxvel>1</maxvel>
     </Joint>
     <adjacent>Body_LEP Body_LWY</adjacent>
     <adjacent>Body_LSY Body_LWY</adjacent>
@@ -224,7 +221,6 @@
         <offsetfrom>leftUJoint</offsetfrom>
         <axis>1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
-        <maxvel>1</maxvel>
     </Joint>
     <adjacent>Body_LWY leftUJoint</adjacent>
 
@@ -238,7 +234,6 @@
         <offsetfrom>leftPalmDummy</offsetfrom>
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
-        <maxvel>1</maxvel>
     </Joint>
     <adjacent>leftUJoint leftPalmDummy</adjacent>
     <adjacent>Body_LWY leftPalmDummy</adjacent>
