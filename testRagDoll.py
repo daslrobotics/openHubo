@@ -2,26 +2,21 @@
 from openravepy import *
 import time
 import numpy
+import tab
 
 if __name__ == "__main__":
 
-    try:
+    env = Environment()
+    env.SetViewer('qtcoin')
+    env.Load('forcePlate.env.xml') 
 
-        env = Environment()
-        env.SetViewer('qtcoin')
-        env.Load('forcePlate.env.xml') 
+    with env:
+        robot = env.GetRobots()[0]
+        
+        collisionChecker = RaveCreateCollisionChecker(env,'bullet')
+        env.SetCollisionChecker(collisionChecker)
 
-        with env:
-            robot = env.GetRobots()[0]
-            
-            collisionChecker = RaveCreateCollisionChecker(env,'bullet')
-            env.SetCollisionChecker(collisionChecker)
-
-            env.StopSimulation()
-            env.StartSimulation(timestep=0.001 )
+        env.StopSimulation()
+        env.StartSimulation(timestep=0.0005 )
 
 
-        raw_input('')
-
-    finally:
-        env.Destroy()

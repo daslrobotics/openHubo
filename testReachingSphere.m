@@ -24,7 +24,7 @@ orRobotSetDOFValues(robotid,[0 pi/3 0 0 0 0 0],manips{1}.armjoints);
 %set initial configuration
 initDOFValues = [.1 -.5 0 -1 0 0 0];
 T_away=[eye(3),[2;2;2];0 0 0 1];
-
+orBodyEnable(objectid,0)
 for k=1:50
     %Prepare for a new iteration:
     orBodySetTransform(objectid, [GetRot(T_away) GetTrans(T_away)]');
@@ -43,7 +43,7 @@ for k=1:50
     orRobotSetDOFValues(robotid,initDOFValues,activedofs);
     orBodySetTransform(objectid, [GetRot(T0_object) GetTrans(T0_object)]');
 
-    orEnvWait(robot.id);
+    orEnvWait(robotid);
 
     orBodySetTransform(objectid, [GetRot(T0_w) GetTrans(T0_w)]');
     pause(.5)

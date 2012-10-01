@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Robot name="jaemiHubo" >
+    <KinBody file="kinbody/rl.rightleg.kinbody.xml" makejoinedlinksadjacent="true">
+        <KinBody file="kinbody/rltrunk.kinbody.xml" makejoinedlinksadjacent="true"/>
+    </KinBody>
+</Robot>
