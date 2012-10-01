@@ -12,7 +12,7 @@
         <Geom type="trimesh">
             <Translation>0.011804276 0.000018681 0.044394816</Translation>
             <Render>Body_Hip.wrl 1</Render>
-            <data>dummyBox.wrl .002</data>
+            <Data>convhull_Hip.wrl 1</Data>
         </Geom>
         <Mass type="custom">
             <total>4.436339231</total>
@@ -28,7 +28,7 @@
         <Geom type="trimesh" render="true">
             <Translation>0.005494756 0.000506882 0.048924021</Translation>
             <Render>Body_Torso.wrl    1</Render>
-            <data>dummyBox.wrl .002</data>
+            <Data>convhull_Torso.wrl    1</Data>
         </Geom>
         <Mass type="custom">
             <total>7.957477863</total>

@@ -7,8 +7,8 @@
             <Translation>-0.043321613 -0.001919520 -0.055938224</Translation>
         <Geom type="trimesh">
             <Translation>0.043321613 0.001919520 0.055938224</Translation>
-            <Data>dummyBox.wrl    .001</Data>
             <Render>Body_RAR.wrl    1</Render>
+            <Data>Body_RAR.wrl    1</Data>
         </Geom>
 
         <Mass type="custom">
@@ -24,8 +24,8 @@
         <Translation>0.019150497 0.042957865 0.009380757</Translation>
         <Geom type="trimesh">
             <Translation>-0.019150497 -0.042957865 -0.009380757</Translation>
-            <Data>dummyBox.wrl    0.001</Data>
             <Render>Body_RAP.wrl    1</Render>
+            <Data>Body_RAP.wrl    1</Data>
         </Geom>
 
         <Mass type="custom">
@@ -52,7 +52,7 @@
         <Translation>0.018120466 0.013914964 -0.152406046</Translation>
         <Geom type="trimesh">
             <Translation>-0.018120466 -0.013914964 0.152406046</Translation>
-            <Data>dummyBox.wrl    0.001</Data>
+            <Data>Body_RKP.wrl    1</Data>
             <Render>Body_RKP.wrl    1</Render>
         </Geom>
 
@@ -79,7 +79,7 @@
         <Translation>0.019867805 -0.058794402 -0.188774904</Translation>
         <Geom type="trimesh">
             <Translation>-0.019867805 0.058794402 0.188774904</Translation>
-            <Data>dummyBox.wrl    0.001</Data>
+            <Data>Body_RHP.wrl    1</Data>
             <Render>Body_RHP.wrl    1</Render>
         </Geom>
 
@@ -107,8 +107,8 @@
 
         <Geom type="trimesh">
             <Translation>-0.013849443 0.010901509 0.011973269</Translation>
-            <Data>dummyBox.wrl 0.001</Data>
             <Render>Body_RHR.wrl 1</Render>
+            <Data>Body_RHR.wrl 1</Data>
         </Geom>
 
         <Mass type="custom">
@@ -136,6 +136,7 @@
         <Geom type="trimesh">
             <Translation>-0.006789681 0.000063656 0.053769264</Translation>
             <Render>Body_RHY.wrl 1</Render>
+            <Data>Body_RHY.wrl 1</Data>
         </Geom>
 
         <Mass type="custom">

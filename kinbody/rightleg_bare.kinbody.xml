@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="rightLeg" makejoinedlinksadjacent="true">
+    <modelsdir>../models</modelsdir>
+    <Body name="Hip" type="dynamic"/>
+
+    <Body name="rightHip" type="dynamic">
+        <offsetfrom>Hip</offsetfrom>
+
+        <Translation>0 -0.0885 -0.277953</Translation>
+        <Translation>0 0 0.1915</Translation>
+        <Translation>0.011804276 0.000018681 0.044394816</Translation>
+
+        <Translation>0.006789681 -0.000063656 -0.053769264</Translation>
+        <Geom type="trimesh">
+            <Translation>-0.006789681 0.000063656 0.053769264</Translation>
+            <Data>dummyBox.wrl .001</Data>
+            <Render>Body_RHY.wrl 1</Render>
+        </Geom>
+        <Geom render="false" name="RHY34" type="cylinder">
+            <Translation>-0.006789681 0.000063656 0.053769264</Translation>
+            <Translation>0.00635000 0.00000000 -0.09100400</Translation>
+            <RotationAxis>0 0 1 90</RotationAxis>
+            <Radius>0.04800000</Radius>
+            <Height>0.16510000</Height>
+        </Geom>
+
+        <Geom render="false" name="RHY35" type="box">
+            <Translation>-0.006789681 0.000063656 0.053769264</Translation>
+            <Translation>0.00716000 0.00000000 -0.02501400</Translation>
+            <Extents>0.07535000 0.02500000 0.02501450</Extents>
+        </Geom>
+
+        <Mass type="custom">
+            <total>0.483118742</total>
+            <inertia>0.000863427 -0.000001238 0.000042545 -0.000001238 0.002029641 -0.000000627 0.000042545 -0.000000627 0.001473105</inertia>
+        </Mass>
+    </Body>
+
+    <Joint name="RHY" type="hinge">
+        <Body>Hip</Body>
+        <Body>rightHip</Body>
+        <offsetfrom>rightHip</offsetfrom>
+        <anchor>-0.006789681 0.000063656 0.053769264</anchor>
+        <axis>0 0 1</axis>
+        <limitsdeg>-90 50</limitsdeg>
+    </Joint>
+    <adjacent>Hip rightHip</adjacent>
+
+    <Body name="rightHipPitchRoll" type="dynamic">
+        <offsetfrom>rightHip</offsetfrom>
+        <Translation>-0.006789681 0.000063656 0.053769264</Translation>
+        <Translation>0 0 -.0910</Translation>
+        <Translation>0.013849443 -0.010901509 -0.011973269</Translation>
+        <Geom type="trimesh">
+            <Translation>-0.013849443 0.010901509 0.011973269</Translation>
+            <Data>dummyBox.wrl 0.001</Data>
+            <Render>Body_RHR.wrl 1</Render>
+        </Geom>
+
+        <Geom render="false" name="RHR36" type="cylinder">
+            <Translation>-0.013849443 0.010901509 0.011973269</Translation>
+            <Translation>0.00000000 0.00001700 0.00000000</Translation>
+            <Radius>0.08200400</Radius>
+            <Height>0.09359000</Height>
+        </Geom>
+
+        <Mass type="custom">
+            <total>2.644641101</total>
+            <inertia>0.004385578 -0.000224243 -0.000447015 -0.000224243 0.004633453 0.000377898 -0.000447015 0.000377898 0.004398642</inertia>
+        </Mass>
+    </Body>
+
+    <Joint name="RHR" type="hinge">
+        <Body>rightHip</Body>
+        <Body>rightHipPitchRoll</Body>
+        <offsetfrom>rightHipPitchRoll</offsetfrom>
+        <anchor>-0.013849443 0.010901509 0.011973269</anchor>
+        <axis>1 0 0</axis>
+        <limitsdeg>-90 30</limitsdeg>
+    </Joint>
+    <adjacent>rightHip rightHipPitchRoll</adjacent>
+
+    <Body name="rightKneeUpper" type="dynamic">
+        <offsetfrom>rightHipPitchRoll</offsetfrom>
+        <Translation>-0.013849443 0.010901509 0.011973269</Translation>
+        <Translation>0 0.054 0</Translation>
+        <Translation>0.019867805 -0.058794402 -0.188774904</Translation>
+        <Geom type="trimesh">
+            <Translation>-0.019867805 0.058794402 0.188774904</Translation>
+            <Data>dummyBox.wrl    0.001</Data>
+            <Render>Body_RHP.wrl    1</Render>
+        </Geom>
+
+        <Geom render="false" name="RHP37" type="cylinder">
+            <Translation>-0.019867805 0.058794402 0.188774904</Translation>
+            <Translation>0.00000000 -0.06223000 -0.00007600</Translation>
+            <Radius>0.05100320</Radius>
+            <Height>0.15494000</Height>
+        </Geom>
+
+        <Geom render="false" name="RHP38" type="cylinder">
+            <Translation>-0.019867805 0.058794402 0.188774904</Translation>
+            <Translation>0.00754000 -0.06223000 -0.03185000</Translation>
+            <Radius>0.06096000</Radius>
+            <Height>0.15494000</Height>
+        </Geom>
+
+        <Geom render="false" name="RHP39" type="cylinder">
+            <Translation>-0.019867805 0.058794402 0.188774904</Translation>
+            <Translation>0.02057000 -0.06223000 -0.08686800</Translation>
+            <Radius>0.07312000</Radius>
+            <Height>0.15494000</Height>
+        </Geom>
+
+        <Geom render="false" name="RHP40" type="cylinder">
+            <Translation>-0.019867805 0.058794402 0.188774904</Translation>
+            <Translation>0.02977000 -0.06223000 -0.14633000</Translation>
+            <Radius>0.07112000</Radius>
+            <Height>0.15494000</Height>
+        </Geom>
+
+        <Geom render="false" name="RHP41" type="cylinder">
+            <Translation>-0.019867805 0.058794402 0.188774904</Translation>
+            <Translation>0.03896000 -0.06223000 -0.20579000</Translation>
+            <Radius>0.06096000</Radius>
+            <Height>0.15494000</Height>
+        </Geom>
+
+        <Geom render="false" name="RHP42" type="cylinder">
+            <Translation>-0.019867805 0.058794402 0.188774904</Translation>
+            <Translation>0.01953000 -0.06223000 -0.25286000</Translation>
+            <Radius>0.05842000</Radius>
+            <Height>0.15494000</Height>
+        </Geom>
+
+        <Geom render="false" name="RHP43" type="cylinder">
+            <Translation>-0.019867805 0.058794402 0.188774904</Translation>
+            <Translation>0.00007600 -0.06223000 -0.29995000</Translation>
+            <Radius>0.05088000</Radius>
+            <Height>0.15494000</Height>
+        </Geom>
+
+        <Mass type="custom">
+            <total>3.098799394</total>
+            <inertia>0.036844807 -0.000255530 -0.000624748 -0.000255530 0.034557057 -0.000952212 -0.000624748 -0.000952212 0.009238020</inertia>
+        </Mass>
+    </Body>
+
+    <Joint name="RHP" type="hinge">
+        <Body>rightHipPitchRoll</Body>
+        <Body>rightKneeUpper</Body>
+        <offsetfrom>rightKneeUpper</offsetfrom>
+        <anchor>-0.019867805 0.058794402 0.188774904</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-90 90</limitsdeg>
+    </Joint>
+    <adjacent>rightHipPitchRoll rightKneeUpper</adjacent>
+    <adjacent>rightHip rightKneeUpper</adjacent>
+
+    <Body name="rightKneeLower" type="dynamic">
+        <offsetfrom>rightKneeUpper</offsetfrom>
+        <Translation>-0.019867805 0.058794402 0.188774904</Translation>
+        <Translation>-.001675 -0.074999 -.300542</Translation>
+        <Translation>0.018120466 0.013914964 -0.152406046</Translation>
+        <Geom type="trimesh">
+            <Translation>-0.018120466 -0.013914964 0.152406046</Translation>
+            <Data>dummyBox.wrl    0.001</Data>
+            <Render>Body_RKP.wrl    1</Render>
+        </Geom>
+
+        <Geom render="false" name="RKP44" type="cylinder">
+            <Translation>-0.018120466 -0.013914964 0.152406046</Translation>
+            <Translation>0.00048260 0.01700000 -0.00012700</Translation>
+            <Radius>0.05100320</Radius>
+            <Height>0.14800000</Height>
+        </Geom>
+
+        <Geom render="false" name="RKP45" type="cylinder">
+            <Translation>-0.018120466 -0.013914964 0.152406046</Translation>
+            <Translation>0.02842000 0.01700000 -0.04252000</Translation>
+            <Radius>0.04656000</Radius>
+            <Height>0.14800000</Height>
+        </Geom>
+
+        <Geom render="false" name="RKP46" type="cylinder">
+            <Translation>-0.018120466 -0.013914964 0.152406046</Translation>
+            <Translation>0.03399000 0.01700000 -0.08270000</Translation>
+            <Radius>0.05059700</Radius>
+            <Height>0.14800000</Height>
+        </Geom>
+
+        <Geom render="false" name="RKP47" type="cylinder">
+            <Translation>-0.018120466 -0.013914964 0.152406046</Translation>
+            <Translation>0.02675000 0.01700000 -0.12410400</Translation>
+            <Radius>0.05918200</Radius>
+            <Height>0.14800000</Height>
+        </Geom>
+
+        <Geom render="false" name="RKP48" type="cylinder">
+            <Translation>-0.018120466 -0.013914964 0.152406046</Translation>
+            <Translation>0.00795000 0.01700000 -0.23180000</Translation>
+            <Radius>0.05842000</Radius>
+            <Height>0.14800000</Height>
+        </Geom>
+
+        <Geom render="false" name="RKP49" type="cylinder">
+            <Translation>-0.018120466 -0.013914964 0.152406046</Translation>
+            <Translation>0.01773000 0.01700000 -0.17574000</Translation>
+            <Radius>0.05547400</Radius>
+            <Height>0.14800000</Height>
+        </Geom>
+
+        <Geom render="false" name="RKP50" type="cylinder">
+            <Translation>-0.018120466 -0.013914964 0.152406046</Translation>
+            <Translation>0.00320000 0.01700000 -0.27262000</Translation>
+            <Radius>0.05080000</Radius>
+            <Height>0.14800000</Height>
+        </Geom>
+
+        <Geom render="false" name="RKP51" type="cylinder">
+            <Translation>-0.018120466 -0.013914964 0.152406046</Translation>
+            <Translation>0.00002540 0.01700000 -0.29997000</Translation>
+            <Radius>0.04599900</Radius>
+            <Height>0.14800000</Height>
+        </Geom>
+
+        <Mass type="custom">
+            <total>1.559604102</total>
+            <inertia>0.022011968 -0.000117575 -0.000867941 -0.000117575 0.020299002 -0.002037181 -0.000867941 -0.002037181 0.005045442</inertia>
+        </Mass>
+    </Body>
+
+    <Joint name="RKP" type="hinge">
+        <Body>rightKneeUpper</Body>
+        <Body>rightKneeLower</Body>
+        <offsetfrom>rightKneeLower</offsetfrom>
+        <anchor>-0.018120466 -0.013914964 0.152406046</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-2 120</limitsdeg>
+    </Joint>
+    <adjacent>rightKneeUpper rightKneeLower</adjacent>
+
+    <Body name="rightAnklePitch" type="dynamic">
+        <offsetfrom>rightKneeLower</offsetfrom>
+        <Translation>-0.018120466 -0.013914964 0.152406046</Translation>
+        <Translation>.000045 -.024755 -.299942</Translation>
+        <Translation>0.019150497 0.042957865 0.009380757</Translation>
+        <Geom type="trimesh">
+            <Translation>-0.019150497 -0.042957865 -0.009380757</Translation>
+            <Data>dummyBox.wrl    0.001</Data>
+            <Render>Body_RAP.wrl    1</Render>
+        </Geom>
+
+        <Geom render="false" name="RAP52" type="cylinder">
+            <Translation>-0.019150497 -0.042957865 -0.009380757</Translation>
+            <Translation>0.02115100 0.04762500 0.02265300</Translation>
+            <Radius>0.06906260</Radius>
+            <Height>0.09525000</Height>
+        </Geom>
+
+        <Geom render="false" name="RAP53" type="cylinder">
+            <Translation>-0.019150497 -0.042957865 -0.009380757</Translation>
+            <Translation>-0.00257000 0.04762500 0.02661000</Translation>
+            <Radius>0.06692900</Radius>
+            <Height>0.09525000</Height>
+        </Geom>
+
+        <Geom render="false" name="RAP54" type="cylinder">
+            <RotationAxis>0 0 1 90</RotationAxis>
+            <Translation>-0.019150497 -0.042957865 -0.009380757</Translation>
+            <Translation>0.01016000 0.04650000 0.00000000</Translation>
+
+            <Radius>0.04400550</Radius>
+            <Height>0.14224000</Height>
+        </Geom>
+
+        <Mass type="custom">
+            <total>1.674918070</total>
+            <inertia>0.002342287 -0.000114531 0.000316185 -0.000114531 0.003019600 -0.000107388 0.000316185 -0.000107388 0.002846142</inertia>
+        </Mass>
+    </Body>
+
+    <Joint name="RAP" type="hinge">
+        <Body>rightKneeLower</Body>
+        <Body>rightAnklePitch</Body>
+        <offsetfrom>rightAnklePitch</offsetfrom>
+        <anchor>-0.019150497 -0.042957865 -0.009380757</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-100 100</limitsdeg>
+    </Joint>
+    <adjacent>rightKneeLower rightAnklePitch</adjacent>
+
+    <Body name="rightFoot" type="dynamic">
+        <offsetfrom>rightAnklePitch</offsetfrom> 
+        <Translation>-0.019150497 -0.042957865 -0.009380757</Translation>
+        <Translation>0.071244 0.0465 -.000016</Translation> 
+        <Translation>-0.043321613 -0.001919520 -0.055938224</Translation>
+        <Geom type="trimesh">
+            <Translation>0.043321613 0.001919520 0.055938224</Translation>
+            <Data>convhull_RAR.wrl    1</Data>
+            <Render>Body_RAR.wrl    1</Render>
+        </Geom>
+
+
+        <Mass type="custom">
+            <total>0.525134235</total>
+            <inertia>0.001299926 0.000003599 -0.000096266 0.000003599 0.002701794 -0.000026851 -0.000096266 -0.000026851 0.002753586</inertia>
+        </Mass>
+    </Body>
+
+    <Joint name="RAR" type="hinge">
+        <Body>rightAnklePitch</Body>
+        <Body>rightFoot</Body>
+        <offsetfrom>rightFoot</offsetfrom>
+        <anchor>0.043321613 0.001919520 0.055938224</anchor>
+        <axis>1 0 0</axis>
+        <Weight>1</Weight>
+        <limitsdeg>-30 30</limitsdeg>
+    </Joint>
+    <adjacent>rightAnklePitch rightFoot</adjacent>
+    <adjacent>rightKneeLower rightFoot</adjacent>
+</KinBody>
