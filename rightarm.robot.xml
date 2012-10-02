@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Robot name="rightarm" >
+
+    <KinBody file="kinbody/rightarm.kinbody.xml">
+        <KinBody file="kinbody/righthand.kinbody.xml"/>
+
+        <Body name="rightPalm" type="dynamic">
+            <offsetfrom>rightPalmDummy</offsetfrom> 
+        </Body>
+
+        <Joint name="attachRightHand" type="hinge" enable="false">
+            <Body>rightPalmDummy</Body>
+            <Body>rightPalm</Body>
+            <limitsdeg>0 0</limitsdeg>
+        </Joint>
+
+        <adjacent>Body_RWY rightPalm</adjacent>
+
+        <Body name="rightPalmShell" type="dynamic" >
+
+            <offsetfrom>rightPalm</offsetfrom> 
+            <Translation>0.000123302 0.003029044 0.060093031</Translation>
+            <Translation>0.009326346	0.009307222	-0.060858088</Translation>
+            <RotationMat>0.5 -0.50 -0.7071 0.5 -0.5 0.7071	-0.7071	-0.7071	0</RotationMat>
+
+            <RotationAxis>0 0 1 180</RotationAxis>
+            <Geom type="trimesh">
+                <Render>Right_Palm_Shell.wrl    .001</Render>
+            </Geom>
+
+        </Body>
+
+        <Joint name="rightPalmBody" type="hinge" enable="false">
+            <Body>rightPalm</Body>
+            <Body>rightPalmShell</Body>
+            <offsetfrom>rightPalmShell</offsetfrom>
+            <limitsdeg>0 0</limitsdeg>
+        </Joint>
+        <adjacent>Body_RWY rightPalmShell</adjacent>
+        <adjacent>rightPalm rightPalmShell</adjacent>
+
+    </KinBody>
+
+    <Manipulator name="rightArmReverse">
+        <base>rightPalmShell</base>
+        <effector>rightTorsoDummy</effector>
+        <direction>0 1 0</direction>
+    </Manipulator>
+
+</Robot>

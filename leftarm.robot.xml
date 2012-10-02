@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Robot name="leftarm" >
+
+    <KinBody file="kinbody/leftarm.kinbody.xml">
+        <KinBody file="kinbody/lefthand.kinbody.xml"/>
+
+        <Body name="leftPalm" type="dynamic">
+            <offsetfrom>leftPalmDummy</offsetfrom> 
+        </Body>
+
+        <Joint name="attachLeftHand" type="hinge" enable="false">
+            <Body>leftPalmDummy</Body>
+            <Body>leftPalm</Body>
+            <limits>0 0</limits>
+        </Joint>
+
+        <Body name="leftPalmShell" type="dynamic" >
+
+            <offsetfrom>leftPalm</offsetfrom> 
+            <Translation>0.000123302 -0.003029044 0.060093031</Translation>
+            <Translation>0.009326346	-0.009307222	-0.060858088</Translation>
+            <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
+
+            <Geom type="trimesh">
+                <render>Left_Palm_Shell.wrl    .001</render>
+            </Geom>
+
+        </Body>
+
+        <Joint name="leftPalmBody" type="hinge" enable="false">
+            <Body>leftPalm</Body>
+            <Body>leftPalmShell</Body>
+            <offsetfrom>leftPalmShell</offsetfrom>
+            <limitsdeg>0 0</limitsdeg>
+        </Joint>
+        <adjacent>Body_LWY leftPalm</adjacent>
+    </KinBody>
+
+    <Manipulator name="leftArmReverse">
+        <base>leftPalmShell</base>
+        <effector>leftTorsoDummy</effector>
+        <direction>0 1 0</direction>
+    </Manipulator>
+
+</Robot>

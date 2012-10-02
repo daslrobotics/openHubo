@@ -38,6 +38,11 @@
         <adjacent>Hip leftHipPitchRoll</adjacent>
         <adjacent>Hip rightHipPitchRoll</adjacent>
     </KinBody>
+    <Manipulator name="leftArmManip">
+        <base>Torso</base>
+        <effector>rightPalm</effector>
+        <direction>0 1 0</direction>
+    </Manipulator>
 
     <Manipulator name="rightArmManip">
         <base>Torso</base>
@@ -46,7 +51,7 @@
     </Manipulator>
 
     <Manipulator name="leftFootManip">
-        <base>Torso</base>
+        <base>Hip</base>
         <effector>leftFoot</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
