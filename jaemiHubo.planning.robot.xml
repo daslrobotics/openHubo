@@ -148,6 +148,7 @@
         <base>Torso</base>
         <effector>leftPalmShell</effector>
         <direction>0 -1 0</direction>
+        <iksolver> ikfast/leftArm.ikfast.so </iksolver>
     </Manipulator>
 
     <Manipulator name="rightArmManip">
@@ -156,6 +157,7 @@
         <direction>0 1 0</direction>
         <gripperjoints>rightIndexKnuckle1 rightIndexKnuckle2 rightIndexKnuckle3 rightThumbKnuckle1 rightThumbKnuckle2 rightThumbKnuckle3</gripperjoints>
         <closingdirection>0 1 1 0 1 1</closingdirection>
+        <iksolver> ikfast/rightArm.ikfast.so </iksolver>
     </Manipulator>
 
     <Manipulator name="leftFootManip">
@@ -168,6 +170,7 @@
         <base>Hip</base>
         <effector>rightFootBase</effector>
         <direction>0 0 -1</direction>
+        <iksolver> ikfast/rightFoot.ikfast.so </iksolver>
     </Manipulator>
 
     <Manipulator name="affineManip">

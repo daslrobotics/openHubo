@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Robot name="jaemiHubo" >
+    <KinBody file="kinbody/rl.rightleg.kinbody.xml" makejoinedlinksadjacent="true">
+        <KinBody file="kinbody/rltrunk.kinbody.xml" makejoinedlinksadjacent="true"/>
+        <KinBody file="kinbody/leftleg_bare.kinbody.xml" makejoinedlinksadjacent="true"/>
+        <KinBody file="kinbody/rightarm.kinbody.xml" makejoinedlinksadjacent="true"/>
+        <KinBody file="kinbody/leftarm.kinbody.xml" makejoinedlinksadjacent="true"/>
+
+        <KinBody file="kinbody/lefthand.kinbody.xml"/>
+
+        <Body name="leftPalm" type="dynamic">
+            <offsetfrom>leftPalmDummy</offsetfrom> 
+        </Body>
+
+        <Joint name="attachLeftHand" type="hinge" enable="false">
+            <Body>leftPalmDummy</Body>
+            <Body>leftPalm</Body>
+            <limits>0 0</limits>
+        </Joint>
+        <adjacent>leftUJoint leftPalm</adjacent>
+        <adjacent>Body_LWY leftPalm</adjacent>
+
+        <KinBody file="kinbody/righthand.kinbody.xml"/>
+
+        <Body name="rightPalm" type="dynamic">
+            <offsetfrom>rightPalmDummy</offsetfrom> 
+        </Body>
+
+        <Joint name="attachRightHand" type="hinge" enable="false">
+            <Body>rightPalmDummy</Body>
+            <Body>rightPalm</Body>
+            <limits>0 0</limits>
+        </Joint>
+
+        <adjacent>Torso Body_LSP</adjacent>
+        <adjacent>Torso Body_RSP</adjacent>
+        <adjacent>Hip leftHipPitchRoll</adjacent>
+        <adjacent>Hip rightHipPitchRoll</adjacent>
+    </KinBody>
+    <Manipulator name="leftArmManip">
+        <base>Torso</base>
+        <effector>rightPalm</effector>
+        <direction>0 1 0</direction>
+    </Manipulator>
+
+    <Manipulator name="rightArmManip">
+        <base>Torso</base>
+        <effector>rightPalm</effector>
+        <direction>0 1 0</direction>
+    </Manipulator>
+
+    <Manipulator name="leftFootManip">
+        <base>Hip</base>
+        <effector>leftFoot</effector>
+        <direction>0 0 -1</direction>
+    </Manipulator>
+
+    <Manipulator name="rightFootManip">
+        <base>Hip</base>
+        <effector>rightFoot</effector>
+        <direction>0 0 -1</direction>
+    </Manipulator>
+</Robot>

@@ -19,11 +19,12 @@ __license__ = 'GPLv3 license'
 from openravepy import *
 from numpy import *
 import time
+import datetime
 import sys
 import tab
-from servo import *
 
 if __name__=='__main__':
+
     #-- Read the name of the xml file passed as an argument
     #-- or use the default name
     try:
@@ -43,13 +44,10 @@ if __name__=='__main__':
         robot.SetController(RaveCreateController(env,'servocontroller'))
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
+        LSR=robot.GetJoint('LSR').GetDOFIndex()
+        LEP=robot.GetJoint('LEP').GetDOFIndex()
 
         env.StopSimulation()
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
         env.StartSimulation(timestep=0.0005)
 
-    time.sleep(2)
-
-    #Begin experimental sandbox here:
-    robot.GetController().SendCommand('setgains 50 1 5 .1 .1')
-    testMotionRange(robot,'LSR')

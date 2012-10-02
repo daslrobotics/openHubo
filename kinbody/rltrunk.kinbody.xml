@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="Trunk" makejoinedlinksadjacent="true">
+    <modelsdir>../models</modelsdir>
+    <Body name="rightHip" type="dynamic"/>
+    <Body name="Hip" type="dynamic">
+        <offsetfrom>rightHip</offsetfrom>
+        <Translation>-0.006789681 0.000063656 0.053769264</Translation>
+        <Translation>0 0.0885 0.277953</Translation>
+        <Translation>0 0 -0.1915</Translation>
+        <Translation>-0.011804276 -0.000018681 -0.044394816</Translation>
+        <Geom type="trimesh">
+            <Translation>0.011804276 0.000018681 0.044394816</Translation>
+            <Render>Body_Hip.wrl 1</Render>
+            <Data>convhull_Hip.wrl 1</Data>
+        </Geom>
+        <Mass type="custom">
+            <total>4.436339231</total>
+            <inertia>0.022766841 0.000053624 -0.000164219 0.000053624 0.009418222 -0.000010039 -0.000164219 -0.000010039 0.026610520</inertia>
+        </Mass>
+    </Body>
+
+    <Body name="Torso" type="dynamic">
+        <offsetfrom>Hip</offsetfrom>
+        <Translation>-0.005494756 -0.000506882 -0.048924021</Translation>
+        <Translation>0 0 0.1915</Translation>
+        <Translation>0.011804276 0.000018681 0.044394816</Translation>
+        <Geom type="trimesh" render="true">
+            <Translation>0.005494756 0.000506882 0.048924021</Translation>
+            <Render>Body_Torso.wrl    1</Render>
+            <Data>convhull_Torso.wrl    1</Data>
+        </Geom>
+        <Mass type="custom">
+            <total>7.957477863</total>
+            <inertia>0.083564229 -0.000067976 0.002493728 -0.000067976 0.052235277 -0.001207207 0.002493728 -0.001207207 0.075754072</inertia>
+        </Mass>
+    </Body>
+
+    <Joint name="TY" type="hinge">
+        <Body>Torso</Body>
+        <Body>Hip</Body>
+        <offsetfrom>Hip</offsetfrom>
+        <anchor>0.011804276 0.000018681 0.044394816</anchor>
+        <axis>0 0 1</axis>
+        <limitsdeg>-90 90</limitsdeg>
+    </Joint>
+    <adjacent>Torso Hip</adjacent>
+
+    <Body name="Neck" type="dynamic">
+        <offsetfrom>Torso</offsetfrom>
+    </Body>
+
+    <Joint name="HY" type="hinge">
+        <Body>Torso</Body>
+        <Body>Neck</Body>
+        <offsetfrom>Neck</offsetfrom>
+        <axis>0 0 1</axis>
+        <limitsdeg>-90 90</limitsdeg>
+    </Joint>
+
+    <Body name="NeckPR" type="dynamic">
+        <offsetfrom>Neck</offsetfrom>
+        <Translation>0 0 .122</Translation>
+        <Translation>0.005494756 0.000506882 0.048924021</Translation>
+        <Geom type="trimesh">
+            <render>Body_UJoint.wrl 1</render>
+        </Geom>
+    </Body>
+
+    <Joint name="HR" type="hinge">
+        <Body>Neck</Body>
+        <Body>NeckPR</Body>
+        <offsetfrom>NeckPR</offsetfrom>
+        <axis>1 0 0</axis>
+        <limitsdeg>-30 30</limitsdeg>
+    </Joint>
+
+    <Body name="Head" type="dynamic">
+        <offsetfrom>NeckPR</offsetfrom>
+        <Geom type="trimesh">
+            <Translation>0 0 -.122</Translation>
+            <Translation>0 0 .0425</Translation>
+            <Render>Body_Head.wrl 1</Render>
+            <data>convhull_Head.wrl 1</data>
+        </Geom>
+    </Body>
+
+    <Joint name="HP" type="hinge">
+        <Body>NeckPR</Body>
+        <Body>Head</Body>
+        <offsetfrom>Head</offsetfrom>
+        <axis>0 1 0</axis>
+        <limitsdeg>-30 30</limitsdeg>
+    </Joint>
+
+</KinBody>
