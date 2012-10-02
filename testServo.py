@@ -19,22 +19,9 @@ __license__ = 'GPLv3 license'
 from openravepy import *
 from numpy import *
 import time
-import datetime
 import sys
 import tab
-
-""" Demonstrate the range of motion of a joint by attempting to reach +/- 180
-deg"""
-def testMotionRange(robot,jointName,steps=50):
-    joint=robot.GetJoint(jointName)
-    dq=360.0
-    q0=-180.0
-
-    for k in [x*dq/steps+q0 for x in range(steps+1)]:
-        print k
-        robot.GetController().SendCommand('setpos1 {} {}'.format(joint.GetDOFIndex(),k))
-        time.sleep(.01)
-
+from servo import *
 
 if __name__=='__main__':
     #-- Read the name of the xml file passed as an argument
