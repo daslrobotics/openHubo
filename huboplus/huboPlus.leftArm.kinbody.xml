@@ -34,7 +34,6 @@
         <axis>0 1 0</axis>
 		<anchor>-0.019546915289 -0.057448311513 -0.000001733653</anchor>
         <limitsdeg>-150 150</limitsdeg>
-        <maxvel>1</maxvel>
     </Joint>
 	
 	<Body name="Body_LSR" type="dynamic">
@@ -67,7 +66,6 @@
         <axis>1 0 0</axis>
 		<anchor>0.039259293602 -0.000022993734 0.000493343829</anchor>
         <limitsdeg>180 -10</limitsdeg>
-        <maxvel>1</maxvel>
     </Joint>
 	
 	<Body name="Body_LSY" type="dynamic">

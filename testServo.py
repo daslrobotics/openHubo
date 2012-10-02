@@ -21,9 +21,22 @@ from numpy import *
 import time
 import datetime
 import sys
+import tab
 
-def run():
+""" Demonstrate the range of motion of a joint by attempting to reach +/- 180
+deg"""
+def testMotionRange(robot,jointName,steps=50):
+    joint=robot.GetJoint(jointName)
+    dq=360.0
+    q0=-180.0
 
+    for k in [x*dq/steps+q0 for x in range(steps+1)]:
+        print k
+        robot.GetController().SendCommand('setpos1 {} {}'.format(joint.GetDOFIndex(),k))
+        time.sleep(.01)
+
+
+if __name__=='__main__':
     #-- Read the name of the xml file passed as an argument
     #-- or use the default name
     try:
@@ -43,26 +56,13 @@ def run():
         robot.SetController(RaveCreateController(env,'servocontroller'))
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
-        LSR=robot.GetJoint('LSR').GetDOFIndex()
-        LEP=robot.GetJoint('LEP').GetDOFIndex()
 
         env.StopSimulation()
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
         env.StartSimulation(timestep=0.0005)
 
-    
+    time.sleep(2)
 
-    robot.GetController().SendCommand('setpos1 {} 10 '.format(LSR))
-    time.sleep(3)
-
-    robot.GetController().SendCommand('setgains 100 0 5 .01 .05')
-    robot.GetController().SendCommand("record_on")
-
-    robot.GetController().SendCommand('setpos1 {} -60 '.format(LEP))
-    time.sleep(6.0)
-    filename="servodata_{}.txt".format(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-
-    robot.GetController().SendCommand("record_off {} {} {}".format(filename,LEP,LEP))
-
-if __name__=='__main__':
-    run()
+    #Begin experimental sandbox here:
+    robot.GetController().SendCommand('setgains 50 1 5 .1 .1')
+    testMotionRange(robot,'LSR')
