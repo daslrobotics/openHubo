@@ -1,0 +1,3 @@
+<Robot name="testbot">
+    <kinbody file="kinbody.xml"/>
+</Robot>
