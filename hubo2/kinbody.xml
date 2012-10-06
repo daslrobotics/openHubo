@@ -36,7 +36,15 @@
 <!--Body_HDY Parent to Current -->
 	<translation>0.000000000000 0.000000016254 0.051000000000</translation>
 <!--Body_HDY Base to Center of Mass -->
-	<translation>-0.000001381680 0.000002908363 0.052749591985</translation>
+    <translation>-0.000001381680 0.000002908363 0.052749591985</translation>
+
+    <Geom type="cylinder">
+        <Translation>0 0 -.02</Translation>
+        <RotationAxis>1 0 0 -90</RotationAxis>
+        <radius>0.045</radius>
+        <height>0.06</height>
+    </Geom>
+
 	<mass type="custom">
 		<total>0.126385870926</total>
 		<inertia>
@@ -115,6 +123,7 @@
 	<limitsdeg>-179.999 179.999</limitsdeg>
 </Joint>
 	<adjacent>Body_HDP Body_HDR</adjacent>
+	<adjacent>Body_HDY Body_HDP</adjacent>
 
 <body name="Body_HPY" type="dynamic">
 	<offsetfrom>Body_Torso</offsetfrom><!--Body_HPY Parent Center of Mass to Base -->
