@@ -21,28 +21,44 @@ function verify-dep()
 BASE_DIR=`git rev-parse --show-toplevel`
 
 
-#Check if submodules have changed and ask user to decide whether to checkout
-#specified version in parent repository.
-FOUND_PLUGIN_CHANGES=$(git submodule foreach --quiet 'git diff')
+function check_submodules()
+{
+    #Check if submodules have changed and ask user to decide whether to checkout
+    #specified version in parent repository.
+    OLD_IFS=$IFS
+    IFS=$'\n'
 
-if [ ${#FOUND_PLUGIN_CHANGES} -gt 0 ]
-then 
-    echo "-----------------------------------------------------"
-    echo "Would you like to update dependent submodules to the "
-    echo "version specified by this openHubo version?"
-    echo ""
-    echo "Choose Yes (y) if this is the first time you're building the"
-    echo "   plugins, or if you have recently pulled updates to openHubo from github"
-    echo "Choose No (n) if you are making your own changes and want to build the plugins as-is"
-    read -p "Enter your choice [Y/n]?" SUBMODULE_UPDATE
-    if [[ $SUBMODULE_UPDATE == 'n' || $SUBMODULE_UPDATE == 'N' ]]
-    then
-        echo "Submodule update skipped, Using present versions of dependent plugins..."
-    else
-        echo "Updating plugin submodules to match the current openHubo commit..."
-        git submodule update --init
-    fi
-fi
+    git submodule init
+
+    for stat in `git submodule status`
+    do
+        local PLUGIN_STATUS=`echo $stat | cut -c 1`
+        local PLUGIN_NAME=`echo $stat | awk '{print $2}'`
+
+        if [[ $PLUGIN_STATUS == '-' ]]
+        then
+            git submodule update $PLUGIN_NAME
+        fi
+        if [[ $PLUGIN_STATUS == '+' ]]
+        then
+            echo "-----------------------------------------------------"
+            echo "Submodule $PLUGIN_NAME has been changed from the default commit specified in this repository."
+            echo "Would you like to revert from the current state to the default commit?"
+            echo "Choose No (n) if you are making your own changes and want to build the plugins as-is"
+            read -p "Enter your choice [Y/n]?" SUBMODULE_UPDATE
+            if [[ $SUBMODULE_UPDATE == 'n' || $SUBMODULE_UPDATE == 'N' ]]
+            then
+                echo "Submodule update skipped..."
+            else
+                echo "Updating plugin $PLUGIN_NAME to match the current openHubo commit..."
+                git submodule update $PLUGIN_NAME
+            fi
+        fi
+        IFS=$OLD_IFS
+    done
+}
+
+check_submodules
 
 echo ""
 echo "Building OpenMR Servo Controller Plugin..."
@@ -97,8 +113,7 @@ then
 fi
  
 #Strip out base folder definition and update with current
-sed -i "s,\( OPENHUBO_DIR=\).*,\1," env.sh
-sed -i "s,\( OPENHUBO_DIR=\),\1$BASE_DIR," env.sh
+sed "s,\( OPENHUBO_DIR=\),\1$BASE_DIR," .env.template > env.sh
 echo ""
 echo "OpenHubo base folder is $BASE_DIR"
 source env.sh
