@@ -4,7 +4,6 @@
     <modelsdir>models</modelsdir>
     <body name="Body_Torso" type="dynamic">
 
-
 <!--Body_Torso Parent Center of Mass to Base -->
 	<translation>0.000000000000 0.000000000000 0.000000000000</translation>
 <!--Body_Torso Parent to Current -->
@@ -198,7 +197,7 @@
 
 <body name="Body_RHY" type="dynamic">
 	<offsetfrom>Body_HPY</offsetfrom><!--Body_RHY Parent Center of Mass to Base -->
-	<translation>0.011068912725 -0.000017567568 0.044092693677</translation>
+	<translation>0.011068912725 0.000017567568 0.044092693677</translation>
 <!--Body_RHY Parent to Current -->
 	<translation>-0.000009992379 -0.088500007621 -0.086588867160</translation>
 <!--Body_RHY Base to Center of Mass -->
@@ -650,7 +649,7 @@
 
 <body name="Body_RSP" type="dynamic">
 	<offsetfrom>Body_Torso</offsetfrom><!--Body_RSP Parent Center of Mass to Base -->
-	<translation>-0.022817253784 0.005993625269 0.050206919105</translation>
+	<translation>-0.022817253784 -0.005993625269 0.050206919105</translation>
 <!--Body_RSP Parent to Current -->
 	<translation>0.000000000000 -0.147500038408 0.000000000000</translation>
 <!--Body_RSP Base to Center of Mass -->
@@ -686,7 +685,7 @@
 <!--Body_LSR Parent to Current -->
 	<translation>0.025496881336 0.072000000000 0.000398423489</translation>
 <!--Body_LSR Base to Center of Mass -->
-	<translation>-0.032905519588 -0.000090229042 -0.003114071068</translation>
+    <translation>-0.032905519588 -0.000090229042 -0.003114071068</translation>
 	<geom type="trimesh">
 		<translation>0.032905519588 0.000090229042 0.003114071068</translation>
 		<render>Body_LSR_1.wrl 1 </render>
@@ -711,6 +710,7 @@
 	<limitsdeg>-179.999 179.999</limitsdeg>
 </Joint>
 	<adjacent>Body_LSR Body_LSP</adjacent>
+	<adjacent>Body_LSR Body_Torso</adjacent>
 
 <body name="Body_RSR" type="dynamic">
 	<offsetfrom>Body_RSP</offsetfrom><!--Body_RSR Parent Center of Mass to Base -->
@@ -743,6 +743,7 @@
 	<limitsdeg>-179.999 179.999</limitsdeg>
 </Joint>
 	<adjacent>Body_RSR Body_RSP</adjacent>
+	<adjacent>Body_RSR Body_Torso</adjacent>
 
 <body name="Body_LSY" type="dynamic">
 	<offsetfrom>Body_LSR</offsetfrom><!--Body_LSY Parent Center of Mass to Base -->
@@ -918,6 +919,7 @@
 	<limitsdeg>-179.999 179.999</limitsdeg>
 </Joint>
 	<adjacent>Body_LWY Body_LEP</adjacent>
+	<adjacent>Body_LWY Body_LSY</adjacent>
 
 <body name="Body_RWY" type="dynamic">
 	<offsetfrom>Body_REP</offsetfrom><!--Body_RWY Parent Center of Mass to Base -->
@@ -955,6 +957,7 @@
 	<limitsdeg>-179.999 179.999</limitsdeg>
 </Joint>
 	<adjacent>Body_RWY Body_REP</adjacent>
+	<adjacent>Body_RWY Body_RSY</adjacent>
 
 <body name="Body_LWR" type="dynamic">
 	<offsetfrom>Body_LWY</offsetfrom><!--Body_LWR Parent Center of Mass to Base -->
@@ -1084,6 +1087,8 @@
 		</inertia>
 	</mass>
 </body>
+	<adjacent>Body_RWP Body_RWR</adjacent>
+	<adjacent>Body_RWP Body_RWY</adjacent>
 
 <Joint name="RWP" type="hinge">
 	<body>Body_RWR</body>
@@ -1093,8 +1098,6 @@
 	<axis>0 1 0</axis>
 	<limitsdeg>-179.999 179.999</limitsdeg>
 </Joint>
-	<adjacent>Body_RWP Body_RWR</adjacent>
-	<adjacent>Body_RWP Body_RWY</adjacent>
 
 <kinbody file="lefthand.xml"/>
 <kinbody file="righthand.xml"/>
