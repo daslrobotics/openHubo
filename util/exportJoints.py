@@ -17,34 +17,39 @@ __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
 from openravepy import *
-from numpy import *
-import time
-import datetime
 import sys
-import tab
+import csv
 
-if __name__=='__main__':
+def run():
 
     #-- Read the name of the xml file passed as an argument
     #-- or use the default name
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'simpleFloor.env.xml'
+        file_env = '../hubo2/hubo2.robot.xml'
 
     env = Environment()
-    env.SetViewer('qtcoin')
-    env.SetDebugLevel(4)
     env.Load(file_env)
 
-
-    #-- Set the robot controller and start the simulation
     with env:
         robot = env.GetRobots()[0]
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
 
-        env.StopSimulation()
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        env.StartSimulation(timestep=0.0005)
+    jointMap={}
 
+    #Strip off the xml suffix to create a file prefix
+    file_prefix=file_env[:-4]
+
+    #Open a "standard" file name to store the joint mapping
+    with open('{}.joints.csv'.format(file_prefix),'wb') as f:
+        writer=csv.writer(f,delimiter=' ') 
+        for k in robot.GetJoints():
+            # The line below builds a dictionary of joint names and DOF indices 
+            jointMap[k.GetName()]=k.GetDOFIndex()
+            # Print the same data to the screen with a formatted string
+            print "{}:{}".format(k.GetName(),k.GetDOFIndex())
+            # Use the CSV writer to export the data by row
+            writer.writerow([k.GetName(),jointMap[k.GetName()]])
+
+if __name__=='__main__':
+    run()

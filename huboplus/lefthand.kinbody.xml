@@ -3,31 +3,22 @@
 <KinBody name="plusRightHand" makejoinedlinksadjacent="true">
     <modelsdir>models</modelsdir>
 
-    <Body name="Body_LWP" type="dynamic">
-        <Geom type="trimesh">
-            <!-- LWP Center of Mass to Base -->
-            <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
-            <Render>Body_LWP.wrl 1</Render>
-        </Geom>
-        <Mass type="custom">
-            <total>0.131348780105</total>
-            <inertia>
-                0.000065155476 -0.000000015535 -0.000000934265
-                -0.000000015535 0.000100789379 0.000003189369
-                -0.000000934265 0.000003189369 0.000073129151
-            </inertia>
-        </Mass>
-    </Body>
-
     <KinBody prefix="leftIndex" name="leftIndexFinger" file="finger.kinbody.xml">
         <!-- LWP Center of Mass to Base -->
-        <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
+        <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>	0.035501	0.020686	-0.077924	</Translation>
         <RotationAxis>1 0 0 90</RotationAxis>
         <RotationAxis>0 0 1 90</RotationAxis>
         <RotationAxis>1 0 0 -45</RotationAxis>
         <Translation> -.008 0 0</Translation>
     </KinBody>
+
+    <Body name="leftIndexProximal" type="dynamic">
+        <offsetfrom>Body_LWP</offsetfrom>
+    </Body>
+    <!--Have to redo all the adjacencies when a body is redefined like this...-->
+    <adjacent>Body_LWP leftIndexProximal</adjacent>
+    <adjacent>Body_LWP leftIndexMedial</adjacent>
 
     <Joint name="leftIndexKnuckle1" type="hinge">
         <Body>Body_LWP</Body>
@@ -39,13 +30,20 @@
 
     <KinBody prefix="leftMiddle" name="leftMiddleFinger" file="finger.kinbody.xml">
         <!-- LWP Center of Mass to Base -->
-        <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
+        <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>	0.016521	0.020686	-0.077924	</Translation>
         <RotationAxis>1 0 0 90</RotationAxis>
         <RotationAxis>0 0 1 90</RotationAxis>
         <RotationAxis>1 0 0 -45</RotationAxis>
         <Translation> -.008 0 0</Translation>
     </KinBody>
+
+    <Body name="leftMiddleProximal" type="dynamic">
+        <offsetfrom>Body_LWP</offsetfrom>
+    </Body>
+    <!--Have to redo all the adjacencies when a body is redefined like this...-->
+    <adjacent>Body_LWP leftMiddleProximal</adjacent>
+    <adjacent>Body_LWP leftMiddleMedial</adjacent>
 
     <Joint name="leftMiddleKnuckle1" type="hinge">
         <Body>Body_LWP</Body>
@@ -56,13 +54,20 @@
 
     <KinBody prefix="leftRing" name="leftIndexFinger" file="finger.kinbody.xml">
         <!-- LWP Center of Mass to Base -->
-        <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
+        <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>	-0.002519	0.020686	-0.077924	</Translation>
         <RotationAxis>1 0 0 90</RotationAxis>
         <RotationAxis>0 0 1 90</RotationAxis>
         <RotationAxis>1 0 0 -45</RotationAxis>
         <Translation> -.008 0 0</Translation>
     </KinBody>
+
+    <Body name="leftRingProximal" type="dynamic">
+        <offsetfrom>Body_LWP</offsetfrom>
+    </Body>
+    <!--Have to redo all the adjacencies when a body is redefined like this...-->
+    <adjacent>Body_LWP leftRingProximal</adjacent>
+    <adjacent>Body_LWP leftRingMedial</adjacent>
 
     <Joint name="leftRingKnuckle1" type="hinge">
         <Body>Body_LWP</Body>
@@ -73,13 +78,20 @@
 
     <KinBody prefix="leftPinky" name="leftPinkyFinger" file="finger.kinbody.xml">
         <!-- LWP Center of Mass to Base -->
-        <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
+        <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>	-0.021519	0.020686	-0.077924	</Translation>
         <RotationAxis>1 0 0 90</RotationAxis>
         <RotationAxis>0 0 1 90</RotationAxis>
         <RotationAxis>1 0 0 -45</RotationAxis>
         <Translation> -.008 0 0</Translation>
     </KinBody>
+
+    <Body name="leftPinkyProximal" type="dynamic">
+        <offsetfrom>Body_LWP</offsetfrom>
+    </Body>
+    <!--Have to redo all the adjacencies when a body is redefined like this...-->
+    <adjacent>Body_LWP leftPinkyProximal</adjacent>
+    <adjacent>Body_LWP leftPinkyMedial</adjacent>
 
     <Joint name="leftPinkyKnuckle1" type="hinge">
         <Body>Body_LWP</Body>
@@ -90,13 +102,20 @@
 
     <KinBody prefix="leftThumb" name="leftThumbFinger" file="finger.kinbody.xml">
         <!-- LWP Center of Mass to Base -->
-        <Translation>-0.000000902705 -0.001277512407 0.015074884096</Translation>
+        <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>	0.011481	-0.007255	-0.049993	</Translation>
         <RotationAxis>1 0 0 90</RotationAxis>
         <RotationAxis>0 0 1 90</RotationAxis>
         <RotationAxis>1 0 0 135</RotationAxis>
         <Translation> .008 0 0</Translation>
     </KinBody>
+
+    <Body name="leftThumbProximal" type="dynamic">
+        <offsetfrom>Body_LWP</offsetfrom>
+    </Body>
+    <!--Have to redo all the adjacencies when a body is redefined like this...-->
+    <adjacent>Body_LWP leftThumbProximal</adjacent>
+    <adjacent>Body_LWP leftThumbMedial</adjacent>
 
     <Joint name="leftThumbKnuckle1" type="hinge">
         <Body>Body_LWP</Body>
