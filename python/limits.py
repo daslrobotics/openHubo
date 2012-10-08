@@ -19,12 +19,30 @@ __license__ = 'GPLv3 license'
 from openravepy import *
 from numpy import *
 import time
-import datetime
 import sys
 import tab
 
-if __name__=='__main__':
+def checkCollision(robot,bodies):
+    #Check the first body against the rest
+    #Note that this IGNORES adjacent bodies if invoked this way. Therefore, we
+    # can use it to directly inspect the model for joint body collisions.
+    env=robot.GetEnv()
+    print "Checking collisions for ",bodies[0]
+    if len(bodies)>1:
+        for body in bodies[1:]:
+            print body
+            print env.CheckCollision(robot.GetLink(body),robot.GetLink(bodies[0]))
 
+def checklimits(robot,joint,checkbodies):
+    env=robot.GetEnv()
+    for k in range(0,180):
+        #Go to a check position
+        robot.SetDOFValues(float(k)*pi/180,joint.GetDOFIndex())
+        for body in checkbodies:
+            print k
+
+
+if __name__=='__main__':
     #-- Read the name of the xml file passed as an argument
     #-- or use the default name
     try:
@@ -37,14 +55,19 @@ if __name__=='__main__':
     env.SetDebugLevel(4)
     env.Load(file_env)
 
-
-    #-- Set the robot controller and start the simulation
     with env:
         robot = env.GetRobots()[0]
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
 
         env.StopSimulation()
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        env.StartSimulation(timestep=0.0005)
+        env.StartSimulation(timestep=0.001)
+
+    time.sleep(1)
+
+    checkCollision(robot,['Body_LHP','Body_LHR','Body_LHY'])
+
+
+
+
 

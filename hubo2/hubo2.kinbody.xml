@@ -61,7 +61,7 @@
 	<offsetfrom>Body_HDY</offsetfrom>
 	<anchor>0.000001381680 -0.000002908363 -0.052749591985</anchor>
 	<axis>0 0 1</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-90 90</limitsdeg>
 </Joint>
 	<adjacent>Body_HDY Body_Torso</adjacent>
 
@@ -88,7 +88,7 @@
 	<offsetfrom>Body_HDR</offsetfrom>
 	<anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
 	<axis>1 0 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-30 30</limitsdeg>
 </Joint>
 	<adjacent>Body_HDR Body_HDY</adjacent>
 
@@ -120,7 +120,7 @@
 	<offsetfrom>Body_HDP</offsetfrom>
 	<anchor>-0.011161499785 -0.000235808076 -0.028812183074</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-30 30</limitsdeg>
 </Joint>
 	<adjacent>Body_HDP Body_HDR</adjacent>
 	<adjacent>Body_HDY Body_HDP</adjacent>
@@ -158,7 +158,7 @@
 	<offsetfrom>Body_Hip</offsetfrom>
 	<anchor>0.011068912725 0.000017567568 0.044092693677</anchor>
 	<axis>0 0 1</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-100 100</limitsdeg>
 </Joint>
 	<adjacent>Body_Hip Body_Torso</adjacent>
 
@@ -200,16 +200,17 @@
 	<offsetfrom>Body_LHY</offsetfrom>
 	<anchor>-0.010679328026 -0.000069644812 0.050419213512</anchor>
 	<axis>0 0 1</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-90 90</limitsdeg>
 </Joint>
 	<adjacent>Body_LHY Body_Hip</adjacent>
 
 <body name="Body_RHY" type="dynamic">
-	<offsetfrom>Body_Hip</offsetfrom><!--Body_RHY Parent Center of Mass to Base -->
+    <offsetfrom>Body_Hip</offsetfrom>
+    <!--Body_RHY Parent Center of Mass to Base -->
 	<translation>0.011068912725 0.000017567568 0.044092693677</translation>
-<!--Body_RHY Parent to Current -->
+    <!--Body_RHY Parent to Current -->
 	<translation>-0.000009992379 -0.088500007621 -0.086588867160</translation>
-<!--Body_RHY Base to Center of Mass -->
+    <!--Body_RHY Base to Center of Mass -->
 	<translation>0.010679328026 -0.000069644812 -0.050419213512</translation>
 	<geom type="trimesh">
 		<translation>-0.010679328026 0.000069644812 0.050419213512</translation>
@@ -242,7 +243,7 @@
 	<offsetfrom>Body_RHY</offsetfrom>
 	<anchor>-0.010679328026 0.000069644812 0.050419213512</anchor>
 	<axis>0 0 1</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-90 90</limitsdeg>
 </Joint>
 	<adjacent>Body_RHY Body_Hip</adjacent>
 
@@ -279,7 +280,7 @@
 	<offsetfrom>Body_LHR</offsetfrom>
 	<anchor>-0.013710070529 -0.011029879677 0.011997271412</anchor>
 	<axis>1 0 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-30 30</limitsdeg>
 </Joint>
 	<adjacent>Body_LHR Body_LHY</adjacent>
 	<adjacent>Body_LHR Body_Hip</adjacent>
@@ -319,7 +320,7 @@
 	<offsetfrom>Body_RHR</offsetfrom>
 	<anchor>-0.013710070529 0.011029879677 0.011997271412</anchor>
 	<axis>1 0 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-30 30</limitsdeg>
 </Joint>
 	<adjacent>Body_RHR Body_RHY</adjacent>
 	<adjacent>Body_RHR Body_Hip</adjacent>
@@ -357,7 +358,7 @@
 	<offsetfrom>Body_LHP</offsetfrom>
 	<anchor>-0.020290849195 -0.060372996030 0.190372003572</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-80 80</limitsdeg>
 </Joint>
 	<adjacent>Body_LHP Body_LHR</adjacent>
 	<adjacent>Body_LHP Body_LHY</adjacent>
@@ -395,7 +396,7 @@
 	<offsetfrom>Body_RHP</offsetfrom>
 	<anchor>-0.020290849195 0.060372996030 0.190372003572</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-80 80</limitsdeg>
 </Joint>
 	<adjacent>Body_RHP Body_RHR</adjacent>
 	<adjacent>Body_RHP Body_RHY</adjacent>
@@ -433,7 +434,7 @@
 	<offsetfrom>Body_LKP</offsetfrom>
 	<anchor>-0.017964195566 0.018555646442 0.146319183413</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-5 120</limitsdeg>
 </Joint>
 	<adjacent>Body_LKP Body_LHP</adjacent>
 
@@ -470,7 +471,7 @@
 	<offsetfrom>Body_RKP</offsetfrom>
 	<anchor>-0.017964195566 -0.018555646442 0.146319183413</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-5 150</limitsdeg>
 </Joint>
 	<adjacent>Body_RKP Body_RHP</adjacent>
 
