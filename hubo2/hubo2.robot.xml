@@ -26,18 +26,4 @@
         <direction>0 0 -1</direction>
     </Manipulator>
 
-    <AttachedSensor name="leftFootForceSensor">
-        <link>Body_LAR</link>
-        <sensor type="ForceSensor">
-            <joint>LAR</joint>
-        </sensor>
-    </AttachedSensor>
-    
-    <AttachedSensor name="rightFootForceSensor">
-        <link>Body_RAR</link>
-        <sensor type="ForceSensor">
-            <joint>RAR</joint>
-        </sensor>
-    </AttachedSensor>
-
 </Robot>
