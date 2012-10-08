@@ -1,0 +1,29 @@
+<Robot name="hubo2">
+    <kinbody file="hubo2.kinbody.xml"/>
+
+    <Manipulator name="leftArm">
+        <base>Torso</base>
+        <effector>Body_LWP</effector>
+        <direction>0 -1 0</direction>
+    </Manipulator>
+
+    <Manipulator name="rightArm">
+        <base>Torso</base>
+        <effector>Body_RWP</effector>
+        <direction>0 1 0</direction>
+    </Manipulator>
+
+    <Manipulator name="leftFoot">
+        <base>Hip</base>
+        <effector>Body_LAR</effector>
+        <direction>0 0 -1</direction>
+    </Manipulator>
+
+
+    <Manipulator name="rightFoot">
+        <base>Hip</base>
+        <effector>Body_RAR</effector>
+        <direction>0 0 -1</direction>
+    </Manipulator>
+
+</Robot>
