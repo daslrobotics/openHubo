@@ -222,25 +222,25 @@
         <limitsdeg>-179.999 179.999</limitsdeg>
     </Joint>
     <adjacent>Body_RHR Body_RHY</adjacent>
-    <adjacent>Body_RHR Body_HPY</adjacent>
+    <adjacent>Body_RHR Body_Hip</adjacent>
 
-    <body name="Body_HPY" type="dynamic">
+    <body name="Body_Hip" type="dynamic">
         <offsetfrom>Body_RHY</offsetfrom>
         <!--Body_RHY Parent Center of Mass to Base -->
             <translation>-0.010679328026 0.000069644812 0.050419213512</translation>
         <!--Body_RHY Parent to Current -->
         <translation>0.000009992379 0.088500007621 0.086588867160</translation>
-        <!--Body_HPY Base to Center of Mass -->
+        <!--Body_Hip Base to Center of Mass -->
         <translation>-0.011068912725 -0.000017567568 -0.044092693677</translation>
         <geom type="trimesh">
             <translation>0.011068912725 0.000017567568 0.044092693677</translation>
-            <render>Body_HPY_1.wrl 1 </render>
-            <data>convhull_HPY_1.wrl 1 </data>
+            <render>Body_Hip_1.wrl 1 </render>
+            <data>convhull_Hip_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>0.011068912725 0.000017567568 0.044092693677</translation>
-            <render>Body_HPY_2.wrl 1 </render>
-            <data>convhull_HPY_2.wrl 1 </data>
+            <render>Body_Hip_2.wrl 1 </render>
+            <data>convhull_Hip_2.wrl 1 </data>
         </geom>
         <mass type="custom">
             <total>4.717592995364</total>
@@ -254,20 +254,20 @@
 
 
     <Joint name="RHY" type="hinge">
-        <body>Body_HPY</body>
+        <body>Body_Hip</body>
         <body>Body_RHY</body>
         <offsetfrom>Body_RHY</offsetfrom>
         <anchor>-0.010679328026 0.000069644812 0.050419213512</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
     </Joint>
-    <adjacent>Body_RHY Body_HPY</adjacent>
+    <adjacent>Body_RHY Body_Hip</adjacent>
 
     <body name="Body_Torso" type="dynamic">
-        <offsetfrom>Body_HPY</offsetfrom>
-        <!--Body_HPY Parent Center of Mass to Base -->
+        <offsetfrom>Body_Hip</offsetfrom>
+        <!--Body_Hip Parent Center of Mass to Base -->
             <translation>0.011068912725 0.000017567568 0.044092693677</translation>
-        <!--Body_HPY Parent to Current -->
+        <!--Body_Hip Parent to Current -->
         <translation>0.000026010024 0.000064876516 0.191500038259</translation>
         <!--Body_Torso Base to Center of Mass -->
         <translation>0.022817253784 0.005993625269 -0.050206919105</translation>
@@ -389,18 +389,18 @@
     <adjacent>Body_HDP Body_HDR</adjacent>
     <adjacent>Body_HDY Body_HDP</adjacent>
 
-    <Joint name="HPY" type="hinge">
+    <Joint name="Hip" type="hinge">
         <body>Body_Torso</body>
-        <body>Body_HPY</body>
-        <offsetfrom>Body_HPY</offsetfrom>
+        <body>Body_Hip</body>
+        <offsetfrom>Body_Hip</offsetfrom>
         <anchor>0.011068912725 0.000017567568 0.044092693677</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
     </Joint>
-    <adjacent>Body_HPY Body_Torso</adjacent>
+    <adjacent>Body_Hip Body_Torso</adjacent>
 
     <body name="Body_LHY" type="dynamic">
-        <offsetfrom>Body_HPY</offsetfrom>
+        <offsetfrom>Body_Hip</offsetfrom>
         <!--Body_LHY Parent Center of Mass to Base -->
         <translation>0.011068912725 0.000017567568 0.044092693677</translation>
         <!--Body_LHY Parent to Current -->
@@ -433,14 +433,14 @@
     </body>
 
     <Joint name="LHY" type="hinge">
-        <body>Body_HPY</body>
+        <body>Body_Hip</body>
         <body>Body_LHY</body>
         <offsetfrom>Body_LHY</offsetfrom>
         <anchor>-0.010679328026 -0.000069644812 0.050419213512</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
     </Joint>
-    <adjacent>Body_LHY Body_HPY</adjacent>
+    <adjacent>Body_LHY Body_Hip</adjacent>
 
 
     <body name="Body_LHR" type="dynamic">
@@ -480,7 +480,7 @@
         <limitsdeg>-179.999 179.999</limitsdeg>
     </Joint>
     <adjacent>Body_LHR Body_LHY</adjacent>
-    <adjacent>Body_LHR Body_HPY</adjacent>
+    <adjacent>Body_LHR Body_Hip</adjacent>
 
     <body name="Body_LHP" type="dynamic">
         <offsetfrom>Body_LHR</offsetfrom>

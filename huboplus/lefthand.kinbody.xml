@@ -104,9 +104,10 @@
         <!-- LWP Center of Mass to Base -->
         <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>	0.011481	-0.007255	-0.049993	</Translation>
+        <RotationAxis>0 1 0 180</RotationAxis>
         <RotationAxis>1 0 0 90</RotationAxis>
         <RotationAxis>0 0 1 90</RotationAxis>
-        <RotationAxis>1 0 0 135</RotationAxis>
+        <RotationAxis>1 0 0 -45</RotationAxis>
         <Translation> .008 0 0</Translation>
     </KinBody>
 

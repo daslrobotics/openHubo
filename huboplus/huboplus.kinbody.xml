@@ -2,18 +2,18 @@
 
 <kinbody name="testbody">
     <modelsdir>models</modelsdir>
-    <body name="Body_TBD" type="dynamic">
+    <body name="Body_Torso" type="dynamic">
 
-        <!--Body_TBD Parent Center of Mass to Base -->
+        <!--Body_Torso Parent Center of Mass to Base -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
-        <!--Body_TBD Parent to Current -->
+        <!--Body_Torso Parent to Current -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
-        <!--Body_TBD Base to Center of Mass -->
+        <!--Body_Torso Base to Center of Mass -->
         <translation>-0.012258116293 -0.002473149928 -0.048635606065</translation>
         <geom type="trimesh">
             <translation>0.012258116293 0.002473149928 0.048635606065</translation>
-            <render>Body_TBD_1.wrl 1 </render>
-            <data>convhull_TBD_1.wrl 1 </data>
+            <render>Body_Torso_1.wrl 1 </render>
+            <data>convhull_Torso_1.wrl 1 </data>
         </geom>
         <mass type="custom">
             <total>7.503338799400</total>
@@ -25,18 +25,18 @@
         </mass>
     </body>
 
-    <body name="Body_THY" type="dynamic">
-        <offsetfrom>Body_TBD</offsetfrom>
-        <!--Body_THY Parent Center of Mass to Base -->
+    <body name="Body_Hip" type="dynamic">
+        <offsetfrom>Body_Torso</offsetfrom>
+        <!--Body_Hip Parent Center of Mass to Base -->
         <translation>0.012258116293 0.002473149928 0.048635606065</translation>
-        <!--Body_THY Parent to Current -->
+        <!--Body_Hip Parent to Current -->
         <translation>0.000008061790 -0.000013409641 -0.201255614828</translation>
-        <!--Body_THY Base to Center of Mass -->
+        <!--Body_Hip Base to Center of Mass -->
         <translation>-0.013850358943 0.000007806523 -0.035461283862</translation>
         <geom type="trimesh">
             <translation>0.013850358943 -0.000007806523 0.035461283862</translation>
-            <render>Body_THY_1.wrl 1 </render>
-            <data>convhull_THY_1.wrl 1 </data>
+            <render>Body_Hip_1.wrl 1 </render>
+            <data>convhull_Hip_1.wrl 1 </data>
         </geom>
         <mass type="custom">
             <total>3.417193968804</total>
@@ -48,17 +48,17 @@
         </mass>
     </body>
 
-    <Joint name="THY" type="hinge">
-        <body>Body_TBD</body>
-        <body>Body_THY</body>
-        <offsetfrom>Body_THY</offsetfrom>
+    <Joint name="Hip" type="hinge">
+        <body>Body_Torso</body>
+        <body>Body_Hip</body>
+        <offsetfrom>Body_Hip</offsetfrom>
         <anchor>0.013850358943 -0.000007806523 0.035461283862</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
     </Joint>
 
     <body name="Body_RHY" type="dynamic">
-        <offsetfrom>Body_THY</offsetfrom>
+        <offsetfrom>Body_Hip</offsetfrom>
         <!--Body_RHY Parent Center of Mass to Base -->
         <translation>0.013850358943 -0.000007806523 0.035461283862</translation>
         <!--Body_RHY Parent to Current -->
@@ -86,7 +86,7 @@
     </body>
 
     <Joint name="RHY" type="hinge">
-        <body>Body_THY</body>
+        <body>Body_Hip</body>
         <body>Body_RHY</body>
         <offsetfrom>Body_RHY</offsetfrom>
         <anchor>-0.034706500276 0.000037480007 0.072615273181</anchor>
@@ -95,7 +95,7 @@
     </Joint>
 
     <body name="Body_LHY" type="dynamic">
-        <offsetfrom>Body_THY</offsetfrom>
+        <offsetfrom>Body_Hip</offsetfrom>
         <!--Body_LHY Parent Center of Mass to Base -->
         <translation>0.013850358943 0.000007806523 0.035461283862</translation>
         <!--Body_LHY Parent to Current -->
@@ -123,7 +123,7 @@
     </body>
 
     <Joint name="LHY" type="hinge">
-        <body>Body_THY</body>
+        <body>Body_Hip</body>
         <body>Body_LHY</body>
         <offsetfrom>Body_LHY</offsetfrom>
         <anchor>-0.034706500276 -0.000037480007 0.072615273181</anchor>
@@ -482,7 +482,7 @@
     </Joint>
 
     <body name="Body_RSP" type="dynamic">
-        <offsetfrom>Body_TBD</offsetfrom>
+        <offsetfrom>Body_Torso</offsetfrom>
         <!--Body_RSP Parent Center of Mass to Base -->
         <translation>0.012258116293 0.002473149928 0.048635606065</translation>
         <!--Body_RSP Parent to Current -->
@@ -505,7 +505,7 @@
     </body>
 
     <Joint name="RSP" type="hinge">
-        <body>Body_TBD</body>
+        <body>Body_Torso</body>
         <body>Body_RSP</body>
         <offsetfrom>Body_RSP</offsetfrom>
         <anchor>-0.016720721524 0.057040679167 -0.000009918731</anchor>
@@ -514,7 +514,7 @@
     </Joint>
 
     <body name="Body_LSP" type="dynamic">
-        <offsetfrom>Body_TBD</offsetfrom>
+        <offsetfrom>Body_Torso</offsetfrom>
         <!--Body_LSP Parent Center of Mass to Base -->
         <translation>0.012258116293 0.002473149928 0.048635606065</translation>
         <!--Body_LSP Parent to Current -->
@@ -537,7 +537,7 @@
     </body>
 
     <Joint name="LSP" type="hinge">
-        <body>Body_TBD</body>
+        <body>Body_Torso</body>
         <body>Body_LSP</body>
         <offsetfrom>Body_LSP</offsetfrom>
         <anchor>-0.016720721524 -0.057040679167 -0.000009918731</anchor>
@@ -867,7 +867,7 @@
     </Joint>
 
     <body name="Body_HNR" type="dynamic">
-        <offsetfrom>Body_TBD</offsetfrom>
+        <offsetfrom>Body_Torso</offsetfrom>
         <!--Body_HNR Parent Center of Mass to Base -->
         <translation>0.012258116293 0.002473149928 0.048635606065</translation>
         <!--Body_HNR Parent to Current -->
@@ -885,7 +885,7 @@
     </body>
 
     <Joint name="HNR" type="hinge">
-        <body>Body_TBD</body>
+        <body>Body_Torso</body>
         <body>Body_HNR</body>
         <offsetfrom>Body_HNR</offsetfrom>
         <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
@@ -928,16 +928,16 @@
     <!-- Adjacent Bodies -->
 
     <!-- Torso -->
-    <!-- Body_TBD -->
-    <adjacent>Body_TBD Body_THY</adjacent>
-    <adjacent>Body_TBD Body_RSP</adjacent>
-    <adjacent>Body_TBD Body_LSP</adjacent>
-    <adjacent>Body_TBD Body_HNP</adjacent>
-    <adjacent>Body_TBD Body_HNR</adjacent>
+    <!-- Body_Torso -->
+    <adjacent>Body_Torso Body_Hip</adjacent>
+    <adjacent>Body_Torso Body_RSP</adjacent>
+    <adjacent>Body_Torso Body_LSP</adjacent>
+    <adjacent>Body_Torso Body_HNP</adjacent>
+    <adjacent>Body_Torso Body_HNR</adjacent>
 
-    <!-- Body_THY -->
-    <adjacent>Body_THY Body_RHY</adjacent>
-    <adjacent>Body_THY Body_LHY</adjacent>
+    <!-- Body_Hip -->
+    <adjacent>Body_Hip Body_RHY</adjacent>
+    <adjacent>Body_Hip Body_LHY</adjacent>
 
     <!-- Right Leg -->
     <!-- Body_RHY -->
