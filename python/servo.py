@@ -26,6 +26,14 @@ def testMotionRange(robot,jointName,steps=50,timestep=.05):
         robot.GetController().SendCommand('setpos1 {} {}'.format(joint.GetDOFIndex(),k))
         time.sleep(timestep)
 
+def sendPose(robot,poseDict):
+    """ For a dictionary of joint names and angles, set the robot to that pose
+    (step response)."""
+    #TODO: filter input for smooth posing?
+    for k in poseDict.keys():
+        robot.GetController().SendCommand('setpos1 {} {} '.format(robot.GetJoint(k).GetDOFIndex(),poseDict[k]))
+
+    
 def sendServoCommandByLimb(robot,trunk=zeros(4),la=zeros(7),ra=zeros(7),ll=zeros(6),rl=zeros(6),lf=zeros(15),rf=zeros(15)):
     """ Build up a full-body pose by limb.
     This function builds a trajectory by limb, allowing you to work with

@@ -144,7 +144,7 @@
 	</mass>
 </body>
 
-<Joint name="Hip" type="hinge">
+<Joint name="HPY" type="hinge">
 	<body>Body_Torso</body>
 	<body>Body_Hip</body>
 	<offsetfrom>Body_Hip</offsetfrom>
@@ -989,14 +989,6 @@
 		<render>Body_LWR_1.wrl 1 </render>
 		<data>convhull_LWR_1.wrl 1 </data>
 	</geom>
-	<mass type="custom">
-		<total>0.003017046714</total>
-		<inertia>
-			0.000000032058 0.000000000000 0.000000000000
-			0.000000000000 0.000000040050 0.000000000000
-			0.000000000000 0.000000000000 0.000000063506
-		</inertia>
-	</mass>
 </body>
 
 <Joint name="LWR" type="hinge">

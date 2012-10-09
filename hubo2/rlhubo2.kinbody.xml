@@ -389,7 +389,7 @@
     <adjacent>Body_HDP Body_HDR</adjacent>
     <adjacent>Body_HDY Body_HDP</adjacent>
 
-    <Joint name="Hip" type="hinge">
+    <Joint name="HPY" type="hinge">
         <body>Body_Torso</body>
         <body>Body_Hip</body>
         <offsetfrom>Body_Hip</offsetfrom>
@@ -1046,7 +1046,6 @@
         <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-35 35</limitsdeg>
-        <maxtorque>1000</maxtorque>
     </Joint>
     <adjacent>Body_RWR Body_RWY</adjacent>
 
@@ -1126,7 +1125,6 @@
         <anchor>0.001673053872 0.002266301384 0.035188254309</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-35 35</limitsdeg>
-        <maxtorque>1000</maxtorque>
     </Joint>
 
     <kinbody file="lefthand.xml"/>
