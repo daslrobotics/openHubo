@@ -53,4 +53,4 @@ if __name__=='__main__':
     #Begin experimental sandbox here:
     for k in range(90):
         time.sleep(.1)
-        robot.GetController().SendCommand('setpos1 {} {}'.format(robot.GetJoint('RSP').GetDOFIndex(),-k))
+        robot.GetController().SendCommand('setpos1 {} {}'.format(robot.GetJoint('REP').GetDOFIndex(),-k))
