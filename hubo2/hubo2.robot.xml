@@ -1,6 +1,6 @@
 <Robot name="hubo2">
     <kinbody file="hubo2.kinbody.xml">
-        <translation>0 0 1.5</translation>
+        <translation>0 0 1.1</translation>
     </kinbody>
 
     <Manipulator name="leftArm">

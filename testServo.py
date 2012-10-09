@@ -41,7 +41,7 @@ if __name__=='__main__':
     with env:
         robot = env.GetRobots()[0]
         robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'bullet')
+        collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
 
         env.StopSimulation()
@@ -51,9 +51,10 @@ if __name__=='__main__':
     time.sleep(2)
 
     #Begin experimental sandbox here:
-        
+    report=CollisionReport() 
     for k in range(90):
         time.sleep(.1)
         robot.GetController().SendCommand('setpos1 {} {}'.format(robot.GetJoint('REP').GetDOFIndex(),-k))
-        print robot.CheckSelfCollision()
+        #print robot.CheckSelfCollision(report)
+        #print report.plink1, report.plink2
 

@@ -343,14 +343,6 @@
         <translation>-0.000000983954 0.000000000000 0.100803404580</translation>
         <!--Body_HDR Base to Center of Mass -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
-        <mass type="custom">
-            <total>0.003017046714</total>
-            <inertia>
-                0.000000032058 0.000000000000 0.000000000000
-                0.000000000000 0.000000040050 0.000000000000
-                0.000000000000 0.000000000000 0.000000063506
-            </inertia>
-        </mass>
     </body>
 
     <Joint name="HDR" type="hinge">
@@ -1020,14 +1012,6 @@
             <render>Body_LWR_1.wrl 1 </render>
             <data>convhull_LWR_1.wrl 1 </data>
         </geom>
-        <mass type="custom">
-            <total>0.003017046714</total>
-            <inertia>
-                0.000000032058 0.000000000000 0.000000000000
-                0.000000000000 0.000000040050 0.000000000000
-                0.000000000000 0.000000000000 0.000000063506
-            </inertia>
-        </mass>
     </body>
 
     <Joint name="LWR" type="hinge">
@@ -1053,14 +1037,6 @@
             <render>Body_RWR_1.wrl 1 </render>
             <data>convhull_RWR_1.wrl 1 </data>
         </geom>
-        <mass type="custom">
-            <total>0.003017046714</total>
-            <inertia>
-                0.000000032058 0.000000000000 0.000000000000
-                0.000000000000 0.000000040050 0.000000000000
-                0.000000000000 0.000000000000 0.000000063506
-            </inertia>
-        </mass>
     </body>
 
     <Joint name="RWR" type="hinge">
