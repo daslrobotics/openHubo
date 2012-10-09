@@ -27,19 +27,41 @@ def checkCollision(robot,bodies):
     #Note that this IGNORES adjacent bodies if invoked this way. Therefore, we
     # can use it to directly inspect the model for joint body collisions.
     env=robot.GetEnv()
-    print "Checking collisions for ",bodies[0]
+
     if len(bodies)>1:
-        for body in bodies[1:]:
-            print body
-            print env.CheckCollision(robot.GetLink(body),robot.GetLink(bodies[0]))
+        for k in range(0,len(bodies)-1):
+            #print "Checking collisions for",bodies[k]
+            for body in bodies[k+1:]:
+                #print body
+                res=env.CheckCollision(robot.GetLink(body),robot.GetLink(bodies[k]))
+                if res==True:
+                    #print "Collision between {} and {}".format(body,bodies[k])
+                    return True
+    return False
+
 
 def checklimits(robot,joint,checkbodies):
     env=robot.GetEnv()
-    for k in range(0,180):
+    testAngles=array(range(-180,180))
+    N=len(testAngles)
+    results=array([False for x in range(N)])
+    regions=array(zeros(N))
+    for k in range(0,N):
         #Go to a check position
-        robot.SetDOFValues(float(k)*pi/180,joint.GetDOFIndex())
-        for body in checkbodies:
-            print k
+        robot.SetDOFValues([float(testAngles[k])*pi/180],[joint.GetDOFIndex()])
+        test=checkCollision(robot,checkbodies)
+        #print "Joint angle {} colliding: {}".format(testAngles[k],test)
+        results[k]=test
+        if k>0 and results[k] != results[k-1]:
+            regions[k]=regions[k-1]+1
+        else:
+            regions[k]=regions[k-1]
+        #print "Region {}".format(regions[k])
+
+
+    robot.SetDOFValues([0],[joint.GetDOFIndex()])
+    
+    return testAngles[where(results==False)]
 
 
 if __name__=='__main__':
@@ -65,8 +87,23 @@ if __name__=='__main__':
 
     time.sleep(1)
 
-    checkCollision(robot,['Body_LHP','Body_LHR','Body_LHY'])
+    resultsLHR=checklimits(robot,robot.GetJoint('LHR'),['Body_LHY','Body_LHP',])
+    print min(resultsLHR),max(resultsLHR)
+    resultsLHP=checklimits(robot,robot.GetJoint('LHP'),['Body_LHY','Body_LHP'])
+    print min(resultsLHP),max(resultsLHP)
+    resultsLKP=checklimits(robot,robot.GetJoint('LKP'),['Body_LHP','Body_LKP',])
+    print min(resultsLKP),max(resultsLKP)
+    resultsLAP=checklimits(robot,robot.GetJoint('LAP'),['Body_LAR','Body_LKP','Body_LAP'])
+    print min(resultsLAP),max(resultsLAP)
+    resultsLAR=checklimits(robot,robot.GetJoint('LAR'),['Body_LAR','Body_LKP','Body_LAP'])
+    print min(resultsLAR),max(resultsLAR)
 
+    #resultsLSR=checklimits(robot,robot.GetJoint('LSR'),['Body_LSR','Body_LSP'])
+    #print min(resultsLSR),max(resultsLSR)
+    resultsLEP=checklimits(robot,robot.GetJoint('LEP'),['Body_LSY','Body_LWY'])
+    print min(resultsLEP),max(resultsLEP)
+    resultsLWP=checklimits(robot,robot.GetJoint('LWP'),['Body_LWP','Body_LWY'])
+    print min(resultsLWP),max(resultsLWP)
 
 
 

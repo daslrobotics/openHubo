@@ -191,6 +191,11 @@
             <render>Body_Torso_1.wrl 1 </render>
             <data>convhull_Torso_1.wrl 1 </data>
         </geom>
+        <geom type="trimesh">
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <render>Body_Torso_2.wrl 1 </render>
+            <data>convhull_Torso_2.wrl 1 </data>
+        </geom>
         <mass type="custom">
             <total>7.503338799400</total>
             <inertia>
@@ -617,6 +622,11 @@
             <render>Body_RSY_1.wrl 1 </render>
             <data>convhull_RSY_1.wrl 1 </data>
         </geom>
+        <geom type="trimesh">
+            <translation>-0.004561211264 0.000031057603 0.090782377537</translation>
+            <render>Body_RSY_2.wrl 1 </render>
+            <data>convhull_RSY_2.wrl 1 </data>
+        </geom>
         <mass type="custom">
             <total>1.154608561577</total>
             <inertia>
@@ -648,6 +658,11 @@
             <translation>-0.004561211264 -0.000031057603 0.090782377537</translation>
             <render>Body_LSY_1.wrl 1 </render>
             <data>convhull_LSY_1.wrl 1 </data>
+        </geom>
+        <geom type="trimesh">
+            <translation>-0.004561211264 -0.000031057603 0.090782377537</translation>
+            <render>Body_LSY_2.wrl 1 </render>
+            <data>convhull_LSY_2.wrl 1 </data>
         </geom>
         <mass type="custom">
             <total>1.154608561577</total>
@@ -746,6 +761,11 @@
             <render>Body_RWY_1.wrl 1 </render>
             <data>convhull_RWY_1.wrl 1 </data>
         </geom>
+        <geom type="trimesh">
+            <translation>0.001220192079 0.000635233335 0.023804318643</translation>
+            <render>Body_RWY_2.wrl 1 </render>
+            <data>convhull_RWY_2.wrl 1 </data>
+        </geom>
         <mass type="custom">
             <total>0.537738149550</total>
             <inertia>
@@ -777,6 +797,11 @@
             <translation>0.001220192079 -0.000635233335 0.023804318643</translation>
             <render>Body_LWY_1.wrl 1 </render>
             <data>convhull_LWY_1.wrl 1 </data>
+        </geom>
+        <geom type="trimesh">
+            <translation>0.001220192079 -0.000635233335 0.023804318643</translation>
+            <render>Body_LWY_2.wrl 1 </render>
+            <data>convhull_LWY_2.wrl 1 </data>
         </geom>
         <mass type="custom">
             <total>0.537738149550</total>
