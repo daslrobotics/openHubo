@@ -53,7 +53,7 @@
         </mass>
     </body>
 
-    <Joint name="Hip" type="hinge">
+    <Joint name="HPY" type="hinge">
         <body>Body_Torso</body>
         <body>Body_Hip</body>
         <offsetfrom>Body_Hip</offsetfrom>
@@ -899,14 +899,6 @@
         <translation>0.000000000000 -0.000020548820 0.148299146751</translation>
         <!--Body_HNR Base to Center of Mass -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
-        <mass type="custom">
-            <total>0.001935071767</total>
-            <inertia>
-                0.000000040072 0.000000000000 0.000000000000
-                0.000000000000 0.000000040072 0.000000000000
-                0.000000000000 0.000000000000 0.000000073745
-            </inertia>
-        </mass>
     </body>
 
     <Joint name="HNR" type="hinge">
