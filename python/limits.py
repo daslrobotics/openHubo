@@ -86,23 +86,29 @@ if __name__=='__main__':
         env.StartSimulation(timestep=0.001)
 
     time.sleep(1)
-
     resultsLHR=checklimits(robot,robot.GetJoint('LHR'),['Body_LHY','Body_LHP',])
+    print 'LHR'
     print min(resultsLHR),max(resultsLHR)
     resultsLHP=checklimits(robot,robot.GetJoint('LHP'),['Body_LHY','Body_LHP'])
+    print 'LHP'
     print min(resultsLHP),max(resultsLHP)
     resultsLKP=checklimits(robot,robot.GetJoint('LKP'),['Body_LHP','Body_LKP',])
+    print 'LKP'
     print min(resultsLKP),max(resultsLKP)
     resultsLAP=checklimits(robot,robot.GetJoint('LAP'),['Body_LAR','Body_LKP','Body_LAP'])
+    print 'LAP'
     print min(resultsLAP),max(resultsLAP)
     resultsLAR=checklimits(robot,robot.GetJoint('LAR'),['Body_LAR','Body_LKP','Body_LAP'])
+    print 'LAR'
     print min(resultsLAR),max(resultsLAR)
 
     #resultsLSR=checklimits(robot,robot.GetJoint('LSR'),['Body_LSR','Body_LSP'])
     #print min(resultsLSR),max(resultsLSR)
     resultsLEP=checklimits(robot,robot.GetJoint('LEP'),['Body_LSY','Body_LWY'])
+    print 'LEP'
     print min(resultsLEP),max(resultsLEP)
     resultsLWP=checklimits(robot,robot.GetJoint('LWP'),['Body_LWP','Body_LWY'])
+    print 'LWP'
     print min(resultsLWP),max(resultsLWP)
 
 
