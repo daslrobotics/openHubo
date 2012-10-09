@@ -20,6 +20,14 @@
             <render>Body_RAR_3.wrl 1 </render>
             <data>convhull_RAR_3.wrl 1 </data>
         </geom>
+        <Geom type="box" >
+            <translation>0.042765281437 0.002531569047 0.063737248723</translation>
+        <Translation>-.04 0 -.105</Translation> 
+            <Translation>-0.0005 -.005 0.008</Translation> 
+            <extents>.1075 .062 .008</extents>
+            <transparency>0.3</transparency>
+            <diffuseColor>0.3 0.3 0.0</diffuseColor>
+        </Geom>
         <mass type="custom">
             <total>0.655131592263</total>
             <inertia>
@@ -615,6 +623,15 @@
             <render>Body_LAR_3.wrl 1 </render>
             <data>convhull_LAR_3.wrl 1 </data>
         </geom>
+        <Geom type="box" >
+            <Translation>-.04 0 -.105</Translation> 
+            <translation>0.042765281437 -0.002531569047 0.063737248723</translation>
+            <Translation>-.0005 .005 0.008</Translation> 
+            <extents>.1075 .062 .008</extents>
+            <transparency>0.3</transparency>
+            <diffuseColor>0.3 0.3 0.0</diffuseColor>
+        </Geom>
+
         <mass type="custom">
             <total>0.655131592263</total>
             <inertia>
@@ -1053,6 +1070,7 @@
         <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-35 35</limitsdeg>
+        <maxtorque>1000</maxtorque>
     </Joint>
     <adjacent>Body_RWR Body_RWY</adjacent>
 
@@ -1132,6 +1150,7 @@
         <anchor>0.001673053872 0.002266301384 0.035188254309</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-35 35</limitsdeg>
+        <maxtorque>1000</maxtorque>
     </Joint>
 
     <kinbody file="lefthand.xml"/>

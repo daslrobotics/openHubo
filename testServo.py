@@ -33,7 +33,7 @@ if __name__=='__main__':
 
     env = Environment()
     env.SetViewer('qtcoin')
-    env.SetDebugLevel(4)
+    env.SetDebugLevel(3)
     env.Load(file_env)
 
 
@@ -41,7 +41,7 @@ if __name__=='__main__':
     with env:
         robot = env.GetRobots()[0]
         robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
+        collisionChecker = RaveCreateCollisionChecker(env,'bullet')
         env.SetCollisionChecker(collisionChecker)
 
         env.StopSimulation()
@@ -51,6 +51,9 @@ if __name__=='__main__':
     time.sleep(2)
 
     #Begin experimental sandbox here:
+        
     for k in range(90):
         time.sleep(.1)
         robot.GetController().SendCommand('setpos1 {} {}'.format(robot.GetJoint('REP').GetDOFIndex(),-k))
+        print robot.CheckSelfCollision()
+
