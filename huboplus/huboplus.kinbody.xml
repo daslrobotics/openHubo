@@ -547,7 +547,7 @@
         <offsetfrom>Body_LSP</offsetfrom>
         <anchor>-0.016720721524 -0.057040679167 -0.000009918731</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-120 120</limitsdeg>
+        <limitsdeg>-179.999 179.999</limitsdeg>
     </Joint>
 
     <body name="Body_RSR" type="dynamic">

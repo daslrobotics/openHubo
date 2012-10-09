@@ -44,7 +44,7 @@ def checklimits(robot,joint,checkbodies):
     env=robot.GetEnv()
     testAngles=array(range(-180,180))
     N=len(testAngles)
-    results=array([False for x in range(N)])
+    results=array([True for x in range(N)])
     regions=array(zeros(N))
     for k in range(0,N):
         #Go to a check position
@@ -60,9 +60,13 @@ def checklimits(robot,joint,checkbodies):
 
 
     robot.SetDOFValues([0],[joint.GetDOFIndex()])
-    
-    return testAngles[where(results==False)]
-
+    results=testAngles[where(results==False)]
+    print joint
+    if len(results)>0:
+        print min(results),max(results)
+    else:
+        print "Joint always in collision (check geometry)"
+    return results
 
 if __name__=='__main__':
     #-- Read the name of the xml file passed as an argument
@@ -74,7 +78,7 @@ if __name__=='__main__':
 
     env = Environment()
     env.SetViewer('qtcoin')
-    env.SetDebugLevel(4)
+    env.SetDebugLevel(1)
     env.Load(file_env)
 
     with env:
@@ -87,30 +91,12 @@ if __name__=='__main__':
 
     time.sleep(1)
     resultsLHR=checklimits(robot,robot.GetJoint('LHR'),['Body_LHY','Body_LHP',])
-    print 'LHR'
-    print min(resultsLHR),max(resultsLHR)
     resultsLHP=checklimits(robot,robot.GetJoint('LHP'),['Body_LHY','Body_LHP'])
-    print 'LHP'
-    print min(resultsLHP),max(resultsLHP)
     resultsLKP=checklimits(robot,robot.GetJoint('LKP'),['Body_LHP','Body_LKP',])
-    print 'LKP'
-    print min(resultsLKP),max(resultsLKP)
     resultsLAP=checklimits(robot,robot.GetJoint('LAP'),['Body_LAR','Body_LKP','Body_LAP'])
-    print 'LAP'
-    print min(resultsLAP),max(resultsLAP)
     resultsLAR=checklimits(robot,robot.GetJoint('LAR'),['Body_LAR','Body_LKP','Body_LAP'])
-    print 'LAR'
-    print min(resultsLAR),max(resultsLAR)
-
-    #resultsLSR=checklimits(robot,robot.GetJoint('LSR'),['Body_LSR','Body_LSP'])
-    #print min(resultsLSR),max(resultsLSR)
-    resultsLEP=checklimits(robot,robot.GetJoint('LEP'),['Body_LSY','Body_LWY'])
-    print 'LEP'
-    print min(resultsLEP),max(resultsLEP)
+    resultsLSR=checklimits(robot,robot.GetJoint('LSR'),['Body_LSR','Body_LSP'])
+    resultsLEP=checklimits(robot,robot.GetJoint('LEP'),['Body_LSY','Body_LEP'])
     resultsLWP=checklimits(robot,robot.GetJoint('LWP'),['Body_LWP','Body_LWY'])
-    print 'LWP'
-    print min(resultsLWP),max(resultsLWP)
-
-
-
+    resultsLWR=checklimits(robot,robot.GetJoint('LWR'),['Body_LWP','Body_LWY'])
 

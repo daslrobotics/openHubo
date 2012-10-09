@@ -341,7 +341,7 @@
 	<offsetfrom>Body_LHP</offsetfrom>
 	<anchor>-0.020290849195 -0.060372996030 0.190372003572</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-80 80</limitsdeg>
+        <limitsdeg>-85 92</limitsdeg>
 </Joint>
 	<adjacent>Body_LHP Body_LHR</adjacent>
 	<adjacent>Body_LHP Body_LHY</adjacent>
@@ -377,7 +377,7 @@
 	<offsetfrom>Body_RHP</offsetfrom>
 	<anchor>-0.020290849195 0.060372996030 0.190372003572</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-80 80</limitsdeg>
+        <limitsdeg>-85 92</limitsdeg>
 </Joint>
 	<adjacent>Body_RHP Body_RHR</adjacent>
 	<adjacent>Body_RHP Body_RHY</adjacent>
@@ -413,7 +413,7 @@
 	<offsetfrom>Body_LKP</offsetfrom>
 	<anchor>-0.017964195566 0.018555646442 0.146319183413</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-5 120</limitsdeg>
+        <limitsdeg>-4 149</limitsdeg>
 </Joint>
 	<adjacent>Body_LKP Body_LHP</adjacent>
 
@@ -448,7 +448,7 @@
 	<offsetfrom>Body_RKP</offsetfrom>
 	<anchor>-0.017964195566 -0.018555646442 0.146319183413</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-5 150</limitsdeg>
+        <limitsdeg>-4 149</limitsdeg>
 </Joint>
 	<adjacent>Body_RKP Body_RHP</adjacent>
 
@@ -479,7 +479,7 @@
 	<offsetfrom>Body_LAP</offsetfrom>
 	<anchor>-0.007243232746 0.041380876958 -0.013849604743</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-74 97</limitsdeg>
 </Joint>
 	<adjacent>Body_LAP Body_LKP</adjacent>
 
@@ -510,7 +510,7 @@
 	<offsetfrom>Body_RAP</offsetfrom>
 	<anchor>-0.007243232746 -0.041380876958 -0.013849604743</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-74 97</limitsdeg>
 </Joint>
 	<adjacent>Body_RAP Body_RKP</adjacent>
 
@@ -549,7 +549,7 @@
 	<offsetfrom>Body_LAR</offsetfrom>
 	<anchor>0.042765281437 -0.002531569047 0.063737248723</anchor>
 	<axis>1 0 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-11 11</limitsdeg>
 </Joint>
 	<adjacent>Body_LAR Body_LAP</adjacent>
 	<adjacent>Body_LAR Body_LKP</adjacent>
@@ -589,7 +589,7 @@
 	<offsetfrom>Body_RAR</offsetfrom>
 	<anchor>0.042765281437 0.002531569047 0.063737248723</anchor>
 	<axis>1 0 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-11 11</limitsdeg>
 </Joint>
 	<adjacent>Body_RAR Body_RAP</adjacent>
 	<adjacent>Body_RAR Body_RKP</adjacent>
@@ -751,7 +751,7 @@
 	<offsetfrom>Body_LSY</offsetfrom>
 	<anchor>-0.007526422951 0.001938510205 0.089454011601</anchor>
 	<axis>0 0 1</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-4 180</limitsdeg>
 </Joint>
 	<adjacent>Body_LSY Body_LSR</adjacent>
 
@@ -786,7 +786,7 @@
 	<offsetfrom>Body_RSY</offsetfrom>
 	<anchor>-0.007526422951 -0.001938510205 0.089454011601</anchor>
 	<axis>0 0 1</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-180 4</limitsdeg>
 </Joint>
 	<adjacent>Body_RSY Body_RSR</adjacent>
 
@@ -817,7 +817,7 @@
 	<offsetfrom>Body_LEP</offsetfrom>
 	<anchor>0.013773673042 0.006562829041 0.019736578566</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-143 4</limitsdeg>
 </Joint>
 	<adjacent>Body_LEP Body_LSY</adjacent>
 
@@ -848,7 +848,7 @@
 	<offsetfrom>Body_REP</offsetfrom>
 	<anchor>0.013773673042 -0.006562829041 0.019736578566</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-143 4</limitsdeg>
 </Joint>
 	<adjacent>Body_REP Body_RSY</adjacent>
 
@@ -951,7 +951,7 @@
 	<offsetfrom>Body_LWR</offsetfrom>
 	<anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
 	<axis>1 0 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-38 39</limitsdeg>
 </Joint>
 	<adjacent>Body_LWR Body_LWY</adjacent>
 
@@ -982,7 +982,7 @@
 	<offsetfrom>Body_RWR</offsetfrom>
 	<anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
 	<axis>1 0 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-39 38</limitsdeg>
 </Joint>
 	<adjacent>Body_RWR Body_RWY</adjacent>
 
@@ -1017,7 +1017,7 @@
 	<offsetfrom>Body_LWP</offsetfrom>
 	<anchor>0.001673053872 -0.002266301384 0.035188254309</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-41 36</limitsdeg>
 </Joint>
 	<adjacent>Body_LWP Body_LWR</adjacent>
 	<adjacent>Body_LWP Body_LWY</adjacent>
@@ -1055,7 +1055,7 @@
 	<offsetfrom>Body_RWP</offsetfrom>
 	<anchor>0.001673053872 0.002266301384 0.035188254309</anchor>
 	<axis>0 1 0</axis>
-	<limitsdeg>-179.999 179.999</limitsdeg>
+	<limitsdeg>-41 36</limitsdeg>
 </Joint>
 
 <kinbody file="lefthand.xml"/>
