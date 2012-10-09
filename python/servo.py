@@ -12,11 +12,11 @@ import time
 #TODO: Work with the concept of activeDOF?
 
 def testMotionRange(robot,jointName,steps=50,timestep=.05):
-""" Demonstrate the range of motion of a joint.
-        This quick test shows the limit-checking of the servo plugin.
-        It attempts to reach +/-180 deg. for each joint.  However, the actual
-        reference position will be clipped to within a few degrees of the
-        limits."""
+    """ Demonstrate the range of motion of a joint.
+    This quick test shows the limit-checking of the servo plugin.
+    It attempts to reach +/-180 deg. for each joint.  However, the actual
+    reference position will be clipped to within a few degrees of the
+    limits."""
     joint=robot.GetJoint(jointName)
     dq=360.0
     q0=-180.0
@@ -27,10 +27,10 @@ def testMotionRange(robot,jointName,steps=50,timestep=.05):
         time.sleep(timestep)
 
 def sendServoCommandByLimb(robot,trunk=zeros(4),la=zeros(7),ra=zeros(7),ll=zeros(6),rl=zeros(6),lf=zeros(15),rf=zeros(15)):
-""" Build up a full-body pose by limb.
-        This function builds a trajectory by limb, allowing you to work with
-        arms, legs, and fingers independently. It's not the most efficient
-        implementation, but it can be convenient to hack with."""
+    """ Build up a full-body pose by limb.
+    This function builds a trajectory by limb, allowing you to work with
+    arms, legs, and fingers independently. It's not the most efficient
+    implementation, but it can be convenient to hack with."""
     #Ugly method of joining up manipulator arrays
     #TODO: Error checking in array length?
     joints=trunk.copy()
@@ -42,10 +42,10 @@ def sendServoCommandByLimb(robot,trunk=zeros(4),la=zeros(7),ra=zeros(7),ll=zeros
     #for f in range(0,60):
     #    print "{}: {}".format(robot.GetJointFromDOFIndex(f).GetName(),joints[f])
 
-def sendServoCommand(robot,raw):
-""" Send an array of servo positions directly to the robot. """
+def sendServoCommand(robot,raw=array(zeros(60))):
+    """ Send an array of servo positions directly to the robot. """
     #build command string to pass to the servo controller.
-    positions=array(zeros(len(robot.GetDOF())))
+    positions=array(zeros(robot.GetDOF()))
     for k in range(len(raw)):
         positions[k]=raw[k]
 
@@ -120,7 +120,7 @@ if __name__=='__main__':
     with env:
         robot = env.GetRobots()[0]
         robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'bullet')
+        collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
 
         env.StopSimulation()

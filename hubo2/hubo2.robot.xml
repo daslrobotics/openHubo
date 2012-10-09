@@ -1,5 +1,7 @@
 <Robot name="hubo2">
-    <kinbody file="hubo2.kinbody.xml"/>
+    <kinbody file="hubo2.kinbody.xml">
+        <translation>0 0 1.2</translation>
+    </kinbody>
 
     <Manipulator name="leftArm">
         <base>Body_Torso</base>
@@ -18,7 +20,6 @@
         <effector>Body_LAR</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
-
 
     <Manipulator name="rightFoot">
         <base>Body_Hip</base>

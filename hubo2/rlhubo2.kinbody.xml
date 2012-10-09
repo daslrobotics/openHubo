@@ -106,7 +106,7 @@
     <body name="Body_RHP" type="dynamic">
         <offsetfrom>Body_RKP</offsetfrom>
         <!--Body_RKP Parent Center of Mass to Base -->
-            <translation>-0.017964195566 -0.018555646442 0.146319183413</translation>
+        <translation>-0.017964195566 -0.018555646442 0.146319183413</translation>
         <!--Body_RKP Parent to Current -->
         <translation>-0.000007056145 0.075000000000 0.299932496470</translation>
         <!--Body_RHP Base to Center of Mass -->
@@ -144,7 +144,7 @@
     <body name="Body_RHR" type="dynamic">
         <offsetfrom>Body_RHP</offsetfrom>
         <!--Body_RHP Parent Center of Mass to Base -->
-            <translation>-0.020290849195 0.060372996030 0.190372003572</translation>
+        <translation>-0.020290849195 0.060372996030 0.190372003572</translation>
         <!--Body_RHP Parent to Current -->
         <translation>0.000015857850 -0.054000000000 -0.000084613594</translation>
         <!--Body_RHR Base to Center of Mass -->
@@ -183,7 +183,7 @@
     <body name="Body_RHY" type="dynamic">
         <offsetfrom>Body_RHR</offsetfrom>
         <!--Body_RHR Parent Center of Mass to Base -->
-            <translation>-0.013710070529 0.011029879677 0.011997271412</translation>
+        <translation>-0.013710070529 0.011029879677 0.011997271412</translation>
         <!--Body_RHR Parent to Current -->
         <translation>-0.000019999375 -0.000002936829 0.091080362166</translation>
         <!--Body_RHY Base to Center of Mass -->
@@ -227,7 +227,7 @@
     <body name="Body_Hip" type="dynamic">
         <offsetfrom>Body_RHY</offsetfrom>
         <!--Body_RHY Parent Center of Mass to Base -->
-            <translation>-0.010679328026 0.000069644812 0.050419213512</translation>
+        <translation>-0.010679328026 0.000069644812 0.050419213512</translation>
         <!--Body_RHY Parent to Current -->
         <translation>0.000009992379 0.088500007621 0.086588867160</translation>
         <!--Body_Hip Base to Center of Mass -->
@@ -266,7 +266,7 @@
     <body name="Body_Torso" type="dynamic">
         <offsetfrom>Body_Hip</offsetfrom>
         <!--Body_Hip Parent Center of Mass to Base -->
-            <translation>0.011068912725 0.000017567568 0.044092693677</translation>
+        <translation>0.011068912725 0.000017567568 0.044092693677</translation>
         <!--Body_Hip Parent to Current -->
         <translation>0.000026010024 0.000064876516 0.191500038259</translation>
         <!--Body_Torso Base to Center of Mass -->
@@ -1019,7 +1019,7 @@
         <offsetfrom>Body_LWR</offsetfrom>
         <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-35 35</limitsdeg>
     </Joint>
     <adjacent>Body_LWR Body_LWY</adjacent>
 
@@ -1052,7 +1052,7 @@
         <offsetfrom>Body_RWR</offsetfrom>
         <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-35 35</limitsdeg>
     </Joint>
     <adjacent>Body_RWR Body_RWY</adjacent>
 
@@ -1090,7 +1090,7 @@
         <offsetfrom>Body_LWP</offsetfrom>
         <anchor>0.001673053872 -0.002266301384 0.035188254309</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-35 35</limitsdeg>
     </Joint>
     <adjacent>Body_LWP Body_LWR</adjacent>
     <adjacent>Body_LWP Body_LWY</adjacent>
@@ -1131,7 +1131,7 @@
         <offsetfrom>Body_RWP</offsetfrom>
         <anchor>0.001673053872 0.002266301384 0.035188254309</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-35 35</limitsdeg>
     </Joint>
 
     <kinbody file="lefthand.xml"/>

@@ -51,5 +51,6 @@ if __name__=='__main__':
     time.sleep(2)
 
     #Begin experimental sandbox here:
-    robot.GetController().SendCommand('setgains 50 1 5 .1 .1')
-    testMotionRange(robot,'LSR')
+    for k in range(90):
+        time.sleep(.1)
+        robot.GetController().SendCommand('setpos1 {} {}'.format(robot.GetJoint('RSP').GetDOFIndex(),-k))
