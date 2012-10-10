@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="plusRightHand" makejoinedlinksadjacent="true">
-    <modelsdir>models</modelsdir>
-
     <KinBody prefix="leftIndex" name="leftIndexFinger" file="finger.kinbody.xml">
         <!-- LWP Center of Mass to Base -->
         <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
@@ -52,7 +50,7 @@
         <axis>1 0 0</axis>
     </Joint>
 
-    <KinBody prefix="leftRing" name="leftIndexFinger" file="finger.kinbody.xml">
+    <KinBody prefix="leftRing" name="leftRingFinger" file="finger.kinbody.xml">
         <!-- LWP Center of Mass to Base -->
         <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>	-0.002519	0.020686	-0.077924	</Translation>
@@ -126,4 +124,14 @@
         <anchor>	0.011481	-0.007255	-0.049993	</anchor>
     </Joint>
 
+    <adjacent>leftIndexProximal leftIndexMedial</adjacent>
+    <adjacent>leftIndexMedial leftIndexDistal</adjacent>
+    <adjacent>leftMiddleProximal leftMiddleMedial</adjacent>
+    <adjacent>leftMiddleMedial leftMiddleDistal</adjacent>
+    <adjacent>leftRingProximal leftRingMedial</adjacent>
+    <adjacent>leftRingMedial leftRingDistal</adjacent>
+    <adjacent>leftPinkyProximal leftPinkyMedial</adjacent>
+    <adjacent>leftPinkyMedial leftPinkyDistal</adjacent>
+    <adjacent>leftThumbProximal leftThumbMedial</adjacent>
+    <adjacent>leftThumbMedial leftThumbDistal</adjacent>
 </KinBody>

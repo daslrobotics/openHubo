@@ -52,9 +52,17 @@ if __name__=='__main__':
 
     #Begin experimental sandbox here:
     report=CollisionReport() 
+    robot.GetController().SendCommand('setgains 50 1 5 .1 .1')
+    robot.GetController().SendCommand('record_on ')
+    N=robot.GetJoint('REP').GetDOFIndex()
+    robot.GetController().SendCommand('setpos1 {} {}'.format(N,-50.0))
     for k in range(90):
-        time.sleep(.1)
-        robot.GetController().SendCommand('setpos1 {} {}'.format(robot.GetJoint('REP').GetDOFIndex(),-k))
-        #print robot.CheckSelfCollision(report)
-        #print report.plink1, report.plink2
+        print robot.CheckSelfCollision(report)
+        print report.plink1, report.plink2
+        print robot.GetDOFValues()
+
+    time.sleep(4)
+    robot.GetController().SendCommand('record_off {} {} '.format(N,N))
+
+
 

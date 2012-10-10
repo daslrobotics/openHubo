@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="plusRightHand" makejoinedlinksadjacent="true">
-    <modelsdir>models</modelsdir>
-
     <KinBody prefix="rightIndex" name="rightIndexFinger" file="finger.kinbody.xml">
         <!-- RWP Center of Mass to Base -->
         <translation>0.001673053872 0.002266301384 0.035188254309</translation>
@@ -125,4 +123,14 @@
         <anchor>-.016 0 0</anchor>
     </Joint>
 
+    <adjacent>rightIndexProximal rightIndexMedial</adjacent>
+    <adjacent>rightIndexMedial rightIndexDistal</adjacent>
+    <adjacent>rightMiddleProximal rightMiddleMedial</adjacent>
+    <adjacent>rightMiddleMedial rightMiddleDistal</adjacent>
+    <adjacent>rightRingProximal rightRingMedial</adjacent>
+    <adjacent>rightRingMedial rightRingDistal</adjacent>
+    <adjacent>rightPinkyProximal rightPinkyMedial</adjacent>
+    <adjacent>rightPinkyMedial rightPinkyDistal</adjacent>
+    <adjacent>rightThumbProximal rightThumbMedial</adjacent>
+    <adjacent>rightThumbMedial rightThumbDistal</adjacent>
 </KinBody>

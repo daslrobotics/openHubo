@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="KHRLeftHand" makejoinedlinksadjacent="true">
-    <modelsdir>../models</modelsdir>
-
     <Kinbody prefix="leftIndex" name="leftIndexFinger" file="finger.kinbody.xml">
         <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>   0.0182626   0.0331978   -0.0649224  </Translation>
@@ -55,7 +53,7 @@
     <adjacent>Body_LWP leftMiddleProximal</adjacent>
     <adjacent>Body_LWP leftMiddleMedial</adjacent>
 
-    <Kinbody prefix="leftRing" name="leftIndexFinger" file="finger.kinbody.xml">
+    <Kinbody prefix="leftRing" name="leftRingFinger" file="finger.kinbody.xml">
         <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
 
         <Translation>   -0.0086106  0.0063246   -0.0649224  </Translation>

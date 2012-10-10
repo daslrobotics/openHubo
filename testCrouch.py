@@ -30,10 +30,10 @@ if __name__=='__main__':
         env.SetCollisionChecker(collisionChecker)
         robot.SetController(RaveCreateController(env,'servocontroller'))
         env.StopSimulation()
-        env.StartSimulation(timestep=0.0001)
+        env.StartSimulation(timestep=0.001)
 
     time.sleep(3)
 
-    sendServoCommand(robot,array(zeros(60)))
+    sendSparseServoCommand(robot,{'LHP':-20,'LKP':40,'LAP':-20,'RHP':-20,'RKP':40,'RAP':-20})
     #Run this in interactive mode to preserve the state
 

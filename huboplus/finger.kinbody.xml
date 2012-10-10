@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<KinBody name="KHRfinger" makejoinedlinksadjacent="true">
-    <modelsdir>../models</modelsdir>
+<KinBody name="Finger" makejoinedlinksadjacent="true">
 
     <Body name="Proximal" type="dynamic">
         <Translation>0.016 0 0</Translation>
@@ -24,8 +23,6 @@
     <Body name="Medial" type="dynamic">
         <offsetfrom>Proximal</offsetfrom>
         <Translation> 0.027 0 0</Translation>
-        <rotationaxis> 0 0 1 -45</rotationaxis>
-        <Translation>-.0032  -0.0078         0</Translation>
         <Geom type="box">
             <extents> 0.011	0.008 0.008</extents>
             <DiffuseColor>0.6 0.6 0.8</DiffuseColor>

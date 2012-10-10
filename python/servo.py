@@ -26,30 +26,6 @@ def testMotionRange(robot,jointName,steps=50,timestep=.05):
         robot.GetController().SendCommand('setpos1 {} {}'.format(joint.GetDOFIndex(),k))
         time.sleep(timestep)
 
-def sendPose(robot,poseDict):
-    """ For a dictionary of joint names and angles, set the robot to that pose
-    (step response)."""
-    #TODO: filter input for smooth posing?
-    for k in poseDict.keys():
-        robot.GetController().SendCommand('setpos1 {} {} '.format(robot.GetJoint(k).GetDOFIndex(),poseDict[k]))
-
-    
-def sendServoCommandByLimb(robot,trunk=zeros(4),la=zeros(7),ra=zeros(7),ll=zeros(6),rl=zeros(6),lf=zeros(15),rf=zeros(15)):
-    """ Build up a full-body pose by limb.
-    This function builds a trajectory by limb, allowing you to work with
-    arms, legs, and fingers independently. It's not the most efficient
-    implementation, but it can be convenient to hack with."""
-    #Ugly method of joining up manipulator arrays
-    #TODO: Error checking in array length?
-    joints=trunk.copy()
-    joints=append(append(append(append(append(append(trunk,la),ra),ll),rl),lf),rf)
-    #build command string to pass to the servo controller.
-    strtmp = 'setpos '+' '.join(str(f) for f in joints)
-    robot.GetController().SendCommand(strtmp)
-    #Debug desired joint commands to the terminal (Slow...)
-    #for f in range(0,60):
-    #    print "{}: {}".format(robot.GetJointFromDOFIndex(f).GetName(),joints[f])
-
 def sendServoCommand(robot,raw=array(zeros(60))):
     """ Send an array of servo positions directly to the robot. """
     #build command string to pass to the servo controller.
@@ -60,11 +36,17 @@ def sendServoCommand(robot,raw=array(zeros(60))):
     strtmp = 'setpos '+' '.join(str(f) for f in positions)
     robot.GetController().SendCommand(strtmp)
 
-def sendSparseServoReference(robot,posDict):
-    """ Update only joints that are specified in the dictionary (not implemented
-    yet) """
-    positions=zeros(len(robot.GetDOF()))
-    print "Not yet implented!"
+def sendSparseServoCommand(robot,posDict):
+    """ Update only joints that are specified in the dictionary."""
+    positions=robot.GetDOFValues()*180.0/pi
+    #Translate from dictionary of names to DOF indices to make a full servo command
+    for k in posDict.keys():
+        positions[robot.GetJoint(k).GetDOFIndex()]=posDict[k]
+
+    strtmp = 'setpos '+' '.join(str(f) for f in positions)
+    robot.GetController().SendCommand(strtmp)
+
+
 
 def sendSingleJointTrajectory(robot,trajectory,jointID,timestep=.1):
     """ Send a trajectory that will be played back for a single joint """

@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     env = Environment()
     env.SetViewer('qtcoin')
-    env.Load('forcePlate.env.xml') 
+    env.Load('simpleFloor.env.xml') 
 
     with env:
         robot = env.GetRobots()[0]

@@ -130,4 +130,15 @@
         <anchor>-.016 0 0</anchor>
     </Joint>
 
+    <adjacent>leftIndexProximal leftIndexMedial</adjacent>
+    <adjacent>leftIndexMedial leftIndexDistal</adjacent>
+    <adjacent>leftMiddleProximal leftMiddleMedial</adjacent>
+    <adjacent>leftMiddleMedial leftMiddleDistal</adjacent>
+    <adjacent>leftRingProximal leftRingMedial</adjacent>
+    <adjacent>leftRingMedial leftRingDistal</adjacent>
+    <adjacent>leftPinkyProximal leftPinkyMedial</adjacent>
+    <adjacent>leftPinkyMedial leftPinkyDistal</adjacent>
+    <adjacent>leftThumbProximal leftThumbMedial</adjacent>
+    <adjacent>leftThumbMedial leftThumbDistal</adjacent>
+
 </KinBody>

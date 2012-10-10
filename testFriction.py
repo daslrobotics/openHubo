@@ -55,7 +55,7 @@ if __name__=='__main__':
 
     t=array([float(k)/100.0 for k in range(500)])
     A=20.0
-    traj=sin(.125*2.0*pi*t)*A
+    traj=sin(0.250*2.0*pi*t)*A
 
     initPose={'LSR':18,'RSR':-18,'LEP':-20,'REP':-20}
     sendPose(robot,initPose)

@@ -1,6 +1,6 @@
 <!-- Exported at: 10/6/2012 6:01:17 PM -->
 
-<kinbody name="testbody">
+<kinbody name="huboplus_kinbody">
     <modelsdir>models</modelsdir>
     <body name="Body_Torso" type="dynamic">
 
