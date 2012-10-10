@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<KinBody name="KHRfinger" makejoinedlinksadjacent="true">
+<KinBody name="Finger" makejoinedlinksadjacent="true">
+
     <Body name="Proximal" type="dynamic">
         <Translation>0.016 0 0</Translation>
         <Geom type="box">
@@ -31,7 +32,7 @@
             <Translation>0.011 0 0</Translation>
             <radius> 0.008</radius>
             <height>0.016</height>
-            <DiffuseColor>0.6 0.6 0.8</DiffuseColor>
+            <DiffuseColor>0.6 0.6 0.0</DiffuseColor>
         </Geom>
         <Mass type="mimicgeom">
             <total>0.006</total>
@@ -44,7 +45,7 @@
         <Geom type="box">
             <Translation>-0.004 0 0</Translation>
             <extents> 0.010	0.008 0.008</extents>
-            <DiffuseColor>0.6 0.6 0.9</DiffuseColor>
+            <DiffuseColor>0.6 0.8 0.0</DiffuseColor>
         </Geom>
         <Geom type="cylinder">
             <RotationAxis>1 0 0 90</RotationAxis>
@@ -65,6 +66,7 @@
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
     </Joint>
+    <adjacent> Proximal Medial</adjacent>
 
     <Joint name="Knuckle3" type="hinge">
         <Body>Medial</Body>
@@ -73,5 +75,6 @@
         <anchor>0.011 0 0</anchor>
         <axis>0 0 -1</axis>
     </Joint>
+    <adjacent> Distal Medial</adjacent>
 
 </KinBody>

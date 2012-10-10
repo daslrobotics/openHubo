@@ -12,11 +12,11 @@ import time
 #TODO: Work with the concept of activeDOF?
 
 def testMotionRange(robot,jointName,steps=50,timestep=.05):
-""" Demonstrate the range of motion of a joint.
-        This quick test shows the limit-checking of the servo plugin.
-        It attempts to reach +/-180 deg. for each joint.  However, the actual
-        reference position will be clipped to within a few degrees of the
-        limits."""
+    """ Demonstrate the range of motion of a joint.
+    This quick test shows the limit-checking of the servo plugin.
+    It attempts to reach +/-180 deg. for each joint.  However, the actual
+    reference position will be clipped to within a few degrees of the
+    limits."""
     joint=robot.GetJoint(jointName)
     dq=360.0
     q0=-180.0
@@ -26,37 +26,27 @@ def testMotionRange(robot,jointName,steps=50,timestep=.05):
         robot.GetController().SendCommand('setpos1 {} {}'.format(joint.GetDOFIndex(),k))
         time.sleep(timestep)
 
-def sendServoCommandByLimb(robot,trunk=zeros(4),la=zeros(7),ra=zeros(7),ll=zeros(6),rl=zeros(6),lf=zeros(15),rf=zeros(15)):
-""" Build up a full-body pose by limb.
-        This function builds a trajectory by limb, allowing you to work with
-        arms, legs, and fingers independently. It's not the most efficient
-        implementation, but it can be convenient to hack with."""
-    #Ugly method of joining up manipulator arrays
-    #TODO: Error checking in array length?
-    joints=trunk.copy()
-    joints=append(append(append(append(append(append(trunk,la),ra),ll),rl),lf),rf)
+def sendServoCommand(robot,raw=array(zeros(60))):
+    """ Send an array of servo positions directly to the robot. """
     #build command string to pass to the servo controller.
-    strtmp = 'setpos '+' '.join(str(f) for f in joints)
-    robot.GetController().SendCommand(strtmp)
-    #Debug desired joint commands to the terminal (Slow...)
-    #for f in range(0,60):
-    #    print "{}: {}".format(robot.GetJointFromDOFIndex(f).GetName(),joints[f])
-
-def sendServoCommand(robot,raw):
-""" Send an array of servo positions directly to the robot. """
-    #build command string to pass to the servo controller.
-    positions=array(zeros(len(robot.GetDOF())))
+    positions=array(zeros(robot.GetDOF()))
     for k in range(len(raw)):
         positions[k]=raw[k]
 
     strtmp = 'setpos '+' '.join(str(f) for f in positions)
     robot.GetController().SendCommand(strtmp)
 
-def sendSparseServoReference(robot,posDict):
-    """ Update only joints that are specified in the dictionary (not implemented
-    yet) """
-    positions=zeros(len(robot.GetDOF()))
-    print "Not yet implented!"
+def sendSparseServoCommand(robot,posDict):
+    """ Update only joints that are specified in the dictionary."""
+    positions=robot.GetDOFValues()*180.0/pi
+    #Translate from dictionary of names to DOF indices to make a full servo command
+    for k in posDict.keys():
+        positions[robot.GetJoint(k).GetDOFIndex()]=posDict[k]
+
+    strtmp = 'setpos '+' '.join(str(f) for f in positions)
+    robot.GetController().SendCommand(strtmp)
+
+
 
 def sendSingleJointTrajectory(robot,trajectory,jointID,timestep=.1):
     """ Send a trajectory that will be played back for a single joint """
@@ -120,7 +110,7 @@ if __name__=='__main__':
     with env:
         robot = env.GetRobots()[0]
         robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'bullet')
+        collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
 
         env.StopSimulation()

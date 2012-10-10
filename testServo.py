@@ -33,7 +33,7 @@ if __name__=='__main__':
 
     env = Environment()
     env.SetViewer('qtcoin')
-    env.SetDebugLevel(4)
+    env.SetDebugLevel(3)
     env.Load(file_env)
 
 
@@ -51,5 +51,18 @@ if __name__=='__main__':
     time.sleep(2)
 
     #Begin experimental sandbox here:
+    report=CollisionReport() 
     robot.GetController().SendCommand('setgains 50 1 5 .1 .1')
-    testMotionRange(robot,'LSR')
+    robot.GetController().SendCommand('record_on ')
+    N=robot.GetJoint('REP').GetDOFIndex()
+    robot.GetController().SendCommand('setpos1 {} {}'.format(N,-50.0))
+    for k in range(90):
+        print robot.CheckSelfCollision(report)
+        print report.plink1, report.plink2
+        print robot.GetDOFValues()
+
+    time.sleep(4)
+    robot.GetController().SendCommand('record_off {} {} '.format(N,N))
+
+
+

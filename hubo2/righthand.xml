@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="KHRRightHand" makejoinedlinksadjacent="true">
+
+    <KinBody prefix="rightIndex" name="rightIndexFinger" file="finger.kinbody.xml">
+        <translation>0.001673053872 0.002266301384 0.035188254309</translation>
+        <Translation>  0.0182626   -0.0331978   -0.0649224  </Translation>
+        <rotationmat>
+            -0.5000    0.5000    0.7071
+            -0.5000    0.5000   -0.7071
+            -0.7071   -0.7071         0
+        </rotationmat>
+        <Translation>-.005657 0.005657 0 </Translation>
+    </KinBody>
+
+    <Body name="rightIndexProximal" type="dynamic">
+        <offsetfrom>Body_RWP</offsetfrom>
+    </Body>
+    <!--Have to redo all the adjacencies when a body is redefined like this...-->
+    <adjacent>Body_RWP rightIndexProximal</adjacent>
+    <adjacent>Body_RWP rightIndexMedial</adjacent>
+
+    <Joint name="rightIndexKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightIndexProximal</Body>
+        <offsetfrom>rightIndexProximal</offsetfrom>
+        <axis>0 0 1</axis>
+        <anchor>-.016 0 0</anchor>
+    </Joint>
+
+    <KinBody prefix="rightMiddle" name="rightMiddleFinger" file="finger.kinbody.xml">
+        <translation>0.001673053872 0.002266301384 0.035188254309</translation>
+        <Translation>   0.0048514   -0.0197866   -0.0649224  </Translation>
+        <rotationmat>
+            -0.5000    0.5000    0.7071
+            -0.5000    0.5000   -0.7071
+            -0.7071   -0.7071         0
+        </rotationmat>
+        <Translation>-.005657 0.005657 0 </Translation>
+    </KinBody>
+
+    <Body name="rightMiddleProximal" type="dynamic">
+        <offsetfrom>Body_RWP</offsetfrom>
+    </Body>
+    <adjacent>Body_RWP rightMiddleProximal</adjacent>
+    <adjacent>Body_RWP rightMiddleMedial</adjacent>
+
+
+    <Joint name="rightMiddleKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightMiddleProximal</Body>
+        <offsetfrom>rightMiddleProximal</offsetfrom>
+        <axis>0 0 1</axis>
+        <anchor>-.016 0 0</anchor>
+    </Joint>
+
+    <KinBody prefix="rightRing" name="rightIndexFinger" file="finger.kinbody.xml">
+        <translation>0.001673053872 0.002266301384 0.035188254309</translation>
+        <Translation>   -0.0086106  -0.0063246   -0.0649224  </Translation>
+        <rotationmat>
+            -0.5000    0.5000    0.7071
+            -0.5000    0.5000   -0.7071
+            -0.7071   -0.7071         0
+        </rotationmat>
+        <Translation>-.005657 0.005657 0 </Translation>
+    </KinBody>
+
+    <Body name="rightRingProximal" type="dynamic">
+        <offsetfrom>Body_RWP</offsetfrom>
+    </Body>
+    <adjacent>Body_RWP rightRingProximal</adjacent>
+    <adjacent>Body_RWP rightRingMedial</adjacent>
+
+    <Joint name="rightRingKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightRingProximal</Body>
+        <anchor>    .018385902  -0.030168756 -0.004829369    </anchor>
+        <offsetfrom>rightRingProximal</offsetfrom>
+        <axis>0 0 1</axis>
+        <anchor>-.016 0 0</anchor>
+    </Joint>
+
+    <KinBody prefix="rightPinky" name="rightPinkyFinger" file="finger.kinbody.xml">
+        <translation>0.001673053872 0.002266301384 0.035188254309</translation>
+        <translation>   -0.0220472  0.007112   -0.0649224  </translation>
+        <translation>-.005657 0.005657 0 </translation>
+        <rotationmat>
+            -0.5000    0.5000    0.7071
+            -0.5000    0.5000   -0.7071
+            -0.7071   -0.7071         0
+        </rotationmat>
+    </KinBody>
+
+    <Body name="rightPinkyProximal" type="dynamic">
+        <offsetfrom>Body_RWP</offsetfrom>
+    </Body>
+    <adjacent>Body_RWP rightPinkyProximal</adjacent>
+    <adjacent>Body_RWP rightPinkyMedial</adjacent>
+
+    <Joint name="rightPinkyKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightPinkyProximal</Body>
+        <offsetfrom>rightPinkyProximal</offsetfrom>
+        <axis>0 0 1</axis>
+        <anchor>-.016 0 0</anchor>
+    </Joint>
+
+    <KinBody prefix="rightThumb" name="rightThumbFinger" file="finger.kinbody.xml">
+        <translation>0.001673053872 0.002266301384 0.035188254309</translation>
+        <translation>   0.0210312   0.0035306  -0.0369824  </translation>
+        <rotationmat>
+            0.5000    0.5000   -0.7071
+            0.5000    0.5000   0.7071
+            0.7071   -0.7071   0.0000
+        </rotationmat>
+        <translation>0.005657 -0.005657 0 </translation>
+    </KinBody>
+
+    <Body name="rightThumbProximal" type="dynamic">
+        <offsetfrom>Body_RWP</offsetfrom>
+    </Body>
+    <adjacent>Body_RWP rightThumbProximal</adjacent>
+    <adjacent>Body_RWP rightThumbMedial</adjacent>
+
+    <Joint name="rightThumbKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightThumbProximal</Body>
+        <offsetfrom>rightThumbProximal</offsetfrom>
+        <axis>0 0 1</axis>
+        <anchor>-.016 0 0</anchor>
+    </Joint>
+
+    <adjacent>leftIndexProximal leftIndexMedial</adjacent>
+    <adjacent>leftIndexMedial leftIndexDistal</adjacent>
+    <adjacent>leftMiddleProximal leftMiddleMedial</adjacent>
+    <adjacent>leftMiddleMedial leftMiddleDistal</adjacent>
+    <adjacent>leftRingProximal leftRingMedial</adjacent>
+    <adjacent>leftRingMedial leftRingDistal</adjacent>
+    <adjacent>leftPinkyProximal leftPinkyMedial</adjacent>
+    <adjacent>leftPinkyMedial leftPinkyDistal</adjacent>
+    <adjacent>leftThumbProximal leftThumbMedial</adjacent>
+    <adjacent>leftThumbMedial leftThumbDistal</adjacent>
+
+</KinBody>

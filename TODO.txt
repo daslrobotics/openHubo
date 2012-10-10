@@ -1,0 +1,25 @@
+Collisions:
+
+Re-model the Hubo+ with the arms straight out to eliminate the thumb sticking though the side of each body.
+
+Create reachability databases for each robot / manipulator (not the RL robot?)
+
+Organize example environments into a scenes folder
+
+Define unit tests for code so that future models are easier to verify.  Simple tests include:
+    Load correctly into openrave
+    Not missing geometry definitions
+    Not falling over when standing still under servo control (poll COG location?)
+    Servo gains are within reason? (i.e. not too much jitter, maybe sum of velocity absolute value over time?
+    Each test function should have an assert and spit out some kind of diagnostic data.
+
+Limits:
+
+Use a simple bash script to strip out data tags so that only the shell geometry is loaded. Then, use the limit checking script to find 1-D joint limits from the home position.
+
+Export functions from Inventor:
+    
+    Ability to export full body transformations, instead of assuming that all coordinate systems are at the same orientation.  This will allow easy rearrangement of bodies (to avoid collisions like with the thumb)
+    Update body names
+    
+    
