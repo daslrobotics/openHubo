@@ -55,8 +55,8 @@ def sendSingleJointTrajectory(robot,trajectory,jointID,timestep=.1):
 
 def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
     """ Send a single joint trajectory in simulation time.
-        This is the equivalent of real-time control on the actual robot, except
-        much easier due to our control of simulation time. """
+    This is the equivalent of real-time control on the actual robot, except
+    much easier due to our control of simulation time. """
 
     #Pull in environment pointer from robot
     env=robot.GetEnv()
