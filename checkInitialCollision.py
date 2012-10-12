@@ -108,3 +108,6 @@ if __name__=='__main__':
         env.SetPhysicsEngine(physics)
 
         env.StartSimulation(timestep=0.001)
+
+    time.sleep(1)
+    env.Destroy()

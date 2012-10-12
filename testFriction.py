@@ -31,7 +31,7 @@ if __name__=='__main__':
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'simpleFloor.env.xml'
+        file_env = 'scenes/simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')

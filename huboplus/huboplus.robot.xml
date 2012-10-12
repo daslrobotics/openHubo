@@ -2,7 +2,7 @@
 
 <Robot name="huboplus" >
     <KinBody file="huboplus.kinbody.xml" makejoinedlinksadjacent="true">
-        <translation>0 0 1.04</translation>
+        <translation>0 0 1.05</translation>
     </KinBody>
 
     <Manipulator name="leftArm">

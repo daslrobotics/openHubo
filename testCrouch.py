@@ -9,22 +9,21 @@ import tab
 from numpy import *
 from numpy.linalg import *
 import sys
-import datetime
 from servo import *
 
 if __name__=='__main__':
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'simpleFloor.env.xml'
+        file_env = 'scenes/simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
-    env.SetDebugLevel(5)
-    env.Load(file_env)
+    env.SetDebugLevel(4)
 
     #-- Set the robot controller and start the simulation
     with env:
+        env.Load(file_env)
         robot = env.GetRobots()[0]
         collisionChecker = RaveCreateCollisionChecker(env,'bullet')
         env.SetCollisionChecker(collisionChecker)
@@ -35,5 +34,6 @@ if __name__=='__main__':
     time.sleep(3)
 
     sendSparseServoCommand(robot,{'LHP':-20,'LKP':40,'LAP':-20,'RHP':-20,'RKP':40,'RAP':-20})
+
     #Run this in interactive mode to preserve the state
 
