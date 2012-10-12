@@ -35,11 +35,10 @@ if __name__=='__main__':
     env = Environment()
     env.SetViewer('qtcoin')
     env.SetDebugLevel(4)
-    env.Load(file_env)
-
 
     #-- Set the robot controller and start the simulation
     with env:
+        env.Load(file_env)
         robot = env.GetRobots()[0]
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)

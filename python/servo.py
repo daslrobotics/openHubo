@@ -10,6 +10,10 @@ import sys
 import time
 
 #TODO: Work with the concept of activeDOF?
+def makeNameToIndexConverter(robot):
+    def convert(name):
+        return robot.GetJoint(name).GetDOFIndex()
+    return convert
 
 def testMotionRange(robot,jointName,steps=50,timestep=.05):
     """ Demonstrate the range of motion of a joint.
@@ -28,13 +32,7 @@ def testMotionRange(robot,jointName,steps=50,timestep=.05):
 
 def sendServoCommand(robot,raw=array(zeros(60))):
     """ Send an array of servo positions directly to the robot. """
-    #build command string to pass to the servo controller.
-    positions=array(zeros(robot.GetDOF()))
-    for k in range(len(raw)):
-        positions[k]=raw[k]
-
-    strtmp = 'setpos '+' '.join(str(f) for f in positions)
-    robot.GetController().SendCommand(strtmp)
+    robot.GetController.SetDesired(raw)
 
 def sendSparseServoCommand(robot,posDict):
     """ Update only joints that are specified in the dictionary."""
@@ -47,15 +45,6 @@ def sendSparseServoCommand(robot,posDict):
     robot.GetController().SendCommand(strtmp)
 
 
-
-def sendSingleJointTrajectory(robot,trajectory,jointID,timestep=.1):
-    """ Send a trajectory that will be played back for a single joint """
-    #TODO: time by sim timesteps (i.e. manually step simulation)
-    for k in trajectory:
-        strtmp = 'setpos1 {} {}'.format(jointID,k)
-        robot.GetController().SendCommand(strtmp)
-        time.sleep(timestep)
-        
 def sendSingleJointTrajectory(robot,trajectory,jointID,timestep=.1):
     """ Send a trajectory that will be played back for a single joint """
     #TODO: time by sim timesteps (i.e. manually step simulation)
@@ -66,8 +55,8 @@ def sendSingleJointTrajectory(robot,trajectory,jointID,timestep=.1):
 
 def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
     """ Send a single joint trajectory in simulation time.
-        This is the equivalent of real-time control on the actual robot, except
-        much easier due to our control of simulation time. """
+    This is the equivalent of real-time control on the actual robot, except
+    much easier due to our control of simulation time. """
 
     #Pull in environment pointer from robot
     env=robot.GetEnv()
@@ -83,6 +72,7 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
         # a better way...)
         
         while env.GetSimulationTime()<(t+tstep):
+            time.sleep(dt/10)
             pass
         t=t+tstep
 
@@ -97,49 +87,59 @@ if __name__=='__main__':
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'simpleFloor.env.xml'
+        file_env = 'scenes/simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
-    env.Load(file_env)
 
     timestep=0.0005
 
     #-- Set the robot controller and start the simulation
     with env:
-        robot = env.GetRobots()[0]
-        robot.SetController(RaveCreateController(env,'servocontroller'))
+        env.Load(file_env)
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
+        robot = env.GetRobots()[0]
+        #Create a "shortcut" function to translate joint names to indices
+        ind = makeNameToIndexConverter(robot)
+
+        #initialize the servo controller
+        controller=RaveCreateController(env,'servocontroller')
+        robot.SetController(controller)
+
+        #Set an initial pose before the simulation starts
+        robot.SetDOFValues([pi/8,-pi/8],[ind('LSR'),ind('RSR')])
+        controller.SendCommand('setgains 50 0 8')
 
         env.StopSimulation()
         env.StartSimulation(timestep=timestep)
 
     time.sleep(1)
-    # Avoid setting servo Kp higher than about 1/20 of the update frequency
-    #robot.GetController().SendCommand('setgains 50 .5 2  .1 .1')
-    #robot.GetController().SendCommand('setpos 0 0 30 -30 0 50')
 
-    qW = array([0,0,0,0])
-    offset_LSR = 15;
-    offset_RSR = -15;		
-    qLA = array([0,0 + offset_LSR,0,0,0,0,0])
-    qRA = array([0,-0 + offset_RSR,0,0,0,0,0])
-    qLA[3] = -30
-    qRA[3] = -30
-    qLL = array([0,0,-30,60,-30,0])/20
-    qRL = array([0,0,-30,60,-30,0])/20
+    #Use the new SetDesired command to set a whole pose at once.
+    pose=array(zeros(60))
 
-    robot.GetController().SendCommand('setgains 50 0 3 .1 .1')
+    #Manually align the goal pose and the initial pose so the thumbs clear
+    pose[ind('RSR')]=-22.5
+    pose[ind('LSR')]=22.5
 
-    sendServoCommandByLimb(robot,qW,qLA,qRA,qLL,qRL)
+    #The name-to-index closure makes it easy to index by name 
+    # (though a bit more expensive)
+    pose[ind('LAP')]=-20
+    pose[ind('RAP')]=-20
 
+    pose[ind('LKP')]=40
+    pose[ind('RKP')]=40
+
+    pose[ind('LHP')]=-20
+    pose[ind('RHP')]=-20
+
+    controller.SetDesired(pose)
     time.sleep(1)
 
-
     t=array([k/100.0 for k in range(500)])
-    A=10.0
+    A=20.0
     traj=cos(.5*2.0*pi*t)*A-A
 
     sendSingleJointTrajectorySim(robot,traj,robot.GetJoint('LEP').GetDOFIndex(),timestep,100)
