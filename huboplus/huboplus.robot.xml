@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Robot name="huboplus" >
+    <KinBody file="huboplus.kinbody.xml" makejoinedlinksadjacent="true">
+        <translation>0 0 1.05</translation>
+    </KinBody>
+
+    <Manipulator name="leftArm">
+        <base>Body_Torso</base>
+        <effector>Body_LWP</effector>
+        <direction>0 -1 0</direction>
+    </Manipulator>
+
+    <Manipulator name="rightArm">
+        <base>Body_Torso</base>
+        <effector>Body_RWP</effector>
+        <direction>0 1 0</direction>
+    </Manipulator>
+
+    <Manipulator name="leftFoot">
+        <base>Body_Hip</base>
+        <effector>Body_LAR</effector>
+        <direction>0 0 -1</direction>
+    </Manipulator>
+
+    <Manipulator name="rightFoot">
+        <base>Body_Hip</base>
+        <effector>Body_RAR</effector>
+        <direction>0 0 -1</direction>
+    </Manipulator>
+
+</Robot>

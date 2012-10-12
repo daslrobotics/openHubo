@@ -20,36 +20,52 @@ from openravepy import *
 from numpy import *
 import time
 import sys
-import tab
 from servo import *
 
 if __name__=='__main__':
+
     #-- Read the name of the xml file passed as an argument
     #-- or use the default name
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'simpleFloor.env.xml'
+        file_env = 'scenes/simpleFloor.env.xml'
 
     env = Environment()
-    env.SetViewer('qtcoin')
     env.SetDebugLevel(4)
-    env.Load(file_env)
-
-
+    env.SetViewer('qtcoin')
+    time.sleep(.25)
     #-- Set the robot controller and start the simulation
     with env:
+        #NOTE: Make sure to use this sequence of commands WITHIN a "with env:"
+        #block to ensure that the model loads correctly.
+        env.StopSimulation()
+        env.Load(file_env)
         robot = env.GetRobots()[0]
+
+        #Define a joint name lookup closure for the robot
+        ind=makeNameToIndexConverter(robot)
+
+        robot.SetDOFValues([pi/4,-pi/4],[ind('LSR'),ind('RSR')])
+        pose=array(zeros(60))
         robot.SetController(RaveCreateController(env,'servocontroller'))
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
 
         env.StopSimulation()
+        robot.GetController().SendCommand('setgains 50 0 7 .9998 .1')
+        pose[ind('LSR')]=45
+        pose[ind('RSR')]=-45
+        robot.GetController().SetDesired(pose)
+
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
         env.StartSimulation(timestep=0.0005)
 
     time.sleep(2)
+   
+    #Change the pose to lift the elbows and resend
+    pose[ind('REP')]=-45
+    pose[ind('LEP')]=-45
 
-    #Begin experimental sandbox here:
-    robot.GetController().SendCommand('setgains 50 1 5 .1 .1')
-    testMotionRange(robot,'LSR')
+    robot.GetController().SetDesired(pose)
+

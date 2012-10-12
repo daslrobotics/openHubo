@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="KHRfinger" makejoinedlinksadjacent="true">
+    <modelsdir>../models</modelsdir>
+
+    <Body name="Proximal" type="dynamic">
+        <Translation>0.016 0 0</Translation>
+        <Geom type="box">
+            <extents> 0.016	0.008 0.008</extents>
+            <DiffuseColor>0.8 0.8 0.8</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.016 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.8 0.8 0.8</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.012</total>
+        </Mass>
+    </Body>
+
+    <Body name="Medial" type="dynamic">
+        <offsetfrom>Proximal</offsetfrom>
+        <Translation> 0.027 0 0</Translation>
+        <Geom type="box">
+            <extents> 0.011	0.008 0.008</extents>
+            <DiffuseColor>0.8 0.8 0.8</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.011 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.8 0.8 0.0</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.006</total>
+        </Mass>
+    </Body>
+
+    <Body name="Distal" type="dynamic">
+        <offsetfrom>Medial</offsetfrom>
+        <Translation> 0.025 0 0</Translation>
+        <Geom type="box">
+            <Translation>-0.004 0 0</Translation>
+            <extents> 0.010	0.008 0.008</extents>
+            <DiffuseColor>0.8 0.8 0.0</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.006 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.8 0.8 0.8</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.010</total>
+        </Mass>
+    </Body>
+
+    <Joint name="Knuckle2" type="hinge">
+        <Body>Proximal</Body>
+        <Body>Medial</Body>
+        <offsetfrom>Proximal</offsetfrom>
+        <anchor>0.016 0 0</anchor>
+        <axis>0 0 -1</axis>
+    </Joint>
+    <adjacent> Proximal Medial</adjacent>
+
+    <Joint name="Knuckle3" type="hinge">
+        <Body>Medial</Body>
+        <Body>Distal</Body>
+        <offsetfrom>Medial</offsetfrom>
+        <anchor>0.011 0 0</anchor>
+        <axis>0 0 -1</axis>
+    </Joint>
+    <adjacent> Distal Medial</adjacent>
+
+</KinBody>

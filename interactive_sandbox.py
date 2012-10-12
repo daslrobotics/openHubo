@@ -30,22 +30,18 @@ if __name__=='__main__':
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'simpleFloor.env.xml'
+        file_env = 'huboplus/huboplus.robot.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
     env.SetDebugLevel(4)
-    env.Load(file_env)
-
 
     #-- Set the robot controller and start the simulation
     with env:
+        env.Load(file_env)
         robot = env.GetRobots()[0]
-        robot.SetController(RaveCreateController(env,'servocontroller'))
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
-        LSR=robot.GetJoint('LSR').GetDOFIndex()
-        LEP=robot.GetJoint('LEP').GetDOFIndex()
 
         env.StopSimulation()
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
