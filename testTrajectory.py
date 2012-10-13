@@ -6,9 +6,9 @@ from numpy import *
 from numpy.linalg import *
 import sys
 import time
-from servo import *
 from copy import copy
-
+from recorder import viewerrecorder
+from servo import *
 #TODO: Work with the concept of activeDOF?
 
 """ Simple test script to run some of the functions above. """
@@ -20,7 +20,7 @@ if __name__=='__main__':
 
     env = Environment()
     env.SetViewer('qtcoin')
-    env.SetDebugLevel(5)
+    env.SetDebugLevel(4)
 
     timestep=0.0005
 
@@ -79,7 +79,7 @@ if __name__=='__main__':
     traj.Init(config)
 
     t0=0
-    t1=2
+    t1=1
 
     waypt0=list(pose0)
     waypt1=list(pose1)
@@ -102,12 +102,14 @@ if __name__=='__main__':
     for k in range(40):
         data=traj.Sample(float(k)/10)
         print data[ind('LKP')]
+    
 
+    vidrec=viewerrecorder(env)
     controller.SetPath(traj)
+    vidrec.start()
     controller.SendCommand('run')
-    time.sleep(7)
-    controller.SendCommand('reverse')
-    time.sleep(5)
-    controller.SendCommand('forward')
+    while not(controller.IsDone()):
+        time.sleep(.1)
+    vidrec.stop()
 
 
