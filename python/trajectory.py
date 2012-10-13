@@ -68,7 +68,7 @@ if __name__=='__main__':
 
     pose1[ind('LHP')]=-20
     pose1[ind('RHP')]=-20
-    pose1=pose1*pi/180
+    pose1=pose1*pi/180*2
 
     traj=RaveCreateTrajectory(env,'')
 
