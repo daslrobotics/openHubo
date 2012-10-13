@@ -104,5 +104,10 @@ if __name__=='__main__':
         print data[ind('LKP')]
 
     controller.SetPath(traj)
-    controller.SendCommand('run on')
+    controller.SendCommand('run')
+    time.sleep(7)
+    controller.SendCommand('reverse')
+    time.sleep(5)
+    controller.SendCommand('forward')
+
 
