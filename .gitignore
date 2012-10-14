@@ -1,3 +1,5 @@
 .*.swp
 *.pyc
-.env.sh
+env.sh
+servodata*.txt
+*.mpg
