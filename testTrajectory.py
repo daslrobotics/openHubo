@@ -54,8 +54,8 @@ if __name__=='__main__':
         pose=array(zeros(60))
 
         #Manually align the goal pose and the initial pose so the thumbs clear
-        pose[ind('RSR')]=-22.5
-        pose[ind('LSR')]=22.5
+        pose[ind('RSR')]=-pi/8
+        pose[ind('LSR')]=pi/8
 
         controller.SetDesired(pose)
 

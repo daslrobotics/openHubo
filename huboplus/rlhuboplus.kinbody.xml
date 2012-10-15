@@ -574,7 +574,7 @@
         <offsetfrom>Body_RSR</offsetfrom>
         <anchor>0.036207973807 -0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-180 2</limitsdeg>
+        <limitsdeg>-180 4</limitsdeg>
     </Joint>
 
     <body name="Body_LSR" type="dynamic">
@@ -606,7 +606,7 @@
         <offsetfrom>Body_LSR</offsetfrom>
         <anchor>0.036207973807 0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-2 180</limitsdeg>
+        <limitsdeg>-4 180</limitsdeg>
     </Joint>
 
     <body name="Body_RSY" type="dynamic">
