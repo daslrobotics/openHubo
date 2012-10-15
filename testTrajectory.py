@@ -11,6 +11,14 @@ from recorder import viewerrecorder
 from servo import *
 #TODO: Work with the concept of activeDOF?
 
+def createTrajectory(robot):
+    """ Create a trajectory based on a robot's config spec"""
+    traj=RaveCreateTrajectory(robot.GetEnvironment,'')
+    config=robot.GetConfigurationSpecification()
+    config.AddDeltaTimeGroup()
+    traj.Init(config)
+    return traj
+
 """ Simple test script to run some of the functions above. """
 if __name__=='__main__':
     try:
@@ -99,17 +107,17 @@ if __name__=='__main__':
     planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
     #Prove that the retiming actually works
-    for k in range(40):
-        data=traj.Sample(float(k)/10)
-        print data[ind('LKP')]
+    #for k in range(40):
+        #data=traj.Sample(float(k)/10)
+        #print data[ind('LKP')]
     
 
-    vidrec=viewerrecorder(env)
-    controller.SetPath(traj)
-    vidrec.start()
-    controller.SendCommand('run')
-    while not(controller.IsDone()):
-        time.sleep(.1)
-    vidrec.stop()
+    #vidrec=viewerrecorder(env)
+    #controller.SetPath(traj)
+    #vidrec.start()
+    #controller.SendCommand('run')
+    #while not(controller.IsDone()):
+        #time.sleep(.1)
+    #vidrec.stop()
 
 

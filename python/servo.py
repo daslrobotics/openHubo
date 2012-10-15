@@ -15,6 +15,11 @@ def makeNameToIndexConverter(robot):
         return robot.GetJoint(name).GetDOFIndex()
     return convert
 
+def testSetGains(controller):
+    print controller.SendCommand('print')
+    controller.SendCommand('setgains 50 0 7')
+    print controller.SendCommand('print')
+
 def testMotionRange(robot,jointName,steps=50,timestep=.05):
     """ Demonstrate the range of motion of a joint.
     This quick test shows the limit-checking of the servo plugin.
@@ -32,7 +37,7 @@ def testMotionRange(robot,jointName,steps=50,timestep=.05):
 
 def sendServoCommand(robot,raw=array(zeros(60))):
     """ Send an array of servo positions directly to the robot. """
-    robot.GetController.SetDesired(raw)
+    robot.GetController().SetDesired(raw)
 
 def sendSparseServoCommand(robot,posDict):
     """ Update only joints that are specified in the dictionary."""
@@ -44,9 +49,8 @@ def sendSparseServoCommand(robot,posDict):
     strtmp = 'setpos '+' '.join(str(f) for f in positions)
     robot.GetController().SendCommand(strtmp)
 
-
 def sendSingleJointTrajectory(robot,trajectory,jointID,timestep=.1):
-    """ Send a trajectory that will be played back for a single joint """
+    """ Send a trajectory that will be played back for a single joint."""
     #TODO: time by sim timesteps (i.e. manually step simulation)
     for k in trajectory:
         strtmp = 'setpos1 {} {}'.format(jointID,k)
@@ -67,7 +71,6 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
     t=starttime
 
     for k in trajectory:
-
         #Wait for the simulation thread to complete its timestep (There must be
         # a better way...)
         
@@ -82,8 +85,10 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
 
         print "Simulation Time: {}".format((env.GetSimulationTime()-starttime)/1000000.0)
 
-""" Simple test script to run some of the functions above. """
+""" Test Script and examples to learn how to use the new servocontroller."""
 if __name__=='__main__':
+
+    #Load your environment passed as an argument, or the default
     try:
         file_env = sys.argv[1]
     except IndexError:
@@ -91,11 +96,17 @@ if __name__=='__main__':
 
     env = Environment()
     env.SetViewer('qtcoin')
+    time.sleep(.5)
+    # 3 = fatal, error, and warnings, but not debug output
     env.SetDebugLevel(3)
 
     timestep=0.0005
 
-    #-- Set the robot controller and start the simulation
+    # Important! Lock the environment and stop the simulation to load a new
+    # environment. If you don't, physics will be running BEFORE the controller
+    # is defined. This means that the robot starts to crumple, and when the
+    # controller is enabled, it will doa  sort of "hypnic jerk", or partially
+    # embed in the floor and explode
     with env:
         env.Load(file_env)
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
@@ -113,9 +124,10 @@ if __name__=='__main__':
         controller.SendCommand('setgains 50 0 8')
 
         env.StopSimulation()
-        env.StartSimulation(timestep=timestep)
 
-    time.sleep(1)
+        #You can also re-enable simulation later on if you need to do
+        # pre-simulation tweaks
+        env.StartSimulation(timestep=timestep)
 
     #Use the new SetDesired command to set a whole pose at once.
     pose=array(zeros(60))
@@ -135,14 +147,21 @@ if __name__=='__main__':
     pose[ind('LHP')]=-20
     pose[ind('RHP')]=-20
 
+    pose=pose*pi/180
     controller.SetDesired(pose)
+    time.sleep(3)
+
+    print "Testing single joint pose"
+
+    controller.SendCommand('set degrees')
+
+    controller.SendCommand('setpos1 {} {} '.format(ind('LSP'),-60))
+
+    controller.SendCommand('set radians')
+
+    controller.SendCommand('setpos1 {} {} '.format(ind('LSP'),-pi/4))
+
     time.sleep(1)
 
-    t=array([k/100.0 for k in range(500)])
-    A=20.0
-    traj=cos(.5*2.0*pi*t)*A-A
-
-    sendSingleJointTrajectorySim(robot,traj,robot.GetJoint('LEP').GetDOFIndex(),timestep,100)
-    #sendSingleJointTrajectory(robot,traj,robot.GetJoint('LEP').GetDOFIndex(),.1)
-    #Run this in interactive mode to preserve the state
+    sendServoCommand(robot,zeros(60))
 
