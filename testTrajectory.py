@@ -47,7 +47,7 @@ if __name__=='__main__':
 
         #Set an initial pose before the simulation starts
         robot.SetDOFValues([pi/8,-pi/8],[ind('LSR'),ind('RSR')])
-        controller.SendCommand('setgains 50 0 8')
+        controller.SendCommand('set gains 50 0 8')
         time.sleep(1)
 
         #Use the new SetDesired command to set a whole pose at once.
@@ -87,7 +87,7 @@ if __name__=='__main__':
     traj.Init(config)
 
     t0=0
-    t1=1
+    t1=2
 
     waypt0=list(pose0)
     waypt1=list(pose1)
@@ -107,17 +107,16 @@ if __name__=='__main__':
     planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
     #Prove that the retiming actually works
-    #for k in range(40):
-        #data=traj.Sample(float(k)/10)
-        #print data[ind('LKP')]
-    
+    for k in range(40):
+        data=traj.Sample(float(k)/10)
+        print data[ind('LKP')]
 
-    #vidrec=viewerrecorder(env)
-    #controller.SetPath(traj)
-    #vidrec.start()
-    #controller.SendCommand('run')
-    #while not(controller.IsDone()):
-        #time.sleep(.1)
-    #vidrec.stop()
+    vidrec=viewerrecorder(env)
+    controller.SetPath(traj)
+    vidrec.start()
+    controller.SendCommand('start')
+    while not(controller.IsDone()):
+        time.sleep(.1)
+    vidrec.stop()
 
 
