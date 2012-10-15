@@ -856,7 +856,7 @@
         <offsetfrom>Body_RWP</offsetfrom>
         <anchor>0.000258199377 0.011441986656 0.046147242821</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-94 58</limitsdeg>
+        <limitsdeg>-90 90</limitsdeg>
     </Joint>
 
     <body name="Body_LWP" type="dynamic">
@@ -888,7 +888,7 @@
         <offsetfrom>Body_LWP</offsetfrom>
         <anchor>0.000258199377 -0.011441986656 0.046147242821</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-94 58</limitsdeg>
+        <limitsdeg>-90 90</limitsdeg>
     </Joint>
 
     <body name="Body_HNR" type="dynamic">
