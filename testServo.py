@@ -21,6 +21,7 @@ from numpy import *
 import time
 import sys
 from servo import *
+import openhubo 
 
 if __name__=='__main__':
 
@@ -44,7 +45,7 @@ if __name__=='__main__':
         robot = env.GetRobots()[0]
 
         #Define a joint name lookup closure for the robot
-        ind=makeNameToIndexConverter(robot)
+        ind=openhubo.makeNameToIndexConverter(robot)
 
         robot.SetDOFValues([pi/4,-pi/4],[ind('LSR'),ind('RSR')])
         pose=array(zeros(60))
@@ -52,8 +53,11 @@ if __name__=='__main__':
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
 
-        env.StopSimulation()
+    
         robot.GetController().SendCommand('setgains 50 0 7 .9998 .1')
+        #Note that you can specify the input format as either degrees or
+        #radians, but the internal format is radians
+        robot.GetController().SendCommand('set degrees')
         pose[ind('LSR')]=45
         pose[ind('RSR')]=-45
         robot.GetController().SetDesired(pose)
@@ -62,6 +66,7 @@ if __name__=='__main__':
         env.StartSimulation(timestep=0.0005)
 
     time.sleep(2)
+
    
     #Change the pose to lift the elbows and resend
     pose[ind('REP')]=-45
