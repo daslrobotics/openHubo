@@ -872,6 +872,14 @@
             <render>Body_LWP_1.wrl 1 </render>
             <data>convhull_LWP_1.wrl 1 </data>
         </geom>
+		
+		<geom type="box">
+			<translation>0.000258199377 -0.011441986656 0.046147242821</translation>
+			<translation>-0.000001 -0.000361 -0.07703</translation>
+			<rotationaxis>1 0 0 45</rotationaxis>
+			<extents>0.037595 0.002 0.0197485</extents>
+		</geom>
+		
         <mass type="custom">
             <total>0.164392998329</total>
             <inertia>
