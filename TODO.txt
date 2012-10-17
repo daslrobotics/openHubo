@@ -4,7 +4,7 @@ Re-model the Hubo+ with the arms straight out to eliminate the thumb sticking th
 
 Create reachability databases for each robot / manipulator (not the RL robot?)
 
-Organize example environments into a scenes folder
++Organize example environments into a scenes folder
 
 Define unit tests for code so that future models are easier to verify.  Simple tests include:
     Load correctly into openrave

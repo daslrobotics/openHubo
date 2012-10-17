@@ -2,36 +2,50 @@
 from openravepy import *
 from servo import *
 from numpy import pi
+import re
+import openhubo 
 
-def read_youngbum_traj(filename,robot):
+def read_youngbum_traj(filename,robot,dt=.01,scale=1.0):
+    """ Read in trajectory data stored in Youngbum's format (100Hz data):
+        HPY LHY LHR ... RWP   (3-letter names)
+        + - + ... +           (sign of joint about equivalent global axis + / -)
+        0.0 5.0 2.0 ... -2.0  (Offset of joint from openHubo "zero" in YOUR sign convention)
+        (data by row, single space separated)
+    """
+    #TODO: handle multiple spaces
+    #Setup trajectory and source file
     traj=RaveCreateTrajectory(robot.GetEnv(),'')
     config=robot.GetConfigurationSpecification()
     config.AddDeltaTimeGroup()
     traj.Init(config)
     ind=makeNameToIndexConverter(robot)
+    #Affine DOF are not controlled, so fill with zeros
+    affinedof=zeros(7) 
 
     f=open(filename,'r')
+
+    #Read in header row to find joint names
     header=f.readline().rstrip()
-    indices=[]
-    print header.split()
+    print header.split(' ')
 
-    for h in header.split(' '):
-        indices.append(ind(h))
+    indices=[ind(s) for s in header.split(' ')]
 
-    signlist=f.readline().rstrip()
-
+    #Read in sign row
+    signlist=f.readline().rstrip().split(' ')
     signs=[]
-    print signlist.split(' ')
-    for s in signlist.split(' '):
+    print signlist
+    for s in signlist:
         if s == '+':
             signs.append(1)
         else:
             signs.append(-1)
+    
+    #Read in offset row (fill with zeros if not used)
+    offsetlist=f.readline().rstrip().split(' ')
+    print offsetlist
+    offsets=[float(x) for x in offsetlist]
 
     k=0
-    affinedof=zeros(7)
-    #TODO: read out of traj?
-    dt=0.01
     while True: 
         string=f.readline().rstrip()
         if len(string)==0:
@@ -40,7 +54,7 @@ def read_youngbum_traj(filename,robot):
         data=zeros(robot.GetDOF())
 
         for i in range(len(jointvals)):
-            data[indices[i]]=jointvals[i]*pi/180.0*signs[i]*.7
+            data[indices[i]]=(jointvals[i]+offsets[i])*pi/180.0*signs[i]*scale
 
         waypt=list(data)
         waypt.extend(affinedof)
@@ -54,9 +68,9 @@ def read_youngbum_traj(filename,robot):
 if __name__=='__main__':
 
     try:
-        file_env = sys.argv[1]
+        traj_name = sys.argv[1]
     except IndexError:
-        file_env = 'scenes/simpleFloor.env.xml'
+        traj_name = 'traj_pump.txt'
 
     env = Environment()
     env.SetViewer('qtcoin')
@@ -65,45 +79,19 @@ if __name__=='__main__':
     timestep=0.0005
 
     #-- Set the robot controller and start the simulation
-    with env:
-        env.StopSimulation()
-        env.Load(file_env)
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
-        robot = env.GetRobots()[0]
-        #Create a "shortcut" function to translate joint names to indices
-        ind = makeNameToIndexConverter(robot)
+    robot=openhubo.load_simplefloor(env)
+    ind=openhubo.makeNameToIndexConverter(robot)
+    controller=robot.GetController()
 
-        #initialize the servo controller
-        controller=RaveCreateController(env,'trajectorycontroller')
-        robot.SetController(controller)
-
-        #Set an initial pose before the simulation starts
-        robot.SetDOFValues([pi/8,-pi/8],[ind('LSR'),ind('RSR')])
-        controller.SendCommand('set gains 50 0 8')
-        time.sleep(1)
-
-        #Use the new SetDesired command to set a whole pose at once.
-        pose=array(zeros(60))
-
-        #Manually align the goal pose and the initial pose so the thumbs clear
-        pose[ind('RSR')]=-pi/8
-        pose[ind('LSR')]=pi/8
-
-        controller.SetDesired(pose)
-
-        env.StartSimulation(timestep=timestep)
+    env.StartSimulation(timestep=timestep)
 
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
-    traj=read_youngbum_traj('traj_pump.txt',robot)
+    traj=read_youngbum_traj(traj_name,robot,.01,.7)
 
     controller.SetPath(traj)
     controller.SendCommand('start')
     while not(controller.IsDone()):
         time.sleep(.1)
         print controller.GetTime()
-
-
-
 

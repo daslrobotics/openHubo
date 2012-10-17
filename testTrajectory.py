@@ -8,7 +8,7 @@ import sys
 import time
 from copy import copy
 from recorder import viewerrecorder
-from servo import *
+import openhubo
 #TODO: Work with the concept of activeDOF?
 
 def createTrajectory(robot):
@@ -34,12 +34,13 @@ if __name__=='__main__':
 
     #-- Set the robot controller and start the simulation
     with env:
+        env.StopSimulation()
         env.Load(file_env)
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
         robot = env.GetRobots()[0]
         #Create a "shortcut" function to translate joint names to indices
-        ind = makeNameToIndexConverter(robot)
+        ind = openhubo.makeNameToIndexConverter(robot)
 
         #initialize the servo controller
         controller=RaveCreateController(env,'trajectorycontroller')
@@ -59,8 +60,7 @@ if __name__=='__main__':
 
         controller.SetDesired(pose)
 
-        env.StopSimulation()
-        env.StartSimulation(timestep=timestep)
+    env.StartSimulation(timestep=timestep)
 
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
@@ -118,5 +118,3 @@ if __name__=='__main__':
     while not(controller.IsDone()):
         time.sleep(.1)
     vidrec.stop()
-
-
