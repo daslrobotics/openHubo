@@ -430,6 +430,54 @@
             <render>Body_RAR_2.wrl 1 </render>
             <data>convhull_RAR_2.wrl 1 </data>
         </geom>
+		
+		<geom type="box">
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>-0.051823 -0.005 -0.102729</translation>
+			<extents>0.068674 0.076 0.00363</extents>
+		</geom>
+		<geom type="box">
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>-0.024997 0 -0.102729</translation>
+			<extents>0.0955 0.0434325 0.00363</extents>
+		</geom>
+		<geom type="box">
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>-0.044682 0.0355 -0.102729</translation>
+			<extents>0.0758145 0.0355 0.00363</extents>
+		</geom>
+		<geom type="box">
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>0.023602 -0.033546 -0.102729</translation>
+			<rotationaxis>0 0 1 -55</rotationaxis>
+			<extents>0.035 0.0327485 0.00363</extents>
+		</geom>
+		<geom type="box">
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>0.030742 0.028546 -0.102729</translation>
+			<rotationaxis>0 0 1 -35</rotationaxis>
+			<extents>0.0240315 0.035 0.00363</extents>
+		</geom>
+		<geom type="box">
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation> -0.075749 -0.005 -0.102729</translation>
+			<extents>0.0757485 0.045 0.00363</extents>
+		</geom>
+		<geom type="cylinder">
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>-0.120497 -0.050 -0.102729</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+		<geom type="cylinder">
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>-0.120497 0.040 -0.102729</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+		
         <mass type="custom">
             <total>1.203176884538</total>
             <inertia>
@@ -467,6 +515,54 @@
             <render>Body_LAR_2.wrl 1 </render>
             <data>convhull_LAR_2.wrl 1 </data>
         </geom>
+		
+		<geom type="box">
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>-0.051823 0.005 -0.102729</translation>
+			<extents>0.068674 0.076 0.00363</extents>
+		</geom>
+		<geom type="box">
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>-0.024997 0 -0.102729</translation>
+			<extents>0.0955 0.0434325 0.00363</extents>
+		</geom>
+		<geom type="box">
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>-0.044682 -0.0355 -0.102729</translation>
+			<extents>0.0758145 0.0355 0.00363</extents>
+		</geom>
+		<geom type="box">
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>0.023602 0.033546 -0.102729</translation>
+			<rotationaxis>0 0 1 55</rotationaxis>
+			<extents>0.035 0.0327485 0.00363</extents>
+		</geom>
+		<geom type="box">
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>0.030742 -0.028546 -0.102729</translation>
+			<rotationaxis>0 0 1 35</rotationaxis>
+			<extents>0.0240315 0.035 0.00363</extents>
+		</geom>
+		<geom type="box">
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation> -0.075749 0.005 -0.102729</translation>
+			<extents>0.0757485 0.045 0.00363</extents>
+		</geom>
+		<geom type="cylinder">
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>-0.120497 0.050 -0.102729</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+		<geom type="cylinder">
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>-0.120497 -0.040 -0.102729</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+		
         <mass type="custom">
             <total>1.203176884538</total>
             <inertia>
@@ -837,9 +933,18 @@
         <translation>-0.000258199377 -0.011441986656 -0.046147242821</translation>
         <geom type="trimesh">
             <translation>0.000258199377 0.011441986656 0.046147242821</translation>
+			<translation>0.001 0 0</translation>
             <render>Body_RWP_1.wrl 1 </render>
             <data>convhull_RWP_1.wrl 1 </data>
         </geom>
+		
+		<geom type="box">
+			<translation>0.000258199377 0.011441986656 0.046147242821</translation>
+			<translation>-0.000001 0.000361 -0.07703</translation>
+			<rotationaxis>1 0 0 -45</rotationaxis>
+			<extents>0.037595 0.002 0.0197485</extents>
+		</geom>
+		
         <mass type="custom">
             <total>0.164392998329</total>
             <inertia>
@@ -869,9 +974,18 @@
         <translation>-0.000258199377 0.011441986656 -0.046147242821</translation>
         <geom type="trimesh">
             <translation>0.000258199377 -0.011441986656 0.046147242821</translation>
+			<translation>0.001 0 0</translation>
             <render>Body_LWP_1.wrl 1 </render>
             <data>convhull_LWP_1.wrl 1 </data>
         </geom>
+		
+		<geom type="box">
+			<translation>0.000258199377 -0.011441986656 0.046147242821</translation>
+			<translation>-0.000001 -0.000361 -0.07703</translation>
+			<rotationaxis>1 0 0 45</rotationaxis>
+			<extents>0.037595 0.002 0.0197485</extents>
+		</geom>
+		
         <mass type="custom">
             <total>0.164392998329</total>
             <inertia>
