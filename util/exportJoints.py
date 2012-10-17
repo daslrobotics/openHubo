@@ -20,14 +20,14 @@ from openravepy import *
 import sys
 import csv
 
-def run():
+if __name__=='__main__':
 
     #-- Read the name of the xml file passed as an argument
     #-- or use the default name
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = '../hubo2/hubo2.robot.xml'
+        file_env = 'hubo2/hubo2.robot.xml'
 
     env = Environment()
     env.Load(file_env)
@@ -51,5 +51,7 @@ def run():
             # Use the CSV writer to export the data by row
             writer.writerow([k.GetName(),jointMap[k.GetName()]])
 
-if __name__=='__main__':
-    run()
+    with open('{}.joints.m'.format(file_prefix),'w') as f:
+        for k in robot.GetJoints():
+            f.write('{}={}'.format(k.GetName(),jointMap[k.GetName()]))
+
