@@ -4,6 +4,7 @@ from servo import *
 from numpy import pi
 import re
 import openhubo 
+from recorder import viewerrecorder
 
 def read_youngbum_traj(filename,robot,dt=.01,scale=1.0):
     """ Read in trajectory data stored in Youngbum's format (100Hz data):
@@ -18,7 +19,7 @@ def read_youngbum_traj(filename,robot,dt=.01,scale=1.0):
     config=robot.GetConfigurationSpecification()
     config.AddDeltaTimeGroup()
     traj.Init(config)
-    ind=makeNameToIndexConverter(robot)
+    ind=openhubo.makeNameToIndexConverter(robot)
     #Affine DOF are not controlled, so fill with zeros
     affinedof=zeros(7) 
 
@@ -87,11 +88,14 @@ if __name__=='__main__':
 
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
-    traj=read_youngbum_traj(traj_name,robot,.01,.7)
+    traj=read_youngbum_traj(traj_name,robot,.015,.9)
 
+    vidrec=viewerrecorder(env)
     controller.SetPath(traj)
+    vidrec.start()
     controller.SendCommand('start')
     while not(controller.IsDone()):
         time.sleep(.1)
         print controller.GetTime()
+    vidrec.stop()
 

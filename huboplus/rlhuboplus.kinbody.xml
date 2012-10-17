@@ -354,7 +354,7 @@
         <offsetfrom>Body_RKP</offsetfrom>
         <anchor>-0.012825433376 -0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-4 149</limitsdeg>
     </Joint>
 
     <body name="Body_LKP" type="dynamic">

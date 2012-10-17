@@ -9,8 +9,9 @@
     </Body>
     <Body name="post1" type="static">
         <offsetfrom>footplate</offsetfrom>
-        <Translation>0 0.2286 1.778</Translation>
+        <Translation>0 0.2286 0</Translation>
         <Geom type="cylinder">
+            <translation> 0 0 1.778</translation>
             <rotationaxis>1 0 0 90</rotationaxis>
             <radius>0.013</radius>
             <height>3.556</height>
@@ -20,8 +21,9 @@
 
     <Body name="post2" type="static">
         <offsetfrom>footplate</offsetfrom>
-        <Translation>0 -0.2286 1.778</Translation>
+        <Translation>0 -0.2286 0</Translation>
         <Geom type="cylinder">
+            <translation> 0 0 1.778</translation>
             <rotationaxis>1 0 0 90</rotationaxis>
             <radius>0.013</radius>
             <height>3.556</height>
