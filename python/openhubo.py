@@ -6,7 +6,14 @@ from numpy import pi
 """ A collection of useful functions to run openhubo models.
 As common functions are developed, they will be added here.
 """
-
+def pause(t=-1):
+    """ A simple pause function to emulate matlab's pause(t). 
+    Useful for debugging and program stepping"""
+    if t==-1:
+        raw_input('Press any key to continue...')
+    elif t>=0:
+        time.sleep(t)
+        
 def makeNameToIndexConverter(robot):
     """ A closure to easily convert from a string joint name to the robot's
     actual DOF index, for use in creating/editing trajectories."""
