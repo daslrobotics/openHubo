@@ -656,7 +656,7 @@
         <offsetfrom>Body_RSP</offsetfrom>
         <anchor>-0.016720721524 0.057040679167 -0.000009918731</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-169.999 169.999</limitsdeg>
     </Joint>
 
     <body name="Body_LSP" type="dynamic">
@@ -688,7 +688,7 @@
         <offsetfrom>Body_LSP</offsetfrom>
         <anchor>-0.016720721524 -0.057040679167 -0.000009918731</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-169.999 169.999</limitsdeg>
     </Joint>
 
     <body name="Body_RSR" type="dynamic">
@@ -789,7 +789,7 @@
         <offsetfrom>Body_RSY</offsetfrom>
         <anchor>-0.004561211264 0.000031057603 0.090782377537</anchor>
         <axis>0 0 1</axis>
-        <limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-169.999 169.999</limitsdeg>
     </Joint>
 
     <body name="Body_LSY" type="dynamic">
@@ -826,7 +826,7 @@
         <offsetfrom>Body_LSY</offsetfrom>
         <anchor>-0.004561211264 -0.000031057603 0.090782377537</anchor>
         <axis>0 0 1</axis>
-        <limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-169.999 169.999</limitsdeg>
     </Joint>
 
     <body name="Body_REP" type="dynamic">
@@ -928,7 +928,7 @@
         <offsetfrom>Body_RWY</offsetfrom>
         <anchor>0.001220192079 0.000635233335 0.023804318643</anchor>
         <axis>0 0 1</axis>
-        <limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-169.999 169.999</limitsdeg>
     </Joint>
 
     <body name="Body_LWY" type="dynamic">
@@ -965,7 +965,7 @@
         <offsetfrom>Body_LWY</offsetfrom>
         <anchor>0.001220192079 -0.000635233335 0.023804318643</anchor>
         <axis>0 0 1</axis>
-        <limitsdeg>-179.999 179.999</limitsdeg>
+        <limitsdeg>-169.999 169.999</limitsdeg>
     </Joint>
 
     <body name="Body_RWP" type="dynamic">

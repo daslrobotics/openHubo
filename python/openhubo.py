@@ -58,6 +58,34 @@ def load_simplefloor(env):
         controller.SetDesired(pose)
     return robot
 
+def hubo2_left_palm():
+    R=mat([[-0.5000,    -0.5000,   0.7071],
+        [0.5000,   0.5000,   0.7071],
+        [-0.7071,   0.7071,         0]])
+
+    t=mat([.009396,-.010145,-.022417]).T
+    return MakeTransform(R,t)
+
+def hubo2_right_palm():
+    return MakeTransform(R_hubo2_right_palm(),t_hubo2_right_palm())
+
+def R_hubo2_right_palm():
+    return mat( [[-0.5000,    0.5000,    0.7071],
+            [-0.5000,    0.5000,   -0.7071],
+            [-0.7071,   -0.7071,         0]])
+
+def t_hubo2_right_palm():
+    return mat([.009396,.010145,-.022417]).T
+
+def hubo2_left_foot():
+    R=mat(eye(3))
+    t=mat([-.040497,.005,-.104983]).T+mat([0.042765281437, -0.002531569047,0.063737248723]).T
+    return MakeTransform(R,t)
+
+def hubo2_right_foot():
+    R=mat(eye(3))
+    t=mat([-.040497,-.005,-.104983]).T+mat([0.042765281437, 0.002531569047,0.063737248723]).T
+    return MakeTransform(R,t)
 if __name__=='__main__':
     env=Environment()
     env.SetViewer('qtcoin')
