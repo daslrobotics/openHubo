@@ -15,6 +15,68 @@
             <render>Body_RAR_2.wrl 1 </render>
             <data>convhull_RAR_2.wrl 1 </data>
         </geom>
+		
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>-0.051823 -0.005 -0.102729</translation>
+            <extents>0.068674 0.076 0.00363</extents>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>-0.024997 0 -0.102729</translation>
+			<extents>0.0955 0.0434325 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>-0.044682 0.0355 -0.102729</translation>
+			<extents>0.0758145 0.0355 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>0.023602 -0.033546 -0.102729</translation>
+			<rotationaxis>0 0 1 -55</rotationaxis>
+			<extents>0.035 0.0327485 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>0.030742 0.028546 -0.102729</translation>
+			<rotationaxis>0 0 1 -35</rotationaxis>
+			<extents>0.0240315 0.035 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation> -0.075749 -0.005 -0.102729</translation>
+			<extents>0.0757485 0.045 0.00363</extents>
+		</geom>
+		<geom type="cylinder">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>-0.120497 -0.050 -0.102729</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+		<geom type="cylinder">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
+			<translation>-0.120497 0.040 -0.102729</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+		
         <mass type="custom">
             <total>1.203176884538</total>
             <inertia>
@@ -213,6 +275,9 @@
         <anchor>0.013850358943 -0.000007806523 0.035461283862</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
+		<maxvel>3.77</maxvel>
+		<maxaccel>7.20</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <Joint name="RHY" type="hinge">
@@ -222,6 +287,9 @@
         <anchor>-0.034706500276 0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
+		<maxvel>3.77</maxvel>
+		<maxaccel>7.20</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <body name="Body_LHY" type="dynamic">
@@ -259,6 +327,9 @@
         <anchor>-0.034706500276 -0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
+		<maxvel>3.77</maxvel>
+		<maxaccel>7.20</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <Joint name="RHR" type="hinge">
@@ -268,6 +339,9 @@
         <anchor>0.049747912596 0.012531116599 0.015643664572</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-28 28</limitsdeg>
+		<maxvel>1.86</maxvel>
+		<maxaccel>3.56</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <body name="Body_LHR" type="dynamic">
@@ -300,6 +374,9 @@
         <anchor>0.049747912596 -0.012531116599 0.015643664572</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-28 28</limitsdeg>
+		<maxvel>1.86</maxvel>
+		<maxaccel>3.56</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <Joint name="RHP" type="hinge">
@@ -309,6 +386,9 @@
         <anchor>-0.019504891350 -0.059577480789 0.175201757627</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-85 92</limitsdeg>
+		<maxvel>4.71</maxvel>
+		<maxaccel>9.00</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <body name="Body_LHP" type="dynamic">
@@ -346,6 +426,9 @@
         <anchor>-0.019504891350 0.059577480789 0.175201757627</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-85 92</limitsdeg>
+		<maxvel>4.71</maxvel>
+		<maxaccel>9.00</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <Joint name="RKP" type="hinge">
@@ -355,6 +438,9 @@
         <anchor>-0.012825433376 -0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-4 149</limitsdeg>
+		<maxvel>4.71</maxvel>
+		<maxaccel>9.00</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <body name="Body_LKP" type="dynamic">
@@ -392,6 +478,9 @@
         <anchor>-0.012825433376 0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-4 149</limitsdeg>
+		<maxvel>4.71</maxvel>
+		<maxaccel>9.00</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <Joint name="RAP" type="hinge">
@@ -401,6 +490,9 @@
         <anchor>-0.019870246084 -0.045969255056 -0.011506941050</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-74 97</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <body name="Body_LAP" type="dynamic">
@@ -433,6 +525,9 @@
         <anchor>-0.019870246084 0.045969255056 -0.011506941050</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-74 97</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <Joint name="RAR" type="hinge">
@@ -442,6 +537,9 @@
         <anchor>0.051509407797 0.002163982128 0.069388069491</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-11 11</limitsdeg>
+		<maxvel>2.98</maxvel>
+		<maxaccel>5.70</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <body name="Body_LAR" type="dynamic">
@@ -462,6 +560,68 @@
             <render>Body_LAR_2.wrl 1 </render>
             <data>convhull_LAR_2.wrl 1 </data>
         </geom>
+		
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>-0.051823 0.005 -0.102729</translation>
+			<extents>0.068674 0.076 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>-0.024997 0 -0.102729</translation>
+			<extents>0.0955 0.0434325 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>-0.044682 -0.0355 -0.102729</translation>
+			<extents>0.0758145 0.0355 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>0.023602 0.033546 -0.102729</translation>
+			<rotationaxis>0 0 1 55</rotationaxis>
+			<extents>0.035 0.0327485 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>0.030742 -0.028546 -0.102729</translation>
+			<rotationaxis>0 0 1 35</rotationaxis>
+			<extents>0.0240315 0.035 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation> -0.075749 0.005 -0.102729</translation>
+			<extents>0.0757485 0.045 0.00363</extents>
+		</geom>
+		<geom type="cylinder">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>-0.120497 0.050 -0.102729</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+		<geom type="cylinder">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+			<translation>-0.120497 -0.040 -0.102729</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+		
         <mass type="custom">
             <total>1.203176884538</total>
             <inertia>
@@ -479,6 +639,9 @@
         <anchor>0.051509407797 -0.002163982128 0.069388069491</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-11 11</limitsdeg>
+		<maxvel>2.98</maxvel>
+		<maxaccel>5.70</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <body name="Body_RSP" type="dynamic">
@@ -511,6 +674,9 @@
         <anchor>-0.016720721524 0.057040679167 -0.000009918731</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>6.48</maxvel>
+		<maxaccel>12.38</maxaccel>
+		<maxtorque>35</maxtorque>
     </Joint>
 
     <body name="Body_LSP" type="dynamic">
@@ -543,6 +709,9 @@
         <anchor>-0.016720721524 -0.057040679167 -0.000009918731</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>6.48</maxvel>
+		<maxaccel>12.38</maxaccel>
+		<maxtorque>35</maxtorque>
     </Joint>
 
     <body name="Body_RSR" type="dynamic">
@@ -575,6 +744,9 @@
         <anchor>0.036207973807 -0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-180 4</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>35</maxtorque>
     </Joint>
 
     <body name="Body_LSR" type="dynamic">
@@ -607,6 +779,9 @@
         <anchor>0.036207973807 0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-4 180</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>35</maxtorque>
     </Joint>
 
     <body name="Body_RSY" type="dynamic">
@@ -644,6 +819,9 @@
         <anchor>-0.004561211264 0.000031057603 0.090782377537</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>25</maxtorque>
     </Joint>
 
     <body name="Body_LSY" type="dynamic">
@@ -681,6 +859,9 @@
         <anchor>-0.004561211264 -0.000031057603 0.090782377537</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>25</maxtorque>
     </Joint>
 
     <body name="Body_REP" type="dynamic">
@@ -714,6 +895,9 @@
         <anchor>0.021734910228 0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-143 4</limitsdeg>
+		<maxvel>7.85</maxvel>
+		<maxaccel>15.00</maxaccel>
+		<maxtorque>25</maxtorque>
     </Joint>
 
     <body name="Body_LEP" type="dynamic">
@@ -746,6 +930,9 @@
         <anchor>0.021734910228 -0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-143 4</limitsdeg>
+		<maxvel>7.85</maxvel>
+		<maxaccel>15.00</maxaccel>
+		<maxtorque>25</maxtorque>
     </Joint>
 
     <body name="Body_RWY" type="dynamic">
@@ -783,6 +970,9 @@
         <anchor>0.001220192079 0.000635233335 0.023804318643</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>9</maxtorque>
     </Joint>
 
     <body name="Body_LWY" type="dynamic">
@@ -820,6 +1010,9 @@
         <anchor>0.001220192079 -0.000635233335 0.023804318643</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>9</maxtorque>
     </Joint>
 
     <body name="Body_RWP" type="dynamic">
@@ -832,9 +1025,20 @@
         <translation>-0.000258199377 -0.011441986656 -0.046147242821</translation>
         <geom type="trimesh">
             <translation>0.000258199377 0.011441986656 0.046147242821</translation>
+			<translation>0.001 0 0</translation>
             <render>Body_RWP_1.wrl 1 </render>
             <data>convhull_RWP_1.wrl 1 </data>
         </geom>
+		
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.000258199377 0.011441986656 0.046147242821</translation>
+			<translation>-0.000001 0.000361 -0.07703</translation>
+			<rotationaxis>1 0 0 -45</rotationaxis>
+			<extents>0.037595 0.002 0.0197485</extents>
+		</geom>
+		
         <mass type="custom">
             <total>0.164392998329</total>
             <inertia>
@@ -852,6 +1056,9 @@
         <anchor>0.000258199377 0.011441986656 0.046147242821</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-90 90</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>9</maxtorque>
     </Joint>
 
     <body name="Body_LWP" type="dynamic">
@@ -864,9 +1071,19 @@
         <translation>-0.000258199377 0.011441986656 -0.046147242821</translation>
         <geom type="trimesh">
             <translation>0.000258199377 -0.011441986656 0.046147242821</translation>
+			<translation>0.001 0 0</translation>
             <render>Body_LWP_1.wrl 1 </render>
             <data>convhull_LWP_1.wrl 1 </data>
         </geom>
+		
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.000258199377 -0.011441986656 0.046147242821</translation>
+			<translation>-0.000001 -0.000361 -0.07703</translation>
+			<rotationaxis>1 0 0 45</rotationaxis>
+			<extents>0.037595 0.002 0.0197485</extents>
+		</geom>
+		
         <mass type="custom">
             <total>0.164392998329</total>
             <inertia>
@@ -884,6 +1101,9 @@
         <anchor>0.000258199377 -0.011441986656 0.046147242821</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-94 90</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>9</maxtorque>
     </Joint>
 
     <body name="Body_HNR" type="dynamic">
@@ -903,6 +1123,9 @@
         <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>2.7</maxtorque>
     </Joint>
 
     <body name="Body_HNP" type="dynamic">
@@ -935,6 +1158,9 @@
         <anchor>-0.010688581590 0.000030086449 -0.032122953618</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>2.7</maxtorque>
     </Joint>
 
     <!-- Adjacent Bodies -->
