@@ -21,8 +21,9 @@
         <Body>Body_RWP</Body>
         <Body>rightIndexProximal</Body>
         <offsetfrom>rightIndexProximal</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 90</limitsdeg>
     </Joint>
 
     <KinBody prefix="rightMiddle" name="rightMiddleFinger" file="finger.kinbody.xml">
@@ -45,8 +46,9 @@
         <Body>Body_RWP</Body>
         <Body>rightMiddleProximal</Body>
         <offsetfrom>rightMiddleProximal</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 90</limitsdeg>
     </Joint>
 
     <KinBody prefix="rightRing" name="rightIndexFinger" file="finger.kinbody.xml">
@@ -70,8 +72,9 @@
         <Body>Body_RWP</Body>
         <Body>rightRingProximal</Body>
         <offsetfrom>rightRingProximal</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 90</limitsdeg>
     </Joint>
 
     <KinBody prefix="rightPinky" name="rightPinkyFinger" file="finger.kinbody.xml">
@@ -94,8 +97,9 @@
         <Body>Body_RWP</Body>
         <Body>rightPinkyProximal</Body>
         <offsetfrom>rightPinkyProximal</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 90</limitsdeg>
     </Joint>
 
     <KinBody prefix="rightThumb" name="rightThumbFinger" file="finger.kinbody.xml">
@@ -117,8 +121,9 @@
         <Body>Body_RWP</Body>
         <Body>rightThumbProximal</Body>
         <offsetfrom>rightThumbProximal</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 90</limitsdeg>
     </Joint>
 
     <adjacent>rightIndexProximal rightIndexMedial</adjacent>
@@ -131,4 +136,10 @@
     <adjacent>rightPinkyMedial rightPinkyDistal</adjacent>
     <adjacent>rightThumbProximal rightThumbMedial</adjacent>
     <adjacent>rightThumbMedial rightThumbDistal</adjacent>
+
+    <adjacent>rightIndexProximal rightPalm</adjacent>
+    <adjacent>rightMiddleProximal rightPalm</adjacent>
+    <adjacent>rightRingProximal rightPalm</adjacent>
+    <adjacent>rightPinkyProximal rightPalm</adjacent>
+    <adjacent>rightThumbProximal rightPalm</adjacent>
 </KinBody>

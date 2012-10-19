@@ -556,6 +556,7 @@
     <body name="leftFoot" type="dynamic">
         <offsetfrom>Body_LAR</offsetfrom> 
         <translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+        <!--Projects down from COM, somewhat forward of foot center-->
         <translation>0 0 -0.102729</translation>
         <translation>0 0 -0.00363</translation>
 		<geom type="box">
@@ -1004,11 +1005,12 @@
 			<translation>0.000258199377 0.011441986656 0.046147242821</translation>
 			<translation>-0.000001 0.000361 -0.07703</translation>
 			<translation>0 0.0007071 -0.0007071</translation>
-			<rotationaxis>1 0 0 -45</rotationaxis>
+            <rotationaxis>0 1 0 90</rotationaxis>
+            <rotationaxis>1 0 0 -45</rotationaxis>
 		<geom type="box">
             <diffusecolor>.3 .3 .3</diffusecolor>
             <diffusecolor>.3 .3 .3</diffusecolor>
-			<extents>0.037595 0.002 0.0197485</extents>
+			<extents> 0.0197485 0.002 0.037595</extents>
 		</geom>
     </body>
 
@@ -1056,11 +1058,12 @@
 			<translation>0.000258199377 -0.011441986656 0.046147242821</translation>
 			<translation>-0.000001 -0.000361 -0.07703</translation>
 			<translation>0 -0.0007071 -0.0007071</translation>
+            <rotationaxis>0 1 0 90</rotationaxis>
 			<rotationaxis>1 0 0 45</rotationaxis>
 		<geom type="box">
             <diffusecolor>.3 .3 .3</diffusecolor>
             <diffusecolor>.3 .3 .3</diffusecolor>
-			<extents>0.037595 0.002 0.0197485</extents>
+			<extents>0.0197485 0.002 0.037595 </extents>
 		</geom>
     </body>
 
@@ -1208,6 +1211,13 @@
     <!-- Body_HNP -->
     <adjacent>Body_HNP Body_HNR</adjacent>
 
+
+    <adjacent>leftPalm Body_LWP</adjacent>
+    <adjacent>rightPalm Body_RWP</adjacent>
+
+    <adjacent>leftFoot Body_LAR</adjacent>
+    <adjacent>rightFoot Body_RAR</adjacent>
     <kinbody file="righthand.kinbody.xml"/>
     <kinbody file="lefthand.kinbody.xml"/>
+
 </kinbody>

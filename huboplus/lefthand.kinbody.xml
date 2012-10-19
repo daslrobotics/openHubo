@@ -21,8 +21,9 @@
         <Body>Body_LWP</Body>
         <Body>leftIndexProximal</Body>
         <offsetfrom>leftIndexProximal</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 90</limitsdeg>
     </Joint>
 
     <KinBody prefix="leftMiddle" name="leftMiddleFinger" file="finger.kinbody.xml">
@@ -46,8 +47,9 @@
         <Body>Body_LWP</Body>
         <Body>leftMiddleProximal</Body>
         <offsetfrom>leftMiddleProximal</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 90</limitsdeg>
     </Joint>
 
     <KinBody prefix="leftRing" name="leftRingFinger" file="finger.kinbody.xml">
@@ -71,8 +73,9 @@
         <Body>Body_LWP</Body>
         <Body>leftRingProximal</Body>
         <offsetfrom>leftRingProximal</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 90</limitsdeg>
     </Joint>
 
     <KinBody prefix="leftPinky" name="leftPinkyFinger" file="finger.kinbody.xml">
@@ -96,8 +99,9 @@
         <Body>Body_LWP</Body>
         <Body>leftPinkyProximal</Body>
         <offsetfrom>leftPinkyProximal</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 90</limitsdeg>
     </Joint>
 
     <KinBody prefix="leftThumb" name="leftThumbFinger" file="finger.kinbody.xml">
@@ -121,8 +125,9 @@
         <Body>Body_LWP</Body>
         <Body>leftThumbProximal</Body>
         <offsetfrom>leftThumbProximal</offsetfrom>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 90</limitsdeg>
     </Joint>
 
     <adjacent>leftIndexProximal leftIndexMedial</adjacent>
@@ -135,4 +140,9 @@
     <adjacent>leftPinkyMedial leftPinkyDistal</adjacent>
     <adjacent>leftThumbProximal leftThumbMedial</adjacent>
     <adjacent>leftThumbMedial leftThumbDistal</adjacent>
+    <adjacent>leftIndexProximal leftPalm</adjacent>
+    <adjacent>leftMiddleProximal leftPalm</adjacent>
+    <adjacent>leftRingProximal leftPalm</adjacent>
+    <adjacent>leftPinkyProximal leftPalm</adjacent>
+    <adjacent>leftThumbProximal leftPalm</adjacent>
 </KinBody>
