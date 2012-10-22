@@ -67,6 +67,9 @@
         <anchor>0.013850358943 -0.000007806523 0.035461283862</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>3.77</maxvel>
+		<maxaccel>7.20</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <body name="Body_RHY" type="dynamic">
@@ -104,6 +107,9 @@
         <anchor>-0.034706500276 0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
+		<maxvel>3.77</maxvel>
+		<maxaccel>7.20</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <body name="Body_LHY" type="dynamic">
@@ -141,6 +147,9 @@
         <anchor>-0.034706500276 -0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
+		<maxvel>3.77</maxvel>
+		<maxaccel>7.20</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <body name="Body_RHR" type="dynamic">
@@ -173,6 +182,9 @@
         <anchor>0.049747912596 0.012531116599 0.015643664572</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-28 28</limitsdeg>
+		<maxvel>1.86</maxvel>
+		<maxaccel>3.56</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <body name="Body_LHR" type="dynamic">
@@ -205,6 +217,9 @@
         <anchor>0.049747912596 -0.012531116599 0.015643664572</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-28 28</limitsdeg>
+		<maxvel>1.86</maxvel>
+		<maxaccel>3.56</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <body name="Body_RHP" type="dynamic">
@@ -242,6 +257,9 @@
         <anchor>-0.019504891350 -0.059577480789 0.175201757627</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-85 92</limitsdeg>
+		<maxvel>4.71</maxvel>
+		<maxaccel>9.00</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <body name="Body_LHP" type="dynamic">
@@ -279,6 +297,9 @@
         <anchor>-0.019504891350 0.059577480789 0.175201757627</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-85 92</limitsdeg>
+		<maxvel>4.71</maxvel>
+		<maxaccel>9.00</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <body name="Body_RKP" type="dynamic">
@@ -316,6 +337,9 @@
         <anchor>-0.012825433376 -0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-4 149</limitsdeg>
+		<maxvel>4.71</maxvel>
+		<maxaccel>9.00</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <body name="Body_LKP" type="dynamic">
@@ -353,6 +377,9 @@
         <anchor>-0.012825433376 0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-4 149</limitsdeg>
+		<maxvel>4.71</maxvel>
+		<maxaccel>9.00</maxaccel>
+		<maxtorque>95</maxtorque>
     </Joint>
 
     <body name="Body_RAP" type="dynamic">
@@ -385,6 +412,9 @@
         <anchor>-0.019870246084 -0.045969255056 -0.011506941050</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-74 97</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <body name="Body_LAP" type="dynamic">
@@ -417,6 +447,9 @@
         <anchor>-0.019870246084 0.045969255056 -0.011506941050</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-74 97</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <body name="Body_RAR" type="dynamic">
@@ -516,6 +549,9 @@
         <anchor>0.051509407797 0.002163982128 0.069388069491</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-11 11</limitsdeg>
+		<maxvel>2.98</maxvel>
+		<maxaccel>5.70</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <body name="Body_LAR" type="dynamic">
@@ -615,6 +651,9 @@
         <anchor>0.051509407797 -0.002163982128 0.069388069491</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-11 11</limitsdeg>
+		<maxvel>2.98</maxvel>
+		<maxaccel>5.70</maxaccel>
+		<maxtorque>71</maxtorque>
     </Joint>
 
     <body name="Body_RSP" type="dynamic">
@@ -647,6 +686,9 @@
         <anchor>-0.016720721524 0.057040679167 -0.000009918731</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>6.48</maxvel>
+		<maxaccel>12.38</maxaccel>
+		<maxtorque>35</maxtorque>
     </Joint>
 
     <body name="Body_LSP" type="dynamic">
@@ -679,6 +721,9 @@
         <anchor>-0.016720721524 -0.057040679167 -0.000009918731</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>6.48</maxvel>
+		<maxaccel>12.38</maxaccel>
+		<maxtorque>35</maxtorque>
     </Joint>
 
     <body name="Body_RSR" type="dynamic">
@@ -711,6 +756,9 @@
         <anchor>0.036207973807 -0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-180 4</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>35</maxtorque>
     </Joint>
 
     <body name="Body_LSR" type="dynamic">
@@ -743,6 +791,9 @@
         <anchor>0.036207973807 0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-4 180</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>35</maxtorque>
     </Joint>
 
     <body name="Body_RSY" type="dynamic">
@@ -780,6 +831,9 @@
         <anchor>-0.004561211264 0.000031057603 0.090782377537</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>25</maxtorque>
     </Joint>
 
     <body name="Body_LSY" type="dynamic">
@@ -817,6 +871,9 @@
         <anchor>-0.004561211264 -0.000031057603 0.090782377537</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>25</maxtorque>
     </Joint>
 
     <body name="Body_REP" type="dynamic">
@@ -850,6 +907,9 @@
         <anchor>0.021734910228 0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-143 4</limitsdeg>
+		<maxvel>7.85</maxvel>
+		<maxaccel>15.00</maxaccel>
+		<maxtorque>25</maxtorque>
     </Joint>
 
     <body name="Body_LEP" type="dynamic">
@@ -882,6 +942,9 @@
         <anchor>0.021734910228 -0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-143 4</limitsdeg>
+		<maxvel>7.85</maxvel>
+		<maxaccel>15.00</maxaccel>
+		<maxtorque>25</maxtorque>
     </Joint>
 
     <body name="Body_RWY" type="dynamic">
@@ -919,6 +982,9 @@
         <anchor>0.001220192079 0.000635233335 0.023804318643</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>9</maxtorque>
     </Joint>
 
     <body name="Body_LWY" type="dynamic">
@@ -956,6 +1022,9 @@
         <anchor>0.001220192079 -0.000635233335 0.023804318643</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>9</maxtorque>
     </Joint>
 
     <body name="Body_RWP" type="dynamic">
@@ -999,6 +1068,9 @@
         <anchor>0.000258199377 0.011441986656 0.046147242821</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-90 90</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>9</maxtorque>
     </Joint>
 
     <body name="Body_LWP" type="dynamic">
@@ -1041,6 +1113,9 @@
         <anchor>0.000258199377 -0.011441986656 0.046147242821</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-90 90</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>9</maxtorque>
     </Joint>
 
     <body name="Body_HNR" type="dynamic">
@@ -1060,6 +1135,9 @@
         <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>2.7</maxtorque>
     </Joint>
 
     <body name="Body_HNP" type="dynamic">
@@ -1092,6 +1170,9 @@
         <anchor>-0.010688581590 0.000030086449 -0.032122953618</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
+		<maxvel>9.42</maxvel>
+		<maxaccel>18.00</maxaccel>
+		<maxtorque>2.7</maxtorque>
     </Joint>
 
     <!-- Adjacent Bodies -->
