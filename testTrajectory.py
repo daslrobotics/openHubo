@@ -8,8 +8,16 @@ import sys
 import time
 from copy import copy
 from recorder import viewerrecorder
-from servo import *
+import openhubo
 #TODO: Work with the concept of activeDOF?
+
+def createTrajectory(robot):
+    """ Create a trajectory based on a robot's config spec"""
+    traj=RaveCreateTrajectory(robot.GetEnvironment,'')
+    config=robot.GetConfigurationSpecification()
+    config.AddDeltaTimeGroup()
+    traj.Init(config)
+    return traj
 
 """ Simple test script to run some of the functions above. """
 if __name__=='__main__':
@@ -26,12 +34,13 @@ if __name__=='__main__':
 
     #-- Set the robot controller and start the simulation
     with env:
+        env.StopSimulation()
         env.Load(file_env)
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
         robot = env.GetRobots()[0]
         #Create a "shortcut" function to translate joint names to indices
-        ind = makeNameToIndexConverter(robot)
+        ind = openhubo.makeNameToIndexConverter(robot)
 
         #initialize the servo controller
         controller=RaveCreateController(env,'trajectorycontroller')
@@ -39,20 +48,19 @@ if __name__=='__main__':
 
         #Set an initial pose before the simulation starts
         robot.SetDOFValues([pi/8,-pi/8],[ind('LSR'),ind('RSR')])
-        controller.SendCommand('setgains 50 0 8')
+        controller.SendCommand('set gains 50 0 8')
         time.sleep(1)
 
         #Use the new SetDesired command to set a whole pose at once.
         pose=array(zeros(60))
 
         #Manually align the goal pose and the initial pose so the thumbs clear
-        pose[ind('RSR')]=-22.5
-        pose[ind('LSR')]=22.5
+        pose[ind('RSR')]=-pi/8
+        pose[ind('LSR')]=pi/8
 
         controller.SetDesired(pose)
 
-        env.StopSimulation()
-        env.StartSimulation(timestep=timestep)
+    env.StartSimulation(timestep=timestep)
 
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
@@ -79,7 +87,7 @@ if __name__=='__main__':
     traj.Init(config)
 
     t0=0
-    t1=1
+    t1=2
 
     waypt0=list(pose0)
     waypt1=list(pose1)
@@ -102,14 +110,11 @@ if __name__=='__main__':
     for k in range(40):
         data=traj.Sample(float(k)/10)
         print data[ind('LKP')]
-    
 
     vidrec=viewerrecorder(env)
     controller.SetPath(traj)
     vidrec.start()
-    controller.SendCommand('run')
+    controller.SendCommand('start')
     while not(controller.IsDone()):
         time.sleep(.1)
     vidrec.stop()
-
-

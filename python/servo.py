@@ -8,12 +8,14 @@ from numpy import *
 from numpy.linalg import *
 import sys
 import time
+import openhubo
 
 #TODO: Work with the concept of activeDOF?
-def makeNameToIndexConverter(robot):
-    def convert(name):
-        return robot.GetJoint(name).GetDOFIndex()
-    return convert
+
+def testSetGains(controller):
+    print controller.SendCommand('print')
+    controller.SendCommand('setgains 50 0 7')
+    print controller.SendCommand('print')
 
 def testMotionRange(robot,jointName,steps=50,timestep=.05):
     """ Demonstrate the range of motion of a joint.
@@ -32,21 +34,21 @@ def testMotionRange(robot,jointName,steps=50,timestep=.05):
 
 def sendServoCommand(robot,raw=array(zeros(60))):
     """ Send an array of servo positions directly to the robot. """
-    robot.GetController.SetDesired(raw)
+    robot.GetController().SetDesired(raw)
 
 def sendSparseServoCommand(robot,posDict):
     """ Update only joints that are specified in the dictionary."""
-    positions=robot.GetDOFValues()*180.0/pi
+    #TODO: check units and scale 
+    positions=robot.GetDOFValues()
+    
     #Translate from dictionary of names to DOF indices to make a full servo command
     for k in posDict.keys():
         positions[robot.GetJoint(k).GetDOFIndex()]=posDict[k]
 
-    strtmp = 'setpos '+' '.join(str(f) for f in positions)
-    robot.GetController().SendCommand(strtmp)
-
+    robot.GetController().SetDesired(positions)
 
 def sendSingleJointTrajectory(robot,trajectory,jointID,timestep=.1):
-    """ Send a trajectory that will be played back for a single joint """
+    """ Send a trajectory that will be played back for a single joint."""
     #TODO: time by sim timesteps (i.e. manually step simulation)
     for k in trajectory:
         strtmp = 'setpos1 {} {}'.format(jointID,k)
@@ -67,7 +69,6 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
     t=starttime
 
     for k in trajectory:
-
         #Wait for the simulation thread to complete its timestep (There must be
         # a better way...)
         
@@ -82,67 +83,84 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
 
         print "Simulation Time: {}".format((env.GetSimulationTime()-starttime)/1000000.0)
 
-""" Simple test script to run some of the functions above. """
+""" Test Script and examples to learn how to use the new servocontroller."""
 if __name__=='__main__':
-    try:
-        file_env = sys.argv[1]
-    except IndexError:
-        file_env = 'scenes/simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
+    time.sleep(.5)
+    # 3 = fatal, error, and warnings, but not debug output
     env.SetDebugLevel(3)
 
     timestep=0.0005
 
-    #-- Set the robot controller and start the simulation
+    # Important! Lock the environment and stop the simulation to load a new
+    # environment. If you don't, physics will be running BEFORE the controller
+    # is defined. This means that the robot starts to crumple, and when the
+    # controller is enabled, it will doa  sort of "hypnic jerk", or partially
+    # embed in the floor and explode
     with env:
-        env.Load(file_env)
+        env.StopSimulation()
+        env.Load('simpleFloor.env.xml')
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
         robot = env.GetRobots()[0]
         #Create a "shortcut" function to translate joint names to indices
-        ind = makeNameToIndexConverter(robot)
+        ind = openhubo.makeNameToIndexConverter(robot)
 
         #initialize the servo controller
         controller=RaveCreateController(env,'servocontroller')
         robot.SetController(controller)
 
         #Set an initial pose before the simulation starts
-        robot.SetDOFValues([pi/8,-pi/8],[ind('LSR'),ind('RSR')])
         controller.SendCommand('setgains 50 0 8')
 
-        env.StopSimulation()
-        env.StartSimulation(timestep=timestep)
+        pose=array(zeros(robot.GetDOF()))
 
+        pose[ind('RSR')]=-pi/8
+        pose[ind('LSR')]=pi/8
+
+        #Set initial pose to avoid thumb collisions
+        robot.SetDOFValues(pose)
+        controller.SetDesired(pose)
+        #You can also re-enable simulation later on if you need to do
+        # pre-simulation tweaks
+    env.StartSimulation(timestep=timestep)
     time.sleep(1)
-
     #Use the new SetDesired command to set a whole pose at once.
-    pose=array(zeros(60))
 
     #Manually align the goal pose and the initial pose so the thumbs clear
-    pose[ind('RSR')]=-22.5
-    pose[ind('LSR')]=22.5
+    pose[ind('RSR')]=-22.5*pi/180
+    pose[ind('LSR')]=22.5*pi/180
 
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
-    pose[ind('LAP')]=-20
-    pose[ind('RAP')]=-20
+    pose[ind('LAP')]=-20*pi/180
+    pose[ind('RAP')]=-20*pi/180
 
-    pose[ind('LKP')]=40
-    pose[ind('RKP')]=40
+    pose[ind('LKP')]=40*pi/180
+    pose[ind('RKP')]=40*pi/180
 
-    pose[ind('LHP')]=-20
-    pose[ind('RHP')]=-20
+    pose[ind('LHP')]=-20*pi/180
+    pose[ind('RHP')]=-20*pi/180
 
     controller.SetDesired(pose)
-    time.sleep(1)
+    time.sleep(2)
 
-    t=array([k/100.0 for k in range(500)])
-    A=20.0
-    traj=cos(.5*2.0*pi*t)*A-A
+    print "Testing single joint pose"
 
-    sendSingleJointTrajectorySim(robot,traj,robot.GetJoint('LEP').GetDOFIndex(),timestep,100)
-    #sendSingleJointTrajectory(robot,traj,robot.GetJoint('LEP').GetDOFIndex(),.1)
-    #Run this in interactive mode to preserve the state
+    controller.SendCommand('set degrees')
+
+    controller.SendCommand('setpos1 {} {} '.format(ind('LSP'),-60))
+
+    time.sleep(2)
+    print controller.SendCommand('getpos1 {} '.format(ind('LSP')))
+
+    print "Testing single joint pose"
+
+    controller.SendCommand('set radians')
+
+    controller.SendCommand('setpos1 {} {} '.format(ind('LEP'),-pi/4))
+    time.sleep(2)
+    print controller.SendCommand('getpos1 {} '.format(ind('LEP')))
 

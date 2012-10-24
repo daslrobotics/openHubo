@@ -63,8 +63,8 @@
     </body>
 
     <Joint name="RAR" type="hinge">
-        <body>Body_RAR</body>
         <body>Body_RAP</body>
+        <body>Body_RAR</body>
         <offsetfrom>Body_RAR</offsetfrom>
         <anchor>0.042765281437 0.002531569047 0.063737248723</anchor>
         <axis>1 0 0</axis>
@@ -102,8 +102,8 @@
     </body>
 
     <Joint name="RAP" type="hinge">
-        <body>Body_RAP</body>
         <body>Body_RKP</body>
+        <body>Body_RAP</body>
         <offsetfrom>Body_RAP</offsetfrom>
         <anchor>-0.007243232746 -0.041380876958 -0.013849604743</anchor>
         <axis>0 1 0</axis>

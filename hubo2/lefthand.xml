@@ -5,11 +5,10 @@
         <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>   0.0182626   0.0331978   -0.0649224  </Translation>
         <rotationmat>
-            -0.5000    0.5000    0.7071
             -0.5000    0.5000   -0.7071
+            0.5000   -0.5000   -0.7071
             -0.7071   -0.7071         0
         </rotationmat>
-        <RotationAxis>0 0 1 -90</RotationAxis>
         <Translation>-.005657 -0.005657 0 </Translation>
     </Kinbody>
 
@@ -31,11 +30,10 @@
         <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>   0.0048514   0.0197866   -0.0649224  </Translation>
         <rotationmat>
-            -0.5000    0.5000    0.7071
             -0.5000    0.5000   -0.7071
+            0.5000   -0.5000   -0.7071
             -0.7071   -0.7071         0
         </rotationmat>
-        <RotationAxis>0 0 1 -90</RotationAxis>
         <Translation>-.005657 -0.005657 0 </Translation>
     </Kinbody>
 
@@ -58,11 +56,10 @@
 
         <Translation>   -0.0086106  0.0063246   -0.0649224  </Translation>
         <rotationmat>
-            -0.5000    0.5000    0.7071
             -0.5000    0.5000   -0.7071
+            0.5000   -0.5000   -0.7071
             -0.7071   -0.7071         0
         </rotationmat>
-        <RotationAxis>0 0 1 -90</RotationAxis>
         <Translation>-.005657 -0.005657 0 </Translation>
     </Kinbody>
 
@@ -84,11 +81,10 @@
         <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>   -0.0220472  -0.007112   -0.0649224  </Translation>
         <rotationmat>
-            -0.5000    0.5000    0.7071
             -0.5000    0.5000   -0.7071
+            0.5000   -0.5000   -0.7071
             -0.7071   -0.7071         0
         </rotationmat>
-        <RotationAxis>0 0 1 -90</RotationAxis>
         <Translation>-.005657 -0.005657 0 </Translation>
     </Kinbody>
 
@@ -110,11 +106,10 @@
         <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
         <Translation>   0.0210312   -0.0035306  -0.0369824  </Translation>
         <rotationmat>
-            0.5000    0.5000   -0.7071
             0.5000    0.5000   0.7071
+           -0.5000   -0.5000   0.7071
             0.7071   -0.7071   0.0000
         </rotationmat>
-        <RotationAxis>0 0 1 -90</RotationAxis>
         <Translation>.005657 0.005657 0 </Translation>
     </Kinbody>
 

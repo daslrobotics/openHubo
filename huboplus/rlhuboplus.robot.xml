@@ -5,26 +5,26 @@
     
     <Manipulator name="leftArm">
         <base>Body_Torso</base>
-        <effector>Body_LWP</effector>
+        <effector>leftPalm</effector>
         <direction>0 -1 0</direction>
     </Manipulator>
 
     <Manipulator name="rightArm">
         <base>Body_Torso</base>
-        <effector>Body_RWP</effector>
+        <effector>rightPalm</effector>
         <direction>0 1 0</direction>
     </Manipulator>
 
     <Manipulator name="leftFoot">
         <base>Body_Hip</base>
-        <effector>Body_LAR</effector>
+        <effector>leftFoot</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
 
 
     <Manipulator name="rightFoot">
         <base>Body_Hip</base>
-        <effector>Body_RAR</effector>
+        <effector>rightFoot</effector>
         <direction>0 0 -1</direction>
     </Manipulator>
 
