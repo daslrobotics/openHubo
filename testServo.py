@@ -67,7 +67,6 @@ if __name__=='__main__':
 
     time.sleep(2)
 
-   
     #Change the pose to lift the elbows and resend
     pose[ind('REP')]=-45
     pose[ind('LEP')]=-45

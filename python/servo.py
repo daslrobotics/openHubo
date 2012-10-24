@@ -38,13 +38,14 @@ def sendServoCommand(robot,raw=array(zeros(60))):
 
 def sendSparseServoCommand(robot,posDict):
     """ Update only joints that are specified in the dictionary."""
-    positions=robot.GetDOFValues()*180.0/pi
+    #TODO: check units and scale 
+    positions=robot.GetDOFValues()
+    
     #Translate from dictionary of names to DOF indices to make a full servo command
     for k in posDict.keys():
         positions[robot.GetJoint(k).GetDOFIndex()]=posDict[k]
 
-    strtmp = 'setpos '+' '.join(str(f) for f in positions)
-    robot.GetController().SendCommand(strtmp)
+    robot.GetController().SetDesired(positions)
 
 def sendSingleJointTrajectory(robot,trajectory,jointID,timestep=.1):
     """ Send a trajectory that will be played back for a single joint."""

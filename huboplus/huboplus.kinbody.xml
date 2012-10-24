@@ -471,67 +471,6 @@
             <data>convhull_RAR_2.wrl 1 </data>
         </geom>
 		
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
-			<translation>-0.051823 -0.005 -0.102729</translation>
-            <extents>0.068674 0.076 0.00363</extents>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-		</geom>
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
-			<translation>-0.024997 0 -0.102729</translation>
-			<extents>0.0955 0.0434325 0.00363</extents>
-		</geom>
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
-			<translation>-0.044682 0.0355 -0.102729</translation>
-			<extents>0.0758145 0.0355 0.00363</extents>
-		</geom>
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
-			<translation>0.023602 -0.033546 -0.102729</translation>
-			<rotationaxis>0 0 1 -55</rotationaxis>
-			<extents>0.035 0.0327485 0.00363</extents>
-		</geom>
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
-			<translation>0.030742 0.028546 -0.102729</translation>
-			<rotationaxis>0 0 1 -35</rotationaxis>
-			<extents>0.0240315 0.035 0.00363</extents>
-		</geom>
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
-			<translation> -0.075749 -0.005 -0.102729</translation>
-			<extents>0.0757485 0.045 0.00363</extents>
-		</geom>
-		<geom type="cylinder">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
-			<translation>-0.120497 -0.050 -0.102729</translation>
-			<rotationaxis>1 0 0 90</rotationaxis>
-			<radius>0.031</radius>
-			<height>0.00726</height>
-		</geom>
-		<geom type="cylinder">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 0.002163982128 0.069388069491</translation>
-			<translation>-0.120497 0.040 -0.102729</translation>
-			<rotationaxis>1 0 0 90</rotationaxis>
-			<radius>0.031</radius>
-			<height>0.00726</height>
-		</geom>
-		
         <mass type="custom">
             <total>1.203176884538</total>
             <inertia>
@@ -554,6 +493,80 @@
 		<maxtorque>71</maxtorque>
     </Joint>
 
+    <body name="rightFoot" type="dynamic">
+        <offsetfrom>Body_RAR</offsetfrom>
+            <translation>0.051509407797 0.002163982128 0.069388069491</translation>
+        <translation>0 0 -0.102729</translation>
+        <translation>0 0 -0.00363</translation>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <translation>-0.051823 -0.005 0.0</translation>
+            <translation>0 0 0.00363</translation>
+            <extents>0.068674 0.076 0.00363</extents>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>-0.024997 0 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<extents>0.0955 0.0434325 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>-0.044682 0.0355 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<extents>0.0758145 0.0355 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.023602 -0.033546 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<rotationaxis>0 0 1 -55</rotationaxis>
+			<extents>0.035 0.0327485 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.030742 0.028546 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<rotationaxis>0 0 1 -35</rotationaxis>
+			<extents>0.0240315 0.035 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation> -0.075749 -0.005 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<extents>0.0757485 0.045 0.00363</extents>
+		</geom>
+		<geom type="cylinder">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>-0.120497 -0.050 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+		<geom type="cylinder">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>-0.120497 0.040 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+		
+    </body>
+
+    <joint name="RAR_dummy" type="hinge" enable="false">
+        <Body>Body_RAR</Body>
+        <Body>rightFoot</Body>
+        <limits>0 0</limits>
+    </joint>
+
     <body name="Body_LAR" type="dynamic">
         <offsetfrom>Body_LAP</offsetfrom>
         <!--Body_LAR Parent Center of Mass to Base -->
@@ -572,67 +585,6 @@
             <render>Body_LAR_2.wrl 1 </render>
             <data>convhull_LAR_2.wrl 1 </data>
         </geom>
-		
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
-			<translation>-0.051823 0.005 -0.102729</translation>
-			<extents>0.068674 0.076 0.00363</extents>
-		</geom>
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
-			<translation>-0.024997 0 -0.102729</translation>
-			<extents>0.0955 0.0434325 0.00363</extents>
-		</geom>
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
-			<translation>-0.044682 -0.0355 -0.102729</translation>
-			<extents>0.0758145 0.0355 0.00363</extents>
-		</geom>
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
-			<translation>0.023602 0.033546 -0.102729</translation>
-			<rotationaxis>0 0 1 55</rotationaxis>
-			<extents>0.035 0.0327485 0.00363</extents>
-		</geom>
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
-			<translation>0.030742 -0.028546 -0.102729</translation>
-			<rotationaxis>0 0 1 35</rotationaxis>
-			<extents>0.0240315 0.035 0.00363</extents>
-		</geom>
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
-			<translation> -0.075749 0.005 -0.102729</translation>
-			<extents>0.0757485 0.045 0.00363</extents>
-		</geom>
-		<geom type="cylinder">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
-			<translation>-0.120497 0.050 -0.102729</translation>
-			<rotationaxis>1 0 0 90</rotationaxis>
-			<radius>0.031</radius>
-			<height>0.00726</height>
-		</geom>
-		<geom type="cylinder">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.051509407797 -0.002163982128 0.069388069491</translation>
-			<translation>-0.120497 -0.040 -0.102729</translation>
-			<rotationaxis>1 0 0 90</rotationaxis>
-			<radius>0.031</radius>
-			<height>0.00726</height>
-		</geom>
 		
         <mass type="custom">
             <total>1.203176884538</total>
@@ -655,6 +607,80 @@
 		<maxaccel>5.70</maxaccel>
 		<maxtorque>71</maxtorque>
     </Joint>
+
+    <body name="leftFoot" type="dynamic">
+        <offsetfrom>Body_LAR</offsetfrom> 
+        <translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+        <!--Projects down from COM, somewhat forward of foot center-->
+        <translation>0 0 -0.102729</translation>
+        <translation>0 0 -0.00363</translation>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>-0.051823 0.005 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<extents>0.068674 0.076 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>-0.024997 0 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<extents>0.0955 0.0434325 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>-0.044682 -0.0355 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<extents>0.0758145 0.0355 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.023602 0.033546 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<rotationaxis>0 0 1 55</rotationaxis>
+			<extents>0.035 0.0327485 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>0.030742 -0.028546 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<rotationaxis>0 0 1 35</rotationaxis>
+			<extents>0.0240315 0.035 0.00363</extents>
+		</geom>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation> -0.075749 0.005 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<extents>0.0757485 0.045 0.00363</extents>
+		</geom>
+		<geom type="cylinder">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>-0.120497 0.050 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+		<geom type="cylinder">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<translation>-0.120497 -0.040 0.0</translation>
+            <translation>0 0 0.00363</translation>
+			<rotationaxis>1 0 0 90</rotationaxis>
+			<radius>0.031</radius>
+			<height>0.00726</height>
+		</geom>
+    </body>
+
+    <joint name="LAR_dummy" type="hinge" enable="false">
+        <Body>Body_LAR</Body>
+        <Body>leftFoot</Body>
+        <limits>0 0</limits>
+    </joint>
 
     <body name="Body_RSP" type="dynamic">
         <offsetfrom>Body_Torso</offsetfrom>
@@ -1042,15 +1068,6 @@
             <data>convhull_RWP_1.wrl 1 </data>
         </geom>
 		
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.000258199377 0.011441986656 0.046147242821</translation>
-			<translation>-0.000001 0.000361 -0.07703</translation>
-			<rotationaxis>1 0 0 -45</rotationaxis>
-			<extents>0.037595 0.002 0.0197485</extents>
-		</geom>
-		
         <mass type="custom">
             <total>0.164392998329</total>
             <inertia>
@@ -1073,6 +1090,28 @@
 		<maxtorque>9</maxtorque>
     </Joint>
 
+    <body name="rightPalm" type="dynamic">
+        <offsetfrom>Body_RWP</offsetfrom>
+			<translation>0.000258199377 0.011441986656 0.046147242821</translation>
+			<translation>-0.000001 0.000361 -0.07703</translation>
+			<translation>0 0.0007071 -0.0007071</translation>
+            <rotationaxis>0 1 0 90</rotationaxis>
+            <rotationaxis>1 0 0 -45</rotationaxis>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<extents> 0.0197485 0.002 0.037595</extents>
+		</geom>
+    </body>
+
+    <Joint name="RWP_dummy" type="hinge" enable="false">
+        <body>Body_RWP</body>
+        <body>rightPalm</body>
+        <offsetfrom>Body_RWP</offsetfrom>
+        <limitsdeg>0 0</limitsdeg>
+    </Joint>
+
+
     <body name="Body_LWP" type="dynamic">
         <offsetfrom>Body_LWY</offsetfrom>
         <!--Body_LWP Parent Center of Mass to Base -->
@@ -1087,14 +1126,6 @@
             <render>Body_LWP_1.wrl 1 </render>
             <data>convhull_LWP_1.wrl 1 </data>
         </geom>
-		
-		<geom type="box">
-            <diffusecolor>.3 .3 .3</diffusecolor>
-			<translation>0.000258199377 -0.011441986656 0.046147242821</translation>
-			<translation>-0.000001 -0.000361 -0.07703</translation>
-			<rotationaxis>1 0 0 45</rotationaxis>
-			<extents>0.037595 0.002 0.0197485</extents>
-		</geom>
 		
         <mass type="custom">
             <total>0.164392998329</total>
@@ -1117,6 +1148,28 @@
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>9</maxtorque>
     </Joint>
+
+    <body name="leftPalm" type="dynamic">
+        <offsetfrom>Body_LWP</offsetfrom>
+			<translation>0.000258199377 -0.011441986656 0.046147242821</translation>
+			<translation>-0.000001 -0.000361 -0.07703</translation>
+			<translation>0 -0.0007071 -0.0007071</translation>
+            <rotationaxis>0 1 0 90</rotationaxis>
+			<rotationaxis>1 0 0 45</rotationaxis>
+		<geom type="box">
+            <diffusecolor>.3 .3 .3</diffusecolor>
+            <diffusecolor>.3 .3 .3</diffusecolor>
+			<extents>0.0197485 0.002 0.037595 </extents>
+		</geom>
+    </body>
+
+    <Joint name="LWP_dummy" type="hinge" enable="false">
+        <body>Body_LWP</body>
+        <body>leftPalm</body>
+        <offsetfrom>Body_LWP</offsetfrom>
+        <limitsdeg>0 0</limitsdeg>
+    </Joint>
+
 
     <body name="Body_HNR" type="dynamic">
         <offsetfrom>Body_Torso</offsetfrom>
@@ -1260,6 +1313,11 @@
     <!-- Head -->
     <!-- Body_HNP -->
     <adjacent>Body_HNP Body_HNR</adjacent>
+    <adjacent>leftPalm Body_LWP</adjacent>
+    <adjacent>rightPalm Body_RWP</adjacent>
+
+    <adjacent>leftFoot Body_LAR</adjacent>
+    <adjacent>rightFoot Body_RAR</adjacent>
 
     <kinbody file="righthand.kinbody.xml"/>
     <kinbody file="lefthand.kinbody.xml"/>

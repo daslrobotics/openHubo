@@ -23,42 +23,53 @@ import time
 import datetime
 import sys
 from servo import *
+import openhubo
 
 if __name__=='__main__':
-
-    #-- Read the name of the xml file passed as an argument
-    #-- or use the default name
-    try:
-        file_env = sys.argv[1]
-    except IndexError:
-        file_env = 'scenes/simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
     env.SetDebugLevel(4)
-    env.Load(file_env)
     timestep=0.0005
 
-    #-- Set the robot controller and start the simulation
     with env:
-        robot = env.GetRobots()[0]
-        robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'bullet')
-        env.SetCollisionChecker(collisionChecker)
-
+        #Since physics are defined within the XML file, stop simulation
         env.StopSimulation()
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        env.StartSimulation(timestep=timestep)
+        env.Load('simpleFloor.env.xml')
+        collisionChecker = RaveCreateCollisionChecker(env,'ode')
+        env.SetCollisionChecker(collisionChecker)
+        robot = env.GetRobots()[0]
+        #Create a "shortcut" function to translate joint names to indices
+        ind = openhubo.makeNameToIndexConverter(robot)
 
+        #initialize the servo controller
+        controller=RaveCreateController(env,'servocontroller')
+        robot.SetController(controller)
 
-    time.sleep(2)
+        controller.SendCommand('set gains 50 0 8')
+
+        #Set an initial pose before the simulation starts
+        pose=array(zeros(robot.GetDOF()))
+
+        pose[ind('RSR')]=-pi/8
+        pose[ind('LSR')]=pi/8
+
+        #Set initial pose to avoid thumb collisions
+        robot.SetDOFValues(pose)
+        controller.SetDesired(pose)
+
 
     t=array([float(k)/100.0 for k in range(500)])
     A=20.0
     traj=sin(0.250*2.0*pi*t)*A
 
+    controller.SendCommand('set degrees')
     initPose={'LSR':18,'RSR':-18,'LEP':-20,'REP':-20}
-    sendPose(robot,initPose)
+
+    time.sleep(1)
+    env.StartSimulation(timestep=timestep)
+
+    sendSparseServoCommand(robot,initPose)
     time.sleep(3)
 
     sendSingleJointTrajectorySim(robot,traj,robot.GetJoint('HPY').GetDOFIndex(),timestep,100)

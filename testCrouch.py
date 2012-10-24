@@ -23,15 +23,16 @@ if __name__=='__main__':
 
     #-- Set the robot controller and start the simulation
     with env:
+        env.StopSimulation()
         env.Load(file_env)
         robot = env.GetRobots()[0]
         collisionChecker = RaveCreateCollisionChecker(env,'bullet')
         env.SetCollisionChecker(collisionChecker)
         robot.SetController(RaveCreateController(env,'servocontroller'))
-        env.StopSimulation()
         env.StartSimulation(timestep=0.001)
 
     time.sleep(3)
+    robot.GetController().SendCommand('set degrees')
 
     sendSparseServoCommand(robot,{'LHP':-20,'LKP':40,'LAP':-20,'RHP':-20,'RKP':40,'RAP':-20})
 
