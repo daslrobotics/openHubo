@@ -88,7 +88,7 @@ echo ""
 
 #CoMPS prereqs and build steps
 
-for dep in libqhull-dev libqhull5 libnewmat10-dev libnewmat10ldbl
+for dep in libqhull-dev libqhull5 libnewmat10-dev libnewmat10ldbl libboost-regex-dev
 do
     verify-dep $dep
 done
