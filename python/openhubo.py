@@ -86,6 +86,7 @@ def hubo2_right_foot():
     R=mat(eye(3))
     t=mat([-.040497,-.005,-.104983]).T+mat([0.042765281437, 0.002531569047,0.063737248723]).T
     return MakeTransform(R,t)
+
 if __name__=='__main__':
     env=Environment()
     env.SetViewer('qtcoin')

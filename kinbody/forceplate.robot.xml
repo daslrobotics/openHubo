@@ -1,0 +1,53 @@
+<robot name="forceplate">
+
+    <kinbody name="forceplate_kb">
+        <body name="base" type="dynamic">
+            <translation>0 0 0.02</translation>
+            <geom type="box">
+                <extents>0.5 0.5 0.02</extents>
+            </geom>
+            <mass type="mimicgeom">
+                <total>100</total>
+            </mass>
+        </body>
+
+        <body name="middle" type="dynamic">
+            <offsetfrom>base</offsetfrom>
+            <translation>0 0 0.04</translation>
+            <geom type="box">
+                <extents>0.5 0.5 0.02</extents>
+            </geom>
+            <mass type="mimicgeom">
+                <total>100</total>
+            </mass>
+        </body>
+
+        <body name="top" type="dynamic">
+            <offsetfrom>middle</offsetfrom>
+            <translation>0 0 0.04</translation>
+            <geom type="box">
+                <extents>0.5 0.5 0.02</extents>
+            </geom>
+            <mass type="mimicgeom">
+                <total>10</total>
+            </mass>
+        </body>
+
+        <joint type="hinge" name="base_1">
+            <offsetfrom>base</offsetfrom>
+            <body>base</body>
+            <body>middle</body>
+            <limits>0 0</limits>
+        </joint>
+        <joint type="hinge" name="base_2">
+            <offsetfrom>middle</offsetfrom>
+            <body>middle</body>
+            <body>top</body>
+            <limits>0 0</limits>
+        </joint>
+        <adjacent>base middle</adjacent>
+        <adjacent>middle top</adjacent>
+
+    </kinbody>
+
+</robot>
