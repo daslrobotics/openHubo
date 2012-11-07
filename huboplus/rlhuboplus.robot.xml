@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<Robot name="huboplus" >
+<Robot name="rlhuboplus" >
     <KinBody file="rlhuboplus.kinbody.xml" makejoinedlinksadjacent="true"/>
     
     <Manipulator name="leftArm">
