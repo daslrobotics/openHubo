@@ -8,7 +8,7 @@ import sys
 import time
 from copy import copy
 import openhubo
-#TODO: Work with the concept of activeDOF?
+import matplotlib.pyplot as plt
 
 def createTrajectory(robot):
     """ Create a trajectory based on a robot's config spec"""
@@ -25,7 +25,17 @@ def loadTraj(robot,filename):
 
     traj.deserialize(data)
     planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
+    
     return traj
+
+def analyzeTime(filename):
+    with open(filename,'r') as f:
+        instring=f.read()
+    inlist=instring.split('\n')
+    indata=[float(x) for x in inlist[:-2]]
+    plt.plot(diff(indata))
+    plt.show()
+    return indata
 
 """ Simple test script to run some of the functions above. """
 if __name__=='__main__':
@@ -33,6 +43,13 @@ if __name__=='__main__':
         file_env = sys.argv[1]
     except IndexError:
         file_env = 'huboplus/huboplus.robot.xml'
+    # Uncomment below to only load specific plugins (could save memory on
+    # embedded systems)
+    #
+    #RaveInitialize(load_all_plugins=False)
+    #success = RaveLoadPlugin('libqtcoinrave.so')
+    #success = RaveLoadPlugin('libopenmr.so')
+    #success = RaveLoadPlugin('librplanners.so')
 
     env = Environment()
     env.SetViewer('qtcoin')
@@ -40,7 +57,6 @@ if __name__=='__main__':
 
     timestep=0.01
 
-    #-- Set the robot controller and start the simulation
     with env:
         env.StopSimulation()
         env.Load(file_env)
@@ -129,4 +145,7 @@ if __name__=='__main__':
         time.sleep(timestep*1.0)
     controller.SendCommand('SetRecord 0')
     time.sleep(1)
+    analyzeTime('timedata.txt')
+    openhubo.pause()
+    
     env.Destroy()
