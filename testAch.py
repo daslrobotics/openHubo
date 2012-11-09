@@ -12,10 +12,19 @@ import openhubo
 
 def createTrajectory(robot):
     """ Create a trajectory based on a robot's config spec"""
-    traj=RaveCreateTrajectory(robot.GetEnvironment,'')
+    traj=RaveCreateTrajectory(robot.GetEnv,'')
     config=robot.GetConfigurationSpecification()
     config.AddDeltaTimeGroup()
     traj.Init(config)
+    return traj
+
+def loadTraj(robot,filename):
+    traj=RaveCreateTrajectory(robot.GetEnv(),'')
+    with open(filename,'r') as f:
+        data=f.read()
+
+    traj.deserialize(data)
+    planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
     return traj
 
 """ Simple test script to run some of the functions above. """
@@ -26,7 +35,7 @@ if __name__=='__main__':
         file_env = 'huboplus/huboplus.robot.xml'
 
     env = Environment()
-    #env.SetViewer('qtcoin')
+    env.SetViewer('qtcoin')
     env.SetDebugLevel(4)
 
     timestep=0.01
@@ -60,8 +69,6 @@ if __name__=='__main__':
         pose[ind('LSR')]=pi/8
 
         controller.SetDesired(pose)
-
-    
 
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
@@ -113,7 +120,7 @@ if __name__=='__main__':
     #for k in range(40):
         #data=traj.Sample(float(k)/10)
         #print data[ind('LKP')]
-    controller.SendCommand('SetRecord 1 timefile.txt')
+    controller.SendCommand('SetRecord 1 timedata.txt')
     time.sleep(1)
     controller.SetPath(traj)
     #Everything should be in order...
