@@ -9,28 +9,44 @@ from numpy.linalg import *
 import sys
 import time
 import openhubo
+import collections
 
 #TODO: Work with the concept of activeDOF?
 
-def testSetGains(controller):
-    print controller.SendCommand('print')
-    controller.SendCommand('setgains 50 0 7')
-    print controller.SendCommand('print')
+shortcuts=collections.namedtuple('Shortcuts',['env','robot','controller','pose'])
 
-def testMotionRange(robot,jointName,steps=50,timestep=.05):
-    """ Demonstrate the range of motion of a joint.
-    This quick test shows the limit-checking of the servo plugin.
-    It attempts to reach +/-180 deg. for each joint.  However, the actual
-    reference position will be clipped to within a few degrees of the
-    limits."""
-    joint=robot.GetJoint(jointName)
-    dq=360.0
-    q0=-180.0
+def setupEnv():
+    env = Environment()
+    #env.SetViewer('qtcoin')
+    #time.sleep(.5)
+    env.SetDebugLevel(DebugLevel.Info)
+    timestep=0.0005
 
-    for k in [x*dq/steps+q0 for x in range(steps+1)]:
-        print k
-        robot.GetController().SendCommand('setpos1 {} {}'.format(joint.GetDOFIndex(),k))
-        time.sleep(timestep)
+    with env:
+        env.StopSimulation()
+        env.Load('simpleFloor.env.xml')
+        collisionChecker = RaveCreateCollisionChecker(env,'ode')
+        env.SetCollisionChecker(collisionChecker)
+        robot = env.GetRobots()[0]
+        #Create a "shortcut" function to translate joint names to indices
+        ind = openhubo.makeNameToIndexConverter(robot)
+
+        #initialize the servo controller
+        controller=RaveCreateController(env,'servocontroller')
+        robot.SetController(controller)
+
+        #Set an initial pose before the simulation starts
+        controller.SendCommand('setgains 50 0 8')
+
+        pose=array(zeros(robot.GetDOF()))
+
+        pose[ind('RSR')]=-pi/8
+        pose[ind('LSR')]=pi/8
+
+        #Set initial pose to avoid thumb collisions
+        robot.SetDOFValues(pose)
+        controller.SetDesired(pose)
+    return shortcuts(env,robot,controller,pose)
 
 def sendServoCommand(robot,raw=array(zeros(60))):
     """ Send an array of servo positions directly to the robot. """
@@ -83,7 +99,7 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
 
         print "Simulation Time: {}".format((env.GetSimulationTime()-starttime)/1000000.0)
 
-""" Test Script and examples to learn how to use the new servocontroller."""
+""" Examples to learn how to use the new servocontroller."""
 if __name__=='__main__':
 
     env = Environment()

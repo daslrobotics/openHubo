@@ -22,3 +22,7 @@ example, to view reachability databases with openrave, you will need the mayavi
 package:
 
     sudo apt-get install mayavi2
+
+Several examples are provided in the examples folder to get you started with
+python and MATLAB programming with openHubo.
+
