@@ -30,38 +30,49 @@ def find_files(directory, pattern):
                 yield filename
 
 def model_test_factory(filename=None):
-    class TestAdjacency(unittest.TestCase):
+    class TestLoading(unittest.TestCase):
         def setUp(self):
             self.env=Environment()
-            self.env.SetDebugLevel(DebugLevel.Info)
-            self.env.StopSimulation()
+            env=self.env
+            env.SetDebugLevel(DebugLevel.Info)
+            with env:
+                env.StopSimulation()
+                print('\nTesting model {}'.format(filename))
+                result=env.Load(filename)
+                self.assertTrue(result)
+                self.robot=env.GetRobots()[0]
+                physics = RaveCreatePhysicsEngine(env,'ode')
+                physics.SetGravity([0,0,0])
+                env.SetPhysicsEngine(physics)
+                env.StartSimulation(timestep=0.001)
 
         def tearDown(self):
             with self.env:
                 self.env.StopSimulation()
             self.env.Destroy()
-            RaveDestroy()
 
-        def runTest(self):
-            """Apply a physics engine and look for joint drift after some number of
-            seconds (no gravity). This means that the physics engine is trying to
-            solve an initial collision, causing self-motion."""
-            env=self.env
-            print('\nTesting model {}'.format(filename))
-            result=env.Load(filename)
-            self.assertTrue(result)
-            robot=env.GetRobots()[0]
-            with env:
-                physics = RaveCreatePhysicsEngine(env,'ode')
-                physics.SetGravity([0,0,0])
-                env.SetPhysicsEngine(physics)
-                env.StartSimulation(timestep=0.001)
-            initialPose=robot.GetDOFValues()
-            time.sleep(1)
-            finalPose=robot.GetDOFValues()
-            err=sum(sqrt(pow(initialPose,2)+pow(finalPose,2)))
-            self.assertTrue(err>0.001)
-    return TestAdjacency
+        def test_loading(self):
+            """Apply a physics engine and look for drift in joints. If joints
+            move, then the physics engine is trying to resolve conflicting
+            constraints.  This typically means that adjacent bodies are
+            colliding and have not be declared to be officially adjacent.
+            """
+            initialPose=self.robot.GetDOFValues()
+            time.sleep(2)
+            finalPose=self.robot.GetDOFValues()
+            err=sqrt(sum(pow(initialPose-finalPose,2)))
+            #Somewhat arbitrary tolerance here
+            self.assertLess(err,0.001)
+
+        def test_zeroheight(self):
+            """Make sure that the robot is correctly positioned so that it's
+            lowest point is at or above the floor plane (XY plane).
+            """
+            aabb=self.robot.ComputeAABB()
+            self.assertGreaterEqual(aabb.pos()[-1]-aabb.extents()[-1],0)
+
+
+    return TestLoading
 
 if __name__=='__main__':
 
