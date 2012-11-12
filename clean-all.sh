@@ -1,19 +1,15 @@
 #!/bin/bash
 
+#Make sure to run within the git directory
+#TODO: error if not run within git dir?
 BASE_DIR=`git rev-parse --show-toplevel`
 
-cd $BASE_DIR/openmr/
-echo "Removing build folder in "`pwd`
-[ -d build ] && rm -rf build
+cd $BASE_DIR
+rm plugins/lib*.so
 
-cd $BASE_DIR/forceSensor
-echo "Removing build folder in "`pwd`
-[ -d build ] && rm -rf build
-
-
-for pkg in generalik cbirrt2 manipulation2
+for pkg in comps-plugins/generalik comps-plugins/cbirrt2 comps-plugins/manipulation2 openmr forceSensor
 do
-    cd $BASE_DIR/comps-plugins/$pkg
+    cd $BASE_DIR/$pkg
     echo "Removing build folder in "`pwd`
     [ -d build ] && rm -rf build
 done

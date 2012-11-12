@@ -10,6 +10,32 @@ import sys
 import time
 import openhubo
 import collections
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+
+class ServoTest:
+
+    def __init__(self,filename):
+        self.jointdata={}
+        self.import_servo_data(filename)
+
+    def import_servo_data(self,filename):
+
+        with open(filename,'r') as f:
+            gainstring=f.readline().rstrip()
+            names=f.readline().rstrip().split(' ')
+            servostrings=f.readlines()
+
+        for l in servostrings:
+            data=l.rstrip().split(' ')
+            #Store a dictionary of lists?
+            self.jointdata.setdefault(data[0],[float(x) for x in data[1:]])
+
+    def plot(self,servolist=['LEP']):
+        for s in servolist:
+            REF='{}_REF'.format(s)
+            plt.plot(self.jointdata[REF],'+',hold=True)
+            plt.plot(self.jointdata[s],hold=True)
 
 #TODO: Work with the concept of activeDOF?
 
@@ -143,8 +169,8 @@ if __name__=='__main__':
         # pre-simulation tweaks
     env.StartSimulation(timestep=timestep)
     time.sleep(1)
+    controller.SendCommand('record_on')
     #Use the new SetDesired command to set a whole pose at once.
-
     #Manually align the goal pose and the initial pose so the thumbs clear
     pose[ind('RSR')]=-22.5*pi/180
     pose[ind('LSR')]=22.5*pi/180
@@ -175,8 +201,15 @@ if __name__=='__main__':
     print "Testing single joint pose"
 
     controller.SendCommand('set radians')
-
+    
     controller.SendCommand('setpos1 {} {} '.format(ind('LEP'),-pi/4))
     time.sleep(2)
     print controller.SendCommand('getpos1 {} '.format(ind('LEP')))
 
+    filename='recorded_positions.txt'
+    controller.SendCommand('record_off {}'.format(filename))
+
+    test=ServoTest(filename)
+    servos=['LEP','LWP'] 
+    test.plot(servos)
+    plt.show()

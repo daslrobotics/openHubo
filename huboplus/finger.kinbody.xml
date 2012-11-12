@@ -65,6 +65,7 @@
         <offsetfrom>Proximal</offsetfrom>
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> Proximal Medial</adjacent>
 
@@ -74,6 +75,7 @@
         <offsetfrom>Medial</offsetfrom>
         <anchor>0.011 0 0</anchor>
         <axis>0 0 -1</axis>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> Distal Medial</adjacent>
 

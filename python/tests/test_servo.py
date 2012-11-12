@@ -48,8 +48,5 @@ class TestServoCommands(unittest.TestCase):
         theta=self.controller.SendCommand('getpos1 {} '.format(self.ind('LSP')))
         self.assertLess(abs(float(theta)+pi/4),.1)
 
-
-
-
 if __name__=='__main__':
     unittest.main(verbosity=2,testRunner=unittest.TextTestRunner())
