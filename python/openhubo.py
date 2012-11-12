@@ -127,6 +127,7 @@ def plotBodyCOM(env,link,handle=None,color=array([0,1,0])):
 def CloseLeftHand(robot,angle=pi/2):
     #assumes the robot is still, uses direct control
     #TODO: make this general, for now only works on rlhuboplus
+    #TODO: use trajectory controller to close hands smoothly
     ctrl=robot.GetController()
     ctrl.SendCommand('set radians')
     fingers=['Index','Middle','Ring','Pinky','Thumb']
@@ -134,7 +135,6 @@ def CloseLeftHand(robot,angle=pi/2):
     prox=[robot.GetJoint('left{}Knuckle{}'.format(x,1)).GetDOFIndex() for x in fingers]
     med=[robot.GetJoint('left{}Knuckle{}'.format(x,2)).GetDOFIndex() for x in fingers]
     dist=[robot.GetJoint('left{}Knuckle{}'.format(x,3)).GetDOFIndex() for x in fingers]
-
     pose=robot.GetDOFValues()
     for k in prox:
         pose[k]=angle
