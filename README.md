@@ -22,3 +22,25 @@ example, to view reachability databases with openrave, you will need the mayavi
 package:
 
     sudo apt-get install mayavi2
+
+Several examples are provided in the examples folder to get you started with
+python and MATLAB programming with openHubo. 
+
+If you would like to run the achcontroller example, make sure that hubo-ach is
+installed (see the github repo for instructions)
+
+https://github.com/hubo/hubo-ach
+
+Assuming you have downloaded the repository in ~/hubo-ach, you can use the
+included script to start hubo-ach:
+
+./ach-run.sh
+
+This creates the ACH channels for the hubo's reference pose, state, and
+parameters. The script also starts the hubo main loop, which sends CAN messages
+over virtual or physical CAN interfaces. The script is configured by default to
+send only virtual CAN messages, since the necessary CAN hardware is not likely
+installed on your PC. TO use phsyical can channels, remove the -v flag in the
+last line of the script:
+
+sudo ~/hubo-ach/hubo-main -v

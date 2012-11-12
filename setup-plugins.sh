@@ -118,9 +118,11 @@ echo ""
 echo "OpenHubo base folder is $BASE_DIR"
 source env.sh
 
+PLUGINS_LIST=`openrave.py --listplugins`
+
 for f in `ls plugins/*.so`
 do
-    PLUGIN_CHECK=`openrave --listplugins | grep $f`
+    PLUGIN_CHECK=`echo $PLUGINS_LIST | grep $f`
     if [[ ${#PLUGIN_CHECK} == 0 ]]
     then
         echo "$f NOT found by OpenRAVE, please check that the plugins dir is properly sourced."

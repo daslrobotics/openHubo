@@ -9,28 +9,70 @@ from numpy.linalg import *
 import sys
 import time
 import openhubo
+import collections
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+
+class ServoTest:
+
+    def __init__(self,filename):
+        self.jointdata={}
+        self.import_servo_data(filename)
+
+    def import_servo_data(self,filename):
+
+        with open(filename,'r') as f:
+            gainstring=f.readline().rstrip()
+            names=f.readline().rstrip().split(' ')
+            servostrings=f.readlines()
+
+        for l in servostrings:
+            data=l.rstrip().split(' ')
+            #Store a dictionary of lists?
+            self.jointdata.setdefault(data[0],[float(x) for x in data[1:]])
+
+    def plot(self,servolist=['LEP']):
+        for s in servolist:
+            REF='{}_REF'.format(s)
+            plt.plot(self.jointdata[REF],'+',hold=True)
+            plt.plot(self.jointdata[s],hold=True)
 
 #TODO: Work with the concept of activeDOF?
 
-def testSetGains(controller):
-    print controller.SendCommand('print')
-    controller.SendCommand('setgains 50 0 7')
-    print controller.SendCommand('print')
+shortcuts=collections.namedtuple('Shortcuts',['env','robot','controller','pose'])
 
-def testMotionRange(robot,jointName,steps=50,timestep=.05):
-    """ Demonstrate the range of motion of a joint.
-    This quick test shows the limit-checking of the servo plugin.
-    It attempts to reach +/-180 deg. for each joint.  However, the actual
-    reference position will be clipped to within a few degrees of the
-    limits."""
-    joint=robot.GetJoint(jointName)
-    dq=360.0
-    q0=-180.0
+def setupEnv():
+    env = Environment()
+    #env.SetViewer('qtcoin')
+    #time.sleep(.5)
+    env.SetDebugLevel(DebugLevel.Info)
+    timestep=0.0005
 
-    for k in [x*dq/steps+q0 for x in range(steps+1)]:
-        print k
-        robot.GetController().SendCommand('setpos1 {} {}'.format(joint.GetDOFIndex(),k))
-        time.sleep(timestep)
+    with env:
+        env.StopSimulation()
+        env.Load('simpleFloor.env.xml')
+        collisionChecker = RaveCreateCollisionChecker(env,'ode')
+        env.SetCollisionChecker(collisionChecker)
+        robot = env.GetRobots()[0]
+        #Create a "shortcut" function to translate joint names to indices
+        ind = openhubo.makeNameToIndexConverter(robot)
+
+        #initialize the servo controller
+        controller=RaveCreateController(env,'servocontroller')
+        robot.SetController(controller)
+
+        #Set an initial pose before the simulation starts
+        controller.SendCommand('setgains 50 0 8')
+
+        pose=array(zeros(robot.GetDOF()))
+
+        pose[ind('RSR')]=-pi/8
+        pose[ind('LSR')]=pi/8
+
+        #Set initial pose to avoid thumb collisions
+        robot.SetDOFValues(pose)
+        controller.SetDesired(pose)
+    return shortcuts(env,robot,controller,pose)
 
 def sendServoCommand(robot,raw=array(zeros(60))):
     """ Send an array of servo positions directly to the robot. """
@@ -83,7 +125,7 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
 
         print "Simulation Time: {}".format((env.GetSimulationTime()-starttime)/1000000.0)
 
-""" Test Script and examples to learn how to use the new servocontroller."""
+""" Examples to learn how to use the new servocontroller."""
 if __name__=='__main__':
 
     env = Environment()
@@ -127,8 +169,8 @@ if __name__=='__main__':
         # pre-simulation tweaks
     env.StartSimulation(timestep=timestep)
     time.sleep(1)
+    controller.SendCommand('record_on')
     #Use the new SetDesired command to set a whole pose at once.
-
     #Manually align the goal pose and the initial pose so the thumbs clear
     pose[ind('RSR')]=-22.5*pi/180
     pose[ind('LSR')]=22.5*pi/180
@@ -159,8 +201,15 @@ if __name__=='__main__':
     print "Testing single joint pose"
 
     controller.SendCommand('set radians')
-
+    
     controller.SendCommand('setpos1 {} {} '.format(ind('LEP'),-pi/4))
     time.sleep(2)
     print controller.SendCommand('getpos1 {} '.format(ind('LEP')))
 
+    filename='recorded_positions.txt'
+    controller.SendCommand('record_off {}'.format(filename))
+
+    test=ServoTest(filename)
+    servos=['LEP','LWP'] 
+    test.plot(servos)
+    plt.show()

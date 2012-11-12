@@ -65,11 +65,11 @@ if __name__=='__main__':
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
         env.StartSimulation(timestep=0.0005)
 
-    time.sleep(2)
-
+    time.sleep(3)
+   
     #Change the pose to lift the elbows and resend
-    pose[ind('REP')]=-45
-    pose[ind('LEP')]=-45
+    pose[ind('REP')]=-pi/8
+    pose[ind('LEP')]=-pi/8
 
     robot.GetController().SetDesired(pose)
 

@@ -23,7 +23,7 @@
         <offsetfrom>rightIndexProximal</offsetfrom>
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 90</limitsdeg>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
 
     <KinBody prefix="rightMiddle" name="rightMiddleFinger" file="finger.kinbody.xml">
@@ -48,7 +48,7 @@
         <offsetfrom>rightMiddleProximal</offsetfrom>
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 90</limitsdeg>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
 
     <KinBody prefix="rightRing" name="rightIndexFinger" file="finger.kinbody.xml">
@@ -74,7 +74,7 @@
         <offsetfrom>rightRingProximal</offsetfrom>
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 90</limitsdeg>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
 
     <KinBody prefix="rightPinky" name="rightPinkyFinger" file="finger.kinbody.xml">
@@ -99,7 +99,7 @@
         <offsetfrom>rightPinkyProximal</offsetfrom>
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 90</limitsdeg>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
 
     <KinBody prefix="rightThumb" name="rightThumbFinger" file="finger.kinbody.xml">
@@ -123,7 +123,7 @@
         <offsetfrom>rightThumbProximal</offsetfrom>
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 90</limitsdeg>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
 
     <adjacent>rightIndexProximal rightIndexMedial</adjacent>

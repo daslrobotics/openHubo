@@ -71,7 +71,7 @@ if __name__=='__main__':
     try:
         traj_name = sys.argv[1]
     except IndexError:
-        traj_name = 'traj_pump.txt'
+        traj_name = 'trajectories/pump_reach.traj.txt'
 
     env = Environment()
     env.SetViewer('qtcoin')

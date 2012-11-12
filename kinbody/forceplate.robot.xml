@@ -1,0 +1,77 @@
+<robot name="forceplate">
+
+    <kinbody name="forceplate_kb">
+        <body name="base" type="dynamic">
+            <translation>0 0 0.011</translation>
+            <geom type="box">
+                <extents>0.3 0.3 0.01</extents>
+            </geom>
+        </body>
+
+        <body name="middle" type="dynamic">
+            <offsetfrom>base</offsetfrom>
+            <translation>0 0 0.2</translation>
+            <geom type="box">
+                <extents>0.3 0.3 0.1</extents>
+            </geom>
+            <mass type="mimicgeom">
+                <total>10</total>
+            </mass>
+        </body>
+
+        <body name="top" type="dynamic">
+            <offsetfrom>middle</offsetfrom>
+            <translation>0 0 0.2</translation>
+            <geom type="box">
+                <extents>.3 0.3 0.1</extents>
+            </geom>
+            <mass type="mimicgeom">
+                <total>10</total>
+            </mass>
+        </body>
+        <body name="top2" type="dynamic">
+            <offsetfrom>top</offsetfrom>
+            <translation>0 0 0.2</translation>
+            <geom type="box">
+                <extents>.3 0.3 0.1</extents>
+            </geom>
+            <mass type="mimicgeom">
+                <total>10</total>
+            </mass>
+        </body>
+
+        <joint type="hinge" name="base_1" enable="false">
+            <offsetfrom>base</offsetfrom>
+            <body>base</body>
+            <body>middle</body>
+            <limits>0 0</limits>
+        </joint>
+
+        <joint type="hinge" name="base_2" enable="false">
+            <offsetfrom>middle</offsetfrom>
+            <body>middle</body>
+            <body>top</body>
+            <limits>0 0</limits>
+        </joint>
+
+        <joint type="hinge" name="base_3" enable="false">
+            <offsetfrom>top</offsetfrom>
+            <body>top</body>
+            <body>top2</body>
+            <limits>0 0</limits>
+        </joint>
+
+
+        <adjacent>base middle</adjacent>
+        <adjacent>middle top</adjacent>
+        <adjacent>top2 top</adjacent>
+
+    </kinbody>
+
+    <AttachedSensor name="test">
+        <link>base</link>
+        <sensor type="ForceSensor">
+        </sensor>
+    </AttachedSensor>
+
+</robot>
