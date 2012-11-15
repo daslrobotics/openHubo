@@ -7,3 +7,6 @@
 [submodule "openmr"]
 	path = openmr
 	url = git://github.com/robEllenberg/openmr.git
+[submodule "ravespacenav"]
+	path = ravespacenav
+	url = git://github.com/robEllenberg/ravespacenav.git

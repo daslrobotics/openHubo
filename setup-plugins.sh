@@ -83,6 +83,16 @@ make
 make install
 
 echo ""
+echo "Building ravespacenav plugin..."
+echo ""
+
+cd $BASE_DIR/ravespacenav
+[ -d build ] || mkdir build
+echo `pwd`
+make
+make install
+
+echo ""
 echo "Building CoMPS plugins..."
 echo ""
 
