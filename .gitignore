@@ -7,3 +7,6 @@ plugins
 qhullout.txt
 *.png
 *.jpg
+*.traj
+*.joints.csv
+*.joints.m
