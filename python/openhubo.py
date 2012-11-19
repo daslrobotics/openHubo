@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-from openravepy import *
-from servo import *
-from numpy import pi
+from numpy import pi,array
 
 """ A collection of useful functions to run openhubo models.
 As common functions are developed, they will be added here.
@@ -183,6 +181,8 @@ def CloseRightHand(robot,angle=pi/2):
 
 
 if __name__=='__main__':
+    from openravepy import *
+    from servo import *
     env=Environment()
     env.SetViewer('qtcoin')
     robot=load_simplefloor(env)

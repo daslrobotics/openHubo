@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 
 """ OpenHubo servo functions """
-
+from numpy import pi,array,zeros
 import tab
-from openravepy import *
-from numpy import *
-from numpy.linalg import *
 import sys
 import time
 import openhubo
@@ -127,12 +124,15 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
 
 """ Examples to learn how to use the new servocontroller."""
 if __name__=='__main__':
+    from openravepy import *
+    from numpy import *
+    from numpy.linalg import *
 
     env = Environment()
     env.SetViewer('qtcoin')
     time.sleep(.5)
     # 3 = fatal, error, and warnings, but not debug output
-    env.SetDebugLevel(3)
+    env.SetDebugLevel(5)
 
     timestep=0.0005
 
@@ -156,6 +156,7 @@ if __name__=='__main__':
 
         #Set an initial pose before the simulation starts
         controller.SendCommand('setgains 50 0 8')
+        controller.SendCommand('set radians')
 
         pose=array(zeros(robot.GetDOF()))
 
@@ -169,7 +170,6 @@ if __name__=='__main__':
         # pre-simulation tweaks
     env.StartSimulation(timestep=timestep)
     time.sleep(1)
-    controller.SendCommand('record_on')
     #Use the new SetDesired command to set a whole pose at once.
     #Manually align the goal pose and the initial pose so the thumbs clear
     pose[ind('RSR')]=-22.5*pi/180
@@ -189,6 +189,9 @@ if __name__=='__main__':
     controller.SetDesired(pose)
     time.sleep(2)
 
+    filename='recorded_positions.txt'
+    controller.SendCommand('record_on {}'.format(filename))
+    time.sleep(1)
     print "Testing single joint pose"
 
     controller.SendCommand('set degrees')
@@ -206,9 +209,8 @@ if __name__=='__main__':
     time.sleep(2)
     print controller.SendCommand('getpos1 {} '.format(ind('LEP')))
 
-    filename='recorded_positions.txt'
     controller.SendCommand('record_off {}'.format(filename))
-
+    time.sleep(1)
     test=ServoTest(filename)
     servos=['LEP','LWP'] 
     test.plot(servos)

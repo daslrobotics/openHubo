@@ -52,7 +52,7 @@ if __name__=='__main__':
         env.Load(file_env)
         robot = env.GetRobots()[0]
         #robot.SetController(RaveCreateController(env,'trajectorycontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'bullet')
+        collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
     print "Position the robot"
     #pause()
@@ -80,8 +80,8 @@ if __name__=='__main__':
     time.sleep(1)
     
     #Define manips used and goals
-    z1=.01
-    theta=0.1
+    z1=.05
+    theta=0.5
     LH=0    
     RH=8
     POST=8
