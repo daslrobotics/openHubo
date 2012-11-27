@@ -7,7 +7,6 @@ from numpy.linalg import *
 import sys
 import time
 from copy import copy
-from recorder import viewerrecorder
 import openhubo
 #TODO: Work with the concept of activeDOF?
 
@@ -21,10 +20,7 @@ def createTrajectory(robot):
 
 """ Simple test script to run some of the functions above. """
 if __name__=='__main__':
-    try:
-        file_env = sys.argv[1]
-    except IndexError:
-        file_env = 'scenes/simpleFloor.env.xml'
+    file_env = 'scenes/simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
@@ -47,36 +43,34 @@ if __name__=='__main__':
         robot.SetController(controller)
 
         #Set an initial pose before the simulation starts
-        robot.SetDOFValues([pi/8,-pi/8],[ind('LSR'),ind('RSR')])
         controller.SendCommand('set gains 50 0 8')
-        time.sleep(1)
 
         #Use the new SetDesired command to set a whole pose at once.
-        pose=array(zeros(60))
+    pose0=array(zeros(robot.GetDOF()))
 
-        #Manually align the goal pose and the initial pose so the thumbs clear
-        pose[ind('RSR')]=-pi/8
-        pose[ind('LSR')]=pi/8
+    #Manually align the goal pose and the initial pose so the thumbs clear
+    pose0[ind('RSR')]=-pi/8
+    pose0[ind('LSR')]=pi/8
 
-        controller.SetDesired(pose)
+    controller.SetDesired(pose0)
+    robot.SetDOFValues(pose0)
 
     env.StartSimulation(timestep=timestep)
 
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
 
-    pose0=robot.GetDOFValues()
     pose1=pose0.copy()
+    print pose1
 
-    pose1[ind('LAP')]=-20
-    pose1[ind('RAP')]=-20
+    pose1[ind('LAP')]=-pi/8
+    pose1[ind('RAP')]=-pi/8
 
-    pose1[ind('LKP')]=40
-    pose1[ind('RKP')]=40
+    pose1[ind('LKP')]=pi/4
+    pose1[ind('RKP')]=pi/4
 
-    pose1[ind('LHP')]=-20
-    pose1[ind('RHP')]=-20
-    pose1=pose1*pi/180*2
+    pose1[ind('LHP')]=-pi/8
+    pose1[ind('RHP')]=-pi/8
 
     traj=RaveCreateTrajectory(env,'')
 
@@ -110,11 +104,8 @@ if __name__=='__main__':
     for k in range(40):
         data=traj.Sample(float(k)/10)
         print data[ind('LKP')]
-
-    vidrec=viewerrecorder(env)
+    
     controller.SetPath(traj)
-    vidrec.start()
     controller.SendCommand('start')
     while not(controller.IsDone()):
         time.sleep(.1)
-    vidrec.stop()
