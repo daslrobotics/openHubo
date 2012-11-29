@@ -4,9 +4,8 @@ from servo import *
 from numpy import pi
 import re
 import openhubo 
-from recorder import viewerrecorder
 
-def read_youngbum_traj(filename,robot,dt=.01,scale=1.0):
+def read_youngbum_traj(filename,robot,dt=.01,scale=1.0,retime=True):
     """ Read in trajectory data stored in Youngbum's format (100Hz data):
         HPY LHY LHR ... RWP   (3-letter names)
         + - + ... +           (sign of joint about equivalent global axis + / -)
@@ -56,17 +55,20 @@ def read_youngbum_traj(filename,robot,dt=.01,scale=1.0):
 
         for i in range(len(jointvals)):
             data[indices[i]]=(jointvals[i]+offsets[i])*pi/180.0*signs[i]*scale
+        #TODO: clip joint vals at limits
 
         waypt=list(data)
         waypt.extend(affinedof)
         waypt.append(dt)
         traj.Insert(k,waypt)
         k=k+1
+    if retime:
+        planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
-    planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
     return traj
 
 if __name__=='__main__':
+    from recorder import viewerrecorder
 
     try:
         traj_name = sys.argv[1]
