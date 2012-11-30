@@ -16,7 +16,11 @@ def makeNameToIndexConverter(robot):
     """ A closure to easily convert from a string joint name to the robot's
     actual DOF index, for use in creating/editing trajectories."""
     def convert(name):
-        return robot.GetJoint(name).GetDOFIndex()
+        j=robot.GetJoint(name)
+        if not(j==None):
+            return robot.GetJoint(name).GetDOFIndex()
+        else:
+            return -1
     return convert
 
 def load_huboplus(env):
