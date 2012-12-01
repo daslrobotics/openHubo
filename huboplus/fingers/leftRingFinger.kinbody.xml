@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="Finger" makejoinedlinksadjacent="true">
+
+    <Body name="leftRingProximal" type="dynamic">
+<offsetfrom>Body_LWP</offsetfrom>
+        <!-- LWP Center of Mass to Base -->
+        <translation>0.000258199377 -0.011441986656 0.046147242821</translation>
+        <Translation>0.028499 0.020675 -0.083923</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 1 90</RotationAxis>
+        <RotationAxis>1 0 0 -45</RotationAxis>
+        <Translation>-0.038 0 0</Translation>
+        <Translation>0    0.01131   -0.01131</Translation>
+        <Geom type="box">
+            <extents> 0.016	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.016 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.012</total>
+        </Mass>
+    </Body>
+
+    <Body name="leftRingMedial" type="dynamic">
+        <offsetfrom>leftRingProximal</offsetfrom>
+        <Translation> 0.027 0 0</Translation>
+        <Geom type="box">
+            <extents> 0.011	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.011 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.006</total>
+        </Mass>
+    </Body>
+
+    <Body name="leftRingDistal" type="dynamic">
+        <offsetfrom>leftRingMedial</offsetfrom>
+        <Translation> 0.025 0 0</Translation>
+        <Geom type="box">
+            <Translation>-0.004 0 0</Translation>
+            <extents> 0.010	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.006 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.010</total>
+        </Mass>
+    </Body>
+
+    <Joint name="leftRingKnuckle2" type="hinge">
+        <Body>leftRingProximal</Body>
+        <Body>leftRingMedial</Body>
+        <offsetfrom>leftRingProximal</offsetfrom>
+        <anchor>0.016 0 0</anchor>
+        <axis>0 0 -1</axis>
+        <limitsdeg>-4 100</limitsdeg>
+    </Joint>
+    <adjacent> leftRingProximal leftRingMedial</adjacent>
+
+    <Joint name="leftRingKnuckle3" type="hinge">
+        <Body>leftRingMedial</Body>
+        <Body>leftRingDistal</Body>
+        <offsetfrom>leftRingMedial</offsetfrom>
+        <anchor>0.011 0 0</anchor>
+        <axis>0 0 -1</axis>
+        <limitsdeg>-4 100</limitsdeg>
+    </Joint>
+    <adjacent> leftRingDistal leftRingMedial</adjacent>
+
+</KinBody>

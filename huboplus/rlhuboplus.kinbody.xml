@@ -62,8 +62,10 @@
 			<rotationaxis>1 0 0 90</rotationaxis>
 			<radius>0.031</radius>
 			<height>0.00726</height>
-		</geom>
-		
+        </geom>
+        <mass type="mimicgeom">
+            <total>.05</total>
+        </mass>
     </body>
     <body name="Body_RAR" type="dynamic">
         <offsetfrom>rightFoot</offsetfrom>
@@ -667,6 +669,9 @@
 			<radius>0.031</radius>
 			<height>0.00726</height>
 		</geom>
+        <mass type="mimicgeom">
+            <total>.05</total>
+        </mass>
     </body>
 
     <joint name="LAR_dummy" type="hinge" enable="false">
@@ -1095,6 +1100,9 @@
             <diffusecolor>.3 .3 .3</diffusecolor>
 			<extents> 0.0197485 0.002 0.037595</extents>
 		</geom>
+        <mass type="mimicgeom">
+            <total>.01</total>
+        </mass>
     </body>
 
     <Joint name="RWP_dummy" type="hinge" enable="false">
@@ -1153,6 +1161,9 @@
             <diffusecolor>.3 .3 .3</diffusecolor>
 			<extents>0.0197485 0.002 0.037595 </extents>
 		</geom>
+        <mass type="mimicgeom">
+            <total>.01</total>
+        </mass>
     </body>
 
     <Joint name="LWP_dummy" type="hinge" enable="false">
@@ -1170,6 +1181,9 @@
         <translation>0.000000000000 -0.000020548820 0.148299146751</translation>
         <!--Body_HNR Base to Center of Mass -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+        <mass type="mimicgeom">
+            <total>0</total>
+        </mass>
     </body>
 
     <Joint name="HNR" type="hinge">
