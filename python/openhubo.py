@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 from numpy import pi,array
+import openravepy as rave
+from TransformMatrix import *
 
 """ A collection of useful functions to run openhubo models.
 As common functions are developed, they will be added here.
@@ -37,14 +39,14 @@ def load_simplefloor(env):
         #Since physics are defined within the XML file, stop simulation
         env.StopSimulation()
         env.Load('simpleFloor.env.xml')
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
+        collisionChecker = rave.RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
         robot = env.GetRobots()[0]
         #Create a "shortcut" function to translate joint names to indices
         ind = makeNameToIndexConverter(robot)
 
         #initialize the servo controller
-        controller=RaveCreateController(env,'trajectorycontroller')
+        controller=rave.RaveCreateController(env,'trajectorycontroller')
         robot.SetController(controller)
 
         controller.SendCommand('set gains 50 0 8')

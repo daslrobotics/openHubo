@@ -101,14 +101,13 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
 
     #Read in header row to find joint names
     header=f.readline().rstrip()
-    print header.split(' ')
+    #print header.split(' ')
     
     k=0
     indices={}
     Tindices={}
     Tmap={'X':0,'Y':1,'Z':2,'R':3,'P':4,'W':5}
     for s in header.split(' '):
-        print k,s
         j=ind(s)
         if j>=0:
             indices.setdefault(k,j)
@@ -119,11 +118,9 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
         except:
             raise
         k=k+1
-
     #Read in sign row
     signlist=f.readline().rstrip().split(' ')
     signs=[]
-    print signlist
     for s in signlist:
         if s == '+':
             signs.append(1)
@@ -132,11 +129,9 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
     
     #Read in offset row (fill with zeros if not used)
     offsetlist=f.readline().rstrip().split(' ')
-    print offsetlist
     offsets=[float(x) for x in offsetlist]
     #Read in scale row (fill with ones if not used)
     scalelist=f.readline().rstrip().split(' ')
-    print scalelist
     scales=[float(x) for x in scalelist]
 
     k=0
@@ -147,7 +142,6 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
         vals=[float(x) for x in string.split(' ')]
         data=zeros(robot.GetDOF())
         Tdata=zeros(6)
-
         for i in range(len(vals)):
             if indices.has_key(i):
                 data[indices[i]]=(vals[i]+offsets[i])*scales[i]*signs[i]*scale
@@ -163,6 +157,21 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
         k=k+1
 
     return traj
+
+def makeJointValueExtractor(robot,traj,config):
+    """Closure to pull a full body pose out of a trajectory waypoint"""
+    def GetJointValuesFromWaypoint(index):
+        return config.ExtractJointValues(traj.GetWaypoint(index),robot,range(robot.GetDOF()))
+    return GetJointValuesFromWaypoint
+
+def makeTransformExtractor(robot,traj,config):
+    """Closure to pull a transform out of a trajectory waypoint"""
+    v=poseFromMatrix(eye(4))
+    def GetTransformFromWaypoint(index):
+        #Ugly way to extract transform because the ExtractAffineValues function
+        #is not yet bound 
+        return matrixFromPose(traj.GetWaypoint(index)[-8:-1])
+    return GetTransformFromWaypoint
 
 if __name__=='__main__':
     from recorder import viewerrecorder
