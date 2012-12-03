@@ -24,24 +24,20 @@ from numpy import *
 from numpy.linalg import *
 import sys
 from servo import *
+import openhubo
 
 if __name__=='__main__':
-    file_env = 'scenes/simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
-    env.SetDebugLevel(4)
+    env.SetDebugLevel(5)
 
-    with env:
-        env.StopSimulation()
-        env.Load(file_env)
-        robot = env.GetRobots()[0]
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
-        robot.SetController(RaveCreateController(env,'servocontroller'))
-        env.StartSimulation(timestep=0.0005)
+    [robot,controller,ind]=openhubo.load_simplefloor(env)
+    print robot
+    print controller
 
-    time.sleep(3)
+    env.StartSimulation(timestep=0.0005)
+
     robot.GetController().SendCommand('set degrees')
 
     sendSparseServoCommand(robot,{'LHP':-20,'LKP':40,'LAP':-20,'RHP':-20,'RKP':40,'RAP':-20})

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 """ OpenHubo servo functions """
+from openravepy import *
 from numpy import pi,array,zeros
 import tab
 import sys

@@ -62,8 +62,10 @@
 			<rotationaxis>1 0 0 90</rotationaxis>
 			<radius>0.031</radius>
 			<height>0.00726</height>
-		</geom>
-		
+        </geom>
+        <mass type="custom">
+            <total>0.203176884538</total>
+        </mass>
     </body>
     <body name="Body_RAR" type="dynamic">
         <offsetfrom>rightFoot</offsetfrom>
@@ -83,7 +85,7 @@
         </geom>
 		
         <mass type="custom">
-            <total>1.203176884538</total>
+            <total>1.003176884538</total>
             <inertia>
                 0.002951826559 -0.000032321137 0.000141769152
                 -0.000032321137 0.005247924231 -0.000059540355
@@ -580,7 +582,7 @@
         </geom>
 		
         <mass type="custom">
-            <total>1.203176884538</total>
+            <total>1.003176884538</total>
             <inertia>
                 0.002951826559 0.000032321137 0.000141769152
                 0.000032321137 0.005247924231 0.000059540355
@@ -667,6 +669,9 @@
 			<radius>0.031</radius>
 			<height>0.00726</height>
 		</geom>
+        <mass type="custom">
+            <total>0.203176884538</total>
+        </mass>
     </body>
 
     <joint name="LAR_dummy" type="hinge" enable="false">
@@ -774,7 +779,8 @@
         <offsetfrom>Body_RSR</offsetfrom>
         <anchor>0.036207973807 -0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-180 4</limitsdeg>
+        <limitsdeg>-165 19</limitsdeg>
+        <initial>0.2618</initial>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>35</maxtorque>
@@ -809,7 +815,8 @@
         <offsetfrom>Body_LSR</offsetfrom>
         <anchor>0.036207973807 0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-4 180</limitsdeg>
+        <limitsdeg>-19 165</limitsdeg>
+        <initial>-0.2618</initial>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>35</maxtorque>
@@ -836,7 +843,7 @@
         <mass type="custom">
             <total>1.154608561577</total>
             <inertia>
-                0.003654788538 -0.000002054362 0.000418448220
+                0.003665788538 -0.000002054362 0.000418448220
                 -0.000002054362 0.003647313707 0.000030964786
                 0.000418448220 0.000030964786 0.000606330376
             </inertia>
@@ -1062,7 +1069,7 @@
         </geom>
 		
         <mass type="custom">
-            <total>0.164392998329</total>
+            <total>0.104392998329</total>
             <inertia>
                 0.000097432742 0.000000522155 -0.000001173170
                 0.000000522155 0.000144494281 -0.000009492703
@@ -1095,6 +1102,9 @@
             <diffusecolor>.3 .3 .3</diffusecolor>
 			<extents> 0.0197485 0.002 0.037595</extents>
 		</geom>
+        <mass type="custom">
+            <total>.06</total>
+        </mass>
     </body>
 
     <Joint name="RWP_dummy" type="hinge" enable="false">
@@ -1120,7 +1130,7 @@
         </geom>
 		
         <mass type="custom">
-            <total>0.164392998329</total>
+            <total>0.104392998329</total>
             <inertia>
                 0.000097432742 -0.000000522155 -0.000001173170
                 -0.000000522155 0.000144494281 0.000009492703
@@ -1153,6 +1163,9 @@
             <diffusecolor>.3 .3 .3</diffusecolor>
 			<extents>0.0197485 0.002 0.037595 </extents>
 		</geom>
+        <mass type="custom">
+            <total>0.06</total>
+        </mass>
     </body>
 
     <Joint name="LWP_dummy" type="hinge" enable="false">
@@ -1170,6 +1183,9 @@
         <translation>0.000000000000 -0.000020548820 0.148299146751</translation>
         <!--Body_HNR Base to Center of Mass -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+        <mass type="custom">
+            <total>.1</total>
+        </mass>
     </body>
 
     <Joint name="HNR" type="hinge">
@@ -1198,7 +1214,7 @@
             <data>convhull_HNP_1.wrl 1 </data>
         </geom>
         <mass type="custom">
-            <total>0.374250901076</total>
+            <total>0.274250901076</total>
             <inertia>
                 0.001640330319 -0.000000108171 -0.000095397797
                 -0.000000108171 0.001539427875 0.000001253758

@@ -74,16 +74,11 @@ if __name__=='__main__':
         controller.SendCommand("SetCheckCollisions false")
 
         #Set an initial pose before the simulation starts
-        robot.SetDOFValues([pi/8,-pi/8],[ind('LSR'),ind('RSR')])
-        time.sleep(1)
 
         #Use the new SetDesired command to set a whole pose at once.
         pose=array(zeros(robot.GetDOF()))
 
-        #Manually align the goal pose and the initial pose so the thumbs clear
-        pose[ind('RSR')]=-pi/8
-        pose[ind('LSR')]=pi/8
-
+        robot.SetDOFValues(pose)
         controller.SetDesired(pose)
 
     #The name-to-index closure makes it easy to index by name 

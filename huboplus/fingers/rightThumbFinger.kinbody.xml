@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="Finger" makejoinedlinksadjacent="true">
+
+    <Body name="rightThumbProximal" type="dynamic">
+        <offsetfrom>Body_RWP</offsetfrom>
+        <!-- RWP Center of Mass to Base -->
+        <translation>0.000258199377 0.011441986656 0.046147242821</translation>
+        <Translation>0.020489 0.007256 -0.055993</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 1 90</RotationAxis>
+        <RotationAxis>1 0 0 45</RotationAxis>
+        <Translation> 0   0.0113   0.0113</Translation>
+        <Geom type="box">
+            <extents> 0.016	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.016 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.012</total>
+        </Mass>
+    </Body>
+
+    <Body name="rightThumbMedial" type="dynamic">
+        <offsetfrom>rightThumbProximal</offsetfrom>
+        <Translation> 0.027 0 0</Translation>
+        <Geom type="box">
+            <extents> 0.011	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.011 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.006</total>
+        </Mass>
+    </Body>
+
+    <Body name="rightThumbDistal" type="dynamic">
+        <offsetfrom>rightThumbMedial</offsetfrom>
+        <Translation> 0.025 0 0</Translation>
+        <Geom type="box">
+            <Translation>-0.004 0 0</Translation>
+            <extents> 0.010	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.006 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.010</total>
+        </Mass>
+    </Body>
+
+    <Joint name="rightThumbKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightThumbProximal</Body>
+        <offsetfrom>rightThumbProximal</offsetfrom>
+        <axis>0 0 -1</axis>
+        <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 100</limitsdeg>
+    </Joint>
+    <adjacent> rightThumbProximal Body_RWP</adjacent>
+
+    <Joint name="rightThumbKnuckle2" type="hinge">
+        <Body>rightThumbProximal</Body>
+        <Body>rightThumbMedial</Body>
+        <offsetfrom>rightThumbProximal</offsetfrom>
+        <anchor>0.016 0 0</anchor>
+        <axis>0 0 -1</axis>
+        <limitsdeg>-4 100</limitsdeg>
+    </Joint>
+    <adjacent> rightThumbProximal rightThumbMedial</adjacent>
+
+    <Joint name="rightThumbKnuckle3" type="hinge">
+        <Body>rightThumbMedial</Body>
+        <Body>rightThumbDistal</Body>
+        <offsetfrom>rightThumbMedial</offsetfrom>
+        <anchor>0.011 0 0</anchor>
+        <axis>0 0 -1</axis>
+        <limitsdeg>-4 100</limitsdeg>
+    </Joint>
+    <adjacent> rightThumbDistal rightThumbMedial</adjacent>
+
+</KinBody>

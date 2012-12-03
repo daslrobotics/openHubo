@@ -58,16 +58,16 @@ if __name__=='__main__':
     probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
     env.LoadProblem(probs_cbirrt,'rlhuboplus')
     i=0
-    for i in range(traj.GetNumWaypoints()):
-        robot.SetTransformWithDOFValues(Gettrans(i),Getvals(i))
-        #print openhubo.find_com(robot)
-        datastring=probs_cbirrt.SendCommand('CheckSupport supportlinks 2 rightFoot leftFoot')
-        datalist=datastring.split(' ')
-        check=float(datalist[0])
-        mass=float(datalist[1])
-        com=[float(x) for x in datalist[2:4]]
-        pointdata=[float(x) for x in datalist[5:-1]]
-        #print Gettrans(i)
-        time.sleep(.01)
-        #print robot.GetJoint('LAP').GetValues()
+    #for i in range(traj.GetNumWaypoints()):
+    robot.SetTransformWithDOFValues(Gettrans(i),Getvals(i))
+    #print openhubo.find_com(robot)
+    datastring=probs_cbirrt.SendCommand('CheckSupport supportlinks 2 rightFoot leftFoot')
+    datalist=datastring.split(' ')
+    check=float(datalist[0])
+    mass=float(datalist[1])
+    com=[float(x) for x in datalist[2:4]]
+    pointdata=[float(x) for x in datalist[5:-1]]
+    #print Gettrans(i)
+    time.sleep(.01)
+    #print robot.GetJoint('LAP').GetValues()
 
