@@ -156,13 +156,10 @@ if __name__=='__main__':
         robot.SetController(controller)
 
         #Set an initial pose before the simulation starts
-        controller.SendCommand('setgains 50 0 8')
+        controller.SendCommand('setgains 200 0 8')
         controller.SendCommand('set radians')
 
         pose=array(zeros(robot.GetDOF()))
-
-        pose[ind('RSR')]=-pi/8
-        pose[ind('LSR')]=pi/8
 
         #Set initial pose to avoid thumb collisions
         robot.SetDOFValues(pose)
@@ -173,8 +170,6 @@ if __name__=='__main__':
     time.sleep(1)
     #Use the new SetDesired command to set a whole pose at once.
     #Manually align the goal pose and the initial pose so the thumbs clear
-    pose[ind('RSR')]=-22.5*pi/180
-    pose[ind('LSR')]=22.5*pi/180
 
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
@@ -195,7 +190,7 @@ if __name__=='__main__':
     time.sleep(1)
     print "Testing single joint pose"
 
-    controller.SendCommand('set degrees')
+    controller.SendCommand('set degrees ')
 
     controller.SendCommand('setpos1 {} {} '.format(ind('LSP'),-60))
 

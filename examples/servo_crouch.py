@@ -38,7 +38,7 @@ if __name__=='__main__':
 
     env.StartSimulation(timestep=0.0005)
 
-    robot.GetController().SendCommand('set degrees')
+    robot.GetController().SendCommand('set degrees ')
 
     sendSparseServoCommand(robot,{'LHP':-20,'LKP':40,'LAP':-20,'RHP':-20,'RKP':40,'RAP':-20})
 

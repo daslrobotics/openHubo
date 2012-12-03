@@ -31,7 +31,7 @@ class TestServoCommands(unittest.TestCase):
         self.assertTrue(self.controller.SendCommand('setgains 50 0 7'))
 
     def test_degrees(self):
-        self.assertTrue(self.controller.SendCommand('set degrees'))
+        self.assertTrue(self.controller.SendCommand('set degrees '))
         self.assertEqual(self.controller.SendCommand('get units'),'degrees')
 
         self.controller.SendCommand('setpos1 {} {} '.format(self.ind('LSP'),-10))
@@ -40,7 +40,7 @@ class TestServoCommands(unittest.TestCase):
         self.assertLess(abs(theta+10),1)
 
     def test_radians(self):
-        self.assertTrue(self.controller.SendCommand('set radians'))
+        self.assertTrue(self.controller.SendCommand('set radians '))
         self.assertEqual(self.controller.SendCommand('get units'),'radians')
 
         self.controller.SendCommand('setpos1 {} {} '.format(self.ind('LSP'),-pi/4))

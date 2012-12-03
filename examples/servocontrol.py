@@ -49,7 +49,7 @@ if __name__=='__main__':
         env.SetCollisionChecker(collisionChecker)
 
     
-        robot.GetController().SendCommand('setgains 50 0 8')
+        robot.GetController().SendCommand('setgains 200 0 8')
         #Note that you can specify the input format as either degrees or
         #radians, but the internal format is radians
         robot.GetController().SendCommand('set degrees')
