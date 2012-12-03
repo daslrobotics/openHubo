@@ -5,17 +5,6 @@
     </KinBody>
 
     <!--Have to redo all the adjacencies when a body is redefined like this...-->
-    <adjacent>Body_LWP leftIndexProximal</adjacent>
-    <adjacent>Body_LWP leftIndexMedial</adjacent>
-
-    <Joint name="leftIndexKnuckle1" type="hinge">
-        <Body>Body_LWP</Body>
-        <Body>leftIndexProximal</Body>
-        <offsetfrom>leftIndexProximal</offsetfrom>
-        <axis>0 0 -1</axis>
-        <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 100</limitsdeg>
-    </Joint>
 
     <KinBody name="leftMiddleFinger" file="fingers/leftMiddleFinger.kinbody.xml">
     </KinBody>
@@ -24,62 +13,18 @@
     <adjacent>Body_LWP leftMiddleProximal</adjacent>
     <adjacent>Body_LWP leftMiddleMedial</adjacent>
 
-    <Joint name="leftMiddleKnuckle1" type="hinge">
-        <Body>Body_LWP</Body>
-        <Body>leftMiddleProximal</Body>
-        <offsetfrom>leftMiddleProximal</offsetfrom>
-        <axis>0 0 -1</axis>
-        <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 100</limitsdeg>
-    </Joint>
-
     <KinBody name="leftRingFinger" file="fingers/leftRingFinger.kinbody.xml">
     </KinBody>
 
     <!--Have to redo all the adjacencies when a body is redefined like this...-->
-    <adjacent>Body_LWP leftRingProximal</adjacent>
-    <adjacent>Body_LWP leftRingMedial</adjacent>
-
-    <Joint name="leftRingKnuckle1" type="hinge">
-        <Body>Body_LWP</Body>
-        <Body>leftRingProximal</Body>
-        <offsetfrom>leftRingProximal</offsetfrom>
-        <axis>0 0 -1</axis>
-        <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 100</limitsdeg>
-    </Joint>
-
     <KinBody name="leftPinkyFinger" file="fingers/leftPinkyFinger.kinbody.xml">
     </KinBody>
 
-    <!--Have to redo all the adjacencies when a body is redefined like this...-->
-    <adjacent>Body_LWP leftPinkyProximal</adjacent>
-    <adjacent>Body_LWP leftPinkyMedial</adjacent>
-
-    <Joint name="leftPinkyKnuckle1" type="hinge">
-        <Body>Body_LWP</Body>
-        <Body>leftPinkyProximal</Body>
-        <offsetfrom>leftPinkyProximal</offsetfrom>
-        <axis>0 0 -1</axis>
-        <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 100</limitsdeg>
-    </Joint>
 
     <KinBody name="leftThumbFinger" file="fingers/leftThumbFinger.kinbody.xml">
     </KinBody>
 
     <!--Have to redo all the adjacencies when a body is redefined like this...-->
-    <adjacent>Body_LWP leftThumbProximal</adjacent>
-    <adjacent>Body_LWP leftThumbMedial</adjacent>
-
-    <Joint name="leftThumbKnuckle1" type="hinge">
-        <Body>Body_LWP</Body>
-        <Body>leftThumbProximal</Body>
-        <offsetfrom>leftThumbProximal</offsetfrom>
-        <axis>0 0 -1</axis>
-        <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 100</limitsdeg>
-    </Joint>
 
     <adjacent>leftIndexProximal leftIndexMedial</adjacent>
     <adjacent>leftIndexMedial leftIndexDistal</adjacent>

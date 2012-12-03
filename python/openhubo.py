@@ -54,13 +54,10 @@ def load_simplefloor(env):
         #Set an initial pose before the simulation starts
         pose=array(zeros(robot.GetDOF()))
 
-        pose[ind('RSR')]=-pi/8
-        pose[ind('LSR')]=pi/8
-
         #Set initial pose to avoid thumb collisions
         robot.SetDOFValues(pose)
         controller.SetDesired(pose)
-    return robot
+    return (robot,controller,ind)
 
 def hubo2_left_palm():
     R=mat([[-0.5000,    -0.5000,   0.7071],

@@ -54,6 +54,9 @@ if __name__=='__main__':
         #robot.SetController(RaveCreateController(env,'trajectorycontroller'))
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
+        pose=zeros(robot.GetDOF())
+        robot.SetDOFValues(pose)
+
     print "Position the robot"
     #pause()
     stairs=env.GetKinBody('ladder')

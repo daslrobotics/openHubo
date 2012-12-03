@@ -20,7 +20,6 @@ def createTrajectory(robot):
 
 """ Simple test script to run some of the functions above. """
 if __name__=='__main__':
-    file_env = 'scenes/simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
@@ -28,37 +27,14 @@ if __name__=='__main__':
 
     timestep=0.0005
 
-    #-- Set the robot controller and start the simulation
-    with env:
-        env.StopSimulation()
-        env.Load(file_env)
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
-        robot = env.GetRobots()[0]
-        #Create a "shortcut" function to translate joint names to indices
-        ind = openhubo.makeNameToIndexConverter(robot)
+    [robot,controller,ind]=openhubo.load_simplefloor(env)
 
-        #initialize the servo controller
-        controller=RaveCreateController(env,'trajectorycontroller')
-        robot.SetController(controller)
-
-        #Set an initial pose before the simulation starts
-        controller.SendCommand('set gains 50 0 8')
-
-        #Use the new SetDesired command to set a whole pose at once.
     pose0=array(zeros(robot.GetDOF()))
-
-    #Manually align the goal pose and the initial pose so the thumbs clear
-    pose0[ind('RSR')]=-pi/8
-    pose0[ind('LSR')]=pi/8
 
     controller.SetDesired(pose0)
     robot.SetDOFValues(pose0)
 
     env.StartSimulation(timestep=timestep)
-
-    #The name-to-index closure makes it easy to index by name 
-    # (though a bit more expensive)
 
     pose1=pose0.copy()
     print pose1

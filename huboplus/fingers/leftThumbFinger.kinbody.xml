@@ -66,6 +66,18 @@
             <total>0.010</total>
         </Mass>
     </Body>
+
+    <adjacent>Body_LWP leftThumbProximal</adjacent>
+    <adjacent>Body_LWP leftThumbMedial</adjacent>
+
+    <Joint name="leftThumbKnuckle1" type="hinge">
+        <Body>Body_LWP</Body>
+        <Body>leftThumbProximal</Body>
+        <offsetfrom>leftThumbProximal</offsetfrom>
+        <axis>0 0 -1</axis>
+        <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 100</limitsdeg>
+    </Joint>
     
     <Joint name="leftThumbKnuckle2" type="hinge">
         <Body>leftThumbProximal</Body>

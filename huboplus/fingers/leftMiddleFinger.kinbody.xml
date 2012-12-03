@@ -67,6 +67,15 @@
         </Mass>
     </Body>
 
+    <Joint name="leftMiddleKnuckle1" type="hinge">
+        <Body>Body_LWP</Body>
+        <Body>leftMiddleProximal</Body>
+        <offsetfrom>leftMiddleProximal</offsetfrom>
+        <axis>0 0 -1</axis>
+        <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 100</limitsdeg>
+    </Joint>
+
     <Joint name="leftMiddleKnuckle2" type="hinge">
         <Body>leftMiddleProximal</Body>
         <Body>leftMiddleMedial</Body>

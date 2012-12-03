@@ -67,6 +67,18 @@
         </Mass>
     </Body>
 
+    <adjacent>Body_LWP leftPinkyProximal</adjacent>
+    <adjacent>Body_LWP leftPinkyMedial</adjacent>
+
+    <Joint name="leftPinkyKnuckle1" type="hinge">
+        <Body>Body_LWP</Body>
+        <Body>leftPinkyProximal</Body>
+        <offsetfrom>leftPinkyProximal</offsetfrom>
+        <axis>0 0 -1</axis>
+        <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 100</limitsdeg>
+    </Joint>
+
     <Joint name="leftPinkyKnuckle2" type="hinge">
         <Body>leftPinkyProximal</Body>
         <Body>leftPinkyMedial</Body>

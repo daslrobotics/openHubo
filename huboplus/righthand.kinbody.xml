@@ -14,30 +14,11 @@
     <adjacent>Body_RWP rightMiddleProximal</adjacent>
     <adjacent>Body_RWP rightMiddleMedial</adjacent>
 
-    <Joint name="rightMiddleKnuckle1" type="hinge">
-        <Body>Body_RWP</Body>
-        <Body>rightMiddleProximal</Body>
-        <offsetfrom>rightMiddleProximal</offsetfrom>
-        <axis>0 0 -1</axis>
-        <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 100</limitsdeg>
-    </Joint>
-
     <KinBody name="rightRingFinger" file="fingers/rightRingFinger.kinbody.xml">
     </KinBody>
 
     <adjacent>Body_RWP rightRingProximal</adjacent>
     <adjacent>Body_RWP rightRingMedial</adjacent>
-
-
-    <Joint name="rightRingKnuckle1" type="hinge">
-        <Body>Body_RWP</Body>
-        <Body>rightRingProximal</Body>
-        <offsetfrom>rightRingProximal</offsetfrom>
-        <axis>0 0 -1</axis>
-        <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 100</limitsdeg>
-    </Joint>
 
     <KinBody name="rightPinkyFinger" file="fingers/rightPinkyFinger.kinbody.xml">
         <!-- RWP Center of Mass to Base -->
@@ -46,29 +27,11 @@
     <adjacent>Body_RWP rightPinkyProximal</adjacent>
     <adjacent>Body_RWP rightPinkyMedial</adjacent>
 
-    <Joint name="rightPinkyKnuckle1" type="hinge">
-        <Body>Body_RWP</Body>
-        <Body>rightPinkyProximal</Body>
-        <offsetfrom>rightPinkyProximal</offsetfrom>
-        <axis>0 0 -1</axis>
-        <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 100</limitsdeg>
-    </Joint>
-
     <KinBody name="rightThumbFinger" file="fingers/rightThumbFinger.kinbody.xml">
     </KinBody>
 
     <adjacent>Body_RWP rightThumbProximal</adjacent>
     <adjacent>Body_RWP rightThumbMedial</adjacent>
-
-    <Joint name="rightThumbKnuckle1" type="hinge">
-        <Body>Body_RWP</Body>
-        <Body>rightThumbProximal</Body>
-        <offsetfrom>rightThumbProximal</offsetfrom>
-        <axis>0 0 -1</axis>
-        <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 100</limitsdeg>
-    </Joint>
 
     <adjacent>rightIndexProximal rightIndexMedial</adjacent>
     <adjacent>rightIndexMedial rightIndexDistal</adjacent>

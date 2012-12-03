@@ -67,6 +67,15 @@
         </Mass>
     </Body>
 
+<Joint name="rightRingKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightRingProximal</Body>
+        <offsetfrom>rightRingProximal</offsetfrom>
+        <axis>0 0 -1</axis>
+        <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 100</limitsdeg>
+    </Joint>
+
     <Joint name="rightRingKnuckle2" type="hinge">
         <Body>rightRingProximal</Body>
         <Body>rightRingMedial</Body>

@@ -25,13 +25,6 @@ import openhubo
 
 if __name__=='__main__':
 
-    #-- Read the name of the xml file passed as an argument
-    #-- or use the default name
-    try:
-        file_env = sys.argv[1]
-    except IndexError:
-        file_env = 'scenes/simpleFloor.env.xml'
-
     env = Environment()
     env.SetDebugLevel(4)
     env.SetViewer('qtcoin')
@@ -41,25 +34,25 @@ if __name__=='__main__':
         #NOTE: Make sure to use this sequence of commands WITHIN a "with env:"
         #block to ensure that the model loads correctly.
         env.StopSimulation()
-        env.Load(file_env)
+        env.Load('simpleFloor.env.xml')
         robot = env.GetRobots()[0]
 
         #Define a joint name lookup closure for the robot
         ind=openhubo.makeNameToIndexConverter(robot)
 
-        robot.SetDOFValues([pi/4,-pi/4],[ind('LSR'),ind('RSR')])
-        pose=array(zeros(60))
+        pose=zeros(robot.GetDOF())
+        #Very important to make sure the initial pose is not colliding
+        robot.SetDOFValues(pose)
+
         robot.SetController(RaveCreateController(env,'servocontroller'))
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
 
     
-        robot.GetController().SendCommand('setgains 50 0 7 .9998 .1')
+        robot.GetController().SendCommand('setgains 50 0 8')
         #Note that you can specify the input format as either degrees or
         #radians, but the internal format is radians
         robot.GetController().SendCommand('set degrees')
-        pose[ind('LSR')]=45
-        pose[ind('RSR')]=-45
         robot.GetController().SetDesired(pose)
 
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
@@ -68,6 +61,7 @@ if __name__=='__main__':
     time.sleep(3)
    
     #Change the pose to lift the elbows and resend
+    robot.GetController().SendCommand('set radians')
     pose[ind('REP')]=-pi/8
     pose[ind('LEP')]=-pi/8
 
