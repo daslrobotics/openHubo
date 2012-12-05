@@ -78,6 +78,7 @@
         <anchor>-0.016 0 0</anchor>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
+    <adjacent>rightPalm rightMiddleProximal</adjacent>
 
     <Joint name="rightMiddleKnuckle2" type="hinge">
         <Body>rightMiddleProximal</Body>

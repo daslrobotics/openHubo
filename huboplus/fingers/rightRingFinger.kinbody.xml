@@ -67,7 +67,7 @@
         </Mass>
     </Body>
 
-<Joint name="rightRingKnuckle1" type="hinge">
+    <Joint name="rightRingKnuckle1" type="hinge">
         <Body>Body_RWP</Body>
         <Body>rightRingProximal</Body>
         <offsetfrom>rightRingProximal</offsetfrom>
@@ -75,6 +75,8 @@
         <anchor>-0.016 0 0</anchor>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
+    <adjacent> rightRingProximal Body_RWP</adjacent>
+    <adjacent> rightRingProximal rightPalm</adjacent>
 
     <Joint name="rightRingKnuckle2" type="hinge">
         <Body>rightRingProximal</Body>
@@ -85,6 +87,7 @@
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightRingProximal rightRingMedial</adjacent>
+    <adjacent> rightRingMedial Body_RWP</adjacent>
 
     <Joint name="rightRingKnuckle3" type="hinge">
         <Body>rightRingMedial</Body>

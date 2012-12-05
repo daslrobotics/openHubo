@@ -41,11 +41,10 @@ def model_test_factory(filename=None):
                 result=env.Load(filename)
                 self.assertTrue(result)
                 self.robot=env.GetRobots()[0]
-                self.robot.SetDOFValues(zeros(self.robot.GetDOF()))
                 physics = RaveCreatePhysicsEngine(env,'ode')
                 physics.SetGravity([0,0,0])
                 env.SetPhysicsEngine(physics)
-                env.StartSimulation(timestep=0.001)
+                self.robot.SetDOFValues(zeros(self.robot.GetDOF()))
 
         def tearDown(self):
             with self.env:
@@ -58,7 +57,8 @@ def model_test_factory(filename=None):
             constraints.  This typically means that adjacent bodies are
             colliding and have not be declared to be officially adjacent.
             """
-            time.sleep(2)
+
+            self.env.StartSimulation(timestep=0.001)
             initialPose=self.robot.GetDOFValues()
             time.sleep(2)
             finalPose=self.robot.GetDOFValues()

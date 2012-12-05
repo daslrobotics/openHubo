@@ -75,6 +75,7 @@
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightThumbProximal Body_RWP</adjacent>
+    <adjacent> rightThumbProximal rightPalm</adjacent>
 
     <Joint name="rightThumbKnuckle2" type="hinge">
         <Body>rightThumbProximal</Body>
@@ -85,6 +86,7 @@
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightThumbProximal rightThumbMedial</adjacent>
+    <adjacent> rightThumbMedial rightPalm</adjacent>
 
     <Joint name="rightThumbKnuckle3" type="hinge">
         <Body>rightThumbMedial</Body>

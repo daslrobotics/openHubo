@@ -74,6 +74,8 @@
         <anchor>-0.016 0 0</anchor>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
+    <adjacent> rightPinkyProximal Body_RWP</adjacent>
+    <adjacent> rightPinkyProximal rightPalm</adjacent>
 
     <Joint name="rightPinkyKnuckle2" type="hinge">
         <Body>rightPinkyProximal</Body>
@@ -84,6 +86,7 @@
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightPinkyProximal rightPinkyMedial</adjacent>
+    <adjacent> rightPinkyPinky Body_RWP</adjacent>
 
     <Joint name="rightPinkyKnuckle3" type="hinge">
         <Body>rightPinkyMedial</Body>

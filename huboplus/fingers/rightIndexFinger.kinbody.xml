@@ -26,14 +26,7 @@
             <total>0.012</total>
         </Mass>
     </Body>
-    <Joint name="rightIndexKnuckle1" type="hinge">
-        <Body>Body_RWP</Body>
-        <Body>rightIndexProximal</Body>
-        <offsetfrom>rightIndexProximal</offsetfrom>
-        <axis>0 0 -1</axis>
-        <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 100</limitsdeg>
-    </Joint>
+
     
     <Body name="rightIndexMedial" type="dynamic">
         <offsetfrom>rightIndexProximal</offsetfrom>
@@ -73,6 +66,17 @@
             <total>0.010</total>
         </Mass>
     </Body>
+
+    <Joint name="rightIndexKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightIndexProximal</Body>
+        <offsetfrom>rightIndexProximal</offsetfrom>
+        <axis>0 0 -1</axis>
+        <anchor>-0.016 0 0</anchor>
+        <limitsdeg>-4 100</limitsdeg>
+    </Joint>
+    <adjacent> rightIndexProximal Body_RWP</adjacent>
+    <adjacent> rightIndexProximal rightPalm</adjacent>
     
     <Joint name="rightIndexKnuckle2" type="hinge">
         <Body>rightIndexProximal</Body>
@@ -83,6 +87,7 @@
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightIndexProximal rightIndexMedial</adjacent>
+    <adjacent> rightIndexMedial Body_RWP</adjacent>
     
     <Joint name="rightIndexKnuckle3" type="hinge">
         <Body>rightIndexMedial</Body>

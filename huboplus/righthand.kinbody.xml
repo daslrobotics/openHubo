@@ -4,49 +4,16 @@
     <KinBody name="rightIndexFinger" file="fingers/rightIndexFinger.kinbody.xml">
     </KinBody>
 
-    <!--Have to redo all the adjacencies when a body is redefined like this...-->
-    <adjacent>Body_RWP rightIndexProximal</adjacent>
-    <adjacent>Body_RWP rightIndexMedial</adjacent>
-
     <KinBody name="rightMiddleFinger" file="fingers/rightMiddleFinger.kinbody.xml">
     </KinBody>
-
-    <adjacent>Body_RWP rightMiddleProximal</adjacent>
-    <adjacent>Body_RWP rightMiddleMedial</adjacent>
 
     <KinBody name="rightRingFinger" file="fingers/rightRingFinger.kinbody.xml">
     </KinBody>
 
-    <adjacent>Body_RWP rightRingProximal</adjacent>
-    <adjacent>Body_RWP rightRingMedial</adjacent>
-
     <KinBody name="rightPinkyFinger" file="fingers/rightPinkyFinger.kinbody.xml">
-        <!-- RWP Center of Mass to Base -->
     </KinBody>
-
-    <adjacent>Body_RWP rightPinkyProximal</adjacent>
-    <adjacent>Body_RWP rightPinkyMedial</adjacent>
 
     <KinBody name="rightThumbFinger" file="fingers/rightThumbFinger.kinbody.xml">
     </KinBody>
 
-    <adjacent>Body_RWP rightThumbProximal</adjacent>
-    <adjacent>Body_RWP rightThumbMedial</adjacent>
-
-    <adjacent>rightIndexProximal rightIndexMedial</adjacent>
-    <adjacent>rightIndexMedial rightIndexDistal</adjacent>
-    <adjacent>rightMiddleProximal rightMiddleMedial</adjacent>
-    <adjacent>rightMiddleMedial rightMiddleDistal</adjacent>
-    <adjacent>rightRingProximal rightRingMedial</adjacent>
-    <adjacent>rightRingMedial rightRingDistal</adjacent>
-    <adjacent>rightPinkyProximal rightPinkyMedial</adjacent>
-    <adjacent>rightPinkyMedial rightPinkyDistal</adjacent>
-    <adjacent>rightThumbProximal rightThumbMedial</adjacent>
-    <adjacent>rightThumbMedial rightThumbDistal</adjacent>
-
-    <adjacent>rightIndexProximal rightPalm</adjacent>
-    <adjacent>rightMiddleProximal rightPalm</adjacent>
-    <adjacent>rightRingProximal rightPalm</adjacent>
-    <adjacent>rightPinkyProximal rightPalm</adjacent>
-    <adjacent>rightThumbProximal rightPalm</adjacent>
 </KinBody>
