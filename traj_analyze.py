@@ -28,18 +28,18 @@ import tab
 if __name__=='__main__':
     from cbirrt import *
 
-    #-- Read the name of the xml file passed as an argument
-    #-- or use the default name
+    # Read the name of the xml file passed as an argument
+    # or use the default name
     try:
         file_env = sys.argv[1]
     except IndexError:
         file_env = 'huboplus/rlhuboplus.robot.xml'
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    #env.SetViewer('qtcoin')
     env.SetDebugLevel(1)
 
-    #-- Set the robot controller and start the simulation
+    # Set the robot controller and start the simulation
     with env:
         env.Load(file_env)
         robot = env.GetRobots()[0]
@@ -57,10 +57,11 @@ if __name__=='__main__':
     probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
     env.LoadProblem(probs_cbirrt,'rlhuboplus')
     i=0
+    t0=time.time()
     for i in range(traj.GetNumWaypoints()):
         robot.SetTransformWithDOFValues(Gettrans(i),Getvals(i))
         #print openhubo.find_com(robot)
-        datastring=probs_cbirrt.SendCommand('CheckSupport supportlinks 2 rightFoot leftFoot')
+        datastring=probs_cbirrt.SendCommand('CheckSupport supportlinks 2 rightFoot leftFoot exact 1 ')
         datalist=datastring.split(' ')
         check=float(datalist[0])
         mass=float(datalist[1])
@@ -70,3 +71,5 @@ if __name__=='__main__':
         time.sleep(.01)
         #print robot.GetJoint('LAP').GetValues()
 
+    t1=time.time()
+    print 'Elapsed analysis time is {}'.format(t1-t0)
