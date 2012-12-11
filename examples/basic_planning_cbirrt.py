@@ -39,6 +39,7 @@ if __name__=='__main__':
     ## Create an example goal pose (The result of all of these steps should be a
     # goal pose vector)
     pose=robot.GetDOFValues()
+    start_position=robot.GetTransform()
 
     pose[ind('RSP')]=-pi/4
     pose[ind('LSP')]=-pi/4
@@ -58,17 +59,17 @@ if __name__=='__main__':
     first_pose.filename='firstpose.traj'
     print first_pose.Serialize()
     first_pose.run()
-    RunTrajectoryFromFile(robot,first_pose,False,True,False)
+    RunTrajectoryFromFile(robot,first_pose,False)
 
-    pose1=robot.GetDOFValues()
 
+    ## Now, reset to initial conditions and activate whole body
+    env.StopSimulation()
     second_pose=Cbirrt(probs_cbirrt)
-    
-    ## Define a new goal pose
-    pose1[ind('RSP')]=0
+    setInitialPose(robot)
+    robot.SetTransform(start_position) 
 
     ## This time, use the whole body (or at least, all 4 manipulators)
-    activedofs=first_pose.ActivateManipsByIndex(robot,[0,1,2,3])
+    activedofs=second_pose.ActivateManipsByIndex(robot,[0,1,2,3])
 
     # Use 
     TSR_left=TSR(robot.GetLink('leftFoot').GetTransform())
@@ -77,13 +78,15 @@ if __name__=='__main__':
     TSR_right=TSR(robot.GetLink('rightFoot').GetTransform())
     TSR_right.manipindex=3
 
-    chain_left=TSRChain(0,0,1).InsertTSR(TSR_left)
-    chain_right=TSRChain(0,0,1).InsertTSR(TSR_right)
+    chain_left=TSRChain(0,1,1)
+    chain_left.insertTSR(TSR_left)
+    chain_right=TSRChain(0,1,1)
+    chain_right.insertTSR(TSR_right)
 
     second_pose.insertTSRChain(chain_left)
     second_pose.insertTSRChain(chain_right)
-
-    chain.run()
-
-
+    second_pose.supportlinks=['leftFoot','rightFoot']
+    second_pose.filename='firstpose.traj'
+    print second_pose.Serialize()
+    second_pose.run()
 

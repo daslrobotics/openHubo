@@ -38,7 +38,7 @@ def MakeInPlaceConstraint(robot,manipname):
     chain.insertTSR(tsr)
     return chain
 
-def RunTrajectoryFromFile(robot,planner):
+def RunTrajectoryFromFile(robot,planner,autoinit=True):
     #TODO: Error checking
     f=open(planner.filename,'r')
     trajstring=f.read()
@@ -49,7 +49,7 @@ def RunTrajectoryFromFile(robot,planner):
 
     planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
-    ctrl=PlayTrajWithPhysics(robot,traj,True)
+    ctrl=PlayTrajWithPhysics(robot,traj,autoinit)
 
 def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False):
     #Lock the environment, halt simulation in preparation
