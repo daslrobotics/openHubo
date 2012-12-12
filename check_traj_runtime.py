@@ -43,7 +43,6 @@ if __name__=='__main__':
 
     pose1[ind('LSR')]=pi/4
     pose1[ind('RSR')]=-pi/4
-
     
     pose1[ind('leftIndexKnuckle1')]=pi/8
     pose1[ind('leftMiddleKnuckle1')]=pi/8
@@ -85,20 +84,17 @@ if __name__=='__main__':
 
     planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
-    #Prove that the retiming actually works
-    #for k in range(40):
-        #data=traj.Sample(float(k)/10)
-        #print data[ind('LKP')]
     perf_t1=time.time() 
     controller.SetPath(traj)
     controller.SendCommand('start')
     while not(controller.IsDone()):
-        #print "Real time {}, sim time {}".format(t,controller.GetTime())
-        #Only approximate time here
         time.sleep(.05)
 
     perf_t2=time.time()
 
-    print "Sim run time is {}, load time was {}, real run time was {}".format(controller.GetTime(),perf_t1-perf_t0,perf_t2-perf_t1)
+    dt1=perf_t1-perf_t0
+    dt2=perf_t2-perf_t1
+    slowdown=dt2/controller.GetTime()
+    print "Sim run time is {}, load time was {}, real run time was {}, {}%".format(controller.GetTime(),dt1,dt2,slowdown*100)
     env.Destroy()
 
