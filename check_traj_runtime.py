@@ -8,15 +8,8 @@ import sys
 import time
 from copy import copy
 import openhubo
+from trajectory import *
 #TODO: Work with the concept of activeDOF?
-
-def createTrajectory(robot):
-    """ Create a trajectory based on a robot's config spec"""
-    traj=RaveCreateTrajectory(robot.GetEnvironment,'')
-    config=robot.GetConfigurationSpecification()
-    config.AddDeltaTimeGroup()
-    traj.Init(config)
-    return traj
 
 """ Simple test script to run some of the functions above. """
 if __name__=='__main__':
@@ -24,7 +17,7 @@ if __name__=='__main__':
     perf_t0=time.time()
     env = Environment()
     #env.SetViewer('qtcoin')
-    env.SetDebugLevel(4)
+    env.SetDebugLevel(3)
 
     timestep=0.0005
 
@@ -38,7 +31,6 @@ if __name__=='__main__':
     env.StartSimulation(timestep=timestep)
 
     pose1=pose0.copy()
-    print pose1
 
     pose1[ind('LAP')]=-pi/6
     pose1[ind('RAP')]=-pi/6
@@ -51,6 +43,19 @@ if __name__=='__main__':
 
     pose1[ind('LSR')]=pi/4
     pose1[ind('RSR')]=-pi/4
+
+    
+    pose1[ind('leftIndexKnuckle1')]=pi/8
+    pose1[ind('leftMiddleKnuckle1')]=pi/8
+    pose1[ind('leftRingKnuckle1')]=pi/8
+    pose1[ind('leftPinkyKnuckle1')]=pi/8
+    pose1[ind('leftThumbKnuckle1')]=pi/8
+
+    pose1[ind('rightIndexKnuckle1')]=pi/8
+    pose1[ind('rightMiddleKnuckle1')]=pi/8
+    pose1[ind('rightRingKnuckle1')]=pi/8
+    pose1[ind('rightPinkyKnuckle1')]=pi/8
+    pose1[ind('rightThumbKnuckle1')]=pi/8
 
     traj=RaveCreateTrajectory(env,'')
 
@@ -94,5 +99,6 @@ if __name__=='__main__':
 
     perf_t2=time.time()
 
-    print perf_t1-perf_t0,perf_t2-perf_t1
+    print "Sim run time is {}, load time was {}, real run time was {}".format(controller.GetTime(),perf_t1-perf_t0,perf_t2-perf_t1)
+    env.Destroy()
 
