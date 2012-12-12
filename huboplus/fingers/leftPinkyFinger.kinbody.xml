@@ -79,23 +79,21 @@
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
 
-    <Joint name="leftPinkyKnuckle2" type="hinge">
+    <Joint name="leftPinkyKnuckle2" enable="false" type="hinge" mimic_pos="leftPinkyKnuckle1" mimic_vel="|leftPinkyKnuckle1 1">
         <Body>leftPinkyProximal</Body>
         <Body>leftPinkyMedial</Body>
         <offsetfrom>leftPinkyProximal</offsetfrom>
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
-        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> leftPinkyProximal leftPinkyMedial</adjacent>
 
-    <Joint name="leftPinkyKnuckle3" type="hinge">
+    <Joint name="leftPinkyKnuckle3" enable="false" type="hinge" mimic_pos="leftPinkyKnuckle1" mimic_vel="|leftPinkyKnuckle1 1">
         <Body>leftPinkyMedial</Body>
         <Body>leftPinkyDistal</Body>
         <offsetfrom>leftPinkyMedial</offsetfrom>
         <anchor>0.011 0 0</anchor>
         <axis>0 0 -1</axis>
-        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> leftPinkyDistal leftPinkyMedial</adjacent>
 
