@@ -79,23 +79,21 @@
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     
-    <Joint name="leftThumbKnuckle2" type="hinge">
+    <Joint name="leftThumbKnuckle2" enable="false" type="hinge" mimic_pos="leftThumbKnuckle1" mimic_vel="|leftThumbKnuckle1 1">
         <Body>leftThumbProximal</Body>
         <Body>leftThumbMedial</Body>
         <offsetfrom>leftThumbProximal</offsetfrom>
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
-        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> leftThumbProximal leftThumbMedial</adjacent>
     
-    <Joint name="leftThumbKnuckle3" type="hinge">
+    <Joint name="leftThumbKnuckle3" enable="false" type="hinge" mimic_pos="leftThumbKnuckle1" mimic_vel="|leftThumbKnuckle1 1">
         <Body>leftThumbMedial</Body>
         <Body>leftThumbDistal</Body>
         <offsetfrom>leftThumbMedial</offsetfrom>
         <anchor>0.011 0 0</anchor>
         <axis>0 0 -1</axis>
-        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> leftThumbDistal leftThumbMedial</adjacent>
     

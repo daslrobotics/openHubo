@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<Robot name="huboplus" >
-    <KinBody file="huboplus.kinbody.xml" makejoinedlinksadjacent="true">
-        <translation>0 0 1.05</translation>
-        <KinBody file="lefthand.kinbody.xml" makejoinedlinksadjacent="true"/>
-        <KinBody file="righthand.kinbody.xml" makejoinedlinksadjacent="true"/>
+<Robot name="rlhuboplus" >
+    <KinBody file="rlhuboplus.kinbody.xml" makejoinedlinksadjacent="true">
+        <Translation>0 0 .005</Translation>
     </KinBody>
-
+    
     <Manipulator name="leftArm">
         <base>Body_Torso</base>
         <effector>leftPalm</effector>
@@ -54,5 +52,6 @@
         <sensor type="ForceSensor">
         </sensor>
     </AttachedSensor>
+
 
 </Robot>

@@ -1330,7 +1330,7 @@
 
     <adjacent>leftFoot Body_LAR</adjacent>
     <adjacent>rightFoot Body_RAR</adjacent>
-    <kinbody file="righthand.kinbody.xml"/>
-    <kinbody file="lefthand.kinbody.xml"/>
+    <!--<kinbody file="righthand.kinbody.xml"/>-->
+    <!--<kinbody file="lefthand.kinbody.xml"/>-->
 
 </kinbody>
