@@ -54,6 +54,7 @@ if __name__=='__main__':
         controller=RaveCreateController(env,'achcontroller')
         robot.SetController(controller)
         controller.SendCommand("SetCheckCollisions false")
+        controller.SendCommand("SetReadOnly 1")
 
         #Set an initial pose before the simulation starts
 
@@ -63,7 +64,18 @@ if __name__=='__main__':
         robot.SetDOFValues(pose)
         controller.SetDesired(pose)
 
+        env.Load('huboplus/rlhuboplus.robot.xml',{'name':'rlhuboplus_ref'})
+        ref_robot=env.GetRobot('rlhuboplus_ref')
+        ref_robot.Enable(False)
+        ref_robot.SetController(RaveCreateController(env,'mimiccontroller'))
+        controller.SendCommand("SetVisRobot rlhuboplus_ref")
+
+    for l in ref_robot.GetLinks():
+        for g in l.GetGeometries():
+            g.SetDiffuseColor([.7,.7,0])
+            g.SetTransparency(.7)
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
 
+    print "tarting..."
     env.StartSimulation(timestep,True)
