@@ -12,12 +12,12 @@
         <translation>-0.012258116293 -0.002473149928 -0.048635606065</translation>
         <geom type="trimesh">
             <translation>0.012258116293 0.002473149928 0.048635606065</translation>
-            <render>Body_Torso_1.wrl 1 </render>
+            <donotrender>Body_Torso_1.wrl 1 </donotrender>
             <data>convhull_Torso_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>0.012258116293 0.002473149928 0.048635606065</translation>
-            <render>Body_Torso_2.wrl 1 </render>
+            <donotrender>Body_Torso_2.wrl 1 </donotrender>
             <data>convhull_Torso_2.wrl 1 </data>
         </geom>
         <geom type="cylinder">
@@ -47,7 +47,7 @@
         <translation>-0.013850358943 0.000007806523 -0.035461283862</translation>
         <geom type="trimesh">
             <translation>0.013850358943 -0.000007806523 0.035461283862</translation>
-            <render>Body_Hip_1.wrl 1 </render>
+            <donotrender>Body_Hip_1.wrl 1 </donotrender>
             <data>convhull_Hip_1.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -82,12 +82,12 @@
         <translation>0.034706500276 -0.000037480007 -0.072615273181</translation>
         <geom type="trimesh">
             <translation>-0.034706500276 0.000037480007 0.072615273181</translation>
-            <render>Body_RHY_1.wrl 1 </render>
+            <donotrender>Body_RHY_1.wrl 1 </donotrender>
             <data>convhull_RHY_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>-0.034706500276 0.000037480007 0.072615273181</translation>
-            <render>Body_RHY_2.wrl 1 </render>
+            <donotrender>Body_RHY_2.wrl 1 </donotrender>
             <data>convhull_RHY_2.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -122,12 +122,12 @@
         <translation>0.034706500276 0.000037480007 -0.072615273181</translation>
         <geom type="trimesh">
             <translation>-0.034706500276 -0.000037480007 0.072615273181</translation>
-            <render>Body_LHY_1.wrl 1 </render>
+            <donotrender>Body_LHY_1.wrl 1 </donotrender>
             <data>convhull_LHY_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>-0.034706500276 -0.000037480007 0.072615273181</translation>
-            <render>Body_LHY_2.wrl 1 </render>
+            <donotrender>Body_LHY_2.wrl 1 </donotrender>
             <data>convhull_LHY_2.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -162,7 +162,7 @@
         <translation>-0.049747912596 -0.012531116599 -0.015643664572</translation>
         <geom type="trimesh">
             <translation>0.049747912596 0.012531116599 0.015643664572</translation>
-            <render>Body_RHR_1.wrl 1 </render>
+            <donotrender>Body_RHR_1.wrl 1 </donotrender>
             <data>convhull_RHR_1.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -197,7 +197,7 @@
         <translation>-0.049747912596 0.012531116599 -0.015643664572</translation>
         <geom type="trimesh">
             <translation>0.049747912596 -0.012531116599 0.015643664572</translation>
-            <render>Body_LHR_1.wrl 1 </render>
+            <donotrender>Body_LHR_1.wrl 1 </donotrender>
             <data>convhull_LHR_1.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -232,12 +232,12 @@
         <translation>0.019504891350 0.059577480789 -0.175201757627</translation>
         <geom type="trimesh">
             <translation>-0.019504891350 -0.059577480789 0.175201757627</translation>
-            <render>Body_RHP_1.wrl 1 </render>
+            <donotrender>Body_RHP_1.wrl 1 </donotrender>
             <data>convhull_RHP_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>-0.019504891350 -0.059577480789 0.175201757627</translation>
-            <render>Body_RHP_2.wrl 1 </render>
+            <donotrender>Body_RHP_2.wrl 1 </donotrender>
             <data>convhull_RHP_2.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -272,12 +272,12 @@
         <translation>0.019504891350 -0.059577480789 -0.175201757627</translation>
         <geom type="trimesh">
             <translation>-0.019504891350 0.059577480789 0.175201757627</translation>
-            <render>Body_LHP_1.wrl 1 </render>
+            <donotrender>Body_LHP_1.wrl 1 </donotrender>
             <data>convhull_LHP_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>-0.019504891350 0.059577480789 0.175201757627</translation>
-            <render>Body_LHP_2.wrl 1 </render>
+            <donotrender>Body_LHP_2.wrl 1 </donotrender>
             <data>convhull_LHP_2.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -312,12 +312,12 @@
         <translation>0.012825433376 0.007275670525 -0.171431348038</translation>
         <geom type="trimesh">
             <translation>-0.012825433376 -0.007275670525 0.171431348038</translation>
-            <render>Body_RKP_1.wrl 1 </render>
+            <donotrender>Body_RKP_1.wrl 1 </donotrender>
             <data>convhull_RKP_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>-0.012825433376 -0.007275670525 0.171431348038</translation>
-            <render>Body_RKP_2.wrl 1 </render>
+            <donotrender>Body_RKP_2.wrl 1 </donotrender>
             <data>convhull_RKP_2.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -352,12 +352,12 @@
         <translation>0.012825433376 -0.007275670525 -0.171431348038</translation>
         <geom type="trimesh">
             <translation>-0.012825433376 0.007275670525 0.171431348038</translation>
-            <render>Body_LKP_1.wrl 1 </render>
+            <donotrender>Body_LKP_1.wrl 1 </donotrender>
             <data>convhull_LKP_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>-0.012825433376 0.007275670525 0.171431348038</translation>
-            <render>Body_LKP_2.wrl 1 </render>
+            <donotrender>Body_LKP_2.wrl 1 </donotrender>
             <data>convhull_LKP_2.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -392,7 +392,7 @@
         <translation>0.019870246084 0.045969255056 0.011506941050</translation>
         <geom type="trimesh">
             <translation>-0.019870246084 -0.045969255056 -0.011506941050</translation>
-            <render>Body_RAP_1.wrl 1 </render>
+            <donotrender>Body_RAP_1.wrl 1 </donotrender>
             <data>convhull_RAP_1.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -427,7 +427,7 @@
         <translation>0.019870246084 -0.045969255056 0.011506941050</translation>
         <geom type="trimesh">
             <translation>-0.019870246084 0.045969255056 -0.011506941050</translation>
-            <render>Body_LAP_1.wrl 1 </render>
+            <donotrender>Body_LAP_1.wrl 1 </donotrender>
             <data>convhull_LAP_1.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -462,12 +462,12 @@
         <translation>-0.051509407797 -0.002163982128 -0.069388069491</translation>
         <geom type="trimesh">
             <translation>0.051509407797 0.002163982128 0.069388069491</translation>
-            <render>Body_RAR_1.wrl 1 </render>
+            <donotrender>Body_RAR_1.wrl 1 </donotrender>
             <data>convhull_RAR_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>0.051509407797 0.002163982128 0.069388069491</translation>
-            <render>Body_RAR_2.wrl 1 </render>
+            <donotrender>Body_RAR_2.wrl 1 </donotrender>
             <data>convhull_RAR_2.wrl 1 </data>
         </geom>
 		
@@ -580,12 +580,12 @@
         <translation>-0.051509407797 0.002163982128 -0.069388069491</translation>
         <geom type="trimesh">
             <translation>0.051509407797 -0.002163982128 0.069388069491</translation>
-            <render>Body_LAR_1.wrl 1 </render>
+            <donotrender>Body_LAR_1.wrl 1 </donotrender>
             <data>convhull_LAR_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>0.051509407797 -0.002163982128 0.069388069491</translation>
-            <render>Body_LAR_2.wrl 1 </render>
+            <donotrender>Body_LAR_2.wrl 1 </donotrender>
             <data>convhull_LAR_2.wrl 1 </data>
         </geom>
 		
@@ -698,7 +698,7 @@
         <translation>0.016720721524 -0.057040679167 0.000009918731</translation>
         <geom type="trimesh">
             <translation>-0.016720721524 0.057040679167 -0.000009918731</translation>
-            <render>Body_RSP_1.wrl 1 </render>
+            <donotrender>Body_RSP_1.wrl 1 </donotrender>
             <data>convhull_RSP_1.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -733,7 +733,7 @@
         <translation>0.016720721524 0.057040679167 0.000009918731</translation>
         <geom type="trimesh">
             <translation>-0.016720721524 -0.057040679167 -0.000009918731</translation>
-            <render>Body_LSP_1.wrl 1 </render>
+            <donotrender>Body_LSP_1.wrl 1 </donotrender>
             <data>convhull_LSP_1.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -768,7 +768,7 @@
         <translation>-0.036207973807 0.000083124345 -0.001266848323</translation>
         <geom type="trimesh">
             <translation>0.036207973807 -0.000083124345 0.001266848323</translation>
-            <render>Body_RSR_1.wrl 1 </render>
+            <donotrender>Body_RSR_1.wrl 1 </donotrender>
             <data>convhull_RSR_1.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -804,7 +804,7 @@
         <translation>-0.036207973807 -0.000083124345 -0.001266848323</translation>
         <geom type="trimesh">
             <translation>0.036207973807 0.000083124345 0.001266848323</translation>
-            <render>Body_LSR_1.wrl 1 </render>
+            <donotrender>Body_LSR_1.wrl 1 </donotrender>
             <data>convhull_LSR_1.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -840,12 +840,12 @@
         <translation>0.004561211264 -0.000031057603 -0.090782377537</translation>
         <geom type="trimesh">
             <translation>-0.004561211264 0.000031057603 0.090782377537</translation>
-            <render>Body_RSY_1.wrl 1 </render>
+            <donotrender>Body_RSY_1.wrl 1 </donotrender>
             <data>convhull_RSY_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>-0.004561211264 0.000031057603 0.090782377537</translation>
-            <render>Body_RSY_2.wrl 1 </render>
+            <donotrender>Body_RSY_2.wrl 1 </donotrender>
             <data>convhull_RSY_2.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -880,12 +880,12 @@
         <translation>0.004561211264 0.000031057603 -0.090782377537</translation>
         <geom type="trimesh">
             <translation>-0.004561211264 -0.000031057603 0.090782377537</translation>
-            <render>Body_LSY_1.wrl 1 </render>
+            <donotrender>Body_LSY_1.wrl 1 </donotrender>
             <data>convhull_LSY_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>-0.004561211264 -0.000031057603 0.090782377537</translation>
-            <render>Body_LSY_2.wrl 1 </render>
+            <donotrender>Body_LSY_2.wrl 1 </donotrender>
             <data>convhull_LSY_2.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -921,7 +921,7 @@
 
         <geom type="trimesh">
             <translation>0.021734910228 0.017831394355 0.061087268246</translation>
-            <render>Body_REP_1.wrl 1 </render>
+            <donotrender>Body_REP_1.wrl 1 </donotrender>
             <data>convhull_REP_1.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -956,7 +956,7 @@
         <translation>-0.021734910228 0.017831394355 -0.061087268246</translation>
         <geom type="trimesh">
             <translation>0.021734910228 -0.017831394355 0.061087268246</translation>
-            <render>Body_LEP_1.wrl 1 </render>
+            <donotrender>Body_LEP_1.wrl 1 </donotrender>
             <data>convhull_LEP_1.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -991,12 +991,12 @@
         <translation>-0.001220192079 -0.000635233335 -0.023804318643</translation>
         <geom type="trimesh">
             <translation>0.001220192079 0.000635233335 0.023804318643</translation>
-            <render>Body_RWY_1.wrl 1 </render>
+            <donotrender>Body_RWY_1.wrl 1 </donotrender>
             <data>convhull_RWY_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>0.001220192079 0.000635233335 0.023804318643</translation>
-            <render>Body_RWY_2.wrl 1 </render>
+            <donotrender>Body_RWY_2.wrl 1 </donotrender>
             <data>convhull_RWY_2.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -1031,12 +1031,12 @@
         <translation>-0.001220192079 0.000635233335 -0.023804318643</translation>
         <geom type="trimesh">
             <translation>0.001220192079 -0.000635233335 0.023804318643</translation>
-            <render>Body_LWY_1.wrl 1 </render>
+            <donotrender>Body_LWY_1.wrl 1 </donotrender>
             <data>convhull_LWY_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
             <translation>0.001220192079 -0.000635233335 0.023804318643</translation>
-            <render>Body_LWY_2.wrl 1 </render>
+            <donotrender>Body_LWY_2.wrl 1 </donotrender>
             <data>convhull_LWY_2.wrl 1 </data>
         </geom>
         <mass type="custom">
@@ -1072,7 +1072,7 @@
         <geom type="trimesh">
             <translation>0.000258199377 0.011441986656 0.046147242821</translation>
 			<translation>0.001 0 0</translation>
-            <render>Body_RWP_1.wrl 1 </render>
+            <donotrender>Body_RWP_1.wrl 1 </donotrender>
             <data>convhull_RWP_1.wrl 1 </data>
         </geom>
 		
@@ -1134,7 +1134,7 @@
         <geom type="trimesh">
             <translation>0.000258199377 -0.011441986656 0.046147242821</translation>
 			<translation>0.001 0 0</translation>
-            <render>Body_LWP_1.wrl 1 </render>
+            <donotrender>Body_LWP_1.wrl 1 </donotrender>
             <data>convhull_LWP_1.wrl 1 </data>
         </geom>
 		
@@ -1220,7 +1220,7 @@
         <translation>0.010688581590 -0.000030086449 0.032122953618</translation>
         <geom type="trimesh">
             <translation>-0.010688581590 0.000030086449 -0.032122953618</translation>
-            <render>Body_HNP_1.wrl 1 </render>
+            <donotrender>Body_HNP_1.wrl 1 </donotrender>
             <data>convhull_HNP_1.wrl 1 </data>
         </geom>
         <mass type="custom">
