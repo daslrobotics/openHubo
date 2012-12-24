@@ -22,15 +22,11 @@ import time
 import datetime
 import sys
 import tab
+import openhubo
 
 if __name__=='__main__':
 
-    #-- Read the name of the xml file passed as an argument
-    #-- or use the default name
-    try:
-        file_env = sys.argv[1]
-    except IndexError:
-        file_env = 'huboplus/rlhuboplus-fingerless.robot.xml'
+    file_env = 'scenes/simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
@@ -38,12 +34,27 @@ if __name__=='__main__':
 
     #-- Set the robot controller and start the simulation
     with env:
+        env.StopSimulation()
         env.Load(file_env)
         robot = env.GetRobots()[0]
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
+        collisionChecker = RaveCreateCollisionChecker(env,'pqp')
         env.SetCollisionChecker(collisionChecker)
+        controller=RaveCreateController(env,'servocontroller')
+        robot.SetController(controller)
 
-        env.StopSimulation()
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        env.StartSimulation(timestep=0.0005)
+        
+        #TODO: robot name tracking by URI doesn't work
+        env.Load('huboplus/rlhuboplus-fingerless.robot.xml',{'name':'rlhuboplus_ref'})
+        ref_robot=env.GetRobot('rlhuboplus_ref')
+        ref_robot.Enable(False)
+        ref_robot.SetController(RaveCreateController(env,'mimiccontroller'))
+        controller.SendCommand("set visrobot rlhuboplus_ref")
+
+    for l in ref_robot.GetLinks():
+        for g in l.GetGeometries():
+            g.SetDiffuseColor([.7,.7,0])
+            g.SetTransparency(.7)
+
+    env.StartSimulation(timestep=0.0005)
 

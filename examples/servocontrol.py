@@ -45,7 +45,7 @@ if __name__=='__main__':
         robot.SetDOFValues(pose)
 
         robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
+        collisionChecker = RaveCreateCollisionChecker(env,'pqp')
         env.SetCollisionChecker(collisionChecker)
 
     
@@ -62,8 +62,14 @@ if __name__=='__main__':
    
     #Change the pose to lift the elbows and resend
     robot.GetController().SendCommand('set radians')
-    pose[ind('REP')]=-pi/8
-    pose[ind('LEP')]=-pi/8
+    pose[ind('REP')]=-pi/2
+    pose[ind('LEP')]=-pi/2
+    pose[ind('LHY')]=pi/2
 
     robot.GetController().SetDesired(pose)
+    pose[ind('LHP')]=-pi
+    pose[ind('LKP')]=pi
+    time.sleep(1)
+    robot.GetController().SetDesired(pose)
+    time.sleep(1)
 
