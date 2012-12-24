@@ -26,7 +26,7 @@ import openhubo
 
 if __name__=='__main__':
 
-    file_env = 'scenes/simpleFloor.env.xml'
+    file_env = 'simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
@@ -41,15 +41,17 @@ if __name__=='__main__':
         env.SetCollisionChecker(collisionChecker)
         controller=RaveCreateController(env,'servocontroller')
         robot.SetController(controller)
+        controller.SendCommand('setgains 100 0 16')
 
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
         
         #TODO: robot name tracking by URI doesn't work
-        env.Load('rlhuboplus-fingerless.robot.xml',{'name':'rlhuboplus_ref'})
+        env.Load('rlhuboplus.ref.robot.xml')
         ref_robot=env.GetRobot('rlhuboplus_ref')
         ref_robot.Enable(False)
         ref_robot.SetController(RaveCreateController(env,'mimiccontroller'))
         controller.SendCommand("set visrobot rlhuboplus_ref")
+        ind=openhubo.makeNameToIndexConverter(robot)
 
     for l in ref_robot.GetLinks():
         for g in l.GetGeometries():
@@ -57,4 +59,14 @@ if __name__=='__main__':
             g.SetTransparency(.7)
 
     env.StartSimulation(timestep=0.0005)
+
+    time.sleep(2)
+    pose=zeros(robot.GetDOF())
+    pose[ind('RSP')]=-pi/8
+    controller.SetDesired(pose)
+    time.sleep(2)
+    pose[ind('RSP')]=0
+    controller.SetDesired(pose)
+
+
 
