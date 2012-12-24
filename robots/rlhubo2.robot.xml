@@ -1,5 +1,5 @@
 <Robot name="rlhubo2">
-    <kinbody file="rlhubo2.kinbody.xml">
+    <kinbody file="hubo2/rlhubo2.kinbody.xml">
         <translation>0 0 .11</translation>
         </kinbody>
 

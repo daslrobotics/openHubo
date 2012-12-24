@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="leftLeg">
-    <modelsdir>../models</modelsdir>
+    <modelsdir>models</modelsdir>
     <Body name="Hip" type="dynamic"/>
 
     <Body name="leftHip" type="dynamic">

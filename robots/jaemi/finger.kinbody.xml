@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="KHRfinger" makejoinedlinksadjacent="true">
-    <modelsdir>../models</modelsdir>
+    <modelsdir>models</modelsdir>
 
     <Body name="Proximal" type="dynamic">
         <Translation>0.016 0 0</Translation>

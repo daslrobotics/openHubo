@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Robot name="jaemiHubo" >
-    <KinBody file="kinbody/affine.kinbody.xml" makejoinedlinksadjacent="true">
+    <KinBody file="jaemi/affine.kinbody.xml" makejoinedlinksadjacent="true">
 
         <Body name="Torso" type="dynamic"/>
         <Joint name="jRZ" type="hinge" >
@@ -12,17 +12,17 @@
             <maxtorque>0</maxtorque>
         </Joint>
 
-        <KinBody file="kinbody/trunk.kinbody.xml" makejoinedlinksadjacent="true"/>
+        <KinBody file="jaemi/trunk.kinbody.xml" makejoinedlinksadjacent="true"/>
 
-        <KinBody file="kinbody/leftarm.kinbody.xml"/>
+        <KinBody file="jaemi/leftarm.kinbody.xml"/>
 
         <adjacent>Torso Body_LSP</adjacent>
 
-        <KinBody file="kinbody/rightarm.kinbody.xml"/>
+        <KinBody file="jaemi/rightarm.kinbody.xml"/>
 
         <adjacent>Torso Body_RSP</adjacent>
 
-        <KinBody file="kinbody/leftleg.kinbody.xml"/>
+        <KinBody file="jaemi/leftleg.kinbody.xml"/>
 
         <Body name="leftFootBase" type="dynamic">
             <offsetfrom>leftFoot</offsetfrom> 
@@ -46,7 +46,7 @@
 
         <adjacent>Hip leftHipPitchRoll</adjacent>
 
-        <KinBody file="kinbody/rightleg.kinbody.xml"/>
+        <KinBody file="jaemi/rightleg.kinbody.xml"/>
 
         <Body name="rightFootBase" type="dynamic">
             <offsetfrom>rightFoot</offsetfrom> 
@@ -70,7 +70,7 @@
 
         <adjacent>Hip rightHipPitchRoll</adjacent>
 
-        <KinBody file="kinbody/lefthand.kinbody.xml"/>
+        <KinBody file="jaemi/lefthand.kinbody.xml"/>
 
         <Body name="leftPalm" type="dynamic">
             <offsetfrom>leftPalmDummy</offsetfrom> 
@@ -90,7 +90,7 @@
             <RotationMat>-.5 -.5 .7071 .5 .5 .7071 -.7071 .7071 0</RotationMat>
 
             <Geom type="trimesh">
-                <render>models/Left_Palm_Shell.wrl    .001</render>
+                <render>jaemi/models/Left_Palm_Shell.wrl    .001</render>
             </Geom>
 
         </Body>
@@ -104,7 +104,7 @@
         <adjacent>Body_LWY leftPalm</adjacent>
         <adjacent>Body_LWY leftPalmShell</adjacent>
 
-        <KinBody file="kinbody/righthand.kinbody.xml"/>
+        <KinBody file="jaemi/righthand.kinbody.xml"/>
 
         <Body name="rightPalm" type="dynamic">
             <offsetfrom>rightPalmDummy</offsetfrom> 
@@ -128,7 +128,7 @@
 
             <RotationAxis>0 0 1 180</RotationAxis>
             <Geom type="trimesh">
-                <Render>models/Right_Palm_Shell.wrl    .001</Render>
+                <Render>jaemi/models/Right_Palm_Shell.wrl    .001</Render>
             </Geom>
 
         </Body>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="rightLeg" makejoinedlinksadjacent="true">
-    <modelsdir>../models</modelsdir>
+    <modelsdir>models</modelsdir>
 
     <Body name="rightFoot" type="dynamic">
             <Translation>-0.043321613 -0.001919520 -0.055938224</Translation>

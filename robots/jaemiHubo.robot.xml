@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Robot name="jaemiHubo" >
-    <KinBody file="kinbody/trunk.kinbody.xml" makejoinedlinksadjacent="true">
-        <KinBody file="kinbody/leftarm.kinbody.xml"/>
+    <KinBody file="jaemi/trunk.kinbody.xml" makejoinedlinksadjacent="true">
+        <KinBody file="jaemi/leftarm.kinbody.xml"/>
         <adjacent>Torso Body_LSP</adjacent>
 
-        <KinBody file="kinbody/rightarm.kinbody.xml"/>
+        <KinBody file="jaemi/rightarm.kinbody.xml"/>
         <adjacent>Torso Body_RSP</adjacent>
 
-        <KinBody file="kinbody/leftleg.kinbody.xml"/>
+        <KinBody file="jaemi/leftleg.kinbody.xml"/>
         <Body name="leftFootBase" type="dynamic">
             <offsetfrom>leftFoot</offsetfrom> 
             <Translation>0.043321613 -0.001919520 0.055938224</Translation>
@@ -31,7 +31,7 @@
 
         <adjacent>Hip leftHipPitchRoll</adjacent>
 
-        <KinBody file="kinbody/rightleg.kinbody.xml"/>
+        <KinBody file="jaemi/rightleg.kinbody.xml"/>
 
         <Body name="rightFootBase" type="dynamic">
             <offsetfrom>rightFoot</offsetfrom> 
@@ -58,7 +58,7 @@
         <adjacent>Hip leftHipPitchRoll</adjacent>
         <adjacent>Hip rightHipPitchRoll</adjacent>
 
-        <KinBody file="kinbody/lefthand.kinbody.xml"/>
+        <KinBody file="jaemi/lefthand.kinbody.xml"/>
 
         <Body name="leftPalm" type="dynamic">
             <offsetfrom>leftPalmDummy</offsetfrom> 
@@ -72,7 +72,7 @@
         <adjacent>leftUJoint leftPalm</adjacent>
         <adjacent>Body_LWY leftPalm</adjacent>
 
-        <KinBody file="kinbody/righthand.kinbody.xml"/>
+        <KinBody file="jaemi/righthand.kinbody.xml"/>
 
         <Body name="rightPalm" type="dynamic">
             <offsetfrom>rightPalmDummy</offsetfrom> 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <KinBody name="Trunk" makejoinedlinksadjacent="true">
-    <modelsdir>../models</modelsdir>
+    <modelsdir>models</modelsdir>
     <Body name="rightHip" type="dynamic"/>
     <Body name="Hip" type="dynamic">
         <offsetfrom>rightHip</offsetfrom>
