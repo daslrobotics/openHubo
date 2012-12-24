@@ -45,7 +45,7 @@ if __name__=='__main__':
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
         
         #TODO: robot name tracking by URI doesn't work
-        env.Load('huboplus/rlhuboplus-fingerless.robot.xml',{'name':'rlhuboplus_ref'})
+        env.Load('rlhuboplus-fingerless.robot.xml',{'name':'rlhuboplus_ref'})
         ref_robot=env.GetRobot('rlhuboplus_ref')
         ref_robot.Enable(False)
         ref_robot.SetController(RaveCreateController(env,'mimiccontroller'))

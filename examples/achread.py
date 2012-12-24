@@ -24,7 +24,7 @@ if __name__=='__main__':
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'huboplus/rlhuboplus.robot.xml'
+        file_env = 'rlhuboplus.robot.xml'
     # Uncomment below to only load specific plugins (could save memory on
     # embedded systems)
     #
@@ -64,7 +64,7 @@ if __name__=='__main__':
         robot.SetDOFValues(pose)
         controller.SetDesired(pose)
 
-        env.Load('huboplus/rlhuboplus.robot.xml',{'name':'rlhuboplus_ref'})
+        env.Load('rlhuboplus.ref.robot.xml')
         ref_robot=env.GetRobot('rlhuboplus_ref')
         ref_robot.Enable(False)
         ref_robot.SetController(RaveCreateController(env,'mimiccontroller'))

@@ -30,7 +30,7 @@ if __name__=='__main__':
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'huboplus/rlhuboplus-fingerless.robot.xml'
+        file_env = 'rlhuboplus-fingerless.robot.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
