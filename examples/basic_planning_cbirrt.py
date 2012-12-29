@@ -31,7 +31,7 @@ if __name__=='__main__':
     [robot,controller,ind]=openhubo.load_simplefloor(env)
     
     probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
-    env.LoadProblem(probs_cbirrt,'hubo')
+    env.LoadProblem(probs_cbirrt,robot.GetName())
 
     first_pose=Cbirrt(probs_cbirrt)
     setInitialPose(robot)

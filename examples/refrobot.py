@@ -25,6 +25,9 @@ import tab
 import openhubo
 
 if __name__=='__main__':
+    """ Demonstrate "from scratch" method of loading the huboplus and a "ref"
+    version to show desired vs. actual pose of the servo controller. 
+    """
 
     file_env = 'simpleFloor.env.xml'
 
@@ -32,7 +35,7 @@ if __name__=='__main__':
     env.SetViewer('qtcoin')
     env.SetDebugLevel(4)
 
-    #-- Set the robot controller and start the simulation
+    # Set the robot controller and start the simulation
     with env:
         env.StopSimulation()
         env.Load(file_env)
@@ -56,7 +59,7 @@ if __name__=='__main__':
     for l in ref_robot.GetLinks():
         for g in l.GetGeometries():
             g.SetDiffuseColor([.7,.7,0])
-            g.SetTransparency(.7)
+            g.SetTransparency(.5)
 
     env.StartSimulation(timestep=0.0005)
 
@@ -67,6 +70,3 @@ if __name__=='__main__':
     time.sleep(2)
     pose[ind('RSP')]=0
     controller.SetDesired(pose)
-
-
-
