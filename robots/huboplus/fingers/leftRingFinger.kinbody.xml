@@ -79,7 +79,7 @@
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
 
-    <Joint name="leftRingKnuckle2" enable="false" type="hinge" mimic_pos="leftRingKnuckle1" mimic_vel="|leftRingKnuckle1 1">
+    <Joint name="leftRingKnuckle2" type="hinge" >
         <Body>leftRingProximal</Body>
         <Body>leftRingMedial</Body>
         <offsetfrom>leftRingProximal</offsetfrom>
@@ -88,7 +88,7 @@
     </Joint>
     <adjacent> leftRingProximal leftRingMedial</adjacent>
 
-    <Joint name="leftRingKnuckle3" enable="false" type="hinge" mimic_pos="leftRingKnuckle1" mimic_vel="|leftRingKnuckle1 1">
+    <Joint name="leftRingKnuckle3" type="hinge" >
         <Body>leftRingMedial</Body>
         <Body>leftRingDistal</Body>
         <offsetfrom>leftRingMedial</offsetfrom>

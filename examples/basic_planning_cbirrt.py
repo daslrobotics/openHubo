@@ -86,7 +86,10 @@ if __name__=='__main__':
     second_pose.insertTSRChain(chain_left)
     second_pose.insertTSRChain(chain_right)
     second_pose.supportlinks=['leftFoot','rightFoot']
-    second_pose.filename='firstpose.traj'
+    second_pose.exactsupport=1
+    second_pose.filename='secondpose.traj'
+    second_pose.psample=.05
+
     print second_pose.Serialize()
     second_pose.run()
 

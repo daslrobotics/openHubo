@@ -39,7 +39,7 @@ def load_simplefloor(env):
         #Since physics are defined within the XML file, stop simulation
         env.StopSimulation()
         env.Load('simpleFloor.env.xml')
-        collisionChecker = rave.RaveCreateCollisionChecker(env,'ode')
+        collisionChecker = rave.RaveCreateCollisionChecker(env,'pqp')
         env.SetCollisionChecker(collisionChecker)
         robot = env.GetRobots()[0]
         #Create a "shortcut" function to translate joint names to indices

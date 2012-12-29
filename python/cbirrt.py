@@ -48,6 +48,7 @@ class Cbirrt:
         self.jointgoals=[]
         self.jointstarts=[]
         self.solved=False
+        self.exactsupport=False
     
     def insertTSRChain(self,chain):
         #TODO: Is it better to pass in by reference to make it easy to change?
@@ -69,9 +70,11 @@ class Cbirrt:
             cmd=cmd+' psample {}'.format(self.psample)
         if len(self.supportlinks)>0:    
             cmd=cmd+' supportlinks {} {}'.format(len(self.supportlinks),' '.join(self.supportlinks))
+            cmd=cmd+' exactsupport {}'.format(self.exactsupport)
         
         #print cmd
         return cmd
+
     def run(self):
         stat = self.problem.SendCommand(self.Serialize())
         if stat == '1':
