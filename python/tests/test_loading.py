@@ -78,8 +78,8 @@ def model_test_factory(filename=None):
 
 if __name__=='__main__':
 
-    test1=model_test_factory('huboplus/huboplus.robot.xml')
-    test2=model_test_factory('hubo2/hubo2.robot.xml')
-    test3=model_test_factory('huboplus/rlhuboplus.robot.xml')
-    test4=model_test_factory('hubo2/rlhubo2.robot.xml')
+    test1=model_test_factory('huboplus.robot.xml')
+    test2=model_test_factory('hubo2.robot.xml')
+    test3=model_test_factory('rlhuboplus.robot.xml')
+    test4=model_test_factory('rlhubo2.robot.xml')
     unittest.main(verbosity=2,testRunner=unittest.TextTestRunner())
