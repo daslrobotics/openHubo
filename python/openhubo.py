@@ -59,7 +59,7 @@ def load_simplefloor(env):
         controller.SetDesired(pose)
     return (robot,controller,ind)
 
-def load_rlhuboplus(env,stop=False):
+def load_rlhuboplus(env,scenename=None,stop=False):
     """ Load the rlhuboplus model into the given environment, configuring a
     servocontroller and a reference robot to show desired movements vs. actual
     pose. The returned tuple contains the robots, controller, and a
@@ -70,6 +70,9 @@ def load_rlhuboplus(env,stop=False):
     with env:
         if stop:
             env.StopSimulation()
+
+        if not(scenename==None):
+            env.Load(scenename)
         env.Load('rlhuboplus.robot.xml')
         robot = env.GetRobots()[0]
         collisionChecker = rave.RaveCreateCollisionChecker(env,'pqp')
@@ -87,12 +90,13 @@ def load_rlhuboplus(env,stop=False):
         ref_robot.Enable(False)
         ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
         controller.SendCommand("set visrobot rlhuboplus_ref")
-        ind=openhubo.makeNameToIndexConverter(robot)
+        ind=makeNameToIndexConverter(robot)
 
         for l in ref_robot.GetLinks():
             for g in l.GetGeometries():
-                g.SetDiffuseColor([.7,.7,0])
+                g.SetDiffuseColor([.8,.8,.5])
                 g.SetTransparency(.5)
+
     return (robot,controller,ind,ref_robot)
 
 def hubo2_left_palm():

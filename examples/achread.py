@@ -72,10 +72,10 @@ if __name__=='__main__':
 
     for l in ref_robot.GetLinks():
         for g in l.GetGeometries():
-            g.SetDiffuseColor([.7,.7,0])
+            g.SetDiffuseColor([.5,1,.5])
             g.SetTransparency(.7)
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
 
-    print "tarting..."
+    print "Starting Simulation..."
     env.StartSimulation(timestep,True)
