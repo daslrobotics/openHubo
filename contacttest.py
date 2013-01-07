@@ -88,6 +88,7 @@ def setup_sensors(robot):
 if __name__=='__main__':
 
     env = Environment()
+    env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
     time.sleep(.25)
 
