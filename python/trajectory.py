@@ -4,6 +4,7 @@ from servo import *
 from numpy import pi
 import re
 import openhubo 
+import hubo_ach
 from TransformMatrix import *
 from rodrigues import *
 
@@ -77,7 +78,7 @@ def read_youngbum_traj(filename,robot,dt=.01,scale=1.0,retime=True):
 
     return traj
 
-def write_youngbum_traj(traj,robot,dt,dofs,filename='exported.traj'):
+def write_youngbum_traj(traj,robot,dt,dofs,filename='exported.traj',achformat=False):
     """ Create a text trajectory in youngbum's style, assuming no offsets or
     scaling, and openHubo default sign convention.
     """
@@ -92,7 +93,11 @@ def write_youngbum_traj(traj,robot,dt,dofs,filename='exported.traj'):
     offsetlist=[]
 
     for d in dofs:
-        namelist.append(robot.GetJointFromDOFIndex(d).GetName())
+        name=robot.GetJointFromDOFIndex(d).GetName()
+        if achformat:
+            namelist.append(hubo_ach.get_achname_from_name(name))
+        else:
+            namelist.append(name)
         #TODO make this an argument?
         signlist.append('+')
         offsetlist.append(0.0)

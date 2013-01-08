@@ -3,7 +3,7 @@ import openravepy as rave
 
 jointmap={"RHY":26, "RHR":27, "RHP":28, "RKN":29, "RAP":30, "RAR":31, "LHY":19, "LHR":20, "LHP":21, "LKN":22, "LAP":23, "LAR":24, "RSP":11, "RSR":12, "RSY":13, "REB":14, "RWY":15, "RWR":16, "RWP":17, "LSP":4, "LSR":5, "LSY":6, "LEB":7, "LWY":8, "LWR":9, "LWP":10, "NKY":1, "NK1":2, "NK2":3, "WST":0, "RF1":32, "RF2":33, "RF3":34, "RF4":35, "RF5":36, "LF1":37, "LF2":38, "LF3":39, "LF4":40, "LF5":41}
 
-def get_achname_from_name(robot,inname):
+def get_achname_from_name(inname):
     name=inname.encode('ASCII')
     #Cheat a little since names are roman characters
     if (name == "LKP" or name == "RKP"): 
@@ -66,7 +66,7 @@ def build_joint_index_map(robot):
     for j in robot.GetJoints():
         name=j.GetName()
         print name
-        achname=get_achname_from_name(robot,name)
+        achname=get_achname_from_name(name)
         print achname
         if achname:
             jointlist[j.GetDOFIndex()]=jointmap[achname]
