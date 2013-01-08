@@ -8,6 +8,7 @@ import sys
 import time
 from copy import copy
 import openhubo
+from trajectory import *
 #TODO: Work with the concept of activeDOF?
 
 def createTrajectory(robot):
