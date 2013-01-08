@@ -35,37 +35,38 @@ def translate_body(body,t):
     with env:
         body.SetTransform(T)
 
-def sinusoidal_rock1(robot,jointname,A,f,periods):
+def sinusoidal_rock(robot,A,f,periods,joint1,joint2=None,phase=0.0):
     omega=f*2*pi
     env=robot.GetEnv()
-    LFz=[]
-    RFz=[]
-    LMx=[]
-    RMx=[]
-    LMy=[]
-    RMy=[]
     pose=robot.GetDOFValues()
-    t=arange(0,2*pi/omega*periods,DT)
-    angle=A*(sin(omega*t))
+    tvec=arange(0,2*pi/omega*periods,DT)
+    angle1=A*(sin(omega*tvec))
+    if joint2:
+        angle2=A*(sin(omega*tvec + phase))
+    N=len(tvec)
+    sensordata=array(zeros((6,N)))
     #Step simulation forward allow settling
     for k in range(int(2.0/DT)):
         env.StepSimulation(DT)
-    for k in angle:
-        pose[robot.GetJoint(jointname).GetDOFIndex()]=k
+    for k in range(len(tvec)):
+        pose[robot.GetJoint(joint1).GetDOFIndex()]=angle1[k]
+        if joint2:
+            pose[robot.GetJoint(joint2).GetDOFIndex()]=angle2[k]
         robot.GetController().SetDesired(pose)
         env.StepSimulation(DT)
         force1=robot.GetAttachedSensor('leftFootFT').GetSensor().GetSensorData().force
         force2=robot.GetAttachedSensor('rightFootFT').GetSensor().GetSensorData().force
         torque1=robot.GetAttachedSensor('leftFootFT').GetSensor().GetSensorData().torque
         torque2=robot.GetAttachedSensor('rightFootFT').GetSensor().GetSensorData().torque
-        LFz.append(force1[-1])
-        RFz.append(force2[-1])
-        LMx.append(torque1[0])
-        RMx.append(torque2[0])
-        LMy.append(torque1[1])
-        RMy.append(torque2[1])
-    data=[LMx,LMy,LFz,RMx,RMy,RFz]
-    return data
+
+        #Store data in array order LMx,LMy,LFz,RMx,RMy,RFz
+        sensordata[0,k]=torque1[0]
+        sensordata[1,k]=torque1[1] 
+        sensordata[2,k]=force1[-1]
+        sensordata[3,k]=torque1[0]
+        sensordata[4,k]=torque1[1] 
+        sensordata[5,k]=force2[-1]
+    return sensordata
 
 def setup_sensors(robot):
     RFT=robot.GetAttachedSensor('rightFootFT').GetSensor()
@@ -85,6 +86,25 @@ def setup_sensors(robot):
     time.sleep(.1)
     robot.GetEnv().StopSimulation()
 
+def export_hubo_traj(robot,A,f,periods,joint1,joint2=None,phase=0.0):
+    
+    omega=f*2*pi
+    env=robot.GetEnv()
+    pose=robot.GetDOFValues()
+    tvec=arange(0,2*pi/omega*periods,DT)
+    angle1=A*(sin(omega*tvec))
+    if joint2:
+        angle2=A*(sin(omega*tvec + phase))
+    N=len(tvec)
+    sensordata=array(zeros((6,N)))
+    #Step simulation forward allow settling
+    for k in range(len(tvec)):
+        pose[robot.GetJoint(joint1).GetDOFIndex()]=angle1[k]
+        if joint2:
+            pose[robot.GetJoint(joint2).GetDOFIndex()]=angle2[k]
+
+    #TODO export to a file following the hubo-read-trajectory format, or write an ach-output for the "youngbum" format
+
 if __name__=='__main__':
 
     env = Environment()
@@ -96,13 +116,13 @@ if __name__=='__main__':
     plate=env.GetKinBody('plate')
     translate_body(plate,[0,.5,0])
     setup_sensors(robot)
-    data=sinusoidal_rock1(robot,'LAR',.03,.5,2)
+    data=sinusoidal_rock(robot,.03,.5,2,'LAP','LAR',pi/2)
 
-    lcop_x=-array(data[1])/minimum(array(data[2]),1)
-    lcop_y=-array(data[0])/minimum(array(data[2]),1)
+    lcop_x=-data[1,:]/minimum(data[2,:],1)
+    lcop_y=-data[0,:]/minimum(data[2,:],1)
    
-    rcop_x=-array(data[4])/minimum(array(data[5]),1)
-    rcop_y=-array(data[3])/minimum(array(data[5]),1)
+    rcop_x=-data[4,:]/minimum(data[5,:],1)
+    rcop_y=-data[3,:]/minimum(data[5,:],1)
 
     plt.plot(lcop_x,lcop_y,'+',rcop_x,rcop_y,'.')
     plt.show()
