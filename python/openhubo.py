@@ -80,22 +80,28 @@ def load_rlhuboplus(env,scenename=None,stop=False):
             collisionChecker = rave.RaveCreateCollisionChecker(env,'ode')
             print 'Note: Using ODE collision checker since PQP is not available'
         env.SetCollisionChecker(collisionChecker)
-        controller=rave.RaveCreateController(env,'servocontroller')
-
-        robot.SetController(controller)
-        controller.SendCommand('setgains 100 0 16')
+        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine':
+            controller=rave.RaveCreateController(env,'servocontroller')
+            robot.SetController(controller)
+            controller.SendCommand('setgains 100 0 16')
+        else:
+            controller=None
         
-        env.Load('rlhuboplus.ref.robot.xml')
-        ref_robot=env.GetRobot('rlhuboplus_ref')
-        ref_robot.Enable(False)
-        ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
-        controller.SendCommand("set visrobot rlhuboplus_ref")
+        if controller:
+            env.Load('rlhuboplus.ref.robot.xml')
+            ref_robot=env.GetRobot('rlhuboplus_ref')
+            ref_robot.Enable(False)
+            ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
+            controller.SendCommand("set visrobot rlhuboplus_ref")
+            for l in ref_robot.GetLinks():
+                for g in l.GetGeometries():
+                    g.SetDiffuseColor([.8,.8,.5])
+                    g.SetTransparency(.5)
+        else:
+            ref_robot=None
+
         ind=makeNameToIndexConverter(robot)
 
-        for l in ref_robot.GetLinks():
-            for g in l.GetGeometries():
-                g.SetDiffuseColor([.8,.8,.5])
-                g.SetTransparency(.5)
 
     return (robot,controller,ind,ref_robot)
 
