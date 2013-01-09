@@ -32,7 +32,7 @@ def translate_body(body,t):
     T[0,3]+=t[0]
     T[1,3]+=t[1]
     T[2,3]+=t[2]
-    print T
+    #print T
     env=body.GetEnv()
     with env:
         body.SetTransform(T)
@@ -48,8 +48,15 @@ def sinusoidal_rock(robot,A,f,periods,joint1,joint2=None,phase=0.0):
     N=len(tvec)
     sensordata=array(zeros((6,N)))
     #Step simulation forward allow settling
-    for k in range(int(2.0/DT)):
+    initsteps=int(2.0/DT)
+    for k in range(initsteps):
+        #SLowly shift to initial pose over startup time to reduce wobbles due to phase shift
+        pose[robot.GetJoint(joint1).GetDOFIndex()]=angle1[0]*float(k)/initsteps
+        if joint2:
+            pose[robot.GetJoint(joint2).GetDOFIndex()]=angle2[0]*float(k)/initsteps
+        robot.GetController().SetDesired(pose)
         env.StepSimulation(DT)
+
     for k in range(len(tvec)):
         pose[robot.GetJoint(joint1).GetDOFIndex()]=angle1[k]
         if joint2:
@@ -72,9 +79,9 @@ def sinusoidal_rock(robot,A,f,periods,joint1,joint2=None,phase=0.0):
 
 def setup_sensors(robot):
     RFT=robot.GetAttachedSensor('rightFootFT').GetSensor()
-    print RFT.Configure(Sensor.ConfigureCommand.PowerOff)
+    #print RFT.Configure(Sensor.ConfigureCommand.PowerOff)
     time.sleep(.1)
-    print RFT.SendCommand('histlen 100 ')>0
+    #print RFT.SendCommand('histlen 100 ')>0
     time.sleep(.1)
     RFT.Configure(Sensor.ConfigureCommand.PowerOn)
     time.sleep(.1)
@@ -82,7 +89,7 @@ def setup_sensors(robot):
     LFT=robot.GetAttachedSensor('leftFootFT').GetSensor()
     time.sleep(.1)
     LFT.Configure(Sensor.ConfigureCommand.PowerOff)
-    print LFT.SendCommand('histlen 100 ')
+    #print LFT.SendCommand('histlen 100 ')
     time.sleep(.1)
     LFT.Configure(Sensor.ConfigureCommand.PowerOn)
     time.sleep(.1)
@@ -107,19 +114,20 @@ def export_hubo_traj(robot,A,f,periods,joint1,joint2=None,phase=0.0):
 
     #TODO export to a file following the hubo-read-trajectory format, or write an ach-output for the "youngbum" format
 
-if __name__=='__main__':
+def run_experiment(tag,translation,params,Fzmin=-50.0,viewer=False):
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    if viewer:
+        env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
     time.sleep(.25)
 
     [robot,ctrl,ind,ref]=openhubo.load_rlhuboplus(env,'footcontact.env.xml',True)
     plate=env.GetKinBody('plate')
 
-    translate_body(plate,[.5,.5,0])
+    translate_body(plate,translation)
     setup_sensors(robot)
-    [data,params]=sinusoidal_rock(robot,pi/100.0,.2,1,'LAP','LAR',pi/2.0)
+    [data,params]=sinusoidal_rock(robot,*params)
 
     lcop_x=[]
     lcop_y=[]
@@ -128,19 +136,45 @@ if __name__=='__main__':
 
     for k in range(size(data,1)):
         #Arbitrary cutoff to reject light contact...this could be augmented with sensor data, knowing overall body accelerations etc. 
-        if data[2,k]<-50.0:
+        if data[2,k]<Fzmin:
             lcop_x.append(-data[1,k]/data[2,k])
             lcop_y.append(-data[0,k]/data[2,k])
-        if data[5,k]<-50.0:
+        if data[5,k]<Fzmin:
             rcop_x.append(-data[4,k]/data[5,k])
             rcop_y.append(-data[3,k]/data[5,k])
 
-    tagname='debug'
-    filename="contact_{}_{}.pickle".format(tagname,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-    #TODO test if unpickling works
-    with open(filename,'w') as f:
-        pickle.dump([data,params,lcop_x,lcop_y,rcop_x,rcop_y],f) 
+    filename="contact_{}_{}.pickle".format(tag,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
 
-    plt.plot(lcop_x,lcop_y,'+',rcop_x,rcop_y,'.')
-    print "plot ready..."
-    #Change the pose to lift the elbows and resend
+    with open(filename,'w') as f:
+        pickle.dump([data,params,lcop_x,lcop_y,rcop_x,rcop_y,translation],f) 
+
+    env.Destroy()
+
+def load_and_plot(filename):
+
+    with open(filename,'r') as f:
+        data=pickle.load(f) 
+    print data[1],data[6]
+    plt.plot(data[2],data[3],'+',data[4],data[5],'.')
+    return data
+
+if __name__=='__main__':
+    #Make some assumptions about file
+    if len(sys.argv)>1:
+        import fnmatch
+        import os
+        for f in os.listdir('.'):
+            print f
+            if fnmatch.fnmatch(f, sys.argv[1]):
+                load_and_plot(f)
+                plt.show()
+    #for x in arange(.3,-.1,-.05):
+        #run_experiment('rightfoot_x',[x,.5,0],(pi/80.0,.1,3,'RAR','RAP',pi/2.0))
+
+    #for y in arange(.5,.2,-.05):
+        #run_experiment('rightfoot_x',[.2,y,0],(pi/80.0,.1,3,'RAR','RAP',pi/2.0))
+
+    else:
+        run_experiment('debug_rightfoot',[.1,.5,0],(pi/80.0,.1,3,'RAR','RAP',pi/2.0),-50.0,True)
+        
+       
