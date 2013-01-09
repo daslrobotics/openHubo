@@ -1299,6 +1299,7 @@
 
     <!-- Body_RSR -->
     <adjacent>Body_RSR Body_RSY</adjacent>
+    <adjacent>Body_RSP Body_RSY</adjacent>
 
     <!-- Body_REP -->
     <adjacent>Body_REP Body_RSY</adjacent>
@@ -1315,6 +1316,7 @@
 
     <!-- Body_LSR -->
     <adjacent>Body_LSR Body_LSY</adjacent>
+    <adjacent>Body_LSP Body_LSY</adjacent>
 
     <!-- Body_LEP -->
     <adjacent>Body_LEP Body_LSY</adjacent>

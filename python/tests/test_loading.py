@@ -60,11 +60,11 @@ def model_test_factory(filename=None):
 
             self.env.StartSimulation(timestep=0.001)
             initialPose=self.robot.GetDOFValues()
-            time.sleep(2)
+            time.sleep(5)
             finalPose=self.robot.GetDOFValues()
             err=sqrt(sum(pow(initialPose-finalPose,2)))
             #Somewhat arbitrary tolerance here
-            self.assertLess(err,0.001)
+            self.assertLess(err,0.0001)
 
         def test_zeroheight(self):
             """Make sure that the robot is correctly positioned so that it's
@@ -79,7 +79,9 @@ def model_test_factory(filename=None):
 if __name__=='__main__':
 
     test1=model_test_factory('huboplus.robot.xml')
-    test2=model_test_factory('hubo2.robot.xml')
-    test3=model_test_factory('rlhuboplus.robot.xml')
-    test4=model_test_factory('rlhubo2.robot.xml')
+    test2=model_test_factory('rlhuboplus.robot.xml')
+    test3=model_test_factory('rlhuboplus.noshell.robot.xml')
+    test4=model_test_factory('rlhuboplus.fingerless.robot.xml')
+    test5=model_test_factory('hubo2.robot.xml')
+    test6=model_test_factory('rlhubo2.robot.xml')
     unittest.main(verbosity=2,testRunner=unittest.TextTestRunner())
