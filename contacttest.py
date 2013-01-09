@@ -22,6 +22,8 @@ import time
 import sys
 from servo import *
 import openhubo 
+import pickle
+import datetime
 
 DT=0.0005
 
@@ -66,13 +68,13 @@ def sinusoidal_rock(robot,A,f,periods,joint1,joint2=None,phase=0.0):
         sensordata[3,k]=torque1[0]
         sensordata[4,k]=torque1[1] 
         sensordata[5,k]=force2[-1]
-    return sensordata
+    return [sensordata,(A,f,periods,joint1,joint2,phase)]
 
 def setup_sensors(robot):
     RFT=robot.GetAttachedSensor('rightFootFT').GetSensor()
     print RFT.Configure(Sensor.ConfigureCommand.PowerOff)
     time.sleep(.1)
-    print RFT.SendCommand('histlen 200 ')>0
+    print RFT.SendCommand('histlen 100 ')>0
     time.sleep(.1)
     RFT.Configure(Sensor.ConfigureCommand.PowerOn)
     time.sleep(.1)
@@ -80,7 +82,7 @@ def setup_sensors(robot):
     LFT=robot.GetAttachedSensor('leftFootFT').GetSensor()
     time.sleep(.1)
     LFT.Configure(Sensor.ConfigureCommand.PowerOff)
-    print LFT.SendCommand('histlen 200 ')
+    print LFT.SendCommand('histlen 100 ')
     time.sleep(.1)
     LFT.Configure(Sensor.ConfigureCommand.PowerOn)
     time.sleep(.1)
@@ -114,16 +116,31 @@ if __name__=='__main__':
 
     [robot,ctrl,ind,ref]=openhubo.load_rlhuboplus(env,'footcontact.env.xml',True)
     plate=env.GetKinBody('plate')
-    translate_body(plate,[0,.5,0])
-    setup_sensors(robot)
-    data=sinusoidal_rock(robot,.03,.5,2,'LAP','LAR',pi/2)
 
-    lcop_x=-data[1,:]/minimum(data[2,:],1)
-    lcop_y=-data[0,:]/minimum(data[2,:],1)
-   
-    rcop_x=-data[4,:]/minimum(data[5,:],1)
-    rcop_y=-data[3,:]/minimum(data[5,:],1)
+    translate_body(plate,[.5,.5,0])
+    setup_sensors(robot)
+    [data,params]=sinusoidal_rock(robot,pi/100.0,.2,1,'LAP','LAR',pi/2.0)
+
+    lcop_x=[]
+    lcop_y=[]
+    rcop_x=[]
+    rcop_y=[]
+
+    for k in range(size(data,1)):
+        #Arbitrary cutoff to reject light contact...this could be augmented with sensor data, knowing overall body accelerations etc. 
+        if data[2,k]<-50.0:
+            lcop_x.append(-data[1,k]/data[2,k])
+            lcop_y.append(-data[0,k]/data[2,k])
+        if data[5,k]<-50.0:
+            rcop_x.append(-data[4,k]/data[5,k])
+            rcop_y.append(-data[3,k]/data[5,k])
+
+    tagname='debug'
+    filename="contact_{}_{}.pickle".format(tagname,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+    #TODO test if unpickling works
+    with open(filename,'w') as f:
+        pickle.dump([data,params,lcop_x,lcop_y,rcop_x,rcop_y],f) 
 
     plt.plot(lcop_x,lcop_y,'+',rcop_x,rcop_y,'.')
-    plt.show()
+    print "plot ready..."
     #Change the pose to lift the elbows and resend
