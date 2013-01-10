@@ -4,6 +4,7 @@ from servo import *
 from numpy import pi
 import re
 import openhubo 
+import hubo_ach
 from TransformMatrix import *
 from rodrigues import *
 
@@ -76,6 +77,46 @@ def read_youngbum_traj(filename,robot,dt=.01,scale=1.0,retime=True):
         planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
     return traj
+
+def write_youngbum_traj(traj,robot,dt,dofs,filename='exported.traj',achformat=False):
+    """ Create a text trajectory in youngbum's style, assuming no offsets or
+    scaling, and openHubo default sign convention.
+    """
+    config=robot.GetConfigurationSpecification()
+    ind=openhubo.makeNameToIndexConverter(robot)
+
+    f=open(filename,'w')
+
+    namelist=[]
+    signlist=[]
+    scalelist=[]
+    offsetlist=[]
+
+    for d in dofs:
+        name=robot.GetJointFromDOFIndex(d).GetName()
+        if achformat:
+            namelist.append(hubo_ach.get_achname_from_name(name))
+        else:
+            namelist.append(name)
+        #TODO make this an argument?
+        signlist.append('+')
+        offsetlist.append(0.0)
+        scalelist.append(1.0)
+
+    #Find overall trajectory properties
+    T=traj.GetDuration()
+    steps=int(T/dt)
+    
+    with  open(filename,'w') as f:
+        f.write(' '.join(namelist)+'\n')
+        f.write(' '.join(signlist)+'\n')
+        f.write(' '.join(['{}'.format(x) for x in offsetlist])+'\n')
+        f.write(' '.join(['{}'.format(x) for x in scalelist])+'\n')
+
+        for t in arange(0,T,dt):
+            waypt=traj.Sample(t)
+            vals=config.ExtractJointValues(waypt,robot,dofs)
+            f.write(' '.join(['{}'.format(x) for x in vals])+'\n')
 
 def read_text_traj(filename,robot,dt=.01,scale=1.0):
     """ Read in trajectory data stored in Youngbum's format (100Hz data):

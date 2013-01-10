@@ -82,6 +82,8 @@ if __name__=='__main__':
         data=traj.Sample(float(k)/10)
         print data[ind('LKP')]
     
+    write_youngbum_traj(traj,robot,0.005,range(28),'test2.traj',True)
+
     controller.SetPath(traj)
     controller.SendCommand('start')
     while not(controller.IsDone()):
