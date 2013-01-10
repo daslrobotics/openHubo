@@ -75,19 +75,18 @@ def load_rlhuboplus(env,scenename=None,stop=False):
             env.Load(scenename)
         env.Load('rlhuboplus.robot.xml')
         robot = env.GetRobots()[0]
+        robot.SetDOFValues(zeros(robot.GetDOF()))
         collisionChecker = rave.RaveCreateCollisionChecker(env,'pqp')
         if collisionChecker==None:
             collisionChecker = rave.RaveCreateCollisionChecker(env,'ode')
             print 'Note: Using ODE collision checker since PQP is not available'
         env.SetCollisionChecker(collisionChecker)
+
         if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine':
             controller=rave.RaveCreateController(env,'servocontroller')
-            robot.SetController(controller)
             controller.SendCommand('setgains 100 0 16')
-        else:
-            controller=None
-        
-        if controller:
+
+            #Load ref robot and colorize
             env.Load('rlhuboplus.ref.robot.xml')
             ref_robot=env.GetRobot('rlhuboplus_ref')
             ref_robot.Enable(False)
@@ -98,10 +97,13 @@ def load_rlhuboplus(env,scenename=None,stop=False):
                     g.SetDiffuseColor([.8,.8,.5])
                     g.SetTransparency(.5)
         else:
+            #Just load ideal controller if physics engine is not present
+            controller=rave.RaveCreateController(env,'idealcontroller')
             ref_robot=None
 
-        ind=makeNameToIndexConverter(robot)
+        robot.SetController(controller)
 
+        ind=makeNameToIndexConverter(robot)
 
     return (robot,controller,ind,ref_robot)
 
