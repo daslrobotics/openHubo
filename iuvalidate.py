@@ -113,7 +113,7 @@ if __name__=='__main__':
         file_env = sys.argv[1]
     except IndexError:
         #file_env = 'scenes/ladderclimb.env.xml'
-        file_env = 'scenes/simpleFloor_nophy.env.xml'
+        file_env = 'ladder.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
