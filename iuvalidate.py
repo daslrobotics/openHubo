@@ -119,8 +119,7 @@ if __name__=='__main__':
     env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
 
-    [robot,ctrl,ind,ref]=openhubo.load(env,'huboplus.robot.xml',file_env,True)
-    env.StartSimulation(timestep=0.0005)
+    [robot,ctrl,ind,ref]=openhubo.load(env,'rlhuboplus.robot.xml',file_env,True)
     
     #TODO: get rid of hand tweaks by processing initial location?
     T0=robot.GetTransform()
@@ -129,13 +128,14 @@ if __name__=='__main__':
     T1[0:3,3]=array([0.0,.934,.002]).T
 
     T=array(mat(T0)*mat(T1))
+    robot.SetTransform(T)
     
     joint_offsets[ind('RSR')]=pi/12
     joint_offsets[ind('LSR')]=-pi/12
 
     #Read the file to obtain time steps and the total time
 
-    base = [0,0,0,0,0,0]
+    env.StartSimulation(timestep=0.0005)
     theta=zeros(number_of_degrees)
     velocity=zeros(number_of_degrees)
     load_mapping(robot,"iumapping.txt")

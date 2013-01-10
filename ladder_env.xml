@@ -1,7 +1,7 @@
 <Environment>
-<camtrans>2.426428 2.871531 2.031415</camtrans>
-<camrotationaxis>-0.324948 -0.771420 0.547101 156.143296</camrotationaxis>
-<camfocal>3.155074</camfocal>
+    <camtrans>2.426428 2.871531 2.031415</camtrans>
+    <camrotationaxis>-0.324948 -0.771420 0.547101 156.143296</camrotationaxis>
+    <camfocal>3.155074</camfocal>
     <!-- set the background color of the environment-->
     <bkgndcolor>0.0 0.0 0.</bkgndcolor>
 
@@ -39,5 +39,16 @@
             </Geom>
         </Body>
     </KinBody>
+
+    <physicsengine type="ode">
+        <odeproperties>
+            <friction>1</friction>
+            <gravity>0 0 -9.8</gravity>
+            <selfcollision>1</selfcollision>
+            <erp>.5</erp>
+            <cfm>.00001</cfm>
+            <dcontactapprox>1</dcontactapprox>
+        </odeproperties>
+    </physicsengine>
 
 </Environment>

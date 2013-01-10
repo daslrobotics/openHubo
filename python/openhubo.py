@@ -84,6 +84,7 @@ def load(env,robotname,scenename=None,stop=False):
 
         if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine':
             controller=rave.RaveCreateController(env,'servocontroller')
+            robot.SetController(controller)
             controller.SendCommand('setgains 100 0 16')
 
             #Load ref robot and colorize
@@ -100,8 +101,8 @@ def load(env,robotname,scenename=None,stop=False):
             #Just load ideal controller if physics engine is not present
             controller=rave.RaveCreateController(env,'idealcontroller')
             ref_robot=None
+            robot.SetController(controller)
 
-        robot.SetController(controller)
 
         ind=makeNameToIndexConverter(robot)
 
