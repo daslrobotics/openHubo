@@ -59,6 +59,54 @@ def load_simplefloor(env):
         controller.SetDesired(pose)
     return (robot,controller,ind)
 
+def load(env,robotname,scenename=None,stop=False):
+    """ Load the rlhuboplus model into the given environment, configuring a
+    servocontroller and a reference robot to show desired movements vs. actual
+    pose. The returned tuple contains the robots, controller, and a
+    name-to-joint-index converter.
+    """
+
+    # Set the robot controller and start the simulation
+    with env:
+        if stop:
+            env.StopSimulation()
+
+        if not(scenename==None):
+            env.Load(scenename)
+        env.Load(robotname)
+        robot = env.GetRobots()[0]
+        robot.SetDOFValues(zeros(robot.GetDOF()))
+        collisionChecker = rave.RaveCreateCollisionChecker(env,'pqp')
+        if collisionChecker==None:
+            collisionChecker = rave.RaveCreateCollisionChecker(env,'ode')
+            print 'Note: Using ODE collision checker since PQP is not available'
+        env.SetCollisionChecker(collisionChecker)
+
+        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine':
+            controller=rave.RaveCreateController(env,'servocontroller')
+            controller.SendCommand('setgains 100 0 16')
+
+            #Load ref robot and colorize
+            env.Load('rlhuboplus.ref.robot.xml')
+            ref_robot=env.GetRobot('rlhuboplus_ref')
+            ref_robot.Enable(False)
+            ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
+            controller.SendCommand("set visrobot rlhuboplus_ref")
+            for l in ref_robot.GetLinks():
+                for g in l.GetGeometries():
+                    g.SetDiffuseColor([.8,.8,.5])
+                    g.SetTransparency(.5)
+        else:
+            #Just load ideal controller if physics engine is not present
+            controller=rave.RaveCreateController(env,'idealcontroller')
+            ref_robot=None
+
+        robot.SetController(controller)
+
+        ind=makeNameToIndexConverter(robot)
+
+    return (robot,controller,ind,ref_robot)
+
 def load_rlhuboplus(env,scenename=None,stop=False):
     """ Load the rlhuboplus model into the given environment, configuring a
     servocontroller and a reference robot to show desired movements vs. actual

@@ -15,7 +15,7 @@ joint_signs=ones(number_of_degrees)
 #Default the map to -1 for a missing index
 jointmap=-ones(number_of_degrees,dtype=int)
 
-def load_iu_mapping(robot,filename):
+def load_mapping(robot,filename):
     #Ugly use of globals
     with open(filename,'r') as f:
         line=f.readline() #Strip header
@@ -84,17 +84,28 @@ def load_iu_traj(filename):
     #Convert to neat numpy array
     return [array(dataset),timestep,total_time,number_of_steps]
 
+def format_angles(data):
+    newdata=zeros(size(data))
+    for k in range(len(data)):
+        if data[k]>pi:
+            newdata[k]=2*pi-data[k]
+        else:
+            newdata[k]=data[k]
+    return newdata
+
 def play_traj(robot,dataset,T0,timestep):
     for k in range(size(dataset,0)):
         Tc=eye(4)
         #use rodrigues function to build RPY rotation matrix
-        Tc[0:3,0:3]=rodrigues(dataset[k,3:6])
+        Tc[0:3,0:3]=rodrigues(format_angles(dataset[k,3:6]))
+        
         #grab translation from base 
         Tc[0:3,3]=dataset[k,0:3]
-        pose=dataset[k,jointmap+6]*joint_signs
+        print Tc
+        pose=dataset[k,jointmap+6]*joint_signs+joint_offsets
         #Note this method does not use a controller
-        robot.SetTransform(T0) #account for initial offset
-        robot.SetDOFValues(pose.T)
+        T=array(mat(T0)*mat(Tc))
+        robot.GetController().SetDesired(pose.T,T) #account for initial offset
         time.sleep(timestep)
 
 if __name__=='__main__':
@@ -108,21 +119,25 @@ if __name__=='__main__':
     env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
 
-    [robot,ctrl,ind,ref]=openhubo.load_rlhuboplus(env,file_env,True)
-    #env.StartSimulation(timestep=0.0005)
+    [robot,ctrl,ind,ref]=openhubo.load(env,'huboplus.robot.xml',file_env,True)
+    env.StartSimulation(timestep=0.0005)
     
     #TODO: get rid of hand tweaks by processing initial location?
-    T0=eye(4)
-    T0[0:3,0:3]=rodrigues([0,0,-pi/2])
-    T0[0:3,3]=array([0.0,.934,.002]).T
+    T0=robot.GetTransform()
+    T1=eye(4)
+    T1[0:3,0:3]=rodrigues([0,0,-pi/2])
+    T1[0:3,3]=array([0.0,.934,.002]).T
 
-    robot.SetTransform(T0)
+    T=array(mat(T0)*mat(T1))
+    
+    joint_offsets[ind('RSR')]=pi/12
+    joint_offsets[ind('LSR')]=-pi/12
 
     #Read the file to obtain time steps and the total time
 
     base = [0,0,0,0,0,0]
     theta=zeros(number_of_degrees)
     velocity=zeros(number_of_degrees)
-    load_iu_mapping(robot,"iumapping.txt")
+    load_mapping(robot,"iumapping.txt")
     [dataset,timestep,total_time,number_of_steps]=load_iu_traj("q_path.txt")
-    play_traj(robot,dataset,T0,timestep)
+    play_traj(robot,dataset,T,timestep)
