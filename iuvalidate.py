@@ -139,5 +139,5 @@ if __name__=='__main__':
     theta=zeros(number_of_degrees)
     velocity=zeros(number_of_degrees)
     load_mapping(robot,"iumapping.txt")
-    [dataset,timestep,total_time,number_of_steps]=load_iu_traj("q_path.txt")
+    [dataset,timestep,total_time,number_of_steps]=load_iu_traj('first_ladder_lean.iutraj')
     play_traj(robot,dataset,T,timestep)
