@@ -4,3 +4,6 @@ env.sh
 servodata*.txt
 *.mpg
 plugins
+qhullout.txt
+*.png
+*.jpg

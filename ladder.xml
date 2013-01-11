@@ -1,0 +1,135 @@
+<KinBody name="ladder">
+	    	<Body name="Base" type="static">
+	      		<Translation>0.0  0.0  0.0</Translation>
+
+ 			<!-- Left Vertical-->
+			<Geom type="box"> 
+   				<!-- extents of the box - half width, height, length-->
+      			<Extents>0.025 0.025 1.5 </Extents>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      			<Translation>-0.425 0 1.5 </Translation>
+        			<RotationAxis>1 0 0 0</RotationAxis>
+			</Geom>
+
+ 			<!-- Right Vertical-->
+			<Geom type="box"> 
+   				<!-- extents of the box - half width, height, length-->
+      			<Extents>0.025 0.025 1.5 </Extents>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      			<Translation>0.425 0 1.5 </Translation>
+        			<RotationAxis>1 0 0 0</RotationAxis>
+			</Geom>
+
+ 			<!-- 1th Step-->
+   			<Geom type="cylinder">
+				<radius>0.03</radius>
+				<height>0.850</height>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      				<Translation>0 0 0.30</Translation>
+        			<RotationAxis> 0 0 1 90</RotationAxis>
+    			</Geom>
+
+
+ 			<!-- 2th Step-->
+   			<Geom type="cylinder">
+				<radius>0.03</radius>
+				<height>0.850</height>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      				<Translation>0 0 0.60</Translation>
+        			<RotationAxis> 0 0 1 90</RotationAxis>
+    			</Geom>
+
+
+ 			<!-- 3th Step-->
+   			<Geom type="cylinder">
+				<radius>0.03</radius>
+				<height>0.850</height>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      				<Translation>0 0 0.90</Translation>
+        			<RotationAxis> 0 0 1 90</RotationAxis>
+    			</Geom>
+
+
+ 			<!-- 4th Step-->
+   			<Geom type="cylinder">
+				<radius>0.03</radius>
+				<height>0.850</height>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      				<Translation>0 0 1.20</Translation>
+        			<RotationAxis> 0 0 1 90</RotationAxis>
+    			</Geom>
+
+
+ 			<!-- 5th Step-->
+   			<Geom type="cylinder">
+				<radius>0.03</radius>
+				<height>0.850</height>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      				<Translation>0 0 1.50</Translation>
+        			<RotationAxis> 0 0 1 90</RotationAxis>
+    			</Geom>
+
+
+ 			<!-- 6th Step-->
+   			<Geom type="cylinder">
+				<radius>0.03</radius>
+				<height>0.850</height>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      				<Translation>0 0 1.80</Translation>
+        			<RotationAxis> 0 0 1 90</RotationAxis>
+    			</Geom>
+
+
+ 			<!-- 7th Step-->
+   			<Geom type="cylinder">
+				<radius>0.03</radius>
+				<height>0.850</height>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      				<Translation>0 0 2.10</Translation>
+        			<RotationAxis> 0 0 1 90</RotationAxis>
+    			</Geom>
+
+
+ 			<!-- 8th Step-->
+   			<Geom type="cylinder">
+				<radius>0.03</radius>
+				<height>0.850</height>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      				<Translation>0 0 2.40</Translation>
+        			<RotationAxis> 0 0 1 90</RotationAxis>
+    			</Geom>
+
+
+ 			<!-- 9th Step-->
+   			<Geom type="cylinder">
+				<radius>0.03</radius>
+				<height>0.850</height>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      				<Translation>0 0 2.70</Translation>
+        			<RotationAxis> 0 0 1 90</RotationAxis>
+    			</Geom>
+
+
+ 			<!-- 10th Step-->
+   			<Geom type="cylinder">
+				<radius>0.03</radius>
+				<height>0.850</height>
+			        <!-- set the translation and rotation of the box. Note that the transforamtions-->
+			        <!-- are all relative to the parent body.-->
+      				<Translation>0 0 3.00</Translation>
+        			<RotationAxis> 0 0 1 90</RotationAxis>
+    			</Geom>
+
+		</Body>
+</KinBody>

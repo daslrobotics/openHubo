@@ -8,6 +8,7 @@ from numpy.linalg import *
 import sys
 import openhubo
 from rodrigues import *
+import re
 
 number_of_degrees=57
 joint_offsets=zeros(number_of_degrees)
@@ -23,8 +24,8 @@ def load_mapping(robot,filename):
             #Strip known 6 dof base
             line=f.readline() 
         while line: 
-            datalist=line.rstrip().split('\t')
-            #print datalist
+            datalist=re.split(',| |\t',line.rstrip())
+            print datalist
             j=robot.GetJoint(datalist[1])
             if j:
                 dof=j.GetDOFIndex()
@@ -50,30 +51,31 @@ def load_iu_traj(filename):
             total_time=0
             #TODO: error?
         else:
-            total_time=float(line)
+            total_time=float(re.split(',| |\t',line)[0])
 
         #line 3 has the step size
         line = f.readline()
         if not line:
             print "Time Step is Missing"
         else:
-            timestep=float(line)
+            timestep=float(re.split(',| |\t',line)[0])            
             #print timestep
 
         if (total_time>0) & (timestep>0):
     	    number_of_steps = (int)(total_time/timestep)
         else:
             number_of_steps = 0
+        line = f.readline()
         dataset=[]
-        for c in range (1,number_of_steps+1):
-            line = f.readline()
+        while len(line)>0:
             if not line:
                 print "Configuration is Missing"
                 break
 
             #Split configuration into a list, throwing out endline characters and strip length
-            configlist=line.split(',')[:-1]
-            #print configlist
+            configlist=re.split(',| |\t',line)[:-1]
+            #print line
+            print configlist
             #Convert to float values for the current pose
             data=[float(x) for x in configlist[1:]]
             #print data
@@ -81,6 +83,7 @@ def load_iu_traj(filename):
                 print "Incorrect data formatting on line P{}".format(c)
 
             dataset.append(data)
+            line = f.readline()
     #Convert to neat numpy array
     return [array(dataset),timestep,total_time,number_of_steps]
 
@@ -101,7 +104,7 @@ def play_traj(robot,dataset,T0,timestep):
         
         #grab translation from base 
         Tc[0:3,3]=dataset[k,0:3]
-        print Tc
+        #print Tc
         pose=dataset[k,jointmap+6]*joint_signs+joint_offsets
         #Note this method does not use a controller
         T=array(mat(T0)*mat(Tc))
@@ -125,7 +128,9 @@ if __name__=='__main__':
     T0=robot.GetTransform()
     T1=eye(4)
     T1[0:3,0:3]=rodrigues([0,0,-pi/2])
-    T1[0:3,3]=array([0.0,.934,.002]).T
+    #T1[0:3,3]=array([0.0,.935,.002]).T
+    #For new traj
+    T1[0:3,3]=array([0.0,.875,.002]).T
 
     T=array(mat(T0)*mat(T1))
     robot.SetTransform(T)
@@ -139,5 +144,5 @@ if __name__=='__main__':
     theta=zeros(number_of_degrees)
     velocity=zeros(number_of_degrees)
     load_mapping(robot,"iumapping.txt")
-    [dataset,timestep,total_time,number_of_steps]=load_iu_traj('first_ladder_lean.iutraj')
+    [dataset,timestep,total_time,number_of_steps]=load_iu_traj('foot_on.iutraj')
     play_traj(robot,dataset,T,timestep)

@@ -5,7 +5,7 @@ from decimal import *
 #import tab
 #from numpy import *
 #from numpy.linalg import *
-#import sys
+import sys
 #from servo import *
 
 ## Ladder Format
@@ -23,9 +23,13 @@ from decimal import *
 #20			#ladder-rung-nface
 #0			#1-rect--0-cir-rung-cross-section
 #1			#1-rect--0-cir-stringer-cross-section
+try:
+    filename = sys.argv[1]
+except IndexError:
+    filename = 'firstladder.iuparam'
 
 # Read the file to obtain time steps and the total time
-file_read = open("parameters")
+file_read = open(filename)
 getcontext().prec = 5
 
 #line 1 
