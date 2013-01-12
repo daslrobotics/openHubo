@@ -2,7 +2,7 @@
 
 <Robot name="huboplus" >
     <KinBody file="huboplus/huboplus.kinbody.xml" makejoinedlinksadjacent="true">
-        <translation>0 0 1.05</translation>
+        <translation>0 0 1.0379</translation>
         <KinBody file="huboplus/lefthand.kinbody.xml" makejoinedlinksadjacent="true"/>
         <KinBody file="huboplus/righthand.kinbody.xml" makejoinedlinksadjacent="true"/>
     </KinBody>

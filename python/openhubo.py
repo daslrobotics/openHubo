@@ -2,6 +2,8 @@
 from numpy import pi,array
 import openravepy as rave
 from TransformMatrix import *
+import time
+from  recorder import viewerrecorder
 
 """ A collection of useful functions to run openhubo models.
 As common functions are developed, they will be added here.
@@ -60,13 +62,21 @@ def load_simplefloor(env):
     return (robot,controller,ind)
 
 def load(env,robotname,scenename=None,stop=False,physics=True):
-    """ Load the rlhuboplus model into the given environment, configuring a
-    servocontroller and a reference robot to show desired movements vs. actual
-    pose. The returned tuple contains the robots, controller, and a
-    name-to-joint-index converter.
+    """ Load a robot model into the given environment, configuring a
+    trajectorycontroller and a reference robot to show desired movements vs. actual
+    pose. The returned tuple contains:
+        robot: handle to the created robot
+        controller: either trajectorycontroller or idealcontroller depending on physics
+        name-to-joint-index converter
+        ref_robot: handle to visiualization "ghost" robot
+        recorder: video recorder python class for quick video dumps
     """
 
     # Set the robot controller and start the simulation
+    recorder=viewerrecorder(env)
+    #Default to "sim-timed video" i.e. plays back much faster
+    recorder.videoparams[0:2]=[1024,768]
+    recorder.realtime=False
 
     with env:
         if stop:
@@ -74,11 +84,14 @@ def load(env,robotname,scenename=None,stop=False,physics=True):
 
         if type(scenename) is list:
             for n in scenename:
-                env.Load(n)
+                loaded=env.Load(n)
         elif type(scenename) is str:
-            env.Load(scenename)
-        env.Load(robotname)
-        #Explicitly disable physics if option is selected
+            loaded=env.Load(scenename)
+
+        loaded=env.Load(robotname)
+    time.sleep(1)
+    #Explicitly disable physics if option is selected
+    with env:
         if not physics:
             env.SetPhysicsEngine(rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
         robot = env.GetRobots()[0]
@@ -92,7 +105,7 @@ def load(env,robotname,scenename=None,stop=False,physics=True):
         if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine' and physics:
             controller=rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
-            controller.SendCommand('set gains 50 0 8')
+            controller.SendCommand('set gains 100 0 8')
 
             #Load ref robot and colorize
             #TODO: Load the actual robot as a copy, then strip out extra junk there
@@ -113,11 +126,11 @@ def load(env,robotname,scenename=None,stop=False,physics=True):
             controller=rave.RaveCreateController(env,'idealcontroller')
             ref_robot=None
             robot.SetController(controller)
+    
+    time.sleep(.5)
+    ind=makeNameToIndexConverter(robot)
 
-
-        ind=makeNameToIndexConverter(robot)
-
-    return (robot,controller,ind,ref_robot)
+    return (robot,controller,ind,ref_robot,recorder)
 
 def load_rlhuboplus(env,scenename=None,stop=False):
     """ Load the rlhuboplus model into the given environment, configuring a

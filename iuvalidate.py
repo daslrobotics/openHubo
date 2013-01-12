@@ -12,6 +12,7 @@ import re
 from LadderGenerator import *
 import trajectory
 import debug
+from recorder import viewerrecorder
 
 number_of_degrees=57
 joint_offsets=zeros(number_of_degrees)
@@ -134,14 +135,6 @@ def get_transform(robot,T0,xyzrpy):
     Tc=eye(4)
     #use rodrigues function to build RPY rotation matrix
     Tc[0:3,0:3]=rodrigues(format_angles(xyzrpy[3:6]))
-    #psi_cal=xyzrpy[3]
-    #theta_cal=xyzrpy[4]
-    #phi_cal=xyzrpy[5]
-    #trans_mat=array([[cos(theta_cal)*cos(psi_cal)	,-cos(phi_cal)*sin(psi_cal)+sin(phi_cal)*sin(theta_cal)*cos(psi_cal),sin(phi_cal)*sin(psi_cal)+cos(phi_cal)*sin(theta_cal)*cos(psi_cal),xyzrpy[0]],	
-               #[cos(theta_cal)*sin(psi_cal)	,cos(phi_cal)*sin(psi_cal)+sin(phi_cal)*sin(theta_cal)*sin(psi_cal) ,-sin(phi_cal)*cos(psi_cal)+cos(phi_cal)*sin(theta_cal)*sin(psi_cal),xyzrpy[1]],			
-               #[-sin(theta_cal)		,sin(phi_cal)*cos(theta_cal),cos(phi_cal)*cos(theta_cal),xyzrpy[2]],			
-               #[	  0		,0,	0,	1]])
-    #grab translation from base 
     Tc[0:3,3]=xyzrpy[0:3]
     return array(mat(T0)*mat(Tc))
 
@@ -158,11 +151,22 @@ def make_robot_transform(robot):
     T1=eye(4)
     T1[0:3,0:3]=rodrigues([0,0,-pi/2])
     #From Jingru, shift back .32 from base
-    T1[0:3,3]=array([0.0,.21+T_rung_global[1,3],0.002]).T
+    T1[0:3,3]=array([0.0,.32+T_rung_global[1,3],0.002]).T
 
     T=array(mat(T0)*mat(T1))
     robot.SetTransform(T)
-    
+    return T
+   
+def play_traj(robot,dataset,timestep):
+    #Assume that robot is in initial position now
+    T0=robot.GetTransform()
+    for k in range(size(dataset,0)):
+        T=get_transform(robot,T0,dataset[k,0:6])
+        pose=dataset[k,jointmap+6]*joint_signs+joint_offsets
+        robot.SetTransform(T)
+        robot.SetDOFValues(pose.T)
+        time.sleep(timestep)
+
 if __name__=='__main__':
 
     try:
@@ -177,14 +181,17 @@ if __name__=='__main__':
         raise 
 
     #Assume that name has suffix of some sort!
+    # Try to keep parameters specified here
     laddername=make_ladder(file_param)
     envname=make_ladder_env(file_param)
+    physicson=True
 
     env = Environment()
     env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
-    
-    [robot,ctrl,ind,ref]=openhubo.load(env,'rlhuboplus.noshell.robot.xml',envname,True,True)
+   
+    # rlhuboplus models don't work with the affine transformations (i.e. use huboplus.robot.xml for ideal sim   
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,'rlhuboplus.noshell.robot.xml',envname,True,physicson)
     
     make_robot_transform(robot)
 
@@ -196,15 +203,31 @@ if __name__=='__main__':
     #Read the file to obtain time steps and the total time
 
     env.StartSimulation(timestep=0.0005)
-    theta=zeros(number_of_degrees)
-    velocity=zeros(number_of_degrees)
     load_mapping(robot,"iumapping.txt")
     [dataset,timestep,total_time,number_of_steps]=load_iu_traj(file_traj)
-    traj=build_openrave_traj(robot,dataset,.05,True)
-    ctrl.SetPath(traj)
-    time.sleep(0.5)
-    ctrl.SendCommand('start')
-    while not ctrl.IsDone():
-        time.sleep(.1)
-        handle=openhubo.plotProjectedCOG(robot)
+    timestep=0.05
+
+    if physicson:
+        recorder.filename='.'.join(laddername.split('.')[:-2])+'_physics.avi'
+        traj=build_openrave_traj(robot,dataset,timestep,True)
+        ctrl.SetPath(traj)
+        recorder.start()
+        ctrl.SendCommand('start')
+        while not ctrl.IsDone():
+            time.sleep(.05)
+            handle=openhubo.plotProjectedCOG(robot)
+            com=openhubo.find_com(robot)
+            if com[2]<.3:
+                #Robot fell over
+                ctrl.Reset()
+                break
+    else:
+        recorder.filename='.'.join(laddername.split('.')[:-2])+'_ideal.avi'
+        recorder.realtime=True
+        recorder.start()
+        play_traj(robot,dataset,timestep)
+
+    recorder.stop()
+        
+
                  
