@@ -10,6 +10,8 @@ import openhubo
 from rodrigues import *
 import re
 from LadderGenerator import *
+import trajectory
+import debug
 
 number_of_degrees=57
 joint_offsets=zeros(number_of_degrees)
@@ -101,22 +103,47 @@ def format_angles(data):
             newdata[k]=data[k]
     return newdata
 
-def play_traj(robot,dataset,timestep):
-    #Assume that robot is in initial position now
+def build_openrave_traj(robot,dataset,timestep,retime=True):
+    #Assumes that ALL joints are specified for now
+    [traj,config]=trajectory.create_trajectory(robot)
+    print config.GetDOF() 
     T0=robot.GetTransform()
     for k in range(size(dataset,0)):
-        Tc=eye(4)
-        #use rodrigues function to build RPY rotation matrix
-        Tc[0:3,0:3]=rodrigues(format_angles(dataset[k,3:6]))
-        
-        #grab translation from base 
-        Tc[0:3,3]=dataset[k,0:3]
-        #print Tc
+        T=get_transform(robot,T0,dataset[k,0:6])
         pose=dataset[k,jointmap+6]*joint_signs+joint_offsets
+        for p in range(len(pose)):
+            #Make sure limits are enforced and clip them
+            L=robot.GetJointFromDOFIndex(p).GetLimits()
+            if pose[p]>max(L)[0]:
+                pose[p]=max(L)[0]*.99
+            if pose[p]<min(L)[0]:
+                pose[p]=min(L)[0]*.99
+
         #Note this method does not use a controller
-        T=array(mat(T0)*mat(Tc))
-        robot.GetController().SetDesired(pose.T,T) #account for initial offset
-        time.sleep(timestep)
+        jointvals=pose
+        waypt=list(jointvals)
+        waypt.extend(RaveGetAffineDOFValuesFromTransform(T,DOFAffine.Transform))
+        waypt.append(timestep)
+        traj.Insert(k,waypt)
+
+    if retime:
+        planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
+    return traj
+
+def get_transform(robot,T0,xyzrpy):
+    Tc=eye(4)
+    #use rodrigues function to build RPY rotation matrix
+    Tc[0:3,0:3]=rodrigues(format_angles(xyzrpy[3:6]))
+    #psi_cal=xyzrpy[3]
+    #theta_cal=xyzrpy[4]
+    #phi_cal=xyzrpy[5]
+    #trans_mat=array([[cos(theta_cal)*cos(psi_cal)	,-cos(phi_cal)*sin(psi_cal)+sin(phi_cal)*sin(theta_cal)*cos(psi_cal),sin(phi_cal)*sin(psi_cal)+cos(phi_cal)*sin(theta_cal)*cos(psi_cal),xyzrpy[0]],	
+               #[cos(theta_cal)*sin(psi_cal)	,cos(phi_cal)*sin(psi_cal)+sin(phi_cal)*sin(theta_cal)*sin(psi_cal) ,-sin(phi_cal)*cos(psi_cal)+cos(phi_cal)*sin(theta_cal)*sin(psi_cal),xyzrpy[1]],			
+               #[-sin(theta_cal)		,sin(phi_cal)*cos(theta_cal),cos(phi_cal)*cos(theta_cal),xyzrpy[2]],			
+               #[	  0		,0,	0,	1]])
+    #grab translation from base 
+    Tc[0:3,3]=xyzrpy[0:3]
+    return array(mat(T0)*mat(Tc))
 
 def make_robot_transform(robot):
     env=robot.GetEnv()
@@ -156,8 +183,8 @@ if __name__=='__main__':
     env = Environment()
     env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
-
-    [robot,ctrl,ind,ref]=openhubo.load(env,'rlhuboplus.robot.xml',envname,True)
+    
+    [robot,ctrl,ind,ref]=openhubo.load(env,'rlhuboplus.noshell.robot.xml',envname,True,True)
     
     make_robot_transform(robot)
 
@@ -173,4 +200,11 @@ if __name__=='__main__':
     velocity=zeros(number_of_degrees)
     load_mapping(robot,"iumapping.txt")
     [dataset,timestep,total_time,number_of_steps]=load_iu_traj(file_traj)
-    play_traj(robot,dataset,timestep)
+    traj=build_openrave_traj(robot,dataset,.05,True)
+    ctrl.SetPath(traj)
+    time.sleep(0.5)
+    ctrl.SendCommand('start')
+    while not ctrl.IsDone():
+        time.sleep(.1)
+        handle=openhubo.plotProjectedCOG(robot)
+                 

@@ -575,7 +575,6 @@ def make_ladder(paramfile):
             file_write.write('      			<Translation>' + str(-rung_width-10*stringer_width/2)+' 0 '+str(stringer_height)+' </Translation>\n')
         else:
             file_write.write('      			<Translation>' + str(-rung_width-10*stringer_width/2)+' 0 '+str(stringer_height)+' </Translation>\n')
-        file_write.write('        			<RotationAxis>1 0 0 0</RotationAxis>\n')
         file_write.write('			</Geom>\n')
         file_write.write('\n')
         file_write.write(' 			<!-- Right Vertical-->\n')
@@ -588,7 +587,6 @@ def make_ladder(paramfile):
             file_write.write('      			<Translation>' + str(rung_width+10*stringer_width/2)+' 0 '+str(stringer_height)+' </Translation>\n')
         else:
             file_write.write('      			<Translation>' + str(rung_width+10*stringer_width/2)+' 0 '+str(stringer_height)+' </Translation>\n')
-        file_write.write('        			<RotationAxis>1 0 0 0</RotationAxis>\n')
         file_write.write('			</Geom>\n')
 
 

@@ -59,7 +59,7 @@ def load_simplefloor(env):
         controller.SetDesired(pose)
     return (robot,controller,ind)
 
-def load(env,robotname,scenename=None,stop=False):
+def load(env,robotname,scenename=None,stop=False,physics=True):
     """ Load the rlhuboplus model into the given environment, configuring a
     servocontroller and a reference robot to show desired movements vs. actual
     pose. The returned tuple contains the robots, controller, and a
@@ -78,6 +78,9 @@ def load(env,robotname,scenename=None,stop=False):
         elif type(scenename) is str:
             env.Load(scenename)
         env.Load(robotname)
+        #Explicitly disable physics if option is selected
+        if not physics:
+            env.SetPhysicsEngine(rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
         robot = env.GetRobots()[0]
         robot.SetDOFValues(zeros(robot.GetDOF()))
         collisionChecker = rave.RaveCreateCollisionChecker(env,'pqp')
@@ -86,17 +89,21 @@ def load(env,robotname,scenename=None,stop=False):
             print 'Note: Using ODE collision checker since PQP is not available'
         env.SetCollisionChecker(collisionChecker)
 
-        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine':
-            controller=rave.RaveCreateController(env,'servocontroller')
+        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine' and physics:
+            controller=rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
-            controller.SendCommand('setgains 100 0 16')
+            controller.SendCommand('set gains 50 0 8')
 
             #Load ref robot and colorize
+            #TODO: Load the actual robot as a copy, then strip out extra junk there
             env.Load('rlhuboplus.ref.robot.xml')
             ref_robot=env.GetRobot('rlhuboplus_ref')
             ref_robot.Enable(False)
             ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
             controller.SendCommand("set visrobot rlhuboplus_ref")
+            for j in ref_robot.GetJoints():
+                #Remove active joint limits
+                j.SetLimits([-pi],[pi])
             for l in ref_robot.GetLinks():
                 for g in l.GetGeometries():
                     g.SetDiffuseColor([.8,.8,.5])
@@ -210,7 +217,7 @@ def plotProjectedCOG(robot):
 
     proj_com=find_com(robot)
     #assume zero height floor for now
-    proj_com[-1]=0
+    proj_com[-1]=0.001
 
     env=robot.GetEnv()
     handle=env.plot3(points=proj_com,pointsize=12,colors=array([0,1,1]))

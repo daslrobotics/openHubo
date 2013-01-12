@@ -10,11 +10,11 @@ from rodrigues import *
 
 def create_trajectory(robot):
     """ Create a trajectory based on a robot's config spec"""
-    traj=RaveCreateTrajectory(robot.GetEnvironment,'')
+    traj=RaveCreateTrajectory(robot.GetEnv(),'')
     config=robot.GetConfigurationSpecification()
     config.AddDeltaTimeGroup()
     traj.Init(config)
-    return traj
+    return [traj,config]
 
 def read_youngbum_traj(filename,robot,dt=.01,scale=1.0,retime=True):
     """ Read in trajectory data stored in Youngbum's format (100Hz data):
