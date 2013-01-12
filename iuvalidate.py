@@ -135,7 +135,6 @@ def make_robot_transform(robot):
 
     T=array(mat(T0)*mat(T1))
     robot.SetTransform(T)
-
     
 if __name__=='__main__':
 
