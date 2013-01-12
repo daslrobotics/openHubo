@@ -158,7 +158,7 @@ def make_robot_transform(robot):
     T1=eye(4)
     T1[0:3,0:3]=rodrigues([0,0,-pi/2])
     #From Jingru, shift back .32 from base
-    T1[0:3,3]=array([0.0,.32+T_rung_global[1,3],.002]).T
+    T1[0:3,3]=array([0.0,.21+T_rung_global[1,3],0.002]).T
 
     T=array(mat(T0)*mat(T1))
     robot.SetTransform(T)
