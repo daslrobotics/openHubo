@@ -67,11 +67,15 @@ def load(env,robotname,scenename=None,stop=False):
     """
 
     # Set the robot controller and start the simulation
+
     with env:
         if stop:
             env.StopSimulation()
 
-        if not(scenename==None):
+        if type(scenename) is list:
+            for n in scenename:
+                env.Load(n)
+        elif type(scenename) is str:
             env.Load(scenename)
         env.Load(robotname)
         robot = env.GetRobots()[0]

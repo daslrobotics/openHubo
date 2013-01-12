@@ -9,6 +9,7 @@ import sys
 import openhubo
 from rodrigues import *
 import re
+from LadderGenerator import *
 
 number_of_degrees=57
 joint_offsets=zeros(number_of_degrees)
@@ -25,7 +26,7 @@ def load_mapping(robot,filename):
             line=f.readline() 
         while line: 
             datalist=re.split(',| |\t',line.rstrip())
-            print datalist
+            #print datalist
             j=robot.GetJoint(datalist[1])
             if j:
                 dof=j.GetDOFIndex()
@@ -45,27 +46,31 @@ def load_iu_traj(filename):
             val0,val1...val57
         """
         line = f.readline()
-        line = f.readline()
-        if not line:
+        datalist=re.split(',| |\t',line)[:-1]
+
+        if len(datalist)>1:
+            #Assume header is omitted
             print "Total Time Missing"
             total_time=0
-            #TODO: error?
         else:
-            total_time=float(re.split(',| |\t',line)[0])
+            total_time=float(datalist[0])
+            #line 3 has the step size
+            line = f.readline()
+            datalist=re.split(',| |\t',line)[:-1]
 
-        #line 3 has the step size
-        line = f.readline()
-        if not line:
-            print "Time Step is Missing"
+        if len(datalist)>1:
+            print "Time Step is Missing, assuming default..."
+            timestep=.1
         else:
-            timestep=float(re.split(',| |\t',line)[0])            
-            #print timestep
+            timestep=datalist[0]
+            line = f.readline()
+            datalist=re.split(',| |\t',line)[:-1]
 
         if (total_time>0) & (timestep>0):
-    	    number_of_steps = (int)(total_time/timestep)
+            number_of_steps = (int)(total_time/timestep)
         else:
             number_of_steps = 0
-        line = f.readline()
+
         dataset=[]
         while len(line)>0:
             if not line:
@@ -75,7 +80,7 @@ def load_iu_traj(filename):
             #Split configuration into a list, throwing out endline characters and strip length
             configlist=re.split(',| |\t',line)[:-1]
             #print line
-            print configlist
+            #print configlist
             #Convert to float values for the current pose
             data=[float(x) for x in configlist[1:]]
             #print data
@@ -111,29 +116,51 @@ def play_traj(robot,dataset,T0,timestep):
         robot.GetController().SetDesired(pose.T,T) #account for initial offset
         time.sleep(timestep)
 
+def make_robot_transform(robot):
+    env=robot.GetEnv()
+    ladder=env.GetKinBody('ladder')
+    T_ladder=ladder.GetTransform()
+    #3rd geom is bottom rung
+    T_rung=ladder.GetLinks()[0].GetGeometries()[2].GetTransform()
+    T_rung_global=mat(T_ladder)*mat(T_rung)
+    print T_rung_global
+    print T_rung_global[3,1]
+    T0=robot.GetTransform()
+    T1=eye(4)
+    T1[0:3,0:3]=rodrigues([0,0,-pi/2])
+    #From Jingru, shift back .32 from base
+    T1[0:3,3]=array([0.0,.32+T_rung_global[1,3],.002]).T
+
+    T=array(mat(T0)*mat(T1))
+    robot.SetTransform(T)
+
+    
 if __name__=='__main__':
+
     try:
-        file_env = sys.argv[1]
+        file_param = sys.argv[1]
     except IndexError:
-        #file_env = 'scenes/ladderclimb.env.xml'
-        file_env = 'ladder.env.xml'
+        file_param = 'firstladder.iuparam'
+    
+    try:
+        file_traj = sys.argv[2]
+    except IndexError:
+        print "Trajectory argument not found!"
+        raise 
+
+    #Assume that name has suffix of some sort!
+    laddername=make_ladder(file_param)
+    envname=make_ladder_env(file_param)
 
     env = Environment()
     env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
 
-    [robot,ctrl,ind,ref]=openhubo.load(env,'rlhuboplus.robot.xml',file_env,True)
+    [robot,ctrl,ind,ref]=openhubo.load(env,'rlhuboplus.robot.xml',envname,True)
     
-    #TODO: get rid of hand tweaks by processing initial location?
-    T0=robot.GetTransform()
-    T1=eye(4)
-    T1[0:3,0:3]=rodrigues([0,0,-pi/2])
-    #T1[0:3,3]=array([0.0,.935,.002]).T
-    #For new traj
-    T1[0:3,3]=array([0.0,.875,.002]).T
+    make_robot_transform(robot)
 
-    T=array(mat(T0)*mat(T1))
-    robot.SetTransform(T)
+    #TODO: get rid of hand tweaks by processing initial location?
     
     joint_offsets[ind('RSR')]=pi/12
     joint_offsets[ind('LSR')]=-pi/12
@@ -144,5 +171,5 @@ if __name__=='__main__':
     theta=zeros(number_of_degrees)
     velocity=zeros(number_of_degrees)
     load_mapping(robot,"iumapping.txt")
-    [dataset,timestep,total_time,number_of_steps]=load_iu_traj('foot_on.iutraj')
+    [dataset,timestep,total_time,number_of_steps]=load_iu_traj(file_traj)
     play_traj(robot,dataset,T,timestep)
