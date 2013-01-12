@@ -307,7 +307,7 @@
         <offsetfrom>Body_RHY</offsetfrom>
         <anchor>-0.034706500276 0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
-        <limitsdeg>-90 90</limitsdeg>
+        <limitsdeg>-180 40</limitsdeg>
 		<maxvel>3.77</maxvel>
 		<maxaccel>7.20</maxaccel>
 		<maxtorque>71</maxtorque>
@@ -347,7 +347,7 @@
         <offsetfrom>Body_LHY</offsetfrom>
         <anchor>-0.034706500276 -0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
-        <limitsdeg>-90 90</limitsdeg>
+        <limitsdeg>-40 180</limitsdeg>
 		<maxvel>3.77</maxvel>
 		<maxaccel>7.20</maxaccel>
 		<maxtorque>71</maxtorque>
@@ -359,7 +359,8 @@
         <offsetfrom>Body_RHR</offsetfrom>
         <anchor>0.049747912596 0.012531116599 0.015643664572</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-28 28</limitsdeg>
+        <!--TODO: the limit depends on pitch position too-->
+        <limitsdeg>-28 90</limitsdeg>
 		<maxvel>1.86</maxvel>
 		<maxaccel>3.56</maxaccel>
 		<maxtorque>95</maxtorque>
@@ -394,7 +395,8 @@
         <offsetfrom>Body_LHR</offsetfrom>
         <anchor>0.049747912596 -0.012531116599 0.015643664572</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-28 28</limitsdeg>
+        <!--TODO: the limit depends on pitch position too-->
+        <limitsdeg>-90 28</limitsdeg>
 		<maxvel>1.86</maxvel>
 		<maxaccel>3.56</maxaccel>
 		<maxtorque>95</maxtorque>
@@ -406,7 +408,8 @@
         <offsetfrom>Body_RHP</offsetfrom>
         <anchor>-0.019504891350 -0.059577480789 0.175201757627</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-85 92</limitsdeg>
+        <!--These limits are somewhat arbitrary, but allow the leg to hit the torso-->
+        <limitsdeg>-120 120</limitsdeg>
 		<maxvel>4.71</maxvel>
 		<maxaccel>9.00</maxaccel>
 		<maxtorque>95</maxtorque>
@@ -451,7 +454,8 @@
         <offsetfrom>Body_LHP</offsetfrom>
         <anchor>-0.019504891350 0.059577480789 0.175201757627</anchor>
         <axis>0 1 0</axis>
-        <!--<limitsdeg>-85 92</limitsdeg>-->
+        <!--These limits are somewhat arbitrary, but allow the leg to hit the torso-->
+        <limitsdeg>-120 120</limitsdeg>
 		<maxvel>4.71</maxvel>
 		<maxaccel>9.00</maxaccel>
 		<maxtorque>95</maxtorque>
@@ -463,7 +467,7 @@
         <offsetfrom>Body_RKP</offsetfrom>
         <anchor>-0.012825433376 -0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-4 149</limitsdeg>
+        <limitsdeg>-4 145</limitsdeg>
 		<maxvel>4.71</maxvel>
 		<maxaccel>9.00</maxaccel>
 		<maxtorque>95</maxtorque>
@@ -508,7 +512,7 @@
         <offsetfrom>Body_LKP</offsetfrom>
         <anchor>-0.012825433376 0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
-        <!--<limitsdeg>-4 149</limitsdeg>-->
+        <limitsdeg>-4 142</limitsdeg>
 		<maxvel>4.71</maxvel>
 		<maxaccel>9.00</maxaccel>
 		<maxtorque>95</maxtorque>
@@ -520,7 +524,8 @@
         <offsetfrom>Body_RAP</offsetfrom>
         <anchor>-0.019870246084 -0.045969255056 -0.011506941050</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-74 97</limitsdeg>
+        <!--Measured by pushing the model to each extreme, not from physical Hubo+-->
+        <limitsdeg>-108 126</limitsdeg>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>71</maxtorque>
@@ -555,7 +560,8 @@
         <offsetfrom>Body_LAP</offsetfrom>
         <anchor>-0.019870246084 0.045969255056 -0.011506941050</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-74 97</limitsdeg>
+        <!--Measured by pushing the model to each extreme, not from physical Hubo+-->
+        <limitsdeg>-108 126</limitsdeg>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>71</maxtorque>
@@ -567,7 +573,7 @@
         <offsetfrom>Body_RAR</offsetfrom>
         <anchor>0.051509407797 0.002163982128 0.069388069491</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-11 11</limitsdeg>
+        <limitsdeg>-25 25</limitsdeg>
 		<maxvel>2.98</maxvel>
 		<maxaccel>5.70</maxaccel>
 		<maxtorque>71</maxtorque>
@@ -608,7 +614,7 @@
         <offsetfrom>Body_LAR</offsetfrom>
         <anchor>0.051509407797 -0.002163982128 0.069388069491</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-11 11</limitsdeg>
+        <limitsdeg>-25 25</limitsdeg>
 		<maxvel>2.98</maxvel>
 		<maxaccel>5.70</maxaccel>
 		<maxtorque>71</maxtorque>
@@ -782,7 +788,8 @@
         <offsetfrom>Body_RSR</offsetfrom>
         <anchor>0.036207973807 -0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-165 19</limitsdeg>
+        <!--Estimated based on model range of motion-->
+        <limitsdeg>-180 27</limitsdeg>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>35</maxtorque>
@@ -817,7 +824,8 @@
         <offsetfrom>Body_LSR</offsetfrom>
         <anchor>0.036207973807 0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-19 165</limitsdeg>
+        <!--Estimated based on model range of motion-->
+        <limitsdeg>-27 180</limitsdeg>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>35</maxtorque>
@@ -938,7 +946,8 @@
         <offsetfrom>Body_REP</offsetfrom>
         <anchor>0.021734910228 0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-143 4</limitsdeg>
+        <!--Estimated from model (real elbow by default only moves up ~130 deg.)-->
+        <limitsdeg>-170 4</limitsdeg>
 		<maxvel>7.85</maxvel>
 		<maxaccel>15.00</maxaccel>
 		<maxtorque>25</maxtorque>
@@ -978,7 +987,8 @@
         <offsetfrom>Body_LEP</offsetfrom>
         <anchor>0.021734910228 -0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-143 4</limitsdeg>
+        <!--Estimated from model (real elbow by default only moves up ~130 deg.)-->
+        <limitsdeg>-170 4</limitsdeg>
 		<maxvel>7.85</maxvel>
 		<maxaccel>15.00</maxaccel>
 		<maxtorque>25</maxtorque>
@@ -1087,7 +1097,8 @@
         <offsetfrom>Body_RWP</offsetfrom>
         <anchor>0.000258199377 0.011441986656 0.046147242821</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-90 90</limitsdeg>
+        <!--Estimated from model based on collision meshes only-->
+        <limitsdeg>-100 95</limitsdeg>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>9</maxtorque>
@@ -1152,7 +1163,8 @@
         <offsetfrom>Body_LWP</offsetfrom>
         <anchor>0.000258199377 -0.011441986656 0.046147242821</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-94 90</limitsdeg>
+        <!--Estimated from model based on collision meshes only-->
+        <limitsdeg>-100 95</limitsdeg>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>9</maxtorque>
