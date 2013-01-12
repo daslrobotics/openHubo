@@ -101,7 +101,9 @@ def format_angles(data):
             newdata[k]=data[k]
     return newdata
 
-def play_traj(robot,dataset,T0,timestep):
+def play_traj(robot,dataset,timestep):
+    #Assume that robot is in initial position now
+    T0=robot.GetTransform()
     for k in range(size(dataset,0)):
         Tc=eye(4)
         #use rodrigues function to build RPY rotation matrix
@@ -172,4 +174,4 @@ if __name__=='__main__':
     velocity=zeros(number_of_degrees)
     load_mapping(robot,"iumapping.txt")
     [dataset,timestep,total_time,number_of_steps]=load_iu_traj(file_traj)
-    play_traj(robot,dataset,T,timestep)
+    play_traj(robot,dataset,timestep)
