@@ -76,6 +76,7 @@
         <offsetfrom>leftThumbProximal</offsetfrom>
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+<maxtorque>20</maxtorque>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     
@@ -85,6 +86,8 @@
         <offsetfrom>leftThumbProximal</offsetfrom>
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> leftThumbProximal leftThumbMedial</adjacent>
     
@@ -94,6 +97,8 @@
         <offsetfrom>leftThumbMedial</offsetfrom>
         <anchor>0.011 0 0</anchor>
         <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> leftThumbDistal leftThumbMedial</adjacent>
     

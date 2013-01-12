@@ -3,7 +3,7 @@
 <KinBody name="Finger" makejoinedlinksadjacent="true">
 
     <Body name="leftRingProximal" type="dynamic">
-<offsetfrom>Body_LWP</offsetfrom>
+        <offsetfrom>Body_LWP</offsetfrom>
         <!-- LWP Center of Mass to Base -->
         <translation>0.000258199377 -0.011441986656 0.046147242821</translation>
         <Translation>0.028499 0.020675 -0.083923</Translation>
@@ -76,6 +76,7 @@
         <offsetfrom>leftRingProximal</offsetfrom>
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+        <maxtorque>20</maxtorque>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
 
@@ -85,6 +86,8 @@
         <offsetfrom>leftRingProximal</offsetfrom>
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
+        <maxtorque>20</maxtorque>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> leftRingProximal leftRingMedial</adjacent>
 
@@ -94,6 +97,9 @@
         <offsetfrom>leftRingMedial</offsetfrom>
         <anchor>0.011 0 0</anchor>
         <axis>0 0 -1</axis>
+        <maxtorque>20</maxtorque>
+        <maxtorque>20</maxtorque>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> leftRingDistal leftRingMedial</adjacent>
 

@@ -72,6 +72,7 @@
         <offsetfrom>rightPinkyProximal</offsetfrom>
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+<maxtorque>20</maxtorque>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightPinkyProximal Body_RWP</adjacent>
@@ -83,6 +84,7 @@
         <offsetfrom>rightPinkyProximal</offsetfrom>
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightPinkyProximal rightPinkyMedial</adjacent>
@@ -94,6 +96,7 @@
         <offsetfrom>rightPinkyMedial</offsetfrom>
         <anchor>0.011 0 0</anchor>
         <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightPinkyDistal rightPinkyMedial</adjacent>
