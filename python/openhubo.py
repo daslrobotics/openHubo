@@ -8,6 +8,22 @@ import datetime
 """ A collection of useful functions to run openhubo models.
 As common functions are developed, they will be added here.
 """
+def set_finger_torque(robot,maxT,dt=0.0005):
+    names=[u'rightIndexKnuckle1', u'rightIndexKnuckle2', u'rightIndexKnuckle3', u'rightMiddleKnuckle1', u'rightMiddleKnuckle2', u'rightMiddleKnuckle3', u'rightRingKnuckle1', u'rightRingKnuckle2', u'rightRingKnuckle3', u'rightPinkyKnuckle1', u'rightPinkyKnuckle2', u'rightPinkyKnuckle3', u'rightThumbKnuckle1', u'rightThumbKnuckle2', u'rightThumbKnuckle3',u'leftIndexKnuckle1', u'leftIndexKnuckle2', u'leftIndexKnuckle3', u'leftMiddleKnuckle1', u'leftMiddleKnuckle2', u'leftMiddleKnuckle3', u'leftRingKnuckle1', u'leftRingKnuckle2', u'leftRingKnuckle3', u'leftPinkyKnuckle1', u'leftPinkyKnuckle2', u'leftPinkyKnuckle3', u'leftThumbKnuckle1', u'leftThumbKnuckle2', u'leftThumbKnuckle3']
+    #Rough calculation for now, eventually get this from finger models
+    #Figure out the maximum acceleration needed to produce enough dV per timestep to produce the maximum torque given the inertia of the body
+    Iz0=0.000002
+    maxA=maxT/Iz0
+    maxV=maxA*dt
+
+    for n in names:
+        robot.GetJoint(n).SetTorqueLimits([maxT])
+        robot.GetJoint(n).SetVelocityLimits([maxV])
+        robot.GetJoint(n).SetVelocityLimits([maxA])
+        i=robot.GetJoint(n).GetDOFIndex()
+        #TODO: Figure out actual finger stiffness?
+        robot.GetController().SendCommand('set gainvec {} 100.0 0.0 0.0 '.format(i))
+
 
 def get_timestamp(lead='_'):
     return lead+datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
@@ -109,7 +125,8 @@ def load(env,robotname,scenename=None,stop=False,physics=True):
         if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine' and physics:
             controller=rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
-            controller.SendCommand('set gains 100 0 8')
+            controller.SendCommand('set gains 50 0 8')
+            set_finger_torque(robot,4.0)
 
             #Load ref robot and colorize
             #TODO: Load the actual robot as a copy, then strip out extra junk there

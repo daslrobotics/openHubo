@@ -7,10 +7,20 @@ from recorder import viewerrecorder
 import datetime
 import tab
 
-def set_finger_torque(robot,maxT):
+def set_finger_torque(robot,maxT,dt=0.0005):
     names=[u'rightIndexKnuckle1', u'rightIndexKnuckle2', u'rightIndexKnuckle3', u'rightMiddleKnuckle1', u'rightMiddleKnuckle2', u'rightMiddleKnuckle3', u'rightRingKnuckle1', u'rightRingKnuckle2', u'rightRingKnuckle3', u'rightPinkyKnuckle1', u'rightPinkyKnuckle2', u'rightPinkyKnuckle3', u'rightThumbKnuckle1', u'rightThumbKnuckle2', u'rightThumbKnuckle3']
+    #Rough calculation for now, eventually get this from finger models
+    Iz0=0.000002
+    maxA=maxT/Iz0
+    maxV=maxA*dt
+
     for n in names:
         robot.GetJoint(n).SetTorqueLimits([maxT])
+        robot.GetJoint(n).SetVelocityLimits([maxV])
+        robot.GetJoint(n).SetVelocityLimits([maxA])
+        i=robot.GetJoint(n).GetDOFIndex()
+        #TODO: Figure out actual finger stiffness?
+        robot.GetController().SendCommand('set gainvec {} 100.0 0.0 0.0 '.format(i))
 
 def get_timestamp(lead='_'):
     return lead+datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
@@ -79,7 +89,7 @@ def load(env,scenename=None,stop=False,physics=True):
         if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine' and physics:
             controller=rave.RaveCreateController(env,'servocontroller')
             robot.SetController(controller)
-            controller.SendCommand('set gains 30 0 8')
+            controller.SendCommand('set gains 100 0 0')
             controller.SetDesired(pose/pose*pi/4*1.1)
     
     time.sleep(.5)
@@ -92,33 +102,39 @@ if __name__=='__main__':
     from openravepy import *
     from servo import *
     env=Environment()
+    env.SetDebugLevel(4)
     env.SetViewer('qtcoin')
     [robot,ctrl,ind,recorder]=load(env,'gripper.env.xml',True,True)
     rod=env.GetKinBody('rod')
     trans=rod.GetTransform()
-    for T in range(5,50,2):
-        for m in range(1,5,1):
-            robot.SetDOFValues(ones(robot.GetDOF())*.6)
-            rod.SetLinkVelocities((zeros(6),zeros(6))) 
-            rod.SetTransform(trans)
-            fail=False
-            set_finger_torque(robot,T)
-            print "Finger torque is {}".format(T)
-            print "Mass is {}".format(m)
-            env.GetKinBody('rod').GetLink('rod1').SetMass(float(m))
-            env.GetPhysicsEngine().SetGravity([0, 0, 0])
-            env.StartSimulation(timestep=0.0005)
-            print "starting..."
-            time.sleep(.5)
-            print "gravity on"
-            env.GetPhysicsEngine().SetGravity([0, 0, -9.8])
-            for t in arange(0,4,.1):
-                time.sleep(.1)
-                if env.GetKinBody('rod').GetTransform()[2,3]<-.5:
-                    print "Rod fell"
-                    fail=True
-                    break
-            env.StopSimulation()
-            if fail:
+    pose=ones(robot.GetDOF())*.4
+    pose[ind('rightIndexKnuckle1')]=.6
+    pose[ind('rightMiddleKnuckle1')]=.6
+    pose[ind('rightRingKnuckle1')]=.6
+    pose[ind('rightPinkyKnuckle1')]=.6
+    pose[ind('rightThumbKnuckle1')]=.6
+    for T in arange(.5,20,.5):
+        fail=False
+        robot.SetDOFValues(pose)
+        rod.SetLinkVelocities((zeros(6),zeros(6))) 
+        rod.SetTransform(trans)
+        set_finger_torque(robot,T)
+        ctrl.SetDesired(pose*2)
+        print "Finger torque is {}".format(T)
+        print "Mass is {}".format(rod.GetLinks()[0].GetMass())
+        env.GetPhysicsEngine().SetGravity([0, 0, 0])
+        env.StartSimulation(timestep=0.0005)
+        print "starting..."
+        time.sleep(.5)
+        print "gravity on"
+        env.GetPhysicsEngine().SetGravity([0, 0, -9.8])
+        for t in arange(0,4,.1):
+            time.sleep(.1)
+            if env.GetKinBody('rod').GetTransform()[2,3]<-.5:
+                print "Rod fell"
+                fail=True
                 break
+        env.StopSimulation()
+        if not fail:
+            break
 

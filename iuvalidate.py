@@ -215,7 +215,7 @@ class force_log:
         names=[]
         for s in self.sensors:
             names.append(s.GetName())
-        robotname=sensors[0].GetAttachingLink().GetParent().GetName()
+        robotname=self.sensors[0].GetAttachingLink().GetParent().GetName()
         with open(filename,'w') as f:
             #TODO: save robot hash?
             pickle.dump([self.data[:self.count,:],names,robotname],f)
