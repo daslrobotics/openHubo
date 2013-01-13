@@ -73,6 +73,8 @@
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
 <maxtorque>20</maxtorque>
+        <maxvel>100</maxvel>
+        <maxaccel>1000</maxaccel>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightThumbProximal Body_RWP</adjacent>
@@ -85,6 +87,8 @@
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
 <maxtorque>20</maxtorque>
+        <maxvel>100</maxvel>
+        <maxaccel>1000</maxaccel>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightThumbProximal rightThumbMedial</adjacent>
@@ -97,6 +101,8 @@
         <anchor>0.011 0 0</anchor>
         <axis>0 0 -1</axis>
 <maxtorque>20</maxtorque>
+        <maxvel>100</maxvel>
+        <maxaccel>1000</maxaccel>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightThumbDistal rightThumbMedial</adjacent>
