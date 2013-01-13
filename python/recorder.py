@@ -5,7 +5,6 @@ from openravepy import *
 from numpy import *
 import time
 from copy import copy
-import openhubo
 
 class viewerrecorder:
 

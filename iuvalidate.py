@@ -13,6 +13,9 @@ from LadderGenerator import *
 import trajectory
 import debug
 from recorder import viewerrecorder
+import pickle
+import signal, os
+import matplotlib.pyplot as plt
 
 number_of_degrees=57
 joint_offsets=zeros(number_of_degrees)
@@ -167,6 +170,79 @@ def play_traj(robot,dataset,timestep):
         robot.SetDOFValues(pose.T)
         time.sleep(timestep)
 
+class force_log:
+    def __init__(self,loglen=10,sensors=[]):
+        self.width=1
+        self.loglen=loglen
+        self.sensors=[]
+        self.count=0
+        self.env=sensors[0].GetAttachingLink().GetParent().GetEnv()
+        for s in sensors:
+            if type(s.GetData()) is openravepy_int.Sensor.Force6DSensorData:
+                self.width+=6
+                self.sensors.append(s)
+        self.data=zeros((loglen,self.width))
+        #Data structure is 1 col of time, 6s columns of sensor data
+                       
+    def setup(self,histlen):
+        for s in self.sensors:
+            if type(s.GetData()) is openravepy_int.Sensor.Force6DSensorData:
+                FT=s.GetSensor()
+                FT.Configure(Sensor.ConfigureCommand.PowerOff)
+                time.sleep(0.1)
+                FT.SendCommand('histlen {}'.format(histlen))
+                time.sleep(0.1)
+                FT.Configure(Sensor.ConfigureCommand.PowerOn)
+        
+    def record(self,time=None):
+
+        #TODO: access violation safety
+        
+        with env:
+            if not time:
+                self.data[self.count,0]=self.env.GetSimulationTime()
+            else:
+                self.data[self.count,0]=time
+            for k in range(len(self.sensors)):
+                force=self.sensors[k].GetData().force
+                torque=self.sensors[k].GetData().torque
+                c0=1+k*6
+                c1=1+6*(k+1)
+                self.data[self.count,c0:c1]=hstack((force,torque))
+        self.count+=1
+
+    def save(self,filename):
+        names=[]
+        for s in self.sensors:
+            names.append(s.GetName())
+        robotname=sensors[0].GetAttachingLink().GetParent().GetName()
+        with open(filename,'w') as f:
+            #TODO: save robot hash?
+            pickle.dump([self.data[:self.count,:],names,robotname],f)
+
+    def load(self,filename):
+        with open(filename,'r') as f:
+            self.data=pickle.load(f)
+            self.count=size(self.data,0)
+    def lookup(self,name,components):
+        if name=='time':
+            return self.data[:self.count,0]
+        for k in range(len(self.sensors)):
+            if self.sensors[k].GetName()==name:
+                c0=1+k*6
+                c1=1+6*(k+1)
+                return self.data[:self.count,array(components)+1+6*k]
+
+def save(self,filename,struct):
+    with open(filename,'w') as f:
+        #TODO: save robot hash?
+        pickle.dump(stuct, f)
+
+def set_finger_torque(robot,maxT):
+    names=[u'leftIndexKnuckle1', u'leftIndexKnuckle2', u'leftIndexKnuckle3', u'leftMiddleKnuckle1', u'leftMiddleKnuckle2', u'leftMiddleKnuckle3', u'leftRingKnuckle1', u'leftRingKnuckle2', u'leftRingKnuckle3', u'leftPinkyKnuckle1', u'leftPinkyKnuckle2', u'leftPinkyKnuckle3', u'leftThumbKnuckle1', u'leftThumbKnuckle2', u'leftThumbKnuckle3', u'rightIndexKnuckle1', u'rightIndexKnuckle2', u'rightIndexKnuckle3', u'rightMiddleKnuckle1', u'rightMiddleKnuckle2', u'rightMiddleKnuckle3', u'rightRingKnuckle1', u'rightRingKnuckle2', u'rightRingKnuckle3', u'rightPinkyKnuckle1', u'rightPinkyKnuckle2', u'rightPinkyKnuckle3', u'rightThumbKnuckle1', u'rightThumbKnuckle2', u'rightThumbKnuckle3']
+    for n in names:
+        robot.GetJoint(n).SetTorqueLimits([maxT])
+    
 if __name__=='__main__':
 
     try:
@@ -203,31 +279,42 @@ if __name__=='__main__':
     #Read the file to obtain time steps and the total time
 
     env.StartSimulation(timestep=0.0005)
+    time.sleep(1)
+    env.StopSimulation()
     load_mapping(robot,"iumapping.txt")
     [dataset,timestep,total_time,number_of_steps]=load_iu_traj(file_traj)
     timestep=0.05
 
     if physicson:
-        recorder.filename='.'.join(laddername.split('.')[:-2])+'_physics.avi'
+        timestamp=openhubo.get_timestamp()
+        recorder.filename='.'.join(laddername.split('.')[:-2])+timestamp+'_physics.avi'
         traj=build_openrave_traj(robot,dataset,timestep,True)
         ctrl.SetPath(traj)
-        recorder.start()
-        ctrl.SendCommand('start')
-        while not ctrl.IsDone():
-            time.sleep(.05)
-            handle=openhubo.plotProjectedCOG(robot)
-            com=openhubo.find_com(robot)
-            if com[2]<.3:
-                #Robot fell over
-                ctrl.Reset()
-                break
+        t_total=traj.GetDuration()
+        steps=int(t_total/0.0005)
+        forces=force_log(steps,robot.GetAttachedSensors())
+        forces.setup(50)
+        if raw_input('Hit any key to run simulation or enter to skip:'):
+            recorder.start()
+            ctrl.SendCommand('start')
+            while not ctrl.IsDone():
+                env.StepSimulation(0.0005)
+                handle=openhubo.plotProjectedCOG(robot)
+                forces.record()
+                if not (forces.count % 20):
+                    com=openhubo.find_com(robot)
+                    if com[2]<.3:
+                        #Robot fell over
+                        ctrl.Reset()
+                        break
+
+            forces.save('.'.join(laddername.split('.')[:-2])+timestamp+'_forces.pickle')
     else:
-        recorder.filename='.'.join(laddername.split('.')[:-2])+'_ideal.avi'
-        recorder.realtime=True
-        recorder.start()
-        play_traj(robot,dataset,timestep)
+        if raw_input('Hit any key to run simulation or enter to skip:'):
+            recorder.filename='.'.join(laddername.split('.')[:-2])+'_ideal.avi'
+            recorder.realtime=True
+            recorder.start()
+            play_traj(robot,dataset,timestep)
 
     recorder.stop()
-        
 
-                 

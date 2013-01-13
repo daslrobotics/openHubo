@@ -4,10 +4,14 @@ import openravepy as rave
 from TransformMatrix import *
 import time
 from  recorder import viewerrecorder
-
+import datetime
 """ A collection of useful functions to run openhubo models.
 As common functions are developed, they will be added here.
 """
+
+def get_timestamp(lead='_'):
+    return lead+datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+
 def pause(t=-1):
     """ A simple pause function to emulate matlab's pause(t). 
     Useful for debugging and program stepping"""
