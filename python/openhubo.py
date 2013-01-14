@@ -126,22 +126,23 @@ def load(env,robotname,scenename=None,stop=False,physics=True):
             controller=rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
             controller.SendCommand('set gains 50 0 8')
-            set_finger_torque(robot,4.0)
+            #set_finger_torque(robot,4.0)
 
             #Load ref robot and colorize
             #TODO: Load the actual robot as a copy, then strip out extra junk there
-            env.Load('rlhuboplus.ref.robot.xml')
-            ref_robot=env.GetRobot('rlhuboplus_ref')
-            ref_robot.Enable(False)
-            ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
-            controller.SendCommand("set visrobot rlhuboplus_ref")
-            for j in ref_robot.GetJoints():
-                #Remove active joint limits
-                j.SetLimits([-pi],[pi])
-            for l in ref_robot.GetLinks():
-                for g in l.GetGeometries():
-                    g.SetDiffuseColor([.8,.8,.5])
-                    g.SetTransparency(.5)
+            ref_robot=None
+            #env.Load('rlhuboplus.ref.robot.xml')
+            #ref_robot=env.GetRobot('rlhuboplus_ref')
+            #ref_robot.Enable(False)
+            #ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
+            #controller.SendCommand("set visrobot rlhuboplus_ref")
+            #for j in ref_robot.GetJoints():
+                ##Remove active joint limits
+                #j.SetLimits([-pi],[pi])
+            #for l in ref_robot.GetLinks():
+                #for g in l.GetGeometries():
+                    #g.SetDiffuseColor([.8,.8,.5])
+                    #g.SetTransparency(.5)
         else:
             #Just load ideal controller if physics engine is not present
             controller=rave.RaveCreateController(env,'idealcontroller')

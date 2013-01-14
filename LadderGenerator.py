@@ -252,9 +252,9 @@ def make_ladder_env(paramfile):
     file_write = open(outname, "wb")
 
     file_write.write('<Environment>\n')
-    file_write.write('  <camtrans>3.116317 1.651010 1.018946</camtrans>\n')
-    file_write.write('  <camrotationaxis>-0.514111 -0.634274 0.577396 133.354153</camrotationaxis>\n')
-    file_write.write('  <camfocal>3.155073</camfocal>\n')
+    file_write.write('  <camtrans>1.576937 2.104684 1.144651</camtrans>\n')
+    file_write.write('  <camrotationaxis>-0.355496 -0.728440 0.585660 151.603216</camrotationaxis>\n')
+    file_write.write('  <camfocal>1.913651</camfocal>\n')
     file_write.write('  <!-- set the background color of the environment-->\n')
     file_write.write('  <bkgndcolor>0.0 0.0 0.</bkgndcolor>\n')
     file_write.write(' \n')

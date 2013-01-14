@@ -16,12 +16,15 @@ from recorder import viewerrecorder
 import pickle
 import signal, os
 import matplotlib.pyplot as plt
+import curses
+import kbhit
 
 number_of_degrees=57
 joint_offsets=zeros(number_of_degrees)
 joint_signs=ones(number_of_degrees)
 #Default the map to -1 for a missing index
 jointmap=-ones(number_of_degrees,dtype=int)
+fingers=[u'rightIndexKnuckle1', u'rightIndexKnuckle2', u'rightIndexKnuckle3', u'rightMiddleKnuckle1', u'rightMiddleKnuckle2', u'rightMiddleKnuckle3', u'rightRingKnuckle1', u'rightRingKnuckle2', u'rightRingKnuckle3', u'rightPinkyKnuckle1', u'rightPinkyKnuckle2', u'rightPinkyKnuckle3', u'rightThumbKnuckle1', u'rightThumbKnuckle2', u'rightThumbKnuckle3',u'leftIndexKnuckle1', u'leftIndexKnuckle2', u'leftIndexKnuckle3', u'leftMiddleKnuckle1', u'leftMiddleKnuckle2', u'leftMiddleKnuckle3', u'leftRingKnuckle1', u'leftRingKnuckle2', u'leftRingKnuckle3', u'leftPinkyKnuckle1', u'leftPinkyKnuckle2', u'leftPinkyKnuckle3', u'leftThumbKnuckle1', u'leftThumbKnuckle2', u'leftThumbKnuckle3']
 
 def load_mapping(robot,filename):
     #Ugly use of globals
@@ -154,7 +157,7 @@ def make_robot_transform(robot):
     T1=eye(4)
     T1[0:3,0:3]=rodrigues([0,0,-pi/2])
     #From Jingru, shift back .32 from base
-    T1[0:3,3]=array([0.0,.32+T_rung_global[1,3],0.002]).T
+    T1[0:3,3]=array([-.118,.32+T_rung_global[1,3],0.002]).T
 
     T=array(mat(T0)*mat(T1))
     robot.SetTransform(T)
@@ -232,6 +235,22 @@ class force_log:
                 c0=1+k*6
                 c1=1+6*(k+1)
                 return self.data[:self.count,array(components)+1+6*k]
+    
+def add_torque(robot,joints,maxT,level=3):
+    #TODO: individual joint control?
+    if level>0:
+        for j in joints[0::3][:-1]:
+            j.AddTorque([maxT*.5])
+        joints[-3].AddTorque([maxT*1.0])
+
+    if level>1:
+        for j in joints[1::3][:-1]:
+            j.AddTorque([maxT*.25])
+        joints[-2].AddTorque([maxT*.5])
+    if level>2:
+        for j in joints[2::3][:-1]:
+            j.AddTorque([maxT*.125])
+        joints[-1].AddTorque([maxT*.25])
 
 def save(self,filename,struct):
     with open(filename,'w') as f:
@@ -239,9 +258,10 @@ def save(self,filename,struct):
         pickle.dump(stuct, f)
 
 def set_finger_torque(robot,maxT):
-    names=[u'leftIndexKnuckle1', u'leftIndexKnuckle2', u'leftIndexKnuckle3', u'leftMiddleKnuckle1', u'leftMiddleKnuckle2', u'leftMiddleKnuckle3', u'leftRingKnuckle1', u'leftRingKnuckle2', u'leftRingKnuckle3', u'leftPinkyKnuckle1', u'leftPinkyKnuckle2', u'leftPinkyKnuckle3', u'leftThumbKnuckle1', u'leftThumbKnuckle2', u'leftThumbKnuckle3', u'rightIndexKnuckle1', u'rightIndexKnuckle2', u'rightIndexKnuckle3', u'rightMiddleKnuckle1', u'rightMiddleKnuckle2', u'rightMiddleKnuckle3', u'rightRingKnuckle1', u'rightRingKnuckle2', u'rightRingKnuckle3', u'rightPinkyKnuckle1', u'rightPinkyKnuckle2', u'rightPinkyKnuckle3', u'rightThumbKnuckle1', u'rightThumbKnuckle2', u'rightThumbKnuckle3']
-    for n in names:
-        robot.GetJoint(n).SetTorqueLimits([maxT])
+    for f in fingers:
+        robot.GetJoint(f).SetTorqueLimits([maxT])
+        robot.GetJoint(f).SetVelocityLimits([3])
+        robot.GetJoint(f).SetAccelerationLimits([30])
     
 if __name__=='__main__':
 
@@ -294,9 +314,21 @@ if __name__=='__main__':
         steps=int(t_total/0.0005)
         forces=force_log(steps,robot.GetAttachedSensors())
         forces.setup(50)
-        if raw_input('Hit any key to run simulation or enter to skip:'):
-            recorder.start()
+        set_finger_torque(robot,.1)
+        right_joints=[]
+        left_joints=[]
+        for n in fingers:
+            if n.find('left')>-1:
+                left_joints.append(robot.GetJoint(n))
+            if n.find('right')>-1:
+                right_joints.append(robot.GetJoint(n))
+
+        #if raw_input('Hit any key to run simulation or enter to skip:'):
+        if True:
+            #recorder.start()
             ctrl.SendCommand('start')
+            rflag=False
+            lflag=False
             while not ctrl.IsDone():
                 env.StepSimulation(0.0005)
                 handle=openhubo.plotProjectedCOG(robot)
@@ -306,7 +338,19 @@ if __name__=='__main__':
                     if com[2]<.3:
                         #Robot fell over
                         ctrl.Reset()
-                        break
+                k=False
+                if kbhit.kbhit():
+                    k=kbhit.getch()
+                    if k=='r' or k=='b':
+                        rflag=not rflag 
+                        print "Switch rtorque to {}".format(rflag)
+                    if k=='l' or k=='b':
+                        lflag=not lflag 
+                        print "Switch ltorque to {}".format(lflag)
+                if rflag:
+                    add_torque(robot,right_joints,3.0)
+                if lflag:
+                    add_torque(robot,left_joints,3.0)
 
             forces.save('.'.join(laddername.split('.')[:-2])+timestamp+'_forces.pickle')
     else:
@@ -316,5 +360,5 @@ if __name__=='__main__':
             recorder.start()
             play_traj(robot,dataset,timestep)
 
-    recorder.stop()
+    #recorder.stop()
 

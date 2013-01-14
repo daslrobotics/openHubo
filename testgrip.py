@@ -6,18 +6,20 @@ import time
 from recorder import viewerrecorder
 import datetime
 import tab
+import kbhit
+
+fingers=[u'rightIndexKnuckle1', u'rightIndexKnuckle2', u'rightIndexKnuckle3', u'rightMiddleKnuckle1', u'rightMiddleKnuckle2', u'rightMiddleKnuckle3', u'rightRingKnuckle1', u'rightRingKnuckle2', u'rightRingKnuckle3', u'rightPinkyKnuckle1', u'rightPinkyKnuckle2', u'rightPinkyKnuckle3', u'rightThumbKnuckle1', u'rightThumbKnuckle2', u'rightThumbKnuckle3']
 
 def set_finger_torque(robot,maxT,dt=0.0005):
-    names=[u'rightIndexKnuckle1', u'rightIndexKnuckle2', u'rightIndexKnuckle3', u'rightMiddleKnuckle1', u'rightMiddleKnuckle2', u'rightMiddleKnuckle3', u'rightRingKnuckle1', u'rightRingKnuckle2', u'rightRingKnuckle3', u'rightPinkyKnuckle1', u'rightPinkyKnuckle2', u'rightPinkyKnuckle3', u'rightThumbKnuckle1', u'rightThumbKnuckle2', u'rightThumbKnuckle3']
     #Rough calculation for now, eventually get this from finger models
     Iz0=0.000002
-    maxA=maxT/Iz0
-    maxV=maxA*dt
+    maxA=30
+    maxV=3
 
-    for n in names:
+    for n in fingers:
         robot.GetJoint(n).SetTorqueLimits([maxT])
         robot.GetJoint(n).SetVelocityLimits([maxV])
-        robot.GetJoint(n).SetVelocityLimits([maxA])
+        robot.GetJoint(n).SetAccelerationLimits([maxA])
         i=robot.GetJoint(n).GetDOFIndex()
         #TODO: Figure out actual finger stiffness?
         robot.GetController().SendCommand('set gainvec {} 100.0 0.0 0.0 '.format(i))
@@ -97,6 +99,21 @@ def load(env,scenename=None,stop=False,physics=True):
 
     return (robot,controller,ind,recorder)
 
+def add_torque(robot,joints,maxT,level=3):
+    #TODO: individual joint control?
+    if level>0:
+        for j in joints[0::3][:-1]:
+            j.AddTorque([maxT*.5])
+        joints[-3].AddTorque([maxT*1.0])
+
+    if level>1:
+        for j in joints[1::3][:-1]:
+            j.AddTorque([maxT*.25])
+        joints[-2].AddTorque([maxT*.5])
+    if level>2:
+        for j in joints[2::3][:-1]:
+            j.AddTorque([maxT*.125])
+        joints[-1].AddTorque([maxT*.25])
 
 if __name__=='__main__':
     from openravepy import *
@@ -113,28 +130,37 @@ if __name__=='__main__':
     pose[ind('rightRingKnuckle1')]=.6
     pose[ind('rightPinkyKnuckle1')]=.6
     pose[ind('rightThumbKnuckle1')]=.6
-    for T in arange(.5,20,.5):
-        fail=False
-        robot.SetDOFValues(pose)
-        rod.SetLinkVelocities((zeros(6),zeros(6))) 
-        rod.SetTransform(trans)
-        set_finger_torque(robot,T)
-        ctrl.SetDesired(pose*2)
-        print "Finger torque is {}".format(T)
-        print "Mass is {}".format(rod.GetLinks()[0].GetMass())
-        env.GetPhysicsEngine().SetGravity([0, 0, 0])
-        env.StartSimulation(timestep=0.0005)
-        print "starting..."
-        time.sleep(.5)
-        print "gravity on"
-        env.GetPhysicsEngine().SetGravity([0, 0, -9.8])
-        for t in arange(0,4,.1):
-            time.sleep(.1)
-            if env.GetKinBody('rod').GetTransform()[2,3]<-.5:
-                print "Rod fell"
-                fail=True
-                break
-        env.StopSimulation()
-        if not fail:
+    fail=False
+
+    robot.SetDOFValues(pose)
+    rod.SetLinkVelocities((zeros(6),zeros(6))) 
+    rod.SetTransform(trans)
+    T=.1
+    set_finger_torque(robot,T)
+    
+    right_joints=[]
+    for n in fingers:
+        if n.find('right')>-1:
+            right_joints.append(robot.GetJoint(n))
+
+    ctrl.SetDesired(pose*1.5)
+    print "Finger torque is {}".format(T)
+    print "Mass is {}".format(rod.GetLinks()[0].GetMass())
+    env.GetPhysicsEngine().SetGravity([0, 0, 0])
+    env.StartSimulation(timestep=0.0005)
+    print "starting..."
+    time.sleep(.5)
+    print "gravity on"
+    env.StopSimulation()
+    env.GetPhysicsEngine().SetGravity([0, 0, -9.8])
+    level=3
+    strength=1.6
+    while True:
+        env.StepSimulation(0.0005)
+        add_torque(robot,right_joints,strength,level)
+        if env.GetKinBody('rod').GetTransform()[2,3]<-.5:
+            print "Rod fell"
+            fail=True
             break
+    env.StopSimulation()
 
