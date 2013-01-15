@@ -73,6 +73,7 @@
         <offsetfrom>leftMiddleProximal</offsetfrom>
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+<maxtorque>20</maxtorque>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
 
@@ -82,6 +83,8 @@
         <offsetfrom>leftMiddleProximal</offsetfrom>
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> leftMiddleProximal leftMiddleMedial</adjacent>
 
@@ -91,6 +94,8 @@
         <offsetfrom>leftMiddleMedial</offsetfrom>
         <anchor>0.011 0 0</anchor>
         <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
+        <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> leftMiddleDistal leftMiddleMedial</adjacent>
 

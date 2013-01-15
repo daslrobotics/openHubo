@@ -12,7 +12,7 @@ class viewerrecorder:
         if copyfrom==None:
             self.filename='recorded_video'
             self.codec=13
-            self.videoparams=[640,480,30]
+            self.videoparams=[640,480,29.97]
             self.realtime=True
         else:
             self.filename=copyfrom.filename
@@ -38,6 +38,8 @@ class viewerrecorder:
     def stop(self):
         self.module.SendCommand('Stop')
 
+
+
 if __name__ == '__main__':
     
     file_env = 'scenes/simpleFloor.env.xml'
@@ -46,10 +48,11 @@ if __name__ == '__main__':
     env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
     env.Load(file_env)
+    env.StopSimulation()
     env.StartSimulation(timestep=0.001)
 
-
     recorder=viewerrecorder(env)
+    recorder.realtime=False
     recorder.start()
-    time.sleep(6)
+    time.sleep(5)
     recorder.stop()

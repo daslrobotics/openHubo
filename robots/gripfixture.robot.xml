@@ -1,0 +1,75 @@
+<robot name="gripfixture">
+    <kinbody name="testbody">
+        <modelsdir>huboplus/models</modelsdir>
+        <body name="base" type="static">
+            
+        </body>
+        <body name="Body_RWP" type="dynamic">
+            <!--Body_RWP Parent Center of Mass to Base -->
+            <translation>0.001220192079 0.000635233335 0.023804318643</translation>
+            <!--Body_RWP Parent to Current -->
+            <translation>0.000001729730 0.010000000000 -0.052549999972</translation>
+            <!--Body_RWP Base to Center of Mass -->
+            <translation>-0.000258199377 -0.011441986656 -0.046147242821</translation>
+            <geom type="trimesh">
+                <translation>0.000258199377 0.011441986656 0.046147242821</translation>
+                <translation>0.001 0 0</translation>
+                <donotrender>Body_RWP_1.wrl 1 </donotrender>
+                <data>convhull_RWP_1.wrl 1 </data>
+            </geom>
+
+            <mass type="custom">
+                <total>0.104392998329</total>
+                <inertia>
+                    0.000097432742 0.000000522155 -0.000001173170
+                    0.000000522155 0.000144494281 -0.000009492703
+                    -0.000001173170 -0.000009492703 0.000122681345
+                </inertia>
+            </mass>
+        </body>
+        <Joint name="RWP_dummy2" type="hinge" enable="false">
+            <body>Body_RWP</body>
+            <body>base</body>
+            <limitsdeg>0 0</limitsdeg>
+        </Joint>
+
+        <body name="rightPalm" type="dynamic">
+            <offsetfrom>Body_RWP</offsetfrom>
+            <translation>0.000258199377 0.011441986656 0.046147242821</translation>
+            <translation>-0.000001 0.000361 -0.07703</translation>
+            <translation>0 0.0007071 -0.0007071</translation>
+            <rotationaxis>0 1 0 90</rotationaxis>
+            <rotationaxis>1 0 0 -45</rotationaxis>
+            <geom type="box">
+                <diffusecolor>.3 .3 .3</diffusecolor>
+                <extents> 0.0197485 0.002 0.037595</extents>
+            </geom>
+            <mass type="custom">
+                <total>.06</total>
+            </mass>
+        </body>
+
+        <Joint name="RWP_dummy" type="hinge" enable="false">
+            <body>Body_RWP</body>
+            <body>rightPalm</body>
+            <offsetfrom>Body_RWP</offsetfrom>
+            <limitsdeg>0 0</limitsdeg>
+        </Joint>
+
+        <adjacent>rightPalm Body_RWP</adjacent>
+        <kinbody file="huboplus/righthand.kinbody.xml"/>
+
+        <adjacent>rightPalm rightIndexProximal</adjacent>
+        <adjacent>rightPalm rightMiddleProximal</adjacent>
+        <adjacent>rightPalm rightRingProximal</adjacent>
+        <adjacent>rightPalm rightPinkyProximal</adjacent>
+        <adjacent>rightPalm rightThumbProximal</adjacent>
+    </kinbody>
+
+    <AttachedSensor name="rightPalmFT">
+        <link>rightPalm</link>
+        <sensor type="ForceSensor">
+        </sensor>
+    </AttachedSensor>
+
+</robot>

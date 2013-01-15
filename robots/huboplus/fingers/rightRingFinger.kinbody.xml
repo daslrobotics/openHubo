@@ -73,6 +73,7 @@
         <offsetfrom>rightRingProximal</offsetfrom>
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
+<maxtorque>20</maxtorque>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightRingProximal Body_RWP</adjacent>
@@ -84,6 +85,7 @@
         <offsetfrom>rightRingProximal</offsetfrom>
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightRingProximal rightRingMedial</adjacent>
@@ -95,6 +97,7 @@
         <offsetfrom>rightRingMedial</offsetfrom>
         <anchor>0.011 0 0</anchor>
         <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
     <adjacent> rightRingDistal rightRingMedial</adjacent>
