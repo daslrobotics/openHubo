@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import curses
 import kbhit
 
-number_of_degrees=57
+number_of_degrees=55
 joint_offsets=zeros(number_of_degrees)
 joint_signs=ones(number_of_degrees)
 #Default the map to -1 for a missing index
@@ -120,11 +120,12 @@ def build_openrave_traj(robot,dataset,timestep,retime=True):
         pose=dataset[k,jointmap+6]*joint_signs+joint_offsets
         for p in range(len(pose)):
             #Make sure limits are enforced and clip them
-            L=robot.GetJointFromDOFIndex(p).GetLimits()
-            if pose[p]>max(L)[0]:
-                pose[p]=max(L)[0]*.99
-            if pose[p]<min(L)[0]:
-                pose[p]=min(L)[0]*.99
+            if p<robot.GetDOF():
+                L=robot.GetJointFromDOFIndex(p).GetLimits()
+                if pose[p]>max(L)[0]:
+                    pose[p]=max(L)[0]*.99
+                if pose[p]<min(L)[0]:
+                    pose[p]=min(L)[0]*.99
 
         #Note this method does not use a controller
         jointvals=pose
@@ -249,8 +250,8 @@ def add_torque(robot,joints,maxT,level=3):
         joints[-2].AddTorque([maxT*.5])
     if level>2:
         for j in joints[2::3][:-1]:
-            j.AddTorque([maxT*.125])
-        joints[-1].AddTorque([maxT*.25])
+            j.AddTorque([maxT*.0625])
+        joints[-1].AddTorque([maxT*.125])
 
 def save(self,filename,struct):
     with open(filename,'w') as f:
@@ -334,7 +335,7 @@ if __name__=='__main__':
             Tmax=3.0
             rtorque=0.0
             ltorque=0.0
-            openhubo.set_robot_color(robot,[.5,.5,.5],[.5,.5,.5],.4)
+            #openhubo.set_robot_color(robot,[.5,.5,.5],[.5,.5,.5],.4)
             while not ctrl.IsDone():
                 env.StepSimulation(0.0005)
                 handle=openhubo.plotProjectedCOG(robot)
