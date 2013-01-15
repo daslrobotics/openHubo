@@ -55,7 +55,7 @@ if __name__=='__main__':
         ref_robot.SetController(RaveCreateController(env,'mimiccontroller'))
         controller.SendCommand("set visrobot rlhuboplus_ref")
         ind=openhubo.makeNameToIndexConverter(robot)
-        set_robot_color(ref_robot,[.7,.7,.5],[.7,.7,.5],trans=.7)
+        openhubo.set_robot_color(ref_robot,[.7,.7,.5],[.7,.7,.5],trans=.7)
 
     env.StartSimulation(timestep=0.0005)
 
