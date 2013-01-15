@@ -8,6 +8,17 @@ import datetime
 """ A collection of useful functions to run openhubo models.
 As common functions are developed, they will be added here.
 """
+
+def set_robot_color(robot,dcolor=[.5,.5,.5],acolor=[.5,.5,.5],trans=0,links=[]):
+    #Iterate over a robot's links and set color / transparency
+    if not len(links):
+        links=robot.GetLinks()
+    for l in links:
+        for g in l.GetGeometries():
+            g.SetDiffuseColor(dcolor)
+            g.SetAmbientColor(acolor)
+            g.SetTransparency(trans)
+
 def set_finger_torque(robot,maxT,dt=0.0005):
     names=[u'rightIndexKnuckle1', u'rightIndexKnuckle2', u'rightIndexKnuckle3', u'rightMiddleKnuckle1', u'rightMiddleKnuckle2', u'rightMiddleKnuckle3', u'rightRingKnuckle1', u'rightRingKnuckle2', u'rightRingKnuckle3', u'rightPinkyKnuckle1', u'rightPinkyKnuckle2', u'rightPinkyKnuckle3', u'rightThumbKnuckle1', u'rightThumbKnuckle2', u'rightThumbKnuckle3',u'leftIndexKnuckle1', u'leftIndexKnuckle2', u'leftIndexKnuckle3', u'leftMiddleKnuckle1', u'leftMiddleKnuckle2', u'leftMiddleKnuckle3', u'leftRingKnuckle1', u'leftRingKnuckle2', u'leftRingKnuckle3', u'leftPinkyKnuckle1', u'leftPinkyKnuckle2', u'leftPinkyKnuckle3', u'leftThumbKnuckle1', u'leftThumbKnuckle2', u'leftThumbKnuckle3']
     #Rough calculation for now, eventually get this from finger models
@@ -22,7 +33,7 @@ def set_finger_torque(robot,maxT,dt=0.0005):
         robot.GetJoint(n).SetVelocityLimits([maxA])
         i=robot.GetJoint(n).GetDOFIndex()
         #TODO: Figure out actual finger stiffness?
-        robot.GetController().SendCommand('set gainvec {} 100.0 0.0 0.0 '.format(i))
+        robot.GetController().SendCommand('set gainvec {} 50.0 0.0 0.0 '.format(i))
 
 
 def get_timestamp(lead='_'):
@@ -46,12 +57,6 @@ def makeNameToIndexConverter(robot):
         else:
             return -1
     return convert
-
-def load_huboplus(env):
-    pass
-
-def load_hubo2(env):
-    pass
 
 def load_simplefloor(env):
     """ Load up and configure the simpleFloor environment for hacking with
@@ -130,19 +135,13 @@ def load(env,robotname,scenename=None,stop=False,physics=True):
 
             #Load ref robot and colorize
             #TODO: Load the actual robot as a copy, then strip out extra junk there
-            ref_robot=None
-            #env.Load('rlhuboplus.ref.robot.xml')
-            #ref_robot=env.GetRobot('rlhuboplus_ref')
-            #ref_robot.Enable(False)
-            #ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
-            #controller.SendCommand("set visrobot rlhuboplus_ref")
-            #for j in ref_robot.GetJoints():
-                ##Remove active joint limits
-                #j.SetLimits([-pi],[pi])
-            #for l in ref_robot.GetLinks():
-                #for g in l.GetGeometries():
-                    #g.SetDiffuseColor([.8,.8,.5])
-                    #g.SetTransparency(.5)
+            #ref_robot=None
+            env.Load('rlhuboplus.ref.robot.xml')
+            ref_robot=env.GetRobot('rlhuboplus_ref')
+            ref_robot.Enable(False)
+            ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
+            controller.SendCommand("set visrobot rlhuboplus_ref")
+            set_robot_color(ref_robot,[.7,.7,.5],[.7,.7,.5],trans=.5)
         else:
             #Just load ideal controller if physics engine is not present
             controller=rave.RaveCreateController(env,'idealcontroller')
@@ -232,11 +231,11 @@ def hubo2_right_foot():
     return MakeTransform(R,t)
 
 def find_com(robot):
-    com_trans=array([0,0,0])
-    mass=0
+    com_trans=array([0.0,0.0,0.0])
+    mass=0.0
     for l in robot.GetLinks():
-        com_trans=com_trans+l.GetTransform()[:-1,3]*l.GetMass()
-        mass=mass+l.GetMass()
+        com_trans+= (l.GetGlobalCOM()*l.GetMass())
+        mass+=l.GetMass()
 
     com=com_trans/mass
     return com
@@ -260,13 +259,26 @@ def plotProjectedCOG(robot):
     
 def plotBodyCOM(env,link,handle=None,color=array([0,1,0])):
     origin=link.GetGlobalCOM()
+    m=link.GetMass()
     if handle==None:
-        handle=env.plot3(points=origin,pointsize=10.0,colors=color)
+        handle=env.plot3(points=origin,pointsize=5.0*m,colors=color)
     else:
         neworigin=[1,0,0,0]
         neworigin.extend(origin.tolist())
         handle.SetTransform(matrixFromPose(neworigin))
     return handle
+
+def plot_masses(robot,color=array([.8,.5,.3]),ccolor=[0,.8,.8]):
+    handles=[]
+    total=0
+    for l in robot.GetLinks():
+        origin=l.GetGlobalCOM()
+        m=l.GetMass()
+        total+=m
+        #Area of box corresponds to mass
+        handles.append(robot.GetEnv().plot3(origin,5.0*power(m,.5),array(color)))
+    handles.append(robot.GetEnv().plot3(find_com(robot),5.0*power(total,.5),ccolor))
+    return handles
 
 def CloseLeftHand(robot,angle=pi/2):
     #assumes the robot is still, uses direct control

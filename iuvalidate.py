@@ -237,7 +237,7 @@ class force_log:
                 return self.data[:self.count,array(components)+1+6*k]
     
 def add_torque(robot,joints,maxT,level=3):
-    #TODO: individual joint control?
+    """ Add torque to joints, assuming that they are fingers by the indices."""
     if level>0:
         for j in joints[0::3][:-1]:
             j.AddTorque([maxT*.5])
@@ -325,10 +325,16 @@ if __name__=='__main__':
 
         #if raw_input('Hit any key to run simulation or enter to skip:'):
         if True:
+            print 'Type a letter and enter to toggle hand torque (b = both, l / r = left / right, a in, z dec):'
+
             #recorder.start()
             ctrl.SendCommand('start')
             rflag=False
             lflag=False
+            Tmax=3.0
+            rtorque=0.0
+            ltorque=0.0
+            openhubo.set_robot_color(robot,[.5,.5,.5],[.5,.5,.5],.4)
             while not ctrl.IsDone():
                 env.StepSimulation(0.0005)
                 handle=openhubo.plotProjectedCOG(robot)
@@ -338,19 +344,37 @@ if __name__=='__main__':
                     if com[2]<.3:
                         #Robot fell over
                         ctrl.Reset()
-                k=False
-                if kbhit.kbhit():
-                    k=kbhit.getch()
-                    if k=='r' or k=='b':
-                        rflag=not rflag 
-                        print "Switch rtorque to {}".format(rflag)
-                    if k=='l' or k=='b':
-                        lflag=not lflag 
-                        print "Switch ltorque to {}".format(lflag)
+                        break
+                    #handles=openhubo.plot_masses(robot)
+                    if kbhit.kbhit():
+                        k=kbhit.getch()
+                        if k=='r' or k=='b':
+                            rflag=not rflag 
+                            print "Switch rtorque to {}".format(rflag)
+
+                        if k=='l' or k=='b':
+                            lflag=not lflag 
+                            print "Switch ltorque to {}".format(lflag)
+
+                        elif k=='a':
+                            print "Raising Tmax by .25"
+                            Tmax+=.25
+                        elif k=='z':
+                            print "Lowering Tmax by .25"
+                            Tmax-=.25
+                        
                 if rflag:
-                    add_torque(robot,right_joints,3.0)
+                    if rtorque<Tmax:
+                        rtorque+=.001
+                    add_torque(robot,right_joints,rtorque)
+                else:
+                    rtorque=0.0
                 if lflag:
-                    add_torque(robot,left_joints,3.0)
+                    if ltorque<Tmax:
+                        ltorque+=.001
+                    add_torque(robot,left_joints,ltorque)
+                else:
+                    ltorque=0.0
 
             forces.save('.'.join(laddername.split('.')[:-2])+timestamp+'_forces.pickle')
     else:
