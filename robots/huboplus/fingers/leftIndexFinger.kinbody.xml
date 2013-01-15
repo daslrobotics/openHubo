@@ -22,37 +22,47 @@
             <height>0.016</height>
             <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
         </Geom>
-        <Geom type="box">
+        <Mass type="mimicgeom">
+            <total>0.012</total>
+        </Mass>
+    </Body>
+
+    <Body name="leftIndexMedial" type="dynamic">
+        <offsetfrom>leftIndexProximal</offsetfrom>
         <Translation> 0.027 0 0</Translation>
+        <Geom type="box">
             <extents> 0.011	0.008 0.008</extents>
             <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
         </Geom>
         <Geom type="cylinder">
-        <Translation> 0.027 0 0</Translation>
             <RotationAxis>1 0 0 90</RotationAxis>
             <Translation>0.011 0 0</Translation>
             <radius> 0.008</radius>
             <height>0.016</height>
             <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
         </Geom>
-        <Geom type="box">
-        <Translation> 0.027 0 0</Translation>
+        <Mass type="mimicgeom">
+            <total>0.006</total>
+        </Mass>
+    </Body>
+
+    <Body name="leftIndexDistal" type="dynamic">
+        <offsetfrom>leftIndexMedial</offsetfrom>
         <Translation> 0.025 0 0</Translation>
+        <Geom type="box">
             <Translation>-0.004 0 0</Translation>
             <extents> 0.010	0.008 0.008</extents>
             <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
         </Geom>
         <Geom type="cylinder">
-        <Translation> 0.027 0 0</Translation>
-        <Translation> 0.025 0 0</Translation>
             <RotationAxis>1 0 0 90</RotationAxis>
             <Translation>0.006 0 0</Translation>
-            <radius> 0.008</radius>
+            <radius> 0.011</radius>
             <height>0.016</height>
             <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
         </Geom>
         <Mass type="mimicgeom">
-            <total>0.028</total>
+            <total>0.010</total>
         </Mass>
     </Body>
 
@@ -67,5 +77,23 @@
         <anchor>-0.016 0 0</anchor>
         <limitsdeg>-4 100</limitsdeg>
     </Joint>
+
+    <Joint name="leftIndexKnuckle2" type="hinge" >
+        <Body>leftIndexProximal</Body>
+        <Body>leftIndexMedial</Body>
+        <offsetfrom>leftIndexProximal</offsetfrom>
+        <anchor>0.016 0 0</anchor>
+        <axis>0 0 -1</axis>
+    </Joint>
+    <adjacent> leftIndexProximal leftIndexMedial</adjacent>
+
+    <Joint name="leftIndexKnuckle3" type="hinge" >
+        <Body>leftIndexMedial</Body>
+        <Body>leftIndexDistal</Body>
+        <offsetfrom>leftIndexMedial</offsetfrom>
+        <anchor>0.011 0 0</anchor>
+        <axis>0 0 -1</axis>
+    </Joint>
+    <adjacent> leftIndexDistal leftIndexMedial</adjacent>
 
 </KinBody>
