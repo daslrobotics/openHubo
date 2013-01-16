@@ -11,7 +11,7 @@ from rodrigues import *
 import re
 from LadderGenerator import *
 import trajectory
-import debug
+#import debug
 from recorder import viewerrecorder
 import pickle
 import signal, os
@@ -174,6 +174,66 @@ def play_traj(robot,dataset,timestep):
         robot.SetDOFValues(pose.T)
         time.sleep(timestep)
 
+def get_triggers(robot,dataset):
+    #Assume that robot is in initial position now
+    T0=robot.GetTransform()
+    ftriggers=zeros((size(dataset,0),2),bool)
+    lr=[27,42]
+    for k in range(size(dataset,0)):
+        #left = 27, right = 42
+        ftriggers[k,:]=dataset[k,jointmap[lr]]*joint_signs[lr]+joint_offsets[lr]>.85
+    return ftriggers
+
+class effector_log:
+    def __init__(self,loglen=10,bodies=[]):
+        self.width=1
+        self.loglen=loglen
+        self.bodies=[]
+        self.count=0
+        self.env=bodies[0].GetParent().GetEnv()
+        for b in bodies:
+            self.width+=3
+            self.bodies.append(b)
+        self.robot=self.bodies[0].GetParent()
+        self.data=zeros((loglen,self.width))
+        self.com=zeros((loglen,3))
+        #Data structure is 1 col of time, 6s columns of sensor data
+        
+    def record(self,time=None):
+        if not time:
+            self.data[self.count,0]=self.env.GetSimulationTime()
+        else:
+            self.data[self.count,0]=time
+        for k in range(len(self.bodies)):
+            #COM is coincident with body frame due to ODE restrictions
+            com=self.bodies[k].GetGlobalCOM()
+            c0=1+k*3
+            c1=1+3*(k+1)
+            self.data[self.count,c0:c1]=(com)
+            self.com[self.count,:]=openhubo.find_com(self.robot)
+        self.count+=1
+
+    def save(self,filename):
+        names=[]
+        for b in self.bodies:
+            names.append(b.GetName())
+        robotname=self.bodies[0].GetParent().GetName()
+        with open(filename,'w') as f:
+            #TODO: save robot hash?
+            pickle.dump([self.data[:self.count,:],self.com[:self.count,:],names,robotname],f)
+
+    def load(self,filename):
+        with open(filename,'r') as f:
+            self.data=pickle.load(f)
+            self.count=size(self.data,0)
+    def lookup(self,name,components):
+        if name=='time':
+            return self.data[:self.count,0]
+        for k in range(len(self.sensors)):
+            if self.sensors[k].GetName()==name:
+                c0=1+k*3
+                return self.data[:self.count,array(components)+c0]
+
 class force_log:
     def __init__(self,loglen=10,sensors=[]):
         self.width=1
@@ -250,8 +310,8 @@ def add_torque(robot,joints,maxT,level=3):
         joints[-2].AddTorque([maxT*.5])
     if level>2:
         for j in joints[2::3][:-1]:
-            j.AddTorque([maxT*.0625])
-        joints[-1].AddTorque([maxT*.125])
+            j.AddTorque([maxT*.125])
+        joints[-1].AddTorque([maxT*.25])
 
 def save(self,filename,struct):
     with open(filename,'w') as f:
@@ -277,6 +337,12 @@ if __name__=='__main__':
     except IndexError:
         print "Trajectory argument not found!"
         raise 
+
+    try:
+        Tmax = float(sys.argv[3])
+    except IndexError:
+        Tmax=1.6
+        pass
 
     #Assume that name has suffix of some sort!
     # Try to keep parameters specified here
@@ -306,15 +372,18 @@ if __name__=='__main__':
     load_mapping(robot,"iumapping.txt")
     [dataset,timestep,total_time,number_of_steps]=load_iu_traj(file_traj)
     timestep=0.05
+    ## Change this to affect maximum applied hand torque
+    suffix='_{}'.format(Tmax)
 
     if physicson:
         timestamp=openhubo.get_timestamp()
-        recorder.filename='.'.join(laddername.split('.')[:-2])+timestamp+'_physics.avi'
+        recorder.filename='.'.join(laddername.split('.')[:-2])+timestamp+suffix+'_physics.avi'
         traj=build_openrave_traj(robot,dataset,timestep,True)
         ctrl.SetPath(traj)
         t_total=traj.GetDuration()
         steps=int(t_total/0.0005)
-        forces=force_log(steps,robot.GetAttachedSensors())
+        forces=force_log(steps,[robot.GetAttachedSensor(x) for x in ['rightFootFT','leftFootFT']])
+        points=effector_log(steps,[robot.GetLink(x) for x in ['leftFoot','rightFoot','leftPalm','rightPalm']])
         forces.setup(50)
         set_finger_torque(robot,.1)
         right_joints=[]
@@ -324,46 +393,57 @@ if __name__=='__main__':
                 left_joints.append(robot.GetJoint(n))
             if n.find('right')>-1:
                 right_joints.append(robot.GetJoint(n))
-
-        #if raw_input('Hit any key to run simulation or enter to skip:'):
         if True:
+        #if raw_input('Hit any key to run simulation or enter to skip:'):
             print 'Type a letter and enter to toggle hand torque (b = both, l / r = left / right, a in, z dec):'
 
-            #recorder.start()
+            recorder.start()
             ctrl.SendCommand('start')
             rflag=False
             lflag=False
-            Tmax=3.0
             rtorque=0.0
             ltorque=0.0
+
             #openhubo.set_robot_color(robot,[.5,.5,.5],[.5,.5,.5],.4)
+            triggers=get_triggers(robot,dataset)
+            count=0
             while not ctrl.IsDone():
                 env.StepSimulation(0.0005)
                 handle=openhubo.plotProjectedCOG(robot)
-                forces.record()
-                if not (forces.count % 20):
+                #TODO: make this depend on input timestep!!!
+                #hackjob...
+                if not (count % 100):
+                    try:
+                        lflag=triggers[count/100,0]
+                        rflag=triggers[count/100,1]
+                    except IndexError:
+                        pass
+                
+                if not (count % 20):
+                    forces.record()
+                    points.record()
                     com=openhubo.find_com(robot)
                     if com[2]<.3:
                         #Robot fell over
                         ctrl.Reset()
                         break
                     #handles=openhubo.plot_masses(robot)
-                    if kbhit.kbhit():
-                        k=kbhit.getch()
-                        if k=='r' or k=='b':
-                            rflag=not rflag 
-                            print "Switch rtorque to {}".format(rflag)
+                    #if kbhit.kbhit():
+                        #k=kbhit.getch()
+                        #if k=='r' or k=='b':
+                            #rflag=not rflag 
+                            #print "Switch rtorque to {}".format(rflag)
 
-                        if k=='l' or k=='b':
-                            lflag=not lflag 
-                            print "Switch ltorque to {}".format(lflag)
+                        #if k=='l' or k=='b':
+                            #lflag=not lflag 
+                            #print "Switch ltorque to {}".format(lflag)
 
-                        elif k=='a':
-                            print "Raising Tmax by .25"
-                            Tmax+=.25
-                        elif k=='z':
-                            print "Lowering Tmax by .25"
-                            Tmax-=.25
+                        #elif k=='a':
+                            #print "Raising Tmax by .25"
+                            #Tmax+=.25
+                        #elif k=='z':
+                            #print "Lowering Tmax by .25"
+                            #Tmax-=.25
                         
                 if rflag:
                     if rtorque<Tmax:
@@ -377,8 +457,10 @@ if __name__=='__main__':
                     add_torque(robot,left_joints,ltorque)
                 else:
                     ltorque=0.0
+                count+=1
 
-            forces.save('.'.join(laddername.split('.')[:-2])+timestamp+'_forces.pickle')
+            forces.save('.'.join(laddername.split('.')[:-2])+timestamp+suffix+'_forces.pickle')
+            points.save('.'.join(laddername.split('.')[:-2])+timestamp+suffix+'_points.pickle')
     else:
         if raw_input('Hit any key to run simulation or enter to skip:'):
             recorder.filename='.'.join(laddername.split('.')[:-2])+'_ideal.avi'
@@ -386,5 +468,5 @@ if __name__=='__main__':
             recorder.start()
             play_traj(robot,dataset,timestep)
 
-    #recorder.stop()
+    recorder.stop()
 
