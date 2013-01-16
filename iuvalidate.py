@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import curses
 import kbhit
 
-number_of_degrees=55
+number_of_degrees=57
 joint_offsets=zeros(number_of_degrees)
 joint_signs=ones(number_of_degrees)
 #Default the map to -1 for a missing index
@@ -260,9 +260,10 @@ def save(self,filename,struct):
 
 def set_finger_torque(robot,maxT):
     for f in fingers:
-        robot.GetJoint(f).SetTorqueLimits([maxT])
-        robot.GetJoint(f).SetVelocityLimits([3])
-        robot.GetJoint(f).SetAccelerationLimits([30])
+        if robot.GetJoint(f):
+            robot.GetJoint(f).SetTorqueLimits([maxT])
+            robot.GetJoint(f).SetVelocityLimits([3])
+            robot.GetJoint(f).SetAccelerationLimits([30])
     
 if __name__=='__main__':
 
