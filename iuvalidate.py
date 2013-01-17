@@ -378,6 +378,7 @@ if __name__=='__main__':
     if physicson:
         timestamp=openhubo.get_timestamp()
         recorder.filename='.'.join(laddername.split('.')[:-2])+timestamp+suffix+'_physics.avi'
+        recorder.videoparams[0:2]=[640,480]
         traj=build_openrave_traj(robot,dataset,timestep,True)
         ctrl.SetPath(traj)
         t_total=traj.GetDuration()
@@ -459,6 +460,9 @@ if __name__=='__main__':
                     ltorque=0.0
                 count+=1
 
+            if ctrl.IsDone():
+                print "Trajectory is successful!"
+                suffix+="_success"
             forces.save('.'.join(laddername.split('.')[:-2])+timestamp+suffix+'_forces.pickle')
             points.save('.'.join(laddername.split('.')[:-2])+timestamp+suffix+'_points.pickle')
     else:
