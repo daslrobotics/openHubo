@@ -11,12 +11,12 @@
             <translation>0.000001729730 0.010000000000 -0.052549999972</translation>
             <!--Body_RWP Base to Center of Mass -->
             <translation>-0.000258199377 -0.011441986656 -0.046147242821</translation>
-            <geom type="trimesh">
-                <translation>0.000258199377 0.011441986656 0.046147242821</translation>
-                <translation>0.001 0 0</translation>
-                <donotrender>Body_RWP_1.wrl 1 </donotrender>
-                <data>convhull_RWP_1.wrl 1 </data>
-            </geom>
+            <!--<geom type="trimesh">-->
+                <!--<translation>0.000258199377 0.011441986656 0.046147242821</translation>-->
+                <!--<translation>0.001 0 0</translation>-->
+                <!--<donotrender>Body_RWP_1.wrl 1 </donotrender>-->
+                <!--<data>convhull_RWP_1.wrl 1 </data>-->
+            <!--</geom>-->
 
             <mass type="custom">
                 <total>0.104392998329</total>

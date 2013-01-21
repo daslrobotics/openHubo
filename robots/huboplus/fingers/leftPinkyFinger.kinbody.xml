@@ -58,7 +58,7 @@
         <Geom type="cylinder">
             <RotationAxis>1 0 0 90</RotationAxis>
             <Translation>0.006 0 0</Translation>
-            <radius> 0.008</radius>
+            <radius> 0.011</radius>
             <height>0.016</height>
             <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
         </Geom>

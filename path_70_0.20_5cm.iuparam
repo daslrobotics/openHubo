@@ -8,7 +8,7 @@
 0.205		#ladder-rung-space
 0.025		#ladder-stringer-radius
 20			#ladder-stringer-nface
-0.02		#ladder-rung-radius
+0.025		#ladder-rung-radius
 20			#ladder-rung-nface
 0			#1-rect--0-cir-rung-cross-section
 1			#1-rect--0-cir-stringer-cross-section
