@@ -91,6 +91,7 @@ def load_iu_traj(filename):
             number_of_steps = 0
 
         dataset=[]
+        count=0
         while len(line)>0:
             if not line:
                 print "Configuration is Missing"
@@ -108,8 +109,10 @@ def load_iu_traj(filename):
 
             dataset.append(data)
             line = f.readline()
+            count+=1
+
     #Convert to neat numpy array
-    return [array(dataset),timestep,total_time,number_of_steps]
+    return [array(dataset),timestep,total_time,number_of_steps if number_of_steps else count]
 
 def format_angles(data):
     newdata=zeros(size(data))
@@ -205,22 +208,20 @@ def set_default_limits(robot):
     for p in ['R','L']:
         for k in range(len(bases)):
             n=p+bases[k]
-            print "Old Limits: "+robot.GetJoint(n).GetLimits()
+            print n+ " old limits: {}".format(robot.GetJoint(n).GetLimits())
             robot.GetJoint(n).SetLimits([lower[k]],[upper[k]])
 
 def set_expanded_limits(robot):
-    """ Hack to enforce the stock limits on a version of the Hubo+ robot. Hard
-    coded limits pulled from rlhuboplus model, based on shell collision limits
-    from home position.
-    """
+    """ Use 10 deg. more as shown by IU planner. """
     bases=['HP','KP','AP']
-    lower=array([-85,-4,-74])*pi/180.0
-    upper=array([92,149,97])*pi/180.0
+    lower=(array([-85,-4,-74])-10)*pi/180.0
+    upper=(array([92,149,97])+10)*pi/180.0
     for p in ['R','L']:
         for k in range(len(bases)):
             n=p+bases[k]
-            print "Old Limits: "+robot.GetJoint(n).GetLimits()
+            print n+ " old limits: {}".format(robot.GetJoint(n).GetLimits())
             robot.GetJoint(n).SetLimits([lower[k]],[upper[k]])
+
 class effector_log:
     def __init__(self,loglen=10,bodies=[]):
         self.width=1
@@ -403,9 +404,9 @@ if __name__=='__main__':
 
     try:
         #Hack to get limits optionally overridden for shell robot
-        override_limits = float(sys.argv[5])
+        expand_limits = float(sys.argv[5])
     except IndexError:
-        override_limits = 0
+        expand_limits = 0
         pass
 
     try:
@@ -479,6 +480,11 @@ if __name__=='__main__':
     rtorque=0.0
     ltorque=0.0
 
+    if expand_limits:
+        set_default_limits(robot)
+    else:
+        set_expanded_limits(robot)
+
     #openhubo.set_robot_color(robot,[.5,.5,.5],[.5,.5,.5],.4)
     triggers=get_triggers(robot,dataset)
     count=0
@@ -543,6 +549,7 @@ if __name__=='__main__':
     if ctrl.IsDone():
         print "Trajectory is successful!"
         suffix+="_success"
+
     prefix='.'.join(laddername.split('.')[:-2])
     outname=prefix + timestamp + suffix
     forces.save(outname + '_forces.pickle')
@@ -552,11 +559,11 @@ if __name__=='__main__':
 
     #Log misc data
     logname= outname + '.log'
-    tableentries=[file_robot,'{}'.format(override_limits),prefix]
+    tableentries=[outname,file_robot,'Expanded' if expand_limits else 'Original',prefix,'{} {}'.format(count,int(number_of_steps*timestep/0.0005)),'success' if ctrl.IsDone() else 'failure']
     with open(logname,'w') as f:
         f.write(' '.join(tableentries) + '\n')
         f.write('Robot: ' + file_robot + '\n')
-        f.write('Limits overridden: {}\n'.format(override_limits))
+        f.write('Limits expanded: {}\n'.format(expand_limits))
         bases=['HP','KP','AP']
         for p in ['R','L']:
             for k in range(len(bases)):
@@ -564,5 +571,5 @@ if __name__=='__main__':
                 f.write(n+" Limits = {}\n".format(robot.GetJoint(n).GetLimits()))
         f.write('Completed timesteps = {}\n'.format(count))
         f.write('Completed time = {}\n'.format(count*0.0005))
-
-    
+    with open('batch.out','a') as f:
+        f.write(' '.join(tableentries) + '\n')
