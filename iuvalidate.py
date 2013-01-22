@@ -59,6 +59,16 @@ def load_iu_traj(filename):
 
         if len(datalist)>1:
             #Assume header is omitted
+            print "Hubo Version Missing"
+            version="HuboDefault"
+        else:
+            version=datalist[0]
+            #line 2 has the total time
+            line = f.readline()
+            datalist=re.split(',| |\t',line)[:-1]
+
+        if len(datalist)>1:
+            #Assume header is omitted
             print "Total Time Missing"
             total_time=0
         else:
@@ -69,7 +79,7 @@ def load_iu_traj(filename):
 
         if len(datalist)>1:
             print "Time Step is Missing, assuming default..."
-            timestep=.1
+            timestep=.05
         else:
             timestep=datalist[0]
             line = f.readline()
@@ -113,7 +123,7 @@ def format_angles(data):
 def build_openrave_traj(robot,dataset,timestep,retime=True):
     #Assumes that ALL joints are specified for now
     [traj,config]=trajectory.create_trajectory(robot)
-    print config.GetDOF() 
+    #print config.GetDOF() 
     T0=robot.GetTransform()
     for k in range(size(dataset,0)):
         T=get_transform(robot,T0,dataset[k,0:6])
@@ -152,8 +162,8 @@ def make_robot_transform(robot):
     #3rd geom is bottom rung
     T_rung=ladder.GetLinks()[0].GetGeometries()[2].GetTransform()
     T_rung_global=mat(T_ladder)*mat(T_rung)
-    print T_rung_global
-    print T_rung_global[3,1]
+    #print T_rung_global
+    #print T_rung_global[3,1]
     T0=robot.GetTransform()
     T1=eye(4)
     T1[0:3,0:3]=rodrigues([0,0,-pi/2])
@@ -184,6 +194,33 @@ def get_triggers(robot,dataset):
         ftriggers[k,:]=dataset[k,jointmap[lr]]*joint_signs[lr]+joint_offsets[lr]>.85
     return ftriggers
 
+def set_default_limits(robot):
+    """ Hack to enforce the stock limits on a version of the Hubo+ robot. Hard
+    coded limits pulled from rlhuboplus model, based on shell collision limits
+    from home position.
+    """
+    bases=['HP','KP','AP']
+    lower=array([-85,-4,-74])*pi/180.0
+    upper=array([92,149,97])*pi/180.0
+    for p in ['R','L']:
+        for k in range(len(bases)):
+            n=p+bases[k]
+            print "Old Limits: "+robot.GetJoint(n).GetLimits()
+            robot.GetJoint(n).SetLimits([lower[k]],[upper[k]])
+
+def set_expanded_limits(robot):
+    """ Hack to enforce the stock limits on a version of the Hubo+ robot. Hard
+    coded limits pulled from rlhuboplus model, based on shell collision limits
+    from home position.
+    """
+    bases=['HP','KP','AP']
+    lower=array([-85,-4,-74])*pi/180.0
+    upper=array([92,149,97])*pi/180.0
+    for p in ['R','L']:
+        for k in range(len(bases)):
+            n=p+bases[k]
+            print "Old Limits: "+robot.GetJoint(n).GetLimits()
+            robot.GetJoint(n).SetLimits([lower[k]],[upper[k]])
 class effector_log:
     def __init__(self,loglen=10,bodies=[]):
         self.width=1
@@ -324,7 +361,21 @@ def set_finger_torque(robot,maxT):
             robot.GetJoint(f).SetTorqueLimits([maxT])
             robot.GetJoint(f).SetVelocityLimits([3])
             robot.GetJoint(f).SetAccelerationLimits([30])
-    
+
+def wait_start():
+    print "Press Enter to abort, starting simulation in ... "
+    for x in range(5,0,-1):
+        print '{}...'.format(x)
+        for k in range(10):
+            time.sleep(.1)
+            k=False
+            if kbhit.kbhit():
+                k=kbhit.getch()
+                if k:
+                    return False
+    print "Starting simulation!"
+    return True
+
 if __name__=='__main__':
 
     try:
@@ -339,23 +390,47 @@ if __name__=='__main__':
         raise 
 
     try:
-        Tmax = float(sys.argv[3])
+        file_robot = sys.argv[3]
+    except IndexError:
+        print "Robot file not found!"
+        raise 
+
+    try:
+        Tmax = float(sys.argv[4])
     except IndexError:
         Tmax=1.6
         pass
 
+    try:
+        #Hack to get limits optionally overridden for shell robot
+        override_limits = float(sys.argv[5])
+    except IndexError:
+        override_limits = 0
+        pass
+
+    try:
+        if sys.argv[6]=='0':
+            showGUI = False
+        else:
+            showGUI = True
+    except IndexError:
+        showGUI = True
+        pass
+
+
     #Assume that name has suffix of some sort!
     # Try to keep parameters specified here
-    laddername=make_ladder(file_param)
-    envname=make_ladder_env(file_param)
+    laddername=make_ladder(file_param,True)
+    envname=make_ladder_env(file_param,True)
+    
     physicson=True
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    env.SetViewer('qtcoin',showGUI)
     env.SetDebugLevel(3)
    
     # rlhuboplus models don't work with the affine transformations (i.e. use huboplus.robot.xml for ideal sim   
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,'rlhuboplus.noshell.robot.xml',envname,True,physicson)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,file_robot,envname,True,physicson)
     
     make_robot_transform(robot)
 
@@ -364,113 +439,130 @@ if __name__=='__main__':
     joint_offsets[ind('RSR')]=pi/12
     joint_offsets[ind('LSR')]=-pi/12
 
-    #Read the file to obtain time steps and the total time
-
-    env.StartSimulation(timestep=0.0005)
+    # Use simulation to settle robot on the ground
+    env.StartSimulation(0.0005,False)
     time.sleep(1)
     env.StopSimulation()
+
+    #Import the joint map and read in trajectory
     load_mapping(robot,"iumapping.txt")
     [dataset,timestep,total_time,number_of_steps]=load_iu_traj(file_traj)
-    timestep=0.05
+
     ## Change this to affect maximum applied hand torque
     suffix='_{}'.format(Tmax)
 
-    if physicson:
-        timestamp=openhubo.get_timestamp()
-        recorder.filename='.'.join(laddername.split('.')[:-2])+timestamp+suffix+'_physics.avi'
-        recorder.videoparams[0:2]=[640,480]
-        traj=build_openrave_traj(robot,dataset,timestep,True)
-        ctrl.SetPath(traj)
-        t_total=traj.GetDuration()
-        steps=int(t_total/0.0005)
-        forces=force_log(steps,[robot.GetAttachedSensor(x) for x in ['rightFootFT','leftFootFT']])
-        points=effector_log(steps,[robot.GetLink(x) for x in ['leftFoot','rightFoot','leftPalm','rightPalm']])
-        forces.setup(50)
-        set_finger_torque(robot,.1)
-        right_joints=[]
-        left_joints=[]
-        for n in fingers:
-            if n.find('left')>-1:
-                left_joints.append(robot.GetJoint(n))
-            if n.find('right')>-1:
-                right_joints.append(robot.GetJoint(n))
-        if True:
-        #if raw_input('Hit any key to run simulation or enter to skip:'):
-            print 'Type a letter and enter to toggle hand torque (b = both, l / r = left / right, a in, z dec):'
+    timestamp=openhubo.get_timestamp()
+    recorder.filename='.'.join(laddername.split('.')[:-2])+timestamp+suffix+'_physics.avi'
+    recorder.videoparams[0:2]=[800,600]
+    traj=build_openrave_traj(robot,dataset,timestep,True)
+    ctrl.SetPath(traj)
+    t_total=traj.GetDuration()
 
-            recorder.start()
-            ctrl.SendCommand('start')
-            rflag=False
-            lflag=False
-            rtorque=0.0
-            ltorque=0.0
+    steps=int(t_total/0.0005)
+    forces=force_log(steps,[robot.GetAttachedSensor(x) for x in ['rightFootFT','leftFootFT']])
+    points=effector_log(steps,[robot.GetLink(x) for x in ['leftFoot','rightFoot','leftPalm','rightPalm']])
+    forces.setup(50)
+    set_finger_torque(robot,.1)
 
-            #openhubo.set_robot_color(robot,[.5,.5,.5],[.5,.5,.5],.4)
-            triggers=get_triggers(robot,dataset)
-            count=0
-            while not ctrl.IsDone():
-                env.StepSimulation(0.0005)
-                handle=openhubo.plotProjectedCOG(robot)
-                #TODO: make this depend on input timestep!!!
-                #hackjob...
-                if not (count % 100):
-                    try:
-                        lflag=triggers[count/100,0]
-                        rflag=triggers[count/100,1]
-                    except IndexError:
-                        pass
+    right_joints=[]
+    left_joints=[]
+    for n in fingers:
+        if n.find('left')>-1:
+            left_joints.append(robot.GetJoint(n))
+        if n.find('right')>-1:
+            right_joints.append(robot.GetJoint(n))
+    #print 'Type a letter and enter to toggle hand torque (b = both, l / r = left / right, a in, z dec):'
+
+    ctrl.SendCommand('start')
+    rflag=False
+    lflag=False
+    rtorque=0.0
+    ltorque=0.0
+
+    #openhubo.set_robot_color(robot,[.5,.5,.5],[.5,.5,.5],.4)
+    triggers=get_triggers(robot,dataset)
+    count=0
+
+    start=wait_start()
+    if start:
+        recorder.start()
+    while not ctrl.IsDone() and start:
+        env.StepSimulation(0.0005)
+        handle=openhubo.plotProjectedCOG(robot)
+        #TODO: make this depend on input timestep!!!
+        #hackjob...
+        if not (count % 100):
+            try:
+                lflag=triggers[count/100,0]
+                rflag=triggers[count/100,1]
+            except IndexError:
+                pass
+        
+        if not (count % 20):
+            forces.record()
+            points.record()
+            com=openhubo.find_com(robot)
+            if com[2]<.3:
+                #Robot fell over
+                ctrl.Reset()
+                break
+            #handles=openhubo.plot_masses(robot)
+            #if kbhit.kbhit():
+                #k=kbhit.getch()
+                #if k=='r' or k=='b':
+                    #rflag=not rflag 
+                    #print "Switch rtorque to {}".format(rflag)
+
+                #if k=='l' or k=='b':
+                    #lflag=not lflag 
+                    #print "Switch ltorque to {}".format(lflag)
+
+                #elif k=='a':
+                    #print "Raising Tmax by .25"
+                    #Tmax+=.25
+                #elif k=='z':
+                    #print "Lowering Tmax by .25"
+                    #Tmax-=.25
                 
-                if not (count % 20):
-                    forces.record()
-                    points.record()
-                    com=openhubo.find_com(robot)
-                    if com[2]<.3:
-                        #Robot fell over
-                        ctrl.Reset()
-                        break
-                    #handles=openhubo.plot_masses(robot)
-                    #if kbhit.kbhit():
-                        #k=kbhit.getch()
-                        #if k=='r' or k=='b':
-                            #rflag=not rflag 
-                            #print "Switch rtorque to {}".format(rflag)
-
-                        #if k=='l' or k=='b':
-                            #lflag=not lflag 
-                            #print "Switch ltorque to {}".format(lflag)
-
-                        #elif k=='a':
-                            #print "Raising Tmax by .25"
-                            #Tmax+=.25
-                        #elif k=='z':
-                            #print "Lowering Tmax by .25"
-                            #Tmax-=.25
-                        
-                if rflag:
-                    if rtorque<Tmax:
-                        rtorque+=.001
-                    add_torque(robot,right_joints,rtorque)
-                else:
-                    rtorque=0.0
-                if lflag:
-                    if ltorque<Tmax:
-                        ltorque+=.001
-                    add_torque(robot,left_joints,ltorque)
-                else:
-                    ltorque=0.0
-                count+=1
-
-            if ctrl.IsDone():
-                print "Trajectory is successful!"
-                suffix+="_success"
-            forces.save('.'.join(laddername.split('.')[:-2])+timestamp+suffix+'_forces.pickle')
-            points.save('.'.join(laddername.split('.')[:-2])+timestamp+suffix+'_points.pickle')
-    else:
-        if raw_input('Hit any key to run simulation or enter to skip:'):
-            recorder.filename='.'.join(laddername.split('.')[:-2])+'_ideal.avi'
-            recorder.realtime=True
-            recorder.start()
-            play_traj(robot,dataset,timestep)
+        if rflag:
+            if rtorque<Tmax:
+                rtorque+=.001
+            add_torque(robot,right_joints,rtorque)
+        else:
+            rtorque=0.0
+        if lflag:
+            if ltorque<Tmax:
+                ltorque+=.001
+            add_torque(robot,left_joints,ltorque)
+        else:
+            ltorque=0.0
+        count+=1
 
     recorder.stop()
 
+    if ctrl.IsDone():
+        print "Trajectory is successful!"
+        suffix+="_success"
+    prefix='.'.join(laddername.split('.')[:-2])
+    outname=prefix + timestamp + suffix
+    forces.save(outname + '_forces.pickle')
+    points.save(outname + '_points.pickle')
+    with open(outname + '_misc.pickle','w') as f:
+        pickle.dump([triggers,count,Tmax],f)
+
+    #Log misc data
+    logname= outname + '.log'
+    tableentries=[file_robot,'{}'.format(override_limits),prefix]
+    with open(logname,'w') as f:
+        f.write(' '.join(tableentries) + '\n')
+        f.write('Robot: ' + file_robot + '\n')
+        f.write('Limits overridden: {}\n'.format(override_limits))
+        bases=['HP','KP','AP']
+        for p in ['R','L']:
+            for k in range(len(bases)):
+                n=p+bases[k]
+                f.write(n+" Limits = {}\n".format(robot.GetJoint(n).GetLimits()))
+        f.write('Completed timesteps = {}\n'.format(count))
+        f.write('Completed time = {}\n'.format(count*0.0005))
+
+    
