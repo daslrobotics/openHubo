@@ -1,0 +1,14 @@
+0.05		#ladder-stringer-width
+3			#ladder-stringer-height
+0.05		#ladder-stringer-thickness
+0.6		#ladder-rung-width
+0.05		#ladder-rung-height
+0.10		#ladder-rung-thickness
+80			#ladder-angle
+0.25		#ladder-rung-space
+0.025		#ladder-stringer-radius
+20			#ladder-stringer-nface
+0.02		#ladder-rung-radius
+20			#ladder-rung-nface
+0			#1-rect--0-cir-rung-cross-section
+1			#1-rect--0-cir-stringer-cross-section
