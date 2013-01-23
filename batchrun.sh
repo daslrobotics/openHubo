@@ -3,7 +3,7 @@
 T="10.0"
 for robot in 'robots/rlhuboplus.robot.xml' 'robots/rlhuboplus.noshell.robot.xml'
 do
-    for override in 0 1
+    for override in -1
     do
         for param in parameters/[789]*.iuparam
         do

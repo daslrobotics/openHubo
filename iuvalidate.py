@@ -129,9 +129,9 @@ def build_openrave_traj(robot,dataset,timestep,retime=True):
     #print config.GetDOF() 
     T0=robot.GetTransform()
     elbow_start=-pi/180.*170
-    elbow_step=elbow_start/50.0
+    elbow_step=elbow_start/60.0
     ankle_start=-.04
-    ankle_step=ankle_start/60.0
+    ankle_step=ankle_start/80.0
     for k in range(size(dataset,0)):
         T=get_transform(robot,T0,dataset[k,0:6])
         pose=dataset[k,jointmap+6]*joint_signs+joint_offsets
@@ -145,9 +145,9 @@ def build_openrave_traj(robot,dataset,timestep,retime=True):
             pose[robot.GetJoint('LSP').GetDOFIndex()]-=elbow_offset/3.5
 
         if ankle_offset <0.0:
-            if pose[robot.GetJoint('RAP').GetDOFIndex()]>0:
-                pose[robot.GetJoint('RAP').GetDOFIndex()]=0
-                pose[robot.GetJoint('LAP').GetDOFIndex()]=0
+            if pose[robot.GetJoint('RAP').GetDOFIndex()]>.00:
+                pose[robot.GetJoint('RAP').GetDOFIndex()]=.00
+                pose[robot.GetJoint('LAP').GetDOFIndex()]=.00
             pose[robot.GetJoint('RAP').GetDOFIndex()]+=ankle_offset
             pose[robot.GetJoint('LAP').GetDOFIndex()]+=ankle_offset
 
@@ -423,10 +423,10 @@ if __name__=='__main__':
         pass
 
     try:
-        #Hack to get limits optionally overridden for shell robot
+        ##Hack to get limits optionally overridden for shell robot
         expand_limits = float(sys.argv[5])
     except IndexError:
-        expand_limits = 0
+        expand_limits = -1
         pass
 
     try:
@@ -460,6 +460,11 @@ if __name__=='__main__':
     joint_offsets[ind('RSR')]=pi/12
     joint_offsets[ind('LSR')]=-pi/12
 
+    for n in fingers:
+        if n.find('Thumb')<0:
+            joint_signs[ind(n)]*=2
+    print joint_signs
+
     # Use simulation to settle robot on the ground
     env.StartSimulation(0.0005,False)
     time.sleep(1)
@@ -483,7 +488,7 @@ if __name__=='__main__':
     forces=force_log(steps,[robot.GetAttachedSensor(x) for x in ['rightFootFT','leftFootFT']])
     points=effector_log(steps,[robot.GetLink(x) for x in ['leftFoot','rightFoot','leftPalm','rightPalm']])
     forces.setup(50)
-    set_finger_torque(robot,.1)
+    set_finger_torque(robot,.2)
 
     right_joints=[]
     left_joints=[]
@@ -500,10 +505,13 @@ if __name__=='__main__':
     rtorque=0.0
     ltorque=0.0
 
-    if expand_limits:
+    if expand_limits==0:
         set_default_limits(robot)
-    else:
+    elif expand_limits>0:
         set_expanded_limits(robot)
+    else:
+        print "Using stock limits for current robot!"
+
 
     #openhubo.set_robot_color(robot,[.5,.5,.5],[.5,.5,.5],.4)
     triggers=get_triggers(robot,dataset)
@@ -579,7 +587,7 @@ if __name__=='__main__':
 
     #Log misc data
     logname= outname + '.log'
-    tableentries=[outname,file_robot,'Expanded' if expand_limits else 'Original',prefix,'{} {}'.format(count,int(number_of_steps*timestep/0.0005)),'success' if ctrl.IsDone() else 'failure']
+    tableentries=[outname,file_robot,'Expanded' if expand_limits>0 else 'Original',prefix,'{} {}'.format(count,int(number_of_steps*timestep/0.0005)),'success' if ctrl.IsDone() else 'failure']
     with open(logname,'w') as f:
         f.write(' '.join(tableentries) + '\n')
         f.write('Robot: ' + file_robot + '\n')
