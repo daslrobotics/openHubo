@@ -128,28 +128,28 @@ def build_openrave_traj(robot,dataset,timestep,retime=True):
     [traj,config]=trajectory.create_trajectory(robot)
     #print config.GetDOF() 
     T0=robot.GetTransform()
-    elbow_start=-pi/180.*170
-    elbow_step=elbow_start/60.0
-    ankle_start=-.04
-    ankle_step=ankle_start/80.0
+    #elbow_start=-pi/180.*170
+    #elbow_step=elbow_start/60.0
+    #ankle_start=-.04
+    #ankle_step=ankle_start/80.0
     for k in range(size(dataset,0)):
         T=get_transform(robot,T0,dataset[k,0:6])
         pose=dataset[k,jointmap+6]*joint_signs+joint_offsets
         #hack to add a slowly decreasing elbow bend
-        elbow_offset=elbow_start-k*elbow_step
-        ankle_offset=ankle_start-k*ankle_step
-        if elbow_offset <0.0:
-            pose[robot.GetJoint('REP').GetDOFIndex()]+=elbow_offset
-            pose[robot.GetJoint('LEP').GetDOFIndex()]+=elbow_offset
-            pose[robot.GetJoint('RSP').GetDOFIndex()]-=elbow_offset/3.5
-            pose[robot.GetJoint('LSP').GetDOFIndex()]-=elbow_offset/3.5
+        #elbow_offset=elbow_start-k*elbow_step
+        #ankle_offset=ankle_start-k*ankle_step
+        #if elbow_offset <0.0:
+            #pose[robot.GetJoint('REP').GetDOFIndex()]+=elbow_offset
+            #pose[robot.GetJoint('LEP').GetDOFIndex()]+=elbow_offset
+            #pose[robot.GetJoint('RSP').GetDOFIndex()]-=elbow_offset/3.5
+            #pose[robot.GetJoint('LSP').GetDOFIndex()]-=elbow_offset/3.5
 
-        if ankle_offset <0.0:
-            if pose[robot.GetJoint('RAP').GetDOFIndex()]>.00:
-                pose[robot.GetJoint('RAP').GetDOFIndex()]=.00
-                pose[robot.GetJoint('LAP').GetDOFIndex()]=.00
-            pose[robot.GetJoint('RAP').GetDOFIndex()]+=ankle_offset
-            pose[robot.GetJoint('LAP').GetDOFIndex()]+=ankle_offset
+        #if ankle_offset <0.0:
+            #if pose[robot.GetJoint('RAP').GetDOFIndex()]>.00:
+                #pose[robot.GetJoint('RAP').GetDOFIndex()]=.00
+                #pose[robot.GetJoint('LAP').GetDOFIndex()]=.00
+            #pose[robot.GetJoint('RAP').GetDOFIndex()]+=ankle_offset
+            #pose[robot.GetJoint('LAP').GetDOFIndex()]+=ankle_offset
 
         for p in range(len(pose)):
             #Make sure limits are enforced and clip them
@@ -488,7 +488,7 @@ if __name__=='__main__':
     forces=force_log(steps,[robot.GetAttachedSensor(x) for x in ['rightFootFT','leftFootFT']])
     points=effector_log(steps,[robot.GetLink(x) for x in ['leftFoot','rightFoot','leftPalm','rightPalm']])
     forces.setup(50)
-    set_finger_torque(robot,.2)
+    set_finger_torque(robot,10.0)
 
     right_joints=[]
     left_joints=[]
@@ -558,18 +558,18 @@ if __name__=='__main__':
                     #print "Lowering Tmax by .25"
                     #Tmax-=.25
                 
-        if rflag:
-            if rtorque<Tmax:
-                rtorque+=.001
-            add_torque(robot,right_joints,rtorque)
-        else:
-            rtorque=0.0
-        if lflag:
-            if ltorque<Tmax:
-                ltorque+=.001
-            add_torque(robot,left_joints,ltorque)
-        else:
-            ltorque=0.0
+        #if rflag:
+            #if rtorque<Tmax:
+                #rtorque+=.001
+            #add_torque(robot,right_joints,rtorque)
+        #else:
+            #rtorque=0.0
+        #if lflag:
+            #if ltorque<Tmax:
+                #ltorque+=.001
+            #add_torque(robot,left_joints,ltorque)
+        #else:
+            #ltorque=0.0
         count+=1
 
     recorder.stop()

@@ -23,7 +23,7 @@
             <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
         </Geom>
         <Mass type="mimicgeom">
-            <total>0.012</total>
+            <total>.5</total>
         </Mass>
     </Body>
 
@@ -43,7 +43,7 @@
             <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
         </Geom>
         <Mass type="mimicgeom">
-            <total>0.006</total>
+            <total>.5</total>
         </Mass>
     </Body>
     
@@ -63,7 +63,7 @@
             <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
         </Geom>
         <Mass type="mimicgeom">
-            <total>0.010</total>
+            <total>.5</total>
         </Mass>
     </Body>
 

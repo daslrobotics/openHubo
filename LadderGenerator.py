@@ -309,7 +309,7 @@ def make_ladder_env(paramfile,usecached=False):
     file_write.write('\n')
     file_write.write(' <physicsengine type="ode">\n')
     file_write.write('  <odeproperties>\n')
-    file_write.write('   <friction>.5</friction>\n')
+    file_write.write('   <friction>2</friction>\n')
     file_write.write('   <gravity>0 0 -9.80</gravity>\n')
     file_write.write('   <selfcollision>1</selfcollision>\n')
     file_write.write('   <erp>.5</erp>\n')

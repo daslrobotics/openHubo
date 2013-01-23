@@ -76,7 +76,7 @@ def load_simplefloor(env):
         controller=rave.RaveCreateController(env,'trajectorycontroller')
         robot.SetController(controller)
 
-        controller.SendCommand('set gains 50 0 8')
+        controller.SendCommand('set gains 100 0 8')
 
         #Set an initial pose before the simulation starts
         pose=array(zeros(robot.GetDOF()))
