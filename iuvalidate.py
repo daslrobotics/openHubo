@@ -128,19 +128,26 @@ def build_openrave_traj(robot,dataset,timestep,retime=True):
     [traj,config]=trajectory.create_trajectory(robot)
     #print config.GetDOF() 
     T0=robot.GetTransform()
-    elbow_start=-pi*2./3.
-    elbow_step=elbow_start/42.0
-    ankle_start=-.1
-    ankle_step=ankle_start/42.0
+    elbow_start=-pi/180.*170
+    elbow_step=elbow_start/50.0
+    ankle_start=-.04
+    ankle_step=ankle_start/60.0
     for k in range(size(dataset,0)):
         T=get_transform(robot,T0,dataset[k,0:6])
         pose=dataset[k,jointmap+6]*joint_signs+joint_offsets
         #hack to add a slowly decreasing elbow bend
-        elbow_offset=elbow_start+k*elbow_step
-        ankle_offset=ankle_start+k*ankle_step
+        elbow_offset=elbow_start-k*elbow_step
+        ankle_offset=ankle_start-k*ankle_step
         if elbow_offset <0.0:
             pose[robot.GetJoint('REP').GetDOFIndex()]+=elbow_offset
             pose[robot.GetJoint('LEP').GetDOFIndex()]+=elbow_offset
+            pose[robot.GetJoint('RSP').GetDOFIndex()]-=elbow_offset/3.5
+            pose[robot.GetJoint('LSP').GetDOFIndex()]-=elbow_offset/3.5
+
+        if ankle_offset <0.0:
+            if pose[robot.GetJoint('RAP').GetDOFIndex()]>0:
+                pose[robot.GetJoint('RAP').GetDOFIndex()]=0
+                pose[robot.GetJoint('LAP').GetDOFIndex()]=0
             pose[robot.GetJoint('RAP').GetDOFIndex()]+=ankle_offset
             pose[robot.GetJoint('LAP').GetDOFIndex()]+=ankle_offset
 
