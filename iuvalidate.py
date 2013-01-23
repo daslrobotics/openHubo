@@ -128,9 +128,22 @@ def build_openrave_traj(robot,dataset,timestep,retime=True):
     [traj,config]=trajectory.create_trajectory(robot)
     #print config.GetDOF() 
     T0=robot.GetTransform()
+    elbow_start=-pi*2./3.
+    elbow_step=elbow_start/42.0
+    ankle_start=-.1
+    ankle_step=ankle_start/42.0
     for k in range(size(dataset,0)):
         T=get_transform(robot,T0,dataset[k,0:6])
         pose=dataset[k,jointmap+6]*joint_signs+joint_offsets
+        #hack to add a slowly decreasing elbow bend
+        elbow_offset=elbow_start+k*elbow_step
+        ankle_offset=ankle_start+k*ankle_step
+        if elbow_offset <0.0:
+            pose[robot.GetJoint('REP').GetDOFIndex()]+=elbow_offset
+            pose[robot.GetJoint('LEP').GetDOFIndex()]+=elbow_offset
+            pose[robot.GetJoint('RAP').GetDOFIndex()]+=ankle_offset
+            pose[robot.GetJoint('LAP').GetDOFIndex()]+=ankle_offset
+
         for p in range(len(pose)):
             #Make sure limits are enforced and clip them
             if p<robot.GetDOF():
@@ -488,7 +501,7 @@ if __name__=='__main__':
     #openhubo.set_robot_color(robot,[.5,.5,.5],[.5,.5,.5],.4)
     triggers=get_triggers(robot,dataset)
     count=0
-    env.Load('kinbody/backrest.kinbody.xml')
+    #env.Load('kinbody/backrest.kinbody.xml')
     start=wait_start()
     if start:
         recorder.start()
