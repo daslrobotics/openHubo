@@ -488,7 +488,7 @@ if __name__=='__main__':
     #openhubo.set_robot_color(robot,[.5,.5,.5],[.5,.5,.5],.4)
     triggers=get_triggers(robot,dataset)
     count=0
-
+    env.Load('kinbody/backrest.kinbody.xml')
     start=wait_start()
     if start:
         recorder.start()
