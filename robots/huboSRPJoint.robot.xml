@@ -1,6 +1,6 @@
 <Robot name="huboSRPJoint">
 	<KinBody name="SRPWaistJoint">
-		<modelsdir>models</modelsdir>
+        <modelsdir>srp/models</modelsdir>
 		
 		<Body name="SRPBase" type="dynamic">
 			<Translation>0 0 -0.01272</Translation>
