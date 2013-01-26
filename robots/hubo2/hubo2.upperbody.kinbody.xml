@@ -1,0 +1,600 @@
+<!-- Exported at: 10/6/2012 2:43:04 AM -->
+
+<kinbody name="testbody">
+    <modelsdir>models</modelsdir>
+    <body name="Body_Torso" type="dynamic">
+        <offsetfrom>SRPTopWedge</offsetfrom>
+        <!--<Translation>0 0 -0.048924021</Translation>-->
+        <!--<Translation>0 0.02 0.28</Translation>-->
+        <Translation>
+            0
+            -0.0405
+            0.2284
+        </Translation>
+   
+        <rotationaxis>1 0 0 15</rotationaxis>
+        <!--Body_Torso Parent Center of Mass to Base -->
+        <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+        <!--Body_Torso Parent to Current -->
+        <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+        <!--Body_Torso Base to Center of Mass -->
+        <translation>0.022817253784 0.005993625269 -0.050206919105</translation>
+        <geom type="trimesh">
+            <translation>-0.022817253784 -0.005993625269 0.050206919105</translation>
+            <render>Body_Torso_1.wrl 1 </render>
+            <data>convhull_Torso_1.wrl 1 </data>
+        </geom>
+        <geom type="trimesh">
+            <translation>-0.022817253784 -0.005993625269 0.050206919105</translation>
+            <render>Body_Torso_2.wrl 1 </render>
+            <data>convhull_Torso_2.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>7.995192386709</total>
+            <inertia>
+                0.249245833584 -0.236822137002 0.036735118956
+                -0.236822137002 0.655630289863 0.009615100370
+                0.036735118956 0.009615100370 0.836548737454
+            </inertia>
+        </mass>
+    </body>
+
+    <body name="Body_HDY" type="dynamic">
+        <offsetfrom>Body_Torso</offsetfrom><!--Body_HDY Parent Center of Mass to Base -->
+        <translation>-0.022817253784 -0.005993625269 0.050206919105</translation>
+        <!--Body_HDY Parent to Current -->
+        <translation>0.000000000000 0.000000016254 0.051000000000</translation>
+        <!--Body_HDY Base to Center of Mass -->
+        <translation>-0.000001381680 0.000002908363 0.052749591985</translation>
+
+        <Geom type="cylinder">
+            <Translation>0 0 -.02</Translation>
+            <RotationAxis>1 0 0 -90</RotationAxis>
+            <radius>0.045</radius>
+            <height>0.06</height>
+        </Geom>
+
+        <mass type="custom">
+            <total>0.126385870926</total>
+            <inertia>
+                0.000173310357 -0.000000056725 -0.000000005708
+                -0.000000056725 0.000201211592 -0.000000003588
+                -0.000000005708 -0.000000003588 0.000047704434
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="HDY" type="hinge">
+        <body>Body_Torso</body>
+        <body>Body_HDY</body>
+        <offsetfrom>Body_HDY</offsetfrom>
+        <anchor>0.000001381680 -0.000002908363 -0.052749591985</anchor>
+        <axis>0 0 1</axis>
+        <limitsdeg>-90 90</limitsdeg>
+    </Joint>
+    <adjacent>Body_HDY Body_Torso</adjacent>
+
+    <body name="Body_HDR" type="dynamic">
+        <offsetfrom>Body_HDY</offsetfrom><!--Body_HDR Parent Center of Mass to Base -->
+        <translation>0.000001381680 -0.000002908363 -0.052749591985</translation>
+        <!--Body_HDR Parent to Current -->
+        <translation>-0.000000983954 0.000000000000 0.100803404580</translation>
+        <!--Body_HDR Base to Center of Mass -->
+        <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+    </body>
+
+    <Joint name="HDR" type="hinge">
+        <body>Body_HDY</body>
+        <body>Body_HDR</body>
+        <offsetfrom>Body_HDR</offsetfrom>
+        <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
+        <axis>1 0 0</axis>
+        <limitsdeg>-30 30</limitsdeg>
+    </Joint>
+    <adjacent>Body_HDR Body_HDY</adjacent>
+
+    <body name="Body_HDP" type="dynamic">
+        <offsetfrom>Body_HDR</offsetfrom><!--Body_HDP Parent Center of Mass to Base -->
+        <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+        <!--Body_HDP Parent to Current -->
+        <translation>-0.006500000000 0.000000000000 0.000000000000</translation>
+        <!--Body_HDP Base to Center of Mass -->
+        <translation>0.011161499785 0.000235808076 0.028812183074</translation>
+        <geom type="trimesh">
+            <translation>-0.011161499785 -0.000235808076 -0.028812183074</translation>
+            <render>Body_HDP_1.wrl 1 </render>
+            <data>convhull_HDP_1.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>0.333673668346</total>
+            <inertia>
+                0.001768489214 -0.000013003368 0.000016219042
+                -0.000013003368 0.001831316649 0.000002548368
+                0.000016219042 0.000002548368 0.002029002974
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="HDP" type="hinge">
+        <body>Body_HDR</body>
+        <body>Body_HDP</body>
+        <offsetfrom>Body_HDP</offsetfrom>
+        <anchor>-0.011161499785 -0.000235808076 -0.028812183074</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-30 30</limitsdeg>
+    </Joint>
+    <adjacent>Body_HDP Body_HDR</adjacent>
+    <adjacent>Body_HDY Body_HDP</adjacent>
+
+    <body name="Body_LSP" type="dynamic">
+        <offsetfrom>Body_Torso</offsetfrom><!--Body_LSP Parent Center of Mass to Base -->
+        <translation>-0.022817253784 -0.005993625269 0.050206919105</translation>
+        <!--Body_LSP Parent to Current -->
+        <translation>0.000000000000 0.147500038408 0.000000000000</translation>
+        <!--Body_LSP Base to Center of Mass -->
+        <translation>0.017333106239 0.056754362788 0.000000060319</translation>
+        <geom type="trimesh">
+            <translation>-0.017333106239 -0.056754362788 -0.000000060319</translation>
+            <render>Body_LSP_1.wrl 1 </render>
+            <data>convhull_LSP_1.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>0.699754613627</total>
+            <inertia>
+                0.000915144260 -0.000174388625 -0.000000209483
+                -0.000174388625 0.000934929819 -0.000000243369
+                -0.000000209483 -0.000000243369 0.001288074958
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="LSP" type="hinge">
+        <body>Body_Torso</body>
+        <body>Body_LSP</body>
+        <offsetfrom>Body_LSP</offsetfrom>
+        <anchor>-0.017333106239 -0.056754362788 -0.000000060319</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-179.999 179.999</limitsdeg>
+    </Joint>
+    <adjacent>Body_LSP Body_Torso</adjacent>
+
+    <body name="Body_RSP" type="dynamic">
+        <offsetfrom>Body_Torso</offsetfrom><!--Body_RSP Parent Center of Mass to Base -->
+        <translation>-0.022817253784 -0.005993625269 0.050206919105</translation>
+        <!--Body_RSP Parent to Current -->
+        <translation>0.000000000000 -0.147500038408 0.000000000000</translation>
+        <!--Body_RSP Base to Center of Mass -->
+        <translation>0.017333106239 -0.056754362788 0.000000060319</translation>
+        <geom type="trimesh">
+            <translation>-0.017333106239 0.056754362788 -0.000000060319</translation>
+            <render>Body_RSP_1.wrl 1 </render>
+            <data>convhull_RSP_1.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>0.699754613627</total>
+            <inertia>
+                0.000915144260 0.000174388625 -0.000000209483
+                0.000174388625 0.000934929819 0.000000243369
+                -0.000000209483 0.000000243369 0.001288074958
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="RSP" type="hinge">
+        <body>Body_Torso</body>
+        <body>Body_RSP</body>
+        <offsetfrom>Body_RSP</offsetfrom>
+        <anchor>-0.017333106239 0.056754362788 -0.000000060319</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-179.999 179.999</limitsdeg>
+    </Joint>
+    <adjacent>Body_RSP Body_Torso</adjacent>
+
+    <body name="Body_LSR" type="dynamic">
+        <offsetfrom>Body_LSP</offsetfrom><!--Body_LSR Parent Center of Mass to Base -->
+        <translation>-0.017333106239 -0.056754362788 -0.000000060319</translation>
+        <!--Body_LSR Parent to Current -->
+        <translation>0.025496881336 0.072000000000 0.000398423489</translation>
+        <!--Body_LSR Base to Center of Mass -->
+        <translation>-0.032905519588 -0.000090229042 -0.003114071068</translation>
+        <geom type="trimesh">
+            <translation>0.032905519588 0.000090229042 0.003114071068</translation>
+            <render>Body_LSR_1.wrl 1 </render>
+            <data>convhull_LSR_1.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>0.331062767335</total>
+            <inertia>
+                0.000233417013 0.000000359908 0.000006418735
+                0.000000359908 0.000292892538 0.000000527737
+                0.000006418735 0.000000527737 0.000265481489
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="LSR" type="hinge">
+        <body>Body_LSP</body>
+        <body>Body_LSR</body>
+        <offsetfrom>Body_LSR</offsetfrom>
+        <anchor>0.032905519588 0.000090229042 0.003114071068</anchor>
+        <axis>1 0 0</axis>
+        <limitsdeg>-179.999 179.999</limitsdeg>
+    </Joint>
+    <adjacent>Body_LSR Body_LSP</adjacent>
+    <adjacent>Body_LSR Body_Torso</adjacent>
+
+    <body name="Body_RSR" type="dynamic">
+        <offsetfrom>Body_RSP</offsetfrom><!--Body_RSR Parent Center of Mass to Base -->
+        <translation>-0.017333106239 0.056754362788 -0.000000060319</translation>
+        <!--Body_RSR Parent to Current -->
+        <translation>0.025496881336 -0.072000000000 0.000398423489</translation>
+        <!--Body_RSR Base to Center of Mass -->
+        <translation>-0.032905519588 0.000090229042 -0.003114071068</translation>
+        <geom type="trimesh">
+            <translation>0.032905519588 -0.000090229042 0.003114071068</translation>
+            <render>Body_RSR_1.wrl 1 </render>
+            <data>convhull_RSR_1.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>0.331062767335</total>
+            <inertia>
+                0.000233417013 -0.000000359908 0.000006418735
+                -0.000000359908 0.000292892538 -0.000000527737
+                0.000006418735 -0.000000527737 0.000265481489
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="RSR" type="hinge">
+        <body>Body_RSP</body>
+        <body>Body_RSR</body>
+        <offsetfrom>Body_RSR</offsetfrom>
+        <anchor>0.032905519588 -0.000090229042 0.003114071068</anchor>
+        <axis>1 0 0</axis>
+        <limitsdeg>-179.999 179.999</limitsdeg>
+    </Joint>
+    <adjacent>Body_RSR Body_RSP</adjacent>
+    <adjacent>Body_RSR Body_Torso</adjacent>
+
+    <body name="Body_LSY" type="dynamic">
+        <offsetfrom>Body_LSR</offsetfrom><!--Body_LSY Parent Center of Mass to Base -->
+        <translation>0.032905519588 0.000090229042 0.003114071068</translation>
+        <!--Body_LSY Parent to Current -->
+        <translation>-0.026513917210 0.000000000000 -0.024917307121</translation>
+        <!--Body_LSY Base to Center of Mass -->
+        <translation>0.007526422951 -0.001938510205 -0.089454011601</translation>
+        <geom type="trimesh">
+            <translation>-0.007526422951 0.001938510205 0.089454011601</translation>
+            <render>Body_LSY_1.wrl 1 </render>
+            <data>convhull_LSY_1.wrl 1 </data>
+        </geom>
+        <geom type="trimesh">
+            <translation>-0.007526422951 0.001938510205 0.089454011601</translation>
+            <render>Body_LSY_2.wrl 1 </render>
+            <data>convhull_LSY_2.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>1.395478296616</total>
+            <inertia>
+                0.004804175896 -0.000156462317 0.000827882744
+                -0.000156462317 0.004680060224 -0.000256162427
+                0.000827882744 -0.000256162427 0.000181438616
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="LSY" type="hinge">
+        <body>Body_LSR</body>
+        <body>Body_LSY</body>
+        <offsetfrom>Body_LSY</offsetfrom>
+        <anchor>-0.007526422951 0.001938510205 0.089454011601</anchor>
+        <axis>0 0 1</axis>
+        <limitsdeg>-4 180</limitsdeg>
+    </Joint>
+    <adjacent>Body_LSY Body_LSR</adjacent>
+
+    <body name="Body_RSY" type="dynamic">
+        <offsetfrom>Body_RSR</offsetfrom><!--Body_RSY Parent Center of Mass to Base -->
+        <translation>0.032905519588 -0.000090229042 0.003114071068</translation>
+        <!--Body_RSY Parent to Current -->
+        <translation>-0.026513917210 0.000000000000 -0.024917307121</translation>
+        <!--Body_RSY Base to Center of Mass -->
+        <translation>0.007526422951 0.001938510205 -0.089454011601</translation>
+        <geom type="trimesh">
+            <translation>-0.007526422951 -0.001938510205 0.089454011601</translation>
+            <render>Body_RSY_1.wrl 1 </render>
+            <data>convhull_RSY_1.wrl 1 </data>
+        </geom>
+        <geom type="trimesh">
+            <translation>-0.007526422951 -0.001938510205 0.089454011601</translation>
+            <render>Body_RSY_2.wrl 1 </render>
+            <data>convhull_RSY_2.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>1.395478296616</total>
+            <inertia>
+                0.004804175896 0.000156462317 0.000827882744
+                0.000156462317 0.004680060224 0.000256162427
+                0.000827882744 0.000256162427 0.000181438616
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="RSY" type="hinge">
+        <body>Body_RSR</body>
+        <body>Body_RSY</body>
+        <offsetfrom>Body_RSY</offsetfrom>
+        <anchor>-0.007526422951 -0.001938510205 0.089454011601</anchor>
+        <axis>0 0 1</axis>
+        <limitsdeg>-180 4</limitsdeg>
+    </Joint>
+    <adjacent>Body_RSY Body_RSR</adjacent>
+
+    <body name="Body_LEP" type="dynamic">
+        <offsetfrom>Body_LSY</offsetfrom><!--Body_LEP Parent Center of Mass to Base -->
+        <translation>-0.007526422951 0.001938510205 0.089454011601</translation>
+        <!--Body_LEP Parent to Current -->
+        <translation>0.025481435978 0.011500000000 -0.154120635868</translation>
+        <!--Body_LEP Base to Center of Mass -->
+        <translation>-0.013773673042 -0.006562829041 -0.019736578566</translation>
+        <geom type="trimesh">
+            <translation>0.013773673042 0.006562829041 0.019736578566</translation>
+            <render>Body_LEP_1.wrl 1 </render>
+            <data>convhull_LEP_1.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>0.090349046051</total>
+            <inertia>
+                0.000052727348 -0.000007366615 -0.000020033418
+                -0.000007366615 0.000080631124 -0.000002089178
+                -0.000020033418 -0.000002089178 0.000087961277
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="LEP" type="hinge">
+        <body>Body_LSY</body>
+        <body>Body_LEP</body>
+        <offsetfrom>Body_LEP</offsetfrom>
+        <anchor>0.013773673042 0.006562829041 0.019736578566</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-143 4</limitsdeg>
+    </Joint>
+    <adjacent>Body_LEP Body_LSY</adjacent>
+
+    <body name="Body_REP" type="dynamic">
+        <offsetfrom>Body_RSY</offsetfrom><!--Body_REP Parent Center of Mass to Base -->
+        <translation>-0.007526422951 -0.001938510205 0.089454011601</translation>
+        <!--Body_REP Parent to Current -->
+        <translation>0.025481435978 -0.011500000000 -0.154120635868</translation>
+        <!--Body_REP Base to Center of Mass -->
+        <translation>-0.013773673042 0.006562829041 -0.019736578566</translation>
+        <geom type="trimesh">
+            <translation>0.013773673042 -0.006562829041 0.019736578566</translation>
+            <render>Body_REP_1.wrl 1 </render>
+            <data>convhull_REP_1.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>0.090349046051</total>
+            <inertia>
+                0.000052727348 0.000007366615 -0.000020033418
+                0.000007366615 0.000080631124 0.000002089178
+                -0.000020033418 0.000002089178 0.000087961277
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="REP" type="hinge">
+        <body>Body_RSY</body>
+        <body>Body_REP</body>
+        <offsetfrom>Body_REP</offsetfrom>
+        <anchor>0.013773673042 -0.006562829041 0.019736578566</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-143 4</limitsdeg>
+    </Joint>
+    <adjacent>Body_REP Body_RSY</adjacent>
+
+    <body name="Body_LWY" type="dynamic">
+        <offsetfrom>Body_LEP</offsetfrom><!--Body_LWY Parent Center of Mass to Base -->
+        <translation>0.013773673042 0.006562829041 0.019736578566</translation>
+        <!--Body_LWY Parent to Current -->
+        <translation>-0.021302823184 -0.011500000000 -0.044838370510</translation>
+        <!--Body_LWY Base to Center of Mass -->
+        <translation>-0.002758464322 -0.000037197851 -0.046421648761</translation>
+        <geom type="trimesh">
+            <translation>0.002758464322 0.000037197851 0.046421648761</translation>
+            <render>Body_LWY_1.wrl 1 </render>
+            <data>convhull_LWY_1.wrl 1 </data>
+        </geom>
+        <geom type="trimesh">
+            <translation>0.002758464322 0.000037197851 0.046421648761</translation>
+            <render>Body_LWY_2.wrl 1 </render>
+            <data>convhull_LWY_2.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>0.338020972928</total>
+            <inertia>
+                0.000560698920 -0.000000391006 -0.000006474102
+                -0.000000391006 0.000528378424 0.000000132891
+                -0.000006474102 0.000000132891 0.000220416683
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="LWY" type="hinge">
+        <body>Body_LEP</body>
+        <body>Body_LWY</body>
+        <offsetfrom>Body_LWY</offsetfrom>
+        <anchor>0.002758464322 0.000037197851 0.046421648761</anchor>
+        <axis>0 0 1</axis>
+        <limitsdeg>-179.999 179.999</limitsdeg>
+    </Joint>
+    <adjacent>Body_LWY Body_LEP</adjacent>
+    <adjacent>Body_LWY Body_LSY</adjacent>
+
+    <body name="Body_RWY" type="dynamic">
+        <offsetfrom>Body_REP</offsetfrom><!--Body_RWY Parent Center of Mass to Base -->
+        <translation>0.013773673042 -0.006562829041 0.019736578566</translation>
+        <!--Body_RWY Parent to Current -->
+        <translation>-0.021302823184 0.011500000000 -0.044838370510</translation>
+        <!--Body_RWY Base to Center of Mass -->
+        <translation>-0.002758464322 0.000037197851 -0.046421648761</translation>
+        <geom type="trimesh">
+            <translation>0.002758464322 -0.000037197851 0.046421648761</translation>
+            <render>Body_RWY_1.wrl 1 </render>
+            <data>convhull_RWY_1.wrl 1 </data>
+        </geom>
+        <geom type="trimesh">
+            <translation>0.002758464322 -0.000037197851 0.046421648761</translation>
+            <render>Body_RWY_2.wrl 1 </render>
+            <data>convhull_RWY_2.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>0.338020972928</total>
+            <inertia>
+                0.000560698920 0.000000391006 -0.000006474102
+                0.000000391006 0.000528378424 -0.000000132891
+                -0.000006474102 -0.000000132891 0.000220416683
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="RWY" type="hinge">
+        <body>Body_REP</body>
+        <body>Body_RWY</body>
+        <offsetfrom>Body_RWY</offsetfrom>
+        <anchor>0.002758464322 -0.000037197851 0.046421648761</anchor>
+        <axis>0 0 1</axis>
+        <limitsdeg>-179.999 179.999</limitsdeg>
+    </Joint>
+    <adjacent>Body_RWY Body_REP</adjacent>
+    <adjacent>Body_RWY Body_RSY</adjacent>
+
+    <body name="Body_LWR" type="dynamic">
+        <offsetfrom>Body_LWY</offsetfrom><!--Body_LWR Parent Center of Mass to Base -->
+        <translation>0.002758464322 0.000037197851 0.046421648761</translation>
+        <!--Body_LWR Parent to Current -->
+        <translation>0.001909308299 0.000000000001 -0.122185083140</translation>
+        <!--Body_LWR Base to Center of Mass -->
+        <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+        <geom type="trimesh">
+            <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+            <render>Body_LWR_1.wrl 1 </render>
+            <data>convhull_LWR_1.wrl 1 </data>
+        </geom>
+    </body>
+
+    <Joint name="LWR" type="hinge">
+        <body>Body_LWY</body>
+        <body>Body_LWR</body>
+        <offsetfrom>Body_LWR</offsetfrom>
+        <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
+        <axis>1 0 0</axis>
+        <limitsdeg>-38 39</limitsdeg>
+    </Joint>
+    <adjacent>Body_LWR Body_LWY</adjacent>
+
+    <body name="Body_RWR" type="dynamic">
+        <offsetfrom>Body_RWY</offsetfrom><!--Body_RWR Parent Center of Mass to Base -->
+        <translation>0.002758464322 -0.000037197851 0.046421648761</translation>
+        <!--Body_RWR Parent to Current -->
+        <translation>0.001909308299 -0.000000000001 -0.122185083140</translation>
+        <!--Body_RWR Base to Center of Mass -->
+        <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+        <geom type="trimesh">
+            <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+            <render>Body_RWR_1.wrl 1 </render>
+            <data>convhull_RWR_1.wrl 1 </data>
+        </geom>
+    </body>
+
+    <Joint name="RWR" type="hinge">
+        <body>Body_RWY</body>
+        <body>Body_RWR</body>
+        <offsetfrom>Body_RWR</offsetfrom>
+        <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
+        <axis>1 0 0</axis>
+        <limitsdeg>-39 38</limitsdeg>
+    </Joint>
+    <adjacent>Body_RWR Body_RWY</adjacent>
+
+    <body name="Body_LWP" type="dynamic">
+        <offsetfrom>Body_LWR</offsetfrom><!--Body_LWP Parent Center of Mass to Base -->
+        <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+        <!--Body_LWP Parent to Current -->
+        <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+        <!--Body_LWP Base to Center of Mass -->
+        <translation>-0.001673053872 0.002266301384 -0.035188254309</translation>
+        <geom type="trimesh">
+            <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
+            <render>Body_LWP_1.wrl 1 </render>
+            <data>convhull_LWP_1.wrl 1 </data>
+        </geom>
+        <geom type="trimesh">
+            <translation>0.001673053872 -0.002266301384 0.035188254309</translation>
+            <render>Body_LWP_2.wrl 1 </render>
+            <data>convhull_LWP_2.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>0.118491481503</total>
+            <inertia>
+                0.000082017076 -0.000017083277 -0.000004259111
+                -0.000017083277 0.000086292096 0.000002302104
+                -0.000004259111 0.000002302104 0.000078241722
+            </inertia>
+        </mass>
+    </body>
+
+    <Joint name="LWP" type="hinge">
+        <body>Body_LWR</body>
+        <body>Body_LWP</body>
+        <offsetfrom>Body_LWP</offsetfrom>
+        <anchor>0.001673053872 -0.002266301384 0.035188254309</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-41 36</limitsdeg>
+    </Joint>
+    <adjacent>Body_LWP Body_LWR</adjacent>
+    <adjacent>Body_LWP Body_LWY</adjacent>
+
+    <body name="Body_RWP" type="dynamic">
+        <offsetfrom>Body_RWR</offsetfrom><!--Body_RWP Parent Center of Mass to Base -->
+        <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+        <!--Body_RWP Parent to Current -->
+        <translation>0.000000000000 0.000000000000 0.000000000000</translation>
+        <!--Body_RWP Base to Center of Mass -->
+        <translation>-0.001673053872 -0.002266301384 -0.035188254309</translation>
+        <geom type="trimesh">
+            <translation>0.001673053872 0.002266301384 0.035188254309</translation>
+            <render>Body_RWP_1.wrl 1 </render>
+            <data>convhull_RWP_1.wrl 1 </data>
+        </geom>
+        <geom type="trimesh">
+            <translation>0.001673053872 0.002266301384 0.035188254309</translation>
+            <render>Body_RWP_2.wrl 1 </render>
+            <data>convhull_RWP_2.wrl 1 </data>
+        </geom>
+        <mass type="custom">
+            <total>0.118491481503</total>
+            <inertia>
+                0.000082017076 0.000017083277 -0.000004259111
+                0.000017083277 0.000086292096 -0.000002302104
+                -0.000004259111 -0.000002302104 0.000078241722
+            </inertia>
+        </mass>
+    </body>
+    <adjacent>Body_RWP Body_RWR</adjacent>
+    <adjacent>Body_RWP Body_RWY</adjacent>
+
+    <Joint name="RWP" type="hinge">
+        <body>Body_RWR</body>
+        <body>Body_RWP</body>
+        <offsetfrom>Body_RWP</offsetfrom>
+        <anchor>0.001673053872 0.002266301384 0.035188254309</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-41 36</limitsdeg>
+    </Joint>
+
+    <kinbody file="lefthand.xml"/>
+    <kinbody file="righthand.xml"/>
+
+</kinbody>
