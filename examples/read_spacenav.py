@@ -26,27 +26,13 @@ import spacenav as sp
 
 if __name__=='__main__':
 
-    #-- Read the name of the xml file passed as an argument
-    #-- or use the default name
-    try:
-        file_env = sys.argv[1]
-    except IndexError:
-        file_env = 'huboplus/huboplus.robot.xml'
-
     env = Environment()
-    #env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
 
-    #-- Set the robot controller and start the simulation
-    with env:
-        env.Load(file_env)
-        robot = env.GetRobots()[0]
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
-
     spnav=sp.SpaceNav(env)
-    time.sleep(1)
-    print spnav.get_raw_state()
-    print spnav.get_state()
-    
+    while True:
+        time.sleep(.1)
+        print spnav.get_raw_state()
+        print spnav.get_state()
 
+    
