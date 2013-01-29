@@ -77,7 +77,7 @@ if __name__=='__main__':
     
     probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
     
-    env.LoadProblem(probs_cbirrt,'hubo')
+    env.LoadProblem(probs_cbirrt,robot.GetName())
     
     setInitialPose(robot)
     time.sleep(1)

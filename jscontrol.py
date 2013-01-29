@@ -25,11 +25,13 @@ import sys
 import tab
 import spacenav as sp
 import openhubo
+from TSR import *
+from generalik import *
 
 if __name__=='__main__':
 
     env = Environment()
-    env.SetDebugLevel(3)
+    env.SetDebugLevel(4)
     env.SetViewer('qtcoin')
     time.sleep(.25)
 
@@ -43,7 +45,7 @@ if __name__=='__main__':
         robot = env.GetRobots()[0]
 
         ##Define a joint name lookup closure for the robot
-        #ind=openhubo.makeNameToIndexConverter(robot)
+        ind=openhubo.makeNameToIndexConverter(robot)
 
         pose=zeros(robot.GetDOF())
         ##Very important to make sure the initial pose is not colliding
@@ -57,32 +59,30 @@ if __name__=='__main__':
         #env.StartSimulation(timestep=0.0005)
 
     time.sleep(1)
-   
-    #robot.GetController().SendCommand('set radians')
-    #pose[ind('REP')]=-pi/2
-    #pose[ind('LEP')]=-pi/2
-    #pose[ind('LHY')]=pi/2
+
+    probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
+    env.LoadProblem(probs_cbirrt,robot.GetName())
+
+    robot.SetDOFValues([-1],[ind('LEP')])
+    ik=GeneralIK(robot,probs_cbirrt)
 
     lh=robot.GetLink('leftPalm')
     Tstart=lh.GetTransform()
     la=robot.GetManipulator('leftArm')
     joints=la.GetArmIndices()
-    robot.SetActiveDOFs(joints)
+    lhgoal=TSR()
+    lhgoal.manipindex=0
+    ik.activate()
+    ik.tsrlist.append(lhgoal)
 
-    gains=array([0.012,0.012,0.012,pi/180,pi/180,pi/180])/10.
+    gains=array([0.012,0.012,0.012,pi/180,pi/180,pi/180])/100.
     deadzone=ones(6)*20
     spnav = sp.SpaceNav(env,deadzone,gains)
     while True:
-        T=lh.GetTransform()
-        Jt=mat(robot.CalculateActiveJacobian(lh.GetIndex(),T[0:3,3]))
-        Jr=mat(robot.CalculateActiveRotationJacobian(lh.GetIndex(),quatFromRotationMatrix(T[0:3,0:3])))
-        q=robot.GetActiveDOFValues()
         time.sleep(.1)
-        aff=spnav.get_affine()
-        t=spnav.get_translation()
-        dqr=pinv(Jr)*aff/100
-        dqt=pinv(Jt)*t/100
-        q1=array(squeeze(dqt)+q)[0]
-        robot.SetActiveDOFValues(q1)
-        print q1
+        T=lh.GetTransform()
+        Tg=T.dot(spnav.get_transform())
+        print Tg
+        ik.tsrlist[0].Tw_e=Tg
+        ik.run(True)
 

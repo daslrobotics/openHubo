@@ -18,12 +18,11 @@ class GeneralIK:
         self.tsrlist=tsrlist
         self.sample_bw=sample_bw
         self.soln=[]
-        self.activedofs=[]
         self.zero=robot.GetDOFValues()    
         self.supportlinks=[]
         self.cogtarget=()
     
-    def Serialize(self):
+    def Serialize(self,auto=False):
         L=len(self.tsrlist)
         cmd='DoGeneralIK exec nummanips {}'.format(L)
         for k in self.tsrlist:
@@ -41,30 +40,34 @@ class GeneralIK:
             cmd=cmd+' supportlinks {} {}'.format(len(self.supportlinks),' '.join(self.supportlinks))
         if len(self.cogtarget)>0:
             cmd=cmd+' movecog {} {} {}'.format(self.cogtarget[0],self.cogtarget[1],self.cogtarget[2])
+        if auto:
+            cmd=cmd+' exec'
         return cmd
     def appendTSR(self,tsr):
         self.tsrlist.append(tsr)
     
-    def activate(self,extra=[]):
-        if len(self.activedofs)==0:
-            manips=self.robot.GetManipulators()
-            #print manips
-            for m in self.tsrlist:
-                #print m
-                #print robot
-                #print manips[m.manipindex].GetArmIndices()
-                #print activedofs
-                self.activedofs.extend(manips[m.manipindex].GetArmIndices())
-            for m in extra:
-                self.activedofs.extend(manips[m].GetArmIndices())
+    def activate(self,extra=[],reset=True):
+        activedofs=[]
+        manips=self.robot.GetManipulators()
+        #Temporary copy 
+        for m in self.tsrlist:
+            #print m
+            #print robot
+            #print manips[m.manipindex].GetArmIndices()
+            #print activedofs
+            activedofs.extend(manips[m.manipindex].GetArmIndices())
+
+        for m in extra:
+            activedofs.extend(manips[m].GetArmIndices())
         #print self.activedofs
-        self.robot.SetActiveDOFs(self.activedofs)
+        self.robot.SetActiveDOFs(unique(activedofs))
         
     def run(self,auto=False,extra=[]):
         
         if auto:
             self.activate(extra)
-        response=self.problem.SendCommand(self.Serialize())
+
+        response=self.problem.SendCommand(self.Serialize(auto))
         
         if len(response)>0:
             collisions=CollisionReport()
@@ -79,7 +82,7 @@ class GeneralIK:
             
     def goto(self):
         self.activate()
-        self.robot.SetDOFValues(self.soln,self.activedofs)
+        self.robot.SetDOFValues(self.soln,robot.GetActiveDOFIndices())
         self.robot.WaitForController(.2)
     
     def solved(self):
