@@ -37,6 +37,7 @@ if __name__=='__main__':
         env.Load('simpleFloor.env.xml')
         robot = env.GetRobots()[0]
 
+
         #Define a joint name lookup closure for the robot
         ind=openhubo.makeNameToIndexConverter(robot)
 
@@ -48,6 +49,8 @@ if __name__=='__main__':
         collisionChecker = RaveCreateCollisionChecker(env,'pqp')
         env.SetCollisionChecker(collisionChecker)
 
+        ctrl=robot.GetController()
+        ctrl.SendCommand('openloop 50 51 52 53 54 55 56 ')
     
         robot.GetController().SendCommand('setgains 200 0 8')
         #Note that you can specify the input format as either degrees or
@@ -64,12 +67,19 @@ if __name__=='__main__':
     robot.GetController().SendCommand('set radians')
     pose[ind('REP')]=-pi/2
     pose[ind('LEP')]=-pi/2
-    pose[ind('LHY')]=pi/2
+    #pose[ind('LHY')]=pi/2
 
     robot.GetController().SetDesired(pose)
-    pose[ind('LHP')]=-pi
-    pose[ind('LKP')]=pi
-    time.sleep(1)
-    robot.GetController().SetDesired(pose)
-    time.sleep(1)
+    #pose[ind('LHP')]=-pi
+    #pose[ind('LKP')]=pi
+    #time.sleep(1)
+    #robot.GetController().SetDesired(pose)
+    #time.sleep(1)
+
+    #TODO: show finger control
+    #1) close hand
+    #2) open hand
+    #Caution about 1-way function
+    
+    
 
