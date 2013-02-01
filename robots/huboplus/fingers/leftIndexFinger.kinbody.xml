@@ -75,7 +75,7 @@
         <offsetfrom>leftIndexProximal</offsetfrom>
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
-        <limitsdeg>-4 100</limitsdeg>
+        <limitsdeg>-1 91</limitsdeg>
     </Joint>
 
     <Joint name="leftIndexKnuckle2" type="hinge" >

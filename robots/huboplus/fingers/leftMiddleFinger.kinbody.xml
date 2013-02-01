@@ -74,7 +74,7 @@
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
 <maxtorque>20</maxtorque>
-        <limitsdeg>-4 100</limitsdeg>
+        <limitsdeg>-1 91</limitsdeg>
     </Joint>
 
     <Joint name="leftMiddleKnuckle2" ype="hinge">
@@ -84,7 +84,7 @@
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
 <maxtorque>20</maxtorque>
-        <limitsdeg>-4 100</limitsdeg>
+        <limitsdeg>-1 91</limitsdeg>
     </Joint>
     <adjacent> leftMiddleProximal leftMiddleMedial</adjacent>
 
@@ -95,7 +95,7 @@
         <anchor>0.011 0 0</anchor>
         <axis>0 0 -1</axis>
 <maxtorque>20</maxtorque>
-        <limitsdeg>-4 100</limitsdeg>
+        <limitsdeg>-1 91</limitsdeg>
     </Joint>
     <adjacent> leftMiddleDistal leftMiddleMedial</adjacent>
 

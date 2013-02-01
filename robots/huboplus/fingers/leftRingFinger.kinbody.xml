@@ -77,7 +77,7 @@
         <axis>0 0 -1</axis>
         <anchor>-0.016 0 0</anchor>
         <maxtorque>20</maxtorque>
-        <limitsdeg>-4 100</limitsdeg>
+        <limitsdeg>-1 91</limitsdeg>
     </Joint>
 
     <Joint name="leftRingKnuckle2" type="hinge" >
@@ -87,7 +87,7 @@
         <anchor>0.016 0 0</anchor>
         <axis>0 0 -1</axis>
         <maxtorque>20</maxtorque>
-        <limitsdeg>-4 100</limitsdeg>
+        <limitsdeg>-1 91</limitsdeg>
     </Joint>
     <adjacent> leftRingProximal leftRingMedial</adjacent>
 
@@ -99,7 +99,7 @@
         <axis>0 0 -1</axis>
         <maxtorque>20</maxtorque>
         <maxtorque>20</maxtorque>
-        <limitsdeg>-4 100</limitsdeg>
+        <limitsdeg>-1 91</limitsdeg>
     </Joint>
     <adjacent> leftRingDistal leftRingMedial</adjacent>
 
