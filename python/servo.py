@@ -8,8 +8,6 @@ import sys
 import time
 import openhubo
 import collections
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
 
 class ServoTest:
 
@@ -125,6 +123,7 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
 
 """ Examples to learn how to use the new servocontroller."""
 if __name__=='__main__':
+    import matplotlib.pyplot as plt
     from openravepy import *
     from numpy import *
     from numpy.linalg import *
