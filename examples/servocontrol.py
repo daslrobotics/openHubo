@@ -47,39 +47,33 @@ if __name__=='__main__':
 
         robot.SetController(RaveCreateController(env,'servocontroller'))
         collisionChecker = RaveCreateCollisionChecker(env,'pqp')
+        if not collisionChecker:
+            print "Using ODE since PQP is not available..."
+            collisionChecker = RaveCreateCollisionChecker(env,'ode')
+
         env.SetCollisionChecker(collisionChecker)
 
         ctrl=robot.GetController()
-        ctrl.SendCommand('openloop 50 51 52 53 54 55 56 ')
-    
-        robot.GetController().SendCommand('setgains 200 0 8')
+        ctrl.SendCommand('setgains 100 0 8')
         #Note that you can specify the input format as either degrees or
         #radians, but the internal format is radians
-        robot.GetController().SendCommand('set degrees')
-        robot.GetController().SetDesired(pose)
-
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
         env.StartSimulation(timestep=0.0005)
 
-    time.sleep(3)
+    time.sleep(1)
    
-    #Change the pose to lift the elbows and resend
-    robot.GetController().SendCommand('set radians')
+    #Change the pose to lift the elbows and send
+    ctrl.SendCommand('set radians')
     pose[ind('REP')]=-pi/2
     pose[ind('LEP')]=-pi/2
-    #pose[ind('LHY')]=pi/2
+    ctrl.SetDesired(pose)
+    openhubo.pause()
 
-    robot.GetController().SetDesired(pose)
-    #pose[ind('LHP')]=-pi
-    #pose[ind('LKP')]=pi
-    #time.sleep(1)
-    #robot.GetController().SetDesired(pose)
-    #time.sleep(1)
+    ctrl.SendCommand('openloop '+' '.join(['{}'.format(x) for x in range(42,57)]))
+    for i in range(42,57):
+        pose[i]=pi/2
+    ctrl.SetDesired(pose)
+    openhubo.pause()
 
-    #TODO: show finger control
-    #1) close hand
-    #2) open hand
-    #Caution about 1-way function
-    
-    
-
+    pose[42:57]=0
+    ctrl.SetDesired(pose)
