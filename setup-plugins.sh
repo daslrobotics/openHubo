@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#Useful functions for setup script
 function verify-dep()
 {
     local RESULT=`dpkg-query -l $1 | grep "ii"`
@@ -18,17 +19,14 @@ function verify-dep()
     fi
 }
 
-BASE_DIR=`git rev-parse --show-toplevel`
-
-
 function check_submodules()
 {
     #Check if submodules have changed and ask user to decide whether to checkout
     #specified version in parent repository.
+    git submodule init
+
     OLD_IFS=$IFS
     IFS=$'\n'
-
-    git submodule init
 
     for stat in `git submodule status`
     do
@@ -54,9 +52,13 @@ function check_submodules()
                 git submodule update $PLUGIN_NAME
             fi
         fi
-        IFS=$OLD_IFS
     done
+    IFS=$OLD_IFS
 }
+
+#Install script starts here
+
+BASE_DIR=`git rev-parse --show-toplevel`
 
 check_submodules
 

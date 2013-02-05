@@ -3,7 +3,7 @@ from numpy import pi,array
 import openravepy as rave
 from TransformMatrix import *
 import time
-from  recorder import viewerrecorder
+from recorder import viewerrecorder
 import datetime
 """ A collection of useful functions to run openhubo models.
 As common functions are developed, they will be added here.
