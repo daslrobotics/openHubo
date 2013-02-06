@@ -18,7 +18,7 @@ __license__ = 'GPLv3 license'
 
 from openravepy import *
 from numpy import *
-from numpy.linalg import pinv
+from numpy.linalg import pinv,inv
 import time
 import datetime
 import sys
@@ -27,6 +27,7 @@ import spacenav as sp
 import openhubo
 from TSR import *
 from generalik import *
+import copy
 
 if __name__=='__main__':
 
@@ -72,17 +73,35 @@ if __name__=='__main__':
     joints=la.GetArmIndices()
     lhgoal=TSR()
     lhgoal.manipindex=0
-    ik.activate()
+    ik.activate([ind('HPY')])
     ik.tsrlist.append(lhgoal)
 
-    gains=array([0.012,0.012,0.012,pi/180,pi/180,pi/180])/100.
+    gains=array([0.005,0.005,0.005,pi/180,pi/180,pi/180])/25.
     deadzone=ones(6)*20
     spnav = sp.SpaceNav(env,deadzone,gains)
+
+    #TODO: add returnclosest feature to generalik
+    #   Make "backing out" of colliding final pose. If closest solution is in
+    #   collision, linearly bisect between current (non-colliding) pose and
+    #   returned colliding pose to find the closest non-colliding version,
+    #   limited by some tolerance.
+    #   The robot should be able to "slide" it's hand over itself in simulation
+    #   without triggering a collision, perhaps with some safety margin.
+
     while True:
-        time.sleep(.1)
-        T=lh.GetTransform()
-        Tg=T.dot(spnav.get_transform())
-        print Tg
-        ik.tsrlist[0].Tw_e=Tg
+        time.sleep(.05)
+        #Current EE pose
+        T=mat(lh.GetTransform())
+        #Differential transform
+        Ts=mat(spnav.get_transform())
+        #Get differential rotation only
+        dR=Ts[0:3,0:3]
+        dt=Ts[0:3,3]
+        #Global rotation update to current pose
+        Rnew=dR*T[0:3,0:3]
+        Tnew=T
+        Tnew[0:3,0:3]=Rnew
+        Tnew[0:3,3]+=dt
+        ik.tsrlist[0].Tw_e=array(copy.deepcopy(Tnew))
         ik.run(True)
 
