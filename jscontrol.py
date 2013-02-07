@@ -36,28 +36,11 @@ if __name__=='__main__':
     env.SetViewer('qtcoin')
     time.sleep(.25)
 
-
-    with env:
-        #NOTE: Make sure to use this sequence of commands WITHIN a "with env:"
-        #block to ensure that the model loads correctly.
-        #env.StopSimulation()
-        #env.Load('simpleFloor.env.xml')
-        env.Load('huboplus.robot.xml')
-        robot = env.GetRobots()[0]
-
-        ##Define a joint name lookup closure for the robot
-        ind=openhubo.makeNameToIndexConverter(robot)
-
-        pose=zeros(robot.GetDOF())
-        ##Very important to make sure the initial pose is not colliding
-        robot.SetDOFValues(pose)
-
-        #robot.SetController(RaveCreateController(env,'servocontroller'))
-        #collisionChecker = RaveCreateCollisionChecker(env,'pqp')
-        #env.SetCollisionChecker(collisionChecker)
+    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
     
-        #robot.GetController().SendCommand('setgains 100 0 8')
-        #env.StartSimulation(timestep=0.0005)
+    pose=zeros(robot.GetDOF())
+    with env:
+        env.StartSimulation(timestep=0.0005)
 
     time.sleep(1)
 
@@ -75,6 +58,9 @@ if __name__=='__main__':
     lhgoal.manipindex=0
     ik.activate([ind('HPY')])
     ik.tsrlist.append(lhgoal)
+    ik.gettime=False
+    ik.return_closest=True
+    ik.auto=False
 
     gains=array([0.005,0.005,0.005,pi/180,pi/180,pi/180])/25.
     deadzone=ones(6)*20
@@ -88,6 +74,7 @@ if __name__=='__main__':
     #   The robot should be able to "slide" it's hand over itself in simulation
     #   without triggering a collision, perhaps with some safety margin.
 
+    dofs=robot.GetActiveDOFIndices()
     while True:
         time.sleep(.05)
         #Current EE pose
@@ -104,4 +91,7 @@ if __name__=='__main__':
         Tnew[0:3,3]+=dt
         ik.tsrlist[0].Tw_e=array(copy.deepcopy(Tnew))
         ik.run(True)
+        pose[dofs]=ik.soln
+        ctrl.SetDesired(pose)
+
 

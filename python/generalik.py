@@ -21,10 +21,12 @@ class GeneralIK:
         self.zero=robot.GetDOFValues()    
         self.supportlinks=[]
         self.cogtarget=()
+        self.return_closest=False
+        self.gettime=False
     
     def Serialize(self,auto=False):
         L=len(self.tsrlist)
-        cmd='DoGeneralIK exec nummanips {}'.format(L)
+        cmd='DoGeneralIK nummanips {}'.format(L)
         for k in self.tsrlist:
             cmd=cmd+' '
             #Assumes that Bw encloses T0_e 
@@ -41,7 +43,13 @@ class GeneralIK:
         if len(self.cogtarget)>0:
             cmd=cmd+' movecog {} {} {}'.format(self.cogtarget[0],self.cogtarget[1],self.cogtarget[2])
         if auto:
-            cmd=cmd+' exec'
+            cmd+=' exec'
+        if self.return_closest:
+            cmd+=' returnclosest'
+        if self.gettime:
+            cmd+=' gettime'
+
+        cmd+=' returnsolved'
         return cmd
     def appendTSR(self,tsr):
         self.tsrlist.append(tsr)
@@ -67,17 +75,21 @@ class GeneralIK:
         if auto:
             self.activate(extra)
 
-        response=self.problem.SendCommand(self.Serialize(auto))
+        self.response=self.problem.SendCommand(self.Serialize(auto))
+        datalist=self.response[:-3].split(' ')
         
-        if len(response)>0:
+        if len(datalist)>1:
             collisions=CollisionReport()
             if self.robot.CheckSelfCollision(collisions):
                 print "Self-collision between links {} and {}!".format(collisions.plink1,collisions.plink2)
-                return False
             if self.robot.GetEnv().CheckCollision(self.robot,collisions):
                 print "Environment collision between links {} and {}!".format(collisions.plink1,collisions.plink2)               
-                return False
-            self.soln=[float(x) for x in response[:-1].split(' ')]
+            self.soln=[float(x) for x in datalist]
+            if self.response[-2]=='T':
+                self.solvedflag=True
+            else:
+                self.solvedflag=False
+
             return True
             
     def goto(self):
@@ -86,7 +98,7 @@ class GeneralIK:
         self.robot.WaitForController(.2)
     
     def solved(self):
-        return len(self.soln)>0
+        return len(self.soln)>0 and self.solvedflag
     
     def findSolution(self,itrs=10,auto=False,extra=[]):
         #Enable TSR sampling
@@ -118,13 +130,21 @@ class GeneralIK:
         self.zero=self.robot.GetDOFValues()
     
 if __name__ == '__main__':
+    import openhubo
+    from openravepy import *
     
+    env=Environment()
+    rtuple=openhubo.load(env,'rlhuboplus.robot.xml')
+    robot=rtuple[0]
+    probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
+    env.LoadProblem(probs_cbirrt,robot.GetName())
     juiceTSR = TSR()
-    juiceTSR.Tw_e = MakeTransform(rodrigues([pi/2, 0, 0]),mat([0, 0.22, 0.1]).T)
+    juiceTSR.Tw_e = MakeTransform(rodrigues([pi/8, 0, 0]),mat([.1, 0.22, -05]).T)
     juiceTSR.Bw = mat([0, 0,   0, 0,   -0.02, 0.02,   0, 0,   0, 0,   -pi, pi])
     juiceTSR.manipindex = 0
     
-    test=GeneralIK('','',[juiceTSR],False)
-    test.supportlinks=['leftFootBase']
-    test.cogtarget=(.1,.2,.3)
+    test=GeneralIK(robot,probs_cbirrt,[juiceTSR],False)
+    test.return_closest=True
+
     print test.Serialize()
+    test.run()
