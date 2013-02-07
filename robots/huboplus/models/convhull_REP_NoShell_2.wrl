@@ -1,6 +1,6 @@
 #VRML V2.0 utf8
 
-DEF convhull_REP_NoShell_Shrinkwrap_2
+DEF convhull_REP_NoShell_2_220_faces
 Transform {
 	children [
 		 Shape {

@@ -1,15 +1,15 @@
 #VRML V2.0 utf8
 
-DEF convhull_RAR_2
+DEF convhull_RAR_2_2118_faces
 Transform {
 	children [
 		 Shape {
 			appearance Appearance{
 			material Material {
 				ambientIntensity 1.000000
-				diffuseColor 0.800000 0.800000 0.800000
-				specularColor 0.800000 0.800000 0.800000
-				shininess 0.600000
+				diffuseColor 0.700000 0.700000 0.700000
+				specularColor 0.800000 0.800000 0.830000
+				shininess 0.300000
 				}
 			}
 			geometry IndexedFaceSet {

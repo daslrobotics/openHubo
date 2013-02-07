@@ -1,6 +1,6 @@
 #VRML V2.0 utf8
 
-DEF convhull_LSP_1
+DEF convhull_LSP_1_2864_faces
 Transform {
 	children [
 		 Shape {
