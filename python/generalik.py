@@ -54,7 +54,7 @@ class GeneralIK:
     def appendTSR(self,tsr):
         self.tsrlist.append(tsr)
     
-    def activate(self,extra=[],reset=True):
+    def activate(self,extra=[],extradof=[]):
         activedofs=[]
         manips=self.robot.GetManipulators()
         #Temporary copy 
@@ -67,6 +67,8 @@ class GeneralIK:
 
         for m in extra:
             activedofs.extend(manips[m].GetArmIndices())
+        for d in extradof:
+            activedofs.append(d)
         #print self.activedofs
         self.robot.SetActiveDOFs(unique(activedofs))
         
@@ -80,10 +82,6 @@ class GeneralIK:
         
         if len(datalist)>1:
             collisions=CollisionReport()
-            if self.robot.CheckSelfCollision(collisions):
-                print "Self-collision between links {} and {}!".format(collisions.plink1,collisions.plink2)
-            if self.robot.GetEnv().CheckCollision(self.robot,collisions):
-                print "Environment collision between links {} and {}!".format(collisions.plink1,collisions.plink2)               
             self.soln=[float(x) for x in datalist]
             if self.response[-2]=='T':
                 self.solvedflag=True

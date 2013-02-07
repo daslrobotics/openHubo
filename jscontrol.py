@@ -56,17 +56,17 @@ if __name__=='__main__':
     joints=la.GetArmIndices()
     lhgoal=TSR()
     lhgoal.manipindex=0
-    ik.activate([ind('HPY')])
     ik.tsrlist.append(lhgoal)
     ik.gettime=False
     ik.return_closest=True
     ik.auto=False
+    ik.activate([],[ind('HPY')])
 
     gains=array([0.005,0.005,0.005,pi/180,pi/180,pi/180])/25.
     deadzone=ones(6)*20
     spnav = sp.SpaceNav(env,deadzone,gains)
 
-    #TODO: add returnclosest feature to generalik
+    #TODO: 
     #   Make "backing out" of colliding final pose. If closest solution is in
     #   collision, linearly bisect between current (non-colliding) pose and
     #   returned colliding pose to find the closest non-colliding version,
@@ -90,8 +90,7 @@ if __name__=='__main__':
         Tnew[0:3,0:3]=Rnew
         Tnew[0:3,3]+=dt
         ik.tsrlist[0].Tw_e=array(copy.deepcopy(Tnew))
-        ik.run(True)
+        ik.run(False)
         pose[dofs]=ik.soln
         ctrl.SetDesired(pose)
-
 
