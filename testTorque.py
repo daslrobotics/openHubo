@@ -24,13 +24,36 @@ from servo import *
 import openhubo 
 import matplotlib.pyplot as plt
 
+class MotorModel:
+
+    def __init__(self,joint,Ks=1,R=1,N=1):
+        robot=joint.GetParent()
+        env=robot.GetEnv()
+        physics=env.GetPhysicsEngine() 
+        #Closure for force / torque
+        def get_ft():
+            return physics.GetJointForceTorque(joint)
+        self.get_ft=get_ft
+        def get_vel():
+            return joint.GetVelocities()[0]
+        self.get_vel=get_vel
+        self.axis=joint.GetAxis
+        self.Kv=60./Ks/2/pi
+        self.R=R
+        self.N=N
+
+    def get_state(self):
+        [force,torque]=self.get_ft()
+        T=torque.dot(self.axis())
+        w=self.get_vel()
+        wm=N*w
+        Tm=T/N
+        i=(Tm+Tf)/Kv
+        V=R*i+Kv*wm
+        return [V,i,T,w]
+
+
 def make_DC_motor(joint,Ks,R,N):
-    robot=joint.GetParent()
-    env=robot.GetEnv()
-    physics=env.GetPhysicsEngine()
-    axis=joint.GetAxis(0)
-    Kv=60./Ks/2/pi
-    Tf=0.0 #Loss torque, assuming zero for now
     def maxon_motor_model():
         """ Ks in rpm/V
             Kt in mNm/A
@@ -105,8 +128,8 @@ if __name__=='__main__':
     N=160
 
     data=[]
-    motor=make_DC_motor(j1,Ks,R,N)
+    motor=MotorModel(j1,Ks,R,N)
     for k in range(10000):
         env.StepSimulation(0.0005)
-        data.append(motor())
+        data.append(motor.get_state())
 
