@@ -19,7 +19,7 @@ __license__ = 'GPLv3 license'
 from openravepy import *
 import time
 import scipy
-import tab
+import openhubo
 from numpy import *
 from numpy.linalg import *
 import sys

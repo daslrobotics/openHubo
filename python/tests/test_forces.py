@@ -21,8 +21,8 @@ from numpy import *
 import time
 import datetime
 import sys
-import tab
 import unittest
+import openhubo
 
 class TestContactForces(unittest.TestCase):
 

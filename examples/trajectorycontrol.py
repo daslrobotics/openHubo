@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import tab
+import openhubo
 from openravepy import *
 from numpy import *
 from numpy.linalg import *

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from openravepy import *
-import tab
+import openhubo
 import time
 from numpy import *
 from numpy.linalg import *

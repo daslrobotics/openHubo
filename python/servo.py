@@ -3,7 +3,7 @@
 """ OpenHubo servo functions """
 from openravepy import *
 from numpy import pi,array,zeros
-import tab
+import openhubo
 import sys
 import time
 import openhubo

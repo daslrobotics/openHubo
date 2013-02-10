@@ -20,7 +20,7 @@ from openravepy import *
 from numpy import *
 import time
 import sys
-import tab
+import openhubo
 
 def checkCollision(robot,bodies):
     #Check the first body against the rest

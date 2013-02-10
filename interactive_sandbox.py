@@ -21,7 +21,7 @@ from numpy import *
 import time
 import datetime
 import sys
-import tab
+import openhubo
 
 if __name__=='__main__':
 

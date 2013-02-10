@@ -14,7 +14,7 @@ import time
 import datetime
 import sys
 import os
-import tab
+import openhubo
 from generalik import *
 from cbirrt import *
 import openhubo

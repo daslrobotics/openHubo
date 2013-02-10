@@ -16,7 +16,7 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-import tab
+import openhubo
 from openravepy import *
 from numpy import *
 import time

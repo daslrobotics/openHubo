@@ -5,7 +5,7 @@ from TransformMatrix import *
 import time
 from recorder import viewerrecorder
 import datetime
-import tab
+import openhubo
 
 def set_finger_torque(robot,maxT,dt=0.0005):
     names=[u'rightIndexKnuckle1', u'rightIndexKnuckle2', u'rightIndexKnuckle3', u'rightMiddleKnuckle1', u'rightMiddleKnuckle2', u'rightMiddleKnuckle3', u'rightRingKnuckle1', u'rightRingKnuckle2', u'rightRingKnuckle3', u'rightPinkyKnuckle1', u'rightPinkyKnuckle2', u'rightPinkyKnuckle3', u'rightThumbKnuckle1', u'rightThumbKnuckle2', u'rightThumbKnuckle3']

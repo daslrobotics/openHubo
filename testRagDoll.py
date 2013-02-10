@@ -2,7 +2,7 @@
 from openravepy import *
 import time
 import numpy
-import tab
+import openhubo
 
 if __name__ == "__main__":
 
