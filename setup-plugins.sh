@@ -1,6 +1,50 @@
 #!/bin/bash
 
 #Useful functions for setup script
+function easyread() {
+if [[ $MINGW_CHECK == false ]]
+then
+    read -e -p "$1:" -i "$2"
+else
+    read -e -p "$1 [$2]:"
+fi
+#Copy default value into return field
+if [[ $REPLY == '' ]]
+then
+    REPLY=$2
+fi
+}
+
+function check-if-gitrepo()
+{
+    #From http://stackoverflow.com/a/2185353/2059564 
+    if git rev-parse --git-dir > /dev/null 2>&1; then
+        : # This is a valid git repository (but the current working
+        # directory may not be the top level.
+        # Check the output of the git rev-parse command if you care)
+        return 0
+    else
+        echo "The current folder is not a git repository! Until github adds"
+        echo "submodule archiving to their tags, the source folder must be a git repository."
+        echo 
+        read -p "Would you like to clone the openhubo repository to continue [Y/n]?" CLONE_NEW_REPO
+        if [[ $CLONE_NEW_REPO == 'n' || $CLONE_NEW_REPO == 'N' ]]
+        then
+            echo "Exiting..."
+            exit 1
+        fi
+        local DEF_PATH=$HOME/openHubo
+        easyread "Type a destination path for repository:" "$DEF_PATH"; eval DEST_PATH=$REPLY
+        if git clone --recursive git://github.com/daslrobotics/openHubo.git "$DEST_PATH"
+        then
+            cd $DEST_PATH
+            return 0
+        else
+            exit 1
+        fi
+    fi
+}
+
 function verify-dep()
 {
     local RESULT=`dpkg-query -l $1 | grep "ii"`
@@ -19,7 +63,7 @@ function verify-dep()
     fi
 }
 
-function check_submodules()
+function check-submodules()
 {
     #Check if submodules have changed and ask user to decide whether to checkout
     #specified version in parent repository.
@@ -58,9 +102,11 @@ function check_submodules()
 
 #Install script starts here
 
+check-if-gitrepo
+
 BASE_DIR=`git rev-parse --show-toplevel`
 
-check_submodules
+check-submodules
 
 echo ""
 echo "Building OpenMR Servo Controller Plugin..."
