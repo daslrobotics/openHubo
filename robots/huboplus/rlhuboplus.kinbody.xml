@@ -439,7 +439,7 @@
         <offsetfrom>Body_LHP</offsetfrom>
         <anchor>-0.019504891350 0.059577480789 0.175201757627</anchor>
         <axis>0 1 0</axis>
-        <!--<limitsdeg>-85 92</limitsdeg>-->
+        <limitsdeg>-85 92</limitsdeg>
 		<maxvel>4.71</maxvel>
 		<maxaccel>9.00</maxaccel>
 		<maxtorque>95</maxtorque>
@@ -491,7 +491,7 @@
         <offsetfrom>Body_LKP</offsetfrom>
         <anchor>-0.012825433376 0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
-        <!--<limitsdeg>-4 149</limitsdeg>-->
+        <limitsdeg>-4 149</limitsdeg>
 		<maxvel>4.71</maxvel>
 		<maxaccel>9.00</maxaccel>
 		<maxtorque>95</maxtorque>

@@ -114,9 +114,6 @@ def load(env,robotname,scenename=None,stop=False,physics=True):
             loaded=env.Load(scenename)
 
         loaded=env.Load(robotname)
-    time.sleep(1)
-    #Explicitly disable physics if option is selected
-    with env:
         if not physics:
             env.SetPhysicsEngine(rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
         robot = env.GetRobots()[0]

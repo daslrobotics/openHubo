@@ -1,6 +1,8 @@
 from math import *
 from decimal import *
 import sys
+import fnmatch
+import os
 
 ## Ladder Format
 #0.05		#ladder-stringer-width
@@ -18,14 +20,33 @@ import sys
 #0			#1-rect--0-cir-rung-cross-section
 #1			#1-rect--0-cir-stringer-cross-section
 
+def test_filename_exist(filename,spath='.'):
+    for f in os.listdir(spath):
+        if fnmatch.fnmatch(f, filename):
+            return True
+    return False
+
 
 # Read the file to obtain time steps and the total time
-def make_ladder_env(paramfile):
+def make_ladder_env(paramfile,usecached=False):
+
+    #Kludgy interpretation of posix path here, may choke on special chars
+    paramname=paramfile.split('/')[-1]
+    name_tokens=paramname.split('.')
+    if len(name_tokens)>1:
+        outname='.'.join(name_tokens[:-1])
+    else:
+        outname=name_tokens[-1]
+
+    envname=outname+'.env.xml'
+    kinbodyname=outname+'.kinbody.xml'
+    if usecached and test_filename_exist(envname) and test_filename_exist(kinbodyname):
+        #early abort if file exists
+        print envname + " found! Using cached"
+        return envname
+
     file_read = open(paramfile,'r')
     getcontext().prec = 5
-
-    print cos(90)
-    print cos(pi/2)
 
     #line 1 
     stringer_width=0
@@ -239,17 +260,7 @@ def make_ladder_env(paramfile):
     else:
         stringer_l=stringer_nface
 
-    #Kludgy interpretation of posix path here, may choke on special chars
-    paramname=paramfile.split('/')[-1]
-    name_tokens=paramname.split('.')
-    if len(name_tokens)>1:
-        outname='.'.join(name_tokens[:-1])
-    else:
-        outname=name_tokens[-1]
-
-    outname+='.env.xml'
-    print outname
-    file_write = open(outname, "wb")
+    file_write = open(envname, "wb")
 
     file_write.write('<Environment>\n')
     file_write.write('  <camtrans>0.030207 -0.889688 1.368581</camtrans>\n')
@@ -261,7 +272,7 @@ def make_ladder_env(paramfile):
     file_write.write('  <!-- set the background color of the environment-->\n')
     file_write.write('  <bkgndcolor>0.0 0.0 0.</bkgndcolor>\n')
     file_write.write(' \n')
-    file_write.write('  <KinBody file="{}">\n'.format(outname[:-8]+'.kinbody.xml'))
+    file_write.write('  <KinBody file="{}">\n'.format(kinbodyname))
     file_write.write('  <!--<Translation>0 (Decimal(cos(ladder_angle))) 0 </Translation>-->\n')
     file_write.write('    <Translation>0 '+str(2*Decimal(cos(ladder_angle_rad))*stringer_l)+' 0</Translation>\n')
     file_write.write('  <!--<RotationAxis>1 0 0 theta</RotationAxis>-->\n')
@@ -310,10 +321,24 @@ def make_ladder_env(paramfile):
     file_write.write('\n')
     file_write.write('</Environment>\n')
     file_write.close()
-    return outname
+    return envname
 
-def make_ladder(paramfile):
+def make_ladder(paramfile,usecached=False):
     # Read the file to obtain time steps and the total time
+    paramname=paramfile.split('/')[-1]
+    name_tokens=paramname.split('.')
+    if len(name_tokens)>1:
+        outname='.'.join(name_tokens[:-1])
+    else:
+        outname=name_tokens[-1]
+
+    envname=outname+'.env.xml'
+    kinbodyname=outname+'.kinbody.xml'
+    if usecached and test_filename_exist(envname) and test_filename_exist(kinbodyname):
+        #early abort if file exists
+        print  kinbodyname + " found! Using cached..."
+        return kinbodyname
+
     with open(paramfile) as file_read:
         getcontext().prec = 5
 
@@ -520,16 +545,7 @@ def make_ladder(paramfile):
             
     print 'Parsing done'
 
-    ## Writing the ladder.xml file
-    paramname=paramfile.split('/')[-1]
-    name_tokens=paramname.split('.')
-    if len(name_tokens)>1:
-        outname='.'.join(name_tokens[:-1])
-    else:
-        outname=name_tokens[-1]
-
-    outname+='.kinbody.xml'
-    file_write = open(outname, 'w')
+    file_write = open(kinbodyname, 'w')
     file_write.write('<KinBody name="ladder">\n')
     file_write.write('	    	<Body name="Base" type="static">\n')
     file_write.write('	      		<Translation>0.0  0.0  0.0</Translation>\n')
@@ -628,7 +644,7 @@ def make_ladder(paramfile):
     file_write.write('		</Body>\n')
     file_write.write('</KinBody>\n')
     file_write.close()
-    return outname
+    return kinbodyname
 
 if __name__=='__main__':
     try:
