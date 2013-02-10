@@ -68,7 +68,7 @@ if __name__=='__main__':
         ref_robot=env.GetRobot('rlhuboplus_ref')
         ref_robot.Enable(False)
         ref_robot.SetController(RaveCreateController(env,'mimiccontroller'))
-        controller.SendCommand("SetVisRobot rlhuboplus_ref")
+        controller.SendCommand("SetRefRobot rlhuboplus_ref")
 
     for l in ref_robot.GetLinks():
         for g in l.GetGeometries():

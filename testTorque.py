@@ -47,9 +47,9 @@ class MotorModel:
         T=torque.dot(self.axis())
         w=self.get_vel()
         wm=N*w
-        Tm=T/N
-        i=(Tm+Tf)/Kv
-        V=R*i+Kv*wm
+        Tm=T/self.N
+        i=(Tm)/self.Kv
+        V=self.R*i+self.Kv*wm
         return [V,i,T,w]
 
 
@@ -77,7 +77,7 @@ if __name__=='__main__':
     env.SetDebugLevel(4)
     env.SetViewer('qtcoin')
     time.sleep(.25)
-    #-- Set the robot controller and start the simulation
+
     with env:
         #NOTE: Make sure to use this sequence of commands WITHIN a "with env:"
         #block to ensure that the model loads correctly.
@@ -117,8 +117,7 @@ if __name__=='__main__':
     ctrl.SetDesired(pose)
     p=env.GetPhysicsEngine()
     data=zeros((10000,12))
-    j1 = robot.GetJoint('RKP')
-    j2 = robot.GetJoint('LKP')
+    j1 = robot.GetJoint('RSP')
     with env:
         env.StopSimulation()
     time.sleep(.1)
@@ -128,8 +127,17 @@ if __name__=='__main__':
     N=160
 
     data=[]
+    t0=time.time()
     motor=MotorModel(j1,Ks,R,N)
+
     for k in range(10000):
+        pose[ind('RSP')]=.25*sin(k*2*pi/2000)
+        ctrl.SetDesired(pose)
         env.StepSimulation(0.0005)
         data.append(motor.get_state())
 
+    t1=time.time()
+    print t1-t0
+    plt.plot(array(data))
+    plt.legend(('Voltage,V','Current, A','Torque, Nm','Speed, rad/s'))
+    
