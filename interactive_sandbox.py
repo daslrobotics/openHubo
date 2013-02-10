@@ -33,12 +33,15 @@ if __name__=='__main__':
         file_env = 'rlhuboplus.robot.xml'
 
     env = Environment()
-    env.SetViewer('qtcoin')
     env.SetDebugLevel(4)
 
     #-- Set the robot controller and start the simulation
+    t0=time.time()
     with env:
         env.Load(file_env)
+    t1=time.time()
+    env.SetViewer('qtcoin')
+    with env:
         robot = env.GetRobots()[0]
         collisionChecker = RaveCreateCollisionChecker(env,'ode')
         env.SetCollisionChecker(collisionChecker)
@@ -46,4 +49,4 @@ if __name__=='__main__':
         env.StopSimulation()
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
         env.StartSimulation(timestep=0.0005)
-
+    print t1-t0

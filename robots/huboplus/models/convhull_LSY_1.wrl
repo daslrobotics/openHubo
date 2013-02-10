@@ -1,6 +1,6 @@
 #VRML V2.0 utf8
 
-DEF convhull_LSY_Shrinkwrap_1
+DEF convhull_LSY_1_536_faces
 Transform {
 	children [
 		 Shape {
