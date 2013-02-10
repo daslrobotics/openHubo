@@ -22,7 +22,11 @@ import time
 import sys
 from servo import *
 import openhubo 
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    print "matplotlib is not available. Install the python-matplotlib package to enable plotting"
+
 
 class MotorModel:
 
@@ -138,6 +142,9 @@ if __name__=='__main__':
 
     t1=time.time()
     print t1-t0
-    plt.plot(array(data))
-    plt.legend(('Voltage,V','Current, A','Torque, Nm','Speed, rad/s'))
+    
+    if 'plt' in globals():
+        plt.plot(array(data))
+        plt.legend(('Voltage,V','Current, A','Torque, Nm','Speed, rad/s'))
+        plt.show()
     
