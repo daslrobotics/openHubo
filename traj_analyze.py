@@ -26,6 +26,7 @@ import openhubo
 
 
 if __name__=='__main__':
+    #TODO: openhubo refactor
     from cbirrt import *
 
     # Read the name of the xml file passed as an argument

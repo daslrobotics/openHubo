@@ -1,21 +1,25 @@
 #!/usr/bin/env python
 
-from openravepy import *
-import openhubo
-import time
+#Basics
 from numpy import *
 from numpy.linalg import *
 import sys
 import openhubo
-from rodrigues import *
+import time
 import re
-from LadderGenerator import *
-import trajectory
-#import debug
-from recorder import viewerrecorder
+import os
+
+#Data saving and handling
 import pickle
-import signal, os
+import signal
 import matplotlib.pyplot as plt
+
+#OpenRAVE and OpenHubo stuff
+from openravepy import *
+from rodrigues import *
+from iu_ladder_generator import *
+import trajectory
+from recorder import viewerrecorder
 import curses
 import kbhit
 
