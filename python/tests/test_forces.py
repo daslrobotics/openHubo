@@ -35,7 +35,7 @@ class TestContactForces(unittest.TestCase):
             env.StopSimulation()
             env.Load(file_env)
             self.robot = env.GetRobots()[0]
-            collisionChecker = RaveCreateCollisionChecker(env,'ode')
+            collisionChecker = RaveCreateCollisionChecker(env,'pqp')
             env.SetCollisionChecker(collisionChecker)
         self.env=env
 
@@ -46,10 +46,9 @@ class TestContactForces(unittest.TestCase):
     def test_total_force(self):
         physics=self.env.GetPhysicsEngine()
 
-        base=self.robot.GetLink('base')
-        l1=self.robot.GetLink('middle')
-        l2=self.robot.GetLink('top')
-        l3=self.robot.GetLink('top2')
+        base=self.robot.GetLink('interface')
+        l1=self.robot.GetLink('link1')
+        l2=self.robot.GetLink('link2')
         box1=self.env.GetKinBody('box1').GetLink('')
         box2=self.env.GetKinBody('box2').GetLink('')
         sensor = self.robot.GetAttachedSensors()[0].GetSensor()
@@ -65,11 +64,10 @@ class TestContactForces(unittest.TestCase):
         errorMean=mean(array(Fz_sense)-array(Fz_raw))
         #Test that the average difference between raw values and sensed values
         #is not too great
-        totalMass=l1.GetMass()+l2.GetMass()+l3.GetMass()+box1.GetMass()+box2.GetMass()
+        totalMass=l1.GetMass()+l2.GetMass()+box1.GetMass()+box2.GetMass()
         self.assertLess(abs(errorMean),1)
         self.assertLess(abs(mean(Fz_sense)/9.8+totalMass),1)
         self.assertLess(std(Fz_sense),std(Fz_raw))
-
 
 if __name__=='__main__':
     unittest.main(verbosity=2,testRunner=unittest.TextTestRunner())

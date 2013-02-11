@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
 """ OpenHubo servo functions """
-from openravepy import *
 from numpy import pi,array,zeros
 import openhubo
 import sys
 import time
-import openhubo
 import collections
 
 class ServoTest:
@@ -32,43 +30,6 @@ class ServoTest:
             REF='{}_REF'.format(s)
             plt.plot(self.jointdata[REF],'+',hold=True)
             plt.plot(self.jointdata[s],hold=True)
-
-#TODO: Work with the concept of activeDOF?
-
-shortcuts=collections.namedtuple('Shortcuts',['env','robot','controller','pose'])
-
-def setupEnv():
-    env = Environment()
-    #env.SetViewer('qtcoin')
-    #time.sleep(.5)
-    env.SetDebugLevel(DebugLevel.Info)
-    timestep=0.0005
-
-    with env:
-        env.StopSimulation()
-        env.Load('simpleFloor.env.xml')
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
-        robot = env.GetRobots()[0]
-        #Create a "shortcut" function to translate joint names to indices
-        ind = openhubo.makeNameToIndexConverter(robot)
-
-        #initialize the servo controller
-        controller=RaveCreateController(env,'servocontroller')
-        robot.SetController(controller)
-
-        #Set an initial pose before the simulation starts
-        controller.SendCommand('setgains 50 0 8')
-
-        pose=array(zeros(robot.GetDOF()))
-
-        pose[ind('RSR')]=-pi/8
-        pose[ind('LSR')]=pi/8
-
-        #Set initial pose to avoid thumb collisions
-        robot.SetDOFValues(pose)
-        controller.SetDesired(pose)
-    return shortcuts(env,robot,controller,pose)
 
 def sendServoCommand(robot,raw=array(zeros(60))):
     """ Send an array of servo positions directly to the robot. """

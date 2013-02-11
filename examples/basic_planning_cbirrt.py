@@ -23,12 +23,13 @@ from openhubo import pause
 from planning import *
 
 if __name__=='__main__':
+    #FIXME: causes segfault with current plugins combination. Need to fix before release
 
     env = Environment()
     env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
 
-    [robot,controller,ind]=openhubo.load_simplefloor(env)
+    [robot,controller,ind,ref_robot,recorder]=openhubo.load_simplefloor(env)
     
     probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
     env.LoadProblem(probs_cbirrt,robot.GetName())
@@ -60,7 +61,6 @@ if __name__=='__main__':
     print first_pose.Serialize()
     first_pose.run()
     RunTrajectoryFromFile(robot,first_pose,False)
-
 
     ## Now, reset to initial conditions and activate whole body
     env.StopSimulation()

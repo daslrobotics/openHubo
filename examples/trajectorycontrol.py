@@ -28,7 +28,7 @@ if __name__=='__main__':
 
     timestep=0.0005
 
-    [robot,controller,ind]=openhubo.load_simplefloor(env)
+    [robot,controller,ind,ref,recorder]=openhubo.load_simplefloor(env)
 
     pose0=array(zeros(robot.GetDOF()))
 

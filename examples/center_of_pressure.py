@@ -62,7 +62,7 @@ if __name__=='__main__':
     env.SetDebugLevel(4)
     env.SetViewer('qtcoin')
 
-    [robot,controller,ind]=openhubo.load_simplefloor(env)
+    [robot,controller,ind,ref,recorder]=openhubo.load(env,None,'simpleFloor.env.xml',True)
 
     with env:
         for s in robot.GetAttachedSensors():

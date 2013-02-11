@@ -22,47 +22,21 @@ import time
 import datetime
 import sys
 import openhubo
-import openhubo
 
 if __name__=='__main__':
-    """ Demonstrate "from scratch" method of loading the huboplus and a "ref"
-    version to show desired vs. actual pose of the servo controller. 
-    """
-
-    file_env = 'simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
     env.SetDebugLevel(4)
 
-    # Set the robot controller and start the simulation
-    with env:
-        env.StopSimulation()
-        env.Load(file_env)
-        robot = env.GetRobots()[0]
-        collisionChecker = RaveCreateCollisionChecker(env,'pqp')
-        env.SetCollisionChecker(collisionChecker)
-        controller=RaveCreateController(env,'servocontroller')
-        robot.SetController(controller)
-        controller.SendCommand('setgains 100 0 16')
-
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
+    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
         
-        #TODO: robot name tracking by URI doesn't work
-        env.Load('rlhuboplus.ref.robot.xml')
-        ref_robot=env.GetRobot('rlhuboplus_ref')
-        ref_robot.Enable(False)
-        ref_robot.SetController(RaveCreateController(env,'mimiccontroller'))
-        controller.SendCommand("set visrobot rlhuboplus_ref")
-        ind=openhubo.makeNameToIndexConverter(robot)
-        openhubo.set_robot_color(ref_robot,[.7,.7,.5],[.7,.7,.5],trans=.7)
-
     env.StartSimulation(timestep=0.0005)
 
     time.sleep(2)
     pose=zeros(robot.GetDOF())
     pose[ind('RSP')]=-pi/8
-    controller.SetDesired(pose)
+    ctrl.SetDesired(pose)
     time.sleep(2)
     pose[ind('RSP')]=0
-    controller.SetDesired(pose)
+    ctrl.SetDesired(pose)

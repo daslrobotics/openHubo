@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import openhubo
 from openravepy import *
 from numpy import *
 import time

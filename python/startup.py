@@ -22,11 +22,16 @@ class irlcompleter(rlcompleter.Completer):
         else:
             return rlcompleter.Completer.complete(self,text,state)
 
+historyPath = os.path.expanduser("~/.pyhistory")
+def save_history(historyPath=historyPath):
+    import readline
+    readline.write_history_file(historyPath)
+
+atexit.register(save_history)
 # You could change this line to bind another key instead of tab.
 readline.parse_and_bind("tab: complete")
 readline.set_completer(irlcompleter().complete)
 # Restore our command-line history, and save it when Python exits.
-historyPath = os.path.expanduser("~/.pyhistory")
 try:
     readline.read_history_file(historyPath)
     print "Command history restored..."

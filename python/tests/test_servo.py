@@ -9,13 +9,15 @@ import threading
 
 class TestServoCommands(unittest.TestCase):
     def setUp(self):
-        shortcuts=servo.setupEnv();
-        self.env=shortcuts.env
-        self.robot=shortcuts.robot
-        self.controller=shortcuts.controller
-        self.pose=shortcuts.pose
-        self.ind=openhubo.makeNameToIndexConverter(self.robot)
-        self.controller.SendCommand('setgains 50 0 8')
+        env=Environment()
+        [robot,controller,ind,ref_robot,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
+        self.env=env
+        print env.GetPhysicsEngine()
+        self.robot=robot
+        self.controller=controller
+        self.pose=zeros(robot.GetDOF())
+        self.ind=ind
+        self.controller.SendCommand('set gains 50 0 8')
         self.env.StartSimulation(0.0005)
 
     def tearDown(self):
@@ -28,24 +30,24 @@ class TestServoCommands(unittest.TestCase):
         self.assertTrue(self.controller.SetDesired(pose))
 
     def test_setgains(self):
-        self.assertTrue(self.controller.SendCommand('setgains 50 0 7'))
+        self.assertTrue(self.controller.SendCommand('set gains 50 0 7'))
 
     def test_degrees(self):
         self.assertTrue(self.controller.SendCommand('set degrees '))
-        self.assertEqual(self.controller.SendCommand('get units'),'degrees')
+        self.assertEqual(self.controller.SendCommand('get units '),'degrees')
 
-        self.controller.SendCommand('setpos1 {} {} '.format(self.ind('LSP'),-10))
+        self.controller.SendCommand('set pos1 {} {} '.format(self.ind('LSP'),-10))
         time.sleep(5)
-        theta=float(self.controller.SendCommand('getpos1 {}'.format(self.ind('LSP'))))
+        theta=float(self.controller.SendCommand('get pos1 {}'.format(self.ind('LSP'))))
         self.assertLess(abs(theta+10),1)
 
     def test_radians(self):
         self.assertTrue(self.controller.SendCommand('set radians '))
-        self.assertEqual(self.controller.SendCommand('get units'),'radians')
+        self.assertEqual(self.controller.SendCommand('get units '),'radians')
 
-        self.controller.SendCommand('setpos1 {} {} '.format(self.ind('LSP'),-pi/4))
+        self.controller.SendCommand('set pos1 {} {} '.format(self.ind('LSP'),-pi/4))
         time.sleep(5)
-        theta=self.controller.SendCommand('getpos1 {} '.format(self.ind('LSP')))
+        theta=self.controller.SendCommand('get pos1 {} '.format(self.ind('LSP')))
         self.assertLess(abs(float(theta)+pi/4),.1)
 
 if __name__=='__main__':
