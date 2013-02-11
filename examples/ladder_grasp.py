@@ -3,23 +3,28 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
+#Basics for OpenRAVE
 from openravepy import *
 from numpy import *
 from numpy.linalg import inv
+
+#useful libraries
 from str2num import *
-from rodrigues import *
-from TransformMatrix import *
-from TSR import *
 import time
 import datetime
 import sys
 import os
+
+#comps-plugins
+from rodrigues import *
+from TransformMatrix import *
+from TSR import *
+
+#OpenHubo python modules
 import openhubo
 from generalik import *
 from cbirrt import *
-import openhubo
 from openhubo import pause
-#dump of planning functions
 from planning import *
 
 def makeGripTransforms(links):
@@ -46,16 +51,10 @@ if __name__=='__main__':
     env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
 
-    #-- Set the robot controller and start the simulation
-    with env:
-        env.StopSimulation()
-        env.Load(file_env)
-        robot = env.GetRobots()[0]
-        #robot.SetController(RaveCreateController(env,'trajectorycontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
-        pose=zeros(robot.GetDOF())
-        robot.SetDOFValues(pose)
+    # Load the environment
+    [robot, ctrl, ind,ref,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','ladderclimb.env.xml',True)
+    pose=zeros(robot.GetDOF())
+    robot.SetDOFValues(pose)
 
     print "Position the robot"
     #pause()
@@ -63,7 +62,6 @@ if __name__=='__main__':
     links=stairs.GetLinks()
     ind=openhubo.makeNameToIndexConverter(robot)
     #Make any adjustments to initial pose here
-    pause()
     handles=[]
     for k in links:
         handles.append(plotBodyCOM(env,k))
@@ -77,7 +75,7 @@ if __name__=='__main__':
     
     probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
     
-    env.LoadProblem(probs_cbirrt,'hubo')
+    env.LoadProblem(probs_cbirrt,robot.GetName())
     
     setInitialPose(robot)
     time.sleep(1)
@@ -135,7 +133,9 @@ if __name__=='__main__':
     first_pose.supportlinks=['leftFoot','rightFoot']
     first_pose.filename='firstpose.traj'
     print first_pose.Serialize()
-    first_pose.run()
+    success=first_pose.run()
+    openhubo.pause()
+    
     RunTrajectoryFromFile(robot,first_pose)
 
     CloseLeftHand(robot,pi/3)

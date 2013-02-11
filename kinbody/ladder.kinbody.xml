@@ -1,0 +1,120 @@
+<KinBody name="ladder">
+
+    <Body name="footplate" type="static">
+        <Geom type="box">
+            <Translation>0 0 -.1</Translation>
+            <extents>.203 .24 .1</extents>
+            <diffuseColor>.8 .6 .6</diffuseColor>
+        </Geom>
+    </Body>
+    <Body name="post1" type="static">
+        <offsetfrom>footplate</offsetfrom>
+        <Translation>0 0.2286 0</Translation>
+        <Geom type="cylinder">
+            <translation> 0 0 1.778</translation>
+            <rotationaxis>1 0 0 90</rotationaxis>
+            <radius>0.013</radius>
+            <height>3.556</height>
+            <diffuseColor>.8 .6 .6</diffuseColor>
+        </Geom>
+    </Body>
+
+    <Body name="post2" type="static">
+        <offsetfrom>footplate</offsetfrom>
+        <Translation>0 -0.2286 0</Translation>
+        <Geom type="cylinder">
+            <translation> 0 0 1.778</translation>
+            <rotationaxis>1 0 0 90</rotationaxis>
+            <radius>0.013</radius>
+            <height>3.556</height>
+            <diffuseColor>.8 .6 .6</diffuseColor>
+        </Geom>
+    </Body>
+
+    <Body name="rung0" type="static">
+        <offsetfrom>footplate</offsetfrom>
+        <Translation>0 0 0.3</Translation>
+        <Geom type="cylinder">
+            <radius>0.013</radius>
+            <height>0.4572</height>
+            <diffuseColor>.8 .7 .6</diffuseColor>
+        </Geom>
+    </Body>
+
+    <Body name="rung1" type="static">
+        <offsetfrom>rung0</offsetfrom>
+        <Translation>0 0 0.3</Translation>
+        <Geom type="cylinder">
+            <radius>0.013</radius>
+            <height>0.4572</height>
+            <diffuseColor>.8 .7 .6</diffuseColor>
+        </Geom>
+    </Body>
+    <Body name="rung2" type="static">
+        <offsetfrom>footplate</offsetfrom>
+        <Translation>0 0 0.9</Translation>
+        <Geom type="cylinder">
+            <radius>0.013</radius>
+            <height>0.4572</height>
+            <diffuseColor>.8 .7 .6</diffuseColor>
+        </Geom>
+    </Body>
+    <Body name="rung3" type="static">
+        <Translation>0 0 1.2</Translation>
+        <Geom type="cylinder">
+            <radius>0.013</radius>
+            <height>0.4572</height>
+            <diffuseColor>.8 .7 .6</diffuseColor>
+        </Geom>
+    </Body>
+    <Body name="rung4" type="static">
+        <Translation>0 0 1.5</Translation>
+        <Geom type="cylinder">
+            <radius>0.013</radius>
+            <height>0.4572</height>
+            <diffuseColor>.8 .7 .6</diffuseColor>
+        </Geom>
+    </Body>
+    <Body name="rung5" type="static">
+        <Translation>0 0 1.8</Translation>
+        <Geom type="cylinder">
+            <radius>0.013</radius>
+            <height>0.4572</height>
+            <diffuseColor>.8 .7 .6</diffuseColor>
+        </Geom>
+    </Body>
+    <Body name="rung6" type="static">
+        <Translation>0 0 2.1</Translation>
+        <Geom type="cylinder">
+            <radius>0.013</radius>
+            <height>0.4572</height>
+            <diffuseColor>.8 .7 .6</diffuseColor>
+        </Geom>
+    </Body>
+    <Body name="rung7" type="static">
+        <Translation>0 0 2.4</Translation>
+        <Geom type="cylinder">
+            <radius>0.013</radius>
+            <height>0.4572</height>
+            <diffuseColor>.8 .7 .6</diffuseColor>
+        </Geom>
+    </Body>
+    <Body name="rung8" type="static">
+        <Translation>0 0 2.7</Translation>
+        <Geom type="cylinder">
+            <radius>0.013</radius>
+            <height>0.4572</height>
+            <diffuseColor>.8 .7 .6</diffuseColor>
+        </Geom>
+    </Body>
+    <Body name="building" type="static">
+        <offsetfrom>footplate</offsetfrom>
+        <Translation>0.203 0 0</Translation>
+        <Translation>1.35 0 1.35</Translation>
+        <Geom type="box">
+            <extents>1.35 1.35 1.35</extents>
+            <diffuseColor>.8 .8 .6</diffuseColor>
+        </Geom>
+    </Body>
+</KinBody>
+
