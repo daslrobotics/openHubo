@@ -55,6 +55,7 @@ def swing_and_measure(robot,pose):
             cop=s.GetAttachingLink().GetTransform()*mat(array(localCoP)).T
             r=norm(force)/maxF
             h.append(env.plot3(cop[:-1].T,10,[r,.5,0]))
+            h=openhubo.plot_masses(robot)
         
 if __name__=='__main__':
 

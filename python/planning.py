@@ -10,15 +10,18 @@ from str2num import *
 from rodrigues import *
 from TransformMatrix import *
 from TSR import *
+
 import time
 import datetime
 import sys
 import os
-import openhubo
+
 from generalik import *
 from cbirrt import *
 import openhubo
 from openhubo import pause
+
+#TODO: rename functions to fit new style
 
 def MakeInPlaceConstraint(robot,manipname):
     manips=robot.GetManipulators()
@@ -73,7 +76,7 @@ def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False
         time.sleep(.1)
     with env:
         #Eventuall make this variable? might not matter if .0005 is good
-        env.StartSimulation(timestep=0.0005)
+        env.StartSimulation(openhubo.TIMESTEP)
         ctrl.SetDesired(robot.GetDOFValues())
     ctrl.SendCommand('start')
    
@@ -143,33 +146,6 @@ def CloseRightHand(robot,angle=pi/2):
     ctrl.SetDesired(pose)
     time.sleep(1)
     return True
-
-def plotProjectedCOG(robot):
-    com_trans=array([0,0,0])
-    mass=0
-    for l in robot.GetLinks():
-        com_trans=com_trans+l.GetTransform()[:-1,3]*l.GetMass()
-        mass=mass+l.GetMass()
-
-    com=com_trans/mass
-
-    proj_com=copy.deepcopy(com)
-    #assume zero height floor for now
-    proj_com[-1]=0
-
-    env=robot.GetEnv()
-    handle=env.plot3(points=proj_com,pointsize=12,colors=array([0,1,1]))
-    return handle
-    
-def plotBodyCOM(env,link,handle=None,color=array([0,1,0])):
-    origin=link.GetGlobalCOM()
-    if handle==None:
-        handle=env.plot3(points=origin,pointsize=10.0,colors=color)
-    else:
-        neworigin=[1,0,0,0]
-        neworigin.extend(origin.tolist())
-        handle.SetTransform(matrixFromPose(neworigin))
-    return handle
 
 def plotTransforms(env,transforms,color=array([0,1,0])):
     #For now just plot points, eventually plot csys
@@ -241,12 +217,6 @@ def getManipIndex(robot,manipName):
             return k
     return -1
 
-def createDummySet(env,robot,useNames):
-    #TODO: scan over manipulators and extract end effector geometry
-    #TODO: create "disabled" kinbodies with some geometry that represent each EE
-    #TODO: Return a dict of manip names and pointers
-    #TODO: OR,make one kinbody with 4 links? static, non-enabled links that can be freely posed?
-    pass
 
 def setInitialPose(robot):
     #Define a manual initial pose for IK solution

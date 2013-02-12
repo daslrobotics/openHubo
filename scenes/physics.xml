@@ -1,0 +1,13 @@
+<Environment>
+    <physicsengine type="ode">
+        <odeproperties>
+            <friction>.5</friction>
+            <gravity>0 0 -9.8</gravity>
+            <selfcollision>1</selfcollision>
+            <erp>1.0</erp>
+            <cfm>0.0001</cfm>
+            <dcontactapprox>1</dcontactapprox>
+            <numiterations>120</numiterations>
+        </odeproperties>
+    </physicsengine>
+</Environment>

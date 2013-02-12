@@ -788,7 +788,7 @@
         <anchor>0.036207973807 -0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-165 19</limitsdeg>
-        <initial>0.2618</initial>
+        <!--<initial>0.2618</initial>-->
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>35</maxtorque>
@@ -824,7 +824,7 @@
         <anchor>0.036207973807 0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-19 165</limitsdeg>
-        <initial>-0.2618</initial>
+        <!--<initial>-0.2618</initial>-->
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>35</maxtorque>

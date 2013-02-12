@@ -82,49 +82,27 @@ if __name__=='__main__':
     env.SetViewer('qtcoin')
     time.sleep(.25)
 
-    with env:
-        #NOTE: Make sure to use this sequence of commands WITHIN a "with env:"
-        #block to ensure that the model loads correctly.
-        env.StopSimulation()
-        env.Load('floor.env.xml')
-        env.Load('rlhuboplus.robot.xml')
-        robot = env.GetRobots()[0]
+    env.Load('physics.xml')
 
-        pose=zeros(robot.GetDOF())
-        #Very important to make sure the initial pose is not colliding
-        robot.SetDOFValues(pose)
+    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
 
-        robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'pqp')
-        if not collisionChecker:
-            print "Using ODE since PQP is not available..."
-            collisionChecker = RaveCreateCollisionChecker(env,'ode')
-
-        env.SetCollisionChecker(collisionChecker)
-
-        ctrl=robot.GetController()
-        ctrl.SendCommand('setgains 100 0 8')
-        #Note that you can specify the input format as either degrees or
-        #radians, but the internal format is radians
-        ctrl.SendCommand('set radians')
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        
-    ind = openhubo.makeNameToIndexConverter(robot)
-    pose = robot.GetDOFValues()
-
-    #pose[ind('RKP')]=.5
-    #pose[ind('LKP')]=.5
-    #pose[ind('LHP')]=-.25
-    #pose[ind('RHP')]=-.25
-    #pose[ind('LAP')]=-.25
-    #pose[ind('RAP')]=-.25
+    # Build pose from current DOF values, specify a test pose, and update the desired pose
+    pose=zeros(robot.GetDOF())
+    robot.SetDOFValues(pose)
+    pose[ind('RKP')]=.5
+    pose[ind('LKP')]=.5
+    pose[ind('LHP')]=-.25
+    pose[ind('RHP')]=-.25
+    pose[ind('LAP')]=-.25
+    pose[ind('RAP')]=-.25
     ctrl.SetDesired(pose)
+
     p=env.GetPhysicsEngine()
     data=zeros((10000,12))
     j1 = robot.GetJoint('RSP')
     with env:
         env.StopSimulation()
-    time.sleep(.1)
+        time.sleep(.1)
 
     Ks=346
     R=.346
@@ -134,17 +112,18 @@ if __name__=='__main__':
     t0=time.time()
     motor=MotorModel(j1,Ks,R,N)
 
-    for k in range(10000):
-        pose[ind('RSP')]=.25*sin(k*2*pi/2000)
+    for k in range(5000):
+        pose[ind('RSP')]=.2*sin(k*2*pi*openhubo.TIMESTEP)
+        pose[ind('LSP')]=.2*sin(k*2*pi*openhubo.TIMESTEP)
         ctrl.SetDesired(pose)
-        env.StepSimulation(0.0005)
+        env.StepSimulation(openhubo.TIMESTEP)
         data.append(motor.get_state())
 
     t1=time.time()
     print t1-t0
-    
+
     if 'plt' in globals():
         plt.plot(array(data))
         plt.legend(('Voltage,V','Current, A','Torque, Nm','Speed, rad/s'))
         plt.show()
-    
+

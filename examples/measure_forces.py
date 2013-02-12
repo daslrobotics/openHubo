@@ -22,96 +22,87 @@ import time
 import datetime
 import sys
 import openhubo
-import openhubo
 import matplotlib.pyplot as plt
 
-def movingaverage(interval, window_size):
-    window= ones(int(window_size))/float(window_size)
-    return convolve(interval, window, 'same')
-
 if __name__=='__main__':
-
-    file_env = 'simpleFloor.env.xml'
 
     env = Environment()
     env.SetViewer('qtcoin')
     env.SetDebugLevel(4)
 
-    #-- Set the robot controller and start the simulation
-    with env:
-        #NOTE: Make sure to use this sequence of commands WITHIN a "with env:"
-        #block to ensure that the model loads correctly.
-        env.StopSimulation()
-        env.Load(file_env)
-        robot = env.GetRobots()[0]
+    #Use standalone physics engine 
+    env.Load('physics.xml')
+    
+    #Load environment and robot with default settings
+    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
 
-        #Define a joint name lookup closure for the robot
-        ind=openhubo.makeNameToIndexConverter(robot)
-
-        robot.SetDOFValues([pi/4,-pi/4],[ind('LSR'),ind('RSR')])
-        pose=array(zeros(robot.GetDOF()))
-        #TODO test with alternate ode solver
-        robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
-
-        robot.GetController().SendCommand('setgains 50 0 7')
-        #Note that you can specify the input format as either degrees or
-        #radians, but the internal format is radians
-        robot.GetController().SendCommand('set degrees')
-        pose[ind('LSR')]=45
-        pose[ind('RSR')]=-45
-        robot.GetController().SetDesired(pose)
-
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-
+    #l1=robot.GetJoint('LAR_dummy')
+    #l2=robot.GetJoint('RAR_dummy')
     l1=robot.GetLink('leftFoot')
     l2=robot.GetLink('rightFoot')
+    env.Load('physics.xml')
     physics=env.GetPhysicsEngine()
-    LFz=[]
-    RFz=[]
-    LMx=[]
-    RMx=[]
-    LMy=[]
-    RMy=[]
-    steps=1000
+    steps=4000
+    timestep=float(sys.argv[1])
+
+    #Initialize numpy arrays to store data efficiently
+    LFz=zeros(steps)
+    RFz=zeros(steps)
+    LMx=zeros(steps)
+    RMx=zeros(steps)
+    LMy=zeros(steps)
+    RMy=zeros(steps)
+    rsr=zeros(steps)
+    rsrdof=ind('RSR')
+    
+    t=[float(x)*timestep for x in range(steps)]
+
+    t0=time.time()
+    st0=env.GetSimulationTime()
     for k in range(steps):
-        env.StepSimulation(timestep=0.0005)
+        env.StepSimulation(timestep)
         [force1,torque1]= physics.GetLinkForceTorque(l1)
         [force2,torque2]= physics.GetLinkForceTorque(l2)
-        print force1[-1],force2[-1]
-        LFz.append(force1[-1])
-        RFz.append(force2[-1])
-        LMx.append(torque1[0])
-        RMx.append(torque2[0])
-        LMy.append(torque1[1])
-        RMy.append(torque2[1])
+        #print force1[-1],force2[-1]
+        LFz[k]=force1[-1]
+        RFz[k]=force2[-1]
+        LMx[k]=torque1[0]
+        RMx[k]=torque2[0]
+        LMy[k]=torque1[1]
+        RMy[k]=torque2[1]
+        rsr[k]=robot.GetDOFVelocities([rsrdof])
     
-    t=[float(x)/steps for x in range(steps)]
-
-    time.sleep(2)
+    st1=env.GetSimulationTime()
+    t1=time.time()
+    print "timestep = {}, Took {} real sec. for {} sim sec.".format(timestep,t1-t0,float(st1-st0)/1000000)
     
-    plt.plot(t,array(LFz)/openhubo.find_mass(robot)/9.8,'b',t,array(RFz)/openhubo.find_mass(robot)/9.8,'r')
+    m=openhubo.find_mass(robot)
+    skips=sum(abs(LFz[100:])/m/9.8<.07)+sum(abs(RFz[100:])<.1)
+    jitter=std(rsr)
+    print "Foot skips = {}".format(skips)
+    print "RSR omega stdev  = {}".format(jitter)
+    plt.plot(t,array(LFz)/m/9.8,'b',t,array(RFz)/m/9.8,'r')
     plt.grid(b=True)
+    plt.title('Ratio of measured forces vs. body mass at each foot')
     #plt.axis([t[0],t[-1],-500,0])
-    plt.show()
+    #plt.show()
 
-    env.StartSimulation(0.0005)
-    RFT=robot.GetAttachedSensor('rightFootFT').GetSensor()
-    #show the history of measured forces
-    print RFT.SendCommand('gethist')
-    time.sleep(0.5)
-    #Try to set history longer
-    RFT.SendCommand('histlen 50')
-    time.sleep(0.5)
-    #It doesn't work because the sensor was running
-    print RFT.SendCommand('gethist')
+    #env.StartSimulation(0.0005)
+    #RFT=robot.GetAttachedSensor('rightFootFT').GetSensor()
+    ##show the history of measured forces
+    #print RFT.SendCommand('gethist')
+    #time.sleep(0.5)
+    ##Try to set history longer
+    #RFT.SendCommand('histlen 50')
+    #time.sleep(0.5)
+    ##It doesn't work because the sensor was running
+    #print RFT.SendCommand('gethist')
 
-    #Proper way: power "down", change length, power "up"
-    RFT.Configure(Sensor.ConfigureCommand.PowerOff)
-    print RFT.SendCommand('histlen 50')
-    RFT.Configure(Sensor.ConfigureCommand.PowerOn)
-    time.sleep(0.25)
-    print RFT.SendCommand('gethist')
+    ##Proper way: power "down", change length, power "up"
+    #RFT.Configure(Sensor.ConfigureCommand.PowerOff)
+    #print RFT.SendCommand('histlen 50')
+    #RFT.Configure(Sensor.ConfigureCommand.PowerOn)
+    #time.sleep(0.25)
+    #print RFT.SendCommand('gethist')
 
 

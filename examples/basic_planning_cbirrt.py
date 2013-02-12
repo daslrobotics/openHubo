@@ -23,9 +23,11 @@ from openhubo import pause
 from planning import *
 
 if __name__=='__main__':
+
     env = Environment()
     env.SetViewer('qtcoin')
     env.SetDebugLevel(3)
+    env.Load('physics.xml')
 
     [robot,ctrl,ind,ref,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
 

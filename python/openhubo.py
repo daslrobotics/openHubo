@@ -6,11 +6,17 @@ from recorder import viewerrecorder
 import time
 import datetime
 import warnings
-import startup
+import sys
+
+# Interactive script 
+if hasattr(sys,'ps1') or sys.flags.interactive:
+    print "Loading OpenHubo interactive tools..."
+    import startup
 
 """ A collection of useful functions to run openhubo models.
 As common functions are developed, they will be added here.
 """
+TIMESTEP=0.001
 
 def set_robot_color(robot,dcolor=[.5,.5,.5],acolor=[.5,.5,.5],trans=0,links=[]):
     """Iterate over a robot's links and set color / transparency."""

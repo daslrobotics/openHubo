@@ -29,9 +29,11 @@ if __name__=='__main__':
     env.SetViewer('qtcoin')
     env.SetDebugLevel(4)
 
+    env.Load('physics.xml')
+
     [robot,ctrl,ind,ref_robot,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
         
-    env.StartSimulation(timestep=0.0005)
+    env.StartSimulation(openhubo.TIMESTEP)
 
     time.sleep(2)
     pose=zeros(robot.GetDOF())

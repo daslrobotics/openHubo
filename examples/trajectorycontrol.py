@@ -26,16 +26,16 @@ if __name__=='__main__':
     env.SetViewer('qtcoin')
     env.SetDebugLevel(4)
 
-    timestep=0.0005
+    env.Load('physics.xml')
 
-    [robot,controller,ind,ref,recorder]=openhubo.load_simplefloor(env)
+    [robot,controller,ind,ref,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
 
     pose0=array(zeros(robot.GetDOF()))
 
     controller.SetDesired(pose0)
     robot.SetDOFValues(pose0)
 
-    env.StartSimulation(timestep=timestep)
+    env.StartSimulation(openhubo.TIMESTEP)
 
     pose1=pose0.copy()
     print pose1
@@ -48,6 +48,9 @@ if __name__=='__main__':
 
     pose1[ind('LHP')]=-pi/8
     pose1[ind('RHP')]=-pi/8
+
+    pose1[ind('LSP')]=-pi/8
+    pose1[ind('LEP')]=-pi/4
 
     traj=RaveCreateTrajectory(env,'')
 

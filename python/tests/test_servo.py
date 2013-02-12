@@ -10,6 +10,7 @@ import threading
 class TestServoCommands(unittest.TestCase):
     def setUp(self):
         env=Environment()
+        env.Load('physics.xml')
         [robot,controller,ind,ref_robot,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
         self.env=env
         print env.GetPhysicsEngine()
