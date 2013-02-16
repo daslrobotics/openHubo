@@ -10,6 +10,7 @@ from str2num import *
 from rodrigues import *
 from TransformMatrix import *
 from TSR import *
+from openhubo import plotProjectedCOG
 
 import time
 import datetime
