@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import openhubo
 from openravepy import *
 from numpy import *
 from numpy.linalg import *
@@ -8,6 +9,24 @@ import time
 from copy import copy
 import openhubo
 import matplotlib.pyplot as plt
+
+def createTrajectory(robot):
+    """ Create a trajectory based on a robot's config spec"""
+    traj=RaveCreateTrajectory(robot.GetEnv,'')
+    config=robot.GetConfigurationSpecification()
+    config.AddDeltaTimeGroup()
+    traj.Init(config)
+    return traj
+
+def loadTraj(robot,filename):
+    traj=RaveCreateTrajectory(robot.GetEnv(),'')
+    with open(filename,'r') as f:
+        data=f.read()
+
+    traj.deserialize(data)
+    planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
+    
+    return traj
 
 def analyzeTime(filename):
     with open(filename,'r') as f:
@@ -23,7 +42,7 @@ if __name__=='__main__':
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'rlhuboplus.robot.xml'
+        file_env = 'huboplus.robot.xml'
     # Uncomment below to only load specific plugins (could save memory on
     # embedded systems)
     #
@@ -50,7 +69,7 @@ if __name__=='__main__':
         ind = openhubo.makeNameToIndexConverter(robot)
 
         #initialize the servo controller
-        controller=RaveCreateController(env,'achreadcontroller')
+        controller=RaveCreateController(env,'achcontroller')
         robot.SetController(controller)
         controller.SendCommand("SetCheckCollisions false")
 
@@ -62,18 +81,66 @@ if __name__=='__main__':
         robot.SetDOFValues(pose)
         controller.SetDesired(pose)
 
-        env.Load('rlhuboplus.ref.robot.xml')
-        ref_robot=env.GetRobot('rlhuboplus_ref')
-        ref_robot.Enable(False)
-        ref_robot.SetController(RaveCreateController(env,'mimiccontroller'))
-        controller.SendCommand("SetRefRobot rlhuboplus_ref")
-
-    for l in ref_robot.GetLinks():
-        for g in l.GetGeometries():
-            g.SetDiffuseColor([.5,1,.5])
-            g.SetTransparency(.7)
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
 
-    print "Starting Simulation..."
+    pose0=robot.GetDOFValues()
+    pose1=pose0.copy()
+
+    pose1[ind('LAP')]=-20
+    pose1[ind('RAP')]=-20
+
+    pose1[ind('LKP')]=40
+    pose1[ind('RKP')]=40
+
+    pose1[ind('LHP')]=-20
+    pose1[ind('RHP')]=-20
+    pose1=pose1*pi/180*2
+
+    traj=RaveCreateTrajectory(env,'')
+
+    #Set up basic parameters
+    config=robot.GetConfigurationSpecification()
+    config.AddDeltaTimeGroup()
+
+    traj.Init(config)
+
+    t0=0
+    t1=2
+
+    waypt0=list(pose0)
+    waypt1=list(pose1)
+
+    waypt0.extend(zeros(7))
+    waypt1.extend(zeros(7))
+
+    waypt0.append(t0)
+    waypt1.append(t1)
+    waypt2=copy(waypt0)
+    waypt2[-1]=t1;
+
+    traj.Insert(0,waypt0)
+    traj.Insert(1,waypt1)
+    traj.Insert(2,waypt2)
+    traj.Insert(3,waypt1)
+    traj.Insert(4,waypt2)
+
+    planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
+
+    #Prove that the retiming actually works
+    #for k in range(40):
+        #data=traj.Sample(float(k)/10)
+        #print data[ind('LKP')]
+    controller.SendCommand('SetRecord 1 timedata.txt')
+    time.sleep(1)
+    controller.SetPath(traj)
+    #Everything should be in order...
     env.StartSimulation(timestep,True)
+    while not(controller.IsDone()):
+        time.sleep(timestep*1.0)
+    controller.SendCommand('SetRecord 0')
+    time.sleep(1)
+    analyzeTime('timedata.txt')
+    openhubo.pause()
+    
+    env.Destroy()

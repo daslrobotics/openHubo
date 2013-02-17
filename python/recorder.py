@@ -44,7 +44,7 @@ if __name__ == '__main__':
     file_env = 'scenes/simpleFloor.env.xml'
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    env.Add(RaveCreateViewer(env,'qtcoin'))
     env.SetDebugLevel(3)
     env.Load(file_env)
     env.StopSimulation()

@@ -287,7 +287,7 @@ if __name__=='__main__':
     from openravepy import *
     from servo import *
     env=Environment()
-    env.SetViewer('qtcoin')
+    env.Add(RaveCreateViewer(env,'qtcoin'))
     robot=load_simplefloor(env)
     env.StartSimulation(timestep=0.0005)
 

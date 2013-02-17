@@ -23,7 +23,7 @@ def createTrajectory(robot):
 if __name__=='__main__':
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    env.Add(RaveCreateViewer(env,'qtcoin'))
     env.SetDebugLevel(4)
 
     env.Load('physics.xml')

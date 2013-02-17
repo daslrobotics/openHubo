@@ -27,7 +27,7 @@ if __name__=='__main__':
 
     env = Environment()
     env.SetDebugLevel(4)
-    env.SetViewer('qtcoin')
+    env.Add(RaveCreateViewer(env,'qtcoin'))
     time.sleep(.25)
     #-- Set the robot controller and start the simulation
     with env:

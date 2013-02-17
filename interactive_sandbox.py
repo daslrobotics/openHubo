@@ -40,7 +40,7 @@ if __name__=='__main__':
     with env:
         env.Load(file_env)
     t1=time.time()
-    env.SetViewer('qtcoin')
+    env.Add(RaveCreateViewer(env,'qtcoin'))
     with env:
         robot = env.GetRobots()[0]
         collisionChecker = RaveCreateCollisionChecker(env,'ode')

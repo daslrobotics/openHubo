@@ -72,7 +72,7 @@ if __name__=='__main__':
     from servo import *
     env=Environment()
     env.SetDebugLevel(3)
-    env.SetViewer('qtcoin')
+    env.Add(RaveCreateViewer(env,'qtcoin'))
     [robot,ctrl,ind,recorder]=load(env,'gripper.env.xml',True,True)
     rod=env.GetKinBody('rod')
     trans=rod.GetTransform()

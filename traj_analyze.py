@@ -37,7 +37,7 @@ if __name__=='__main__':
         file_env = 'rlhuboplus.robot.xml'
 
     env = Environment()
-    #env.SetViewer('qtcoin')
+    #env.Add(RaveCreateViewer(env,'qtcoin'))
     env.SetDebugLevel(1)
 
     # Set the robot controller and start the simulation

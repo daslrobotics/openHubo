@@ -3,7 +3,7 @@
 from openravepy import *
 import numpy
 env = Environment() # create the environment
-env.SetViewer('qtcoin') # start the viewer
+env.Add(RaveCreateViewer(env,'qtcoin')) # start the viewer
 env.Load('data/pr2test1.env.xml') # load a scene
 robot = env.GetRobots()[0] # get the first robot
 

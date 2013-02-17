@@ -2,7 +2,7 @@
 """
 from openravepy import *
 env = Environment() # create the environment
-env.SetViewer('qtcoin') # start the viewer
+env.Add(RaveCreateViewer(env,'qtcoin')) # start the viewer
 env.Load('data/lab1.env.xml') # load a scene
 robot = env.GetRobots()[0] # get the first robot
 RaveSetDebugLevel(DebugLevel.Debug) # set output level to debug
