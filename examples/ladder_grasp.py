@@ -64,7 +64,7 @@ if __name__=='__main__':
     #Make any adjustments to initial pose here
     handles=[]
     for k in links:
-        handles.append(plotBodyCOM(env,k))
+        handles.append(openhubo.plotBodyCOM(env,k))
     #pause()
     
     grips = makeGripTransforms(links) 

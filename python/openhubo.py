@@ -285,6 +285,15 @@ import logging
 import debug
 from optparse import OptionParser
 from openravepy.misc import OpenRAVEGlobalArguments
+import atexit
+
+def safe_quit(env):
+    #Somewhat overkill, try to avoid annoying segfaults
+    rave.raveLogDebug("Safely exiting rave environment...")
+    if env:
+        env.Destroy()
+    rave.RaveDestroy()
+
 
 def setup(viewername=None,create=True):
     parser = OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.')
@@ -303,7 +312,10 @@ def setup(viewername=None,create=True):
 
     #TODO: Ignoring Mac compatibility since openhubo is linux only
     if create:
-        return (OpenRAVEGlobalArguments.parseAndCreate(options),options)
+        env=rave.Environment()
+        atexit.register(safe_quit,env)
+        OpenRAVEGlobalArguments.parseEnvironment(options,env)
+        return (env,options)
     else:
         return options
 
