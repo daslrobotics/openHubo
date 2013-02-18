@@ -23,16 +23,11 @@ import datetime
 import sys
 import openhubo
 
+#Get the global environment for simulation
+
 if __name__=='__main__':
+    
 
-    #-- Read the name of the xml file passed as an argument
-    #-- or use the default name
-    try:
-        file_env = sys.argv[1]
-    except IndexError:
-        file_env = 'rlhuboplus.robot.xml'
-
-    env = Environment()
     env.SetDebugLevel(4)
 
     #-- Set the robot controller and start the simulation
@@ -40,7 +35,7 @@ if __name__=='__main__':
     with env:
         env.Load(file_env)
     t1=time.time()
-    env.Add(RaveCreateViewer(env,'qtcoin'))
+    (env,options)=openhubo.setup('qtcoin')
     with env:
         robot = env.GetRobots()[0]
         collisionChecker = RaveCreateCollisionChecker(env,'ode')

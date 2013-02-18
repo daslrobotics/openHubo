@@ -48,7 +48,7 @@ if __name__=='__main__':
 
     file_env = 'ladderclimb.env.xml'
     env = Environment()
-    env.Add(RaveCreateViewer(env,'qtcoin'))
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(3)
 
     # Load the environment

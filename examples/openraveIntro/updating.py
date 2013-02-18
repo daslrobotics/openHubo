@@ -3,7 +3,7 @@
 from openravepy import *
 import numpy, time
 env = Environment() # create openrave environment
-env.Add(RaveCreateViewer(env,'qtcoin')) # attach viewer (optional)
+(env,options)=openhubo.setup('qtcoin') # attach viewer (optional)
 with env:
     body = RaveCreateKinBody(env,'')
     body.SetName('testbody')

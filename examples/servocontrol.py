@@ -25,9 +25,9 @@ import openhubo
 
 if __name__=='__main__':
 
-    env = Environment()
+    (env,options)=openhubo.setup('qtcoin',True)
     env.SetDebugLevel(4)
-    env.Add(RaveCreateViewer(env,'qtcoin'))
+    #(env,options)=openhubo.setup('qtcoin')
     time.sleep(.25)
     #-- Set the robot controller and start the simulation
     with env:
@@ -36,7 +36,6 @@ if __name__=='__main__':
         env.StopSimulation()
         env.Load('simpleFloor.env.xml')
         robot = env.GetRobots()[0]
-
 
         #Define a joint name lookup closure for the robot
         ind=openhubo.makeNameToIndexConverter(robot)
@@ -67,13 +66,13 @@ if __name__=='__main__':
     pose[ind('REP')]=-pi/2
     pose[ind('LEP')]=-pi/2
     ctrl.SetDesired(pose)
-    openhubo.pause()
+    openhubo.pause(1)
 
     ctrl.SendCommand('openloop '+' '.join(['{}'.format(x) for x in range(42,57)]))
     for i in range(42,57):
         pose[i]=pi/2
     ctrl.SetDesired(pose)
-    openhubo.pause()
+    openhubo.pause(1)
 
     pose[42:57]=0
     ctrl.SetDesired(pose)

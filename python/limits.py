@@ -77,7 +77,7 @@ if __name__=='__main__':
         file_env = 'huboplus.robot.xml'
 
     env = Environment()
-    env.Add(RaveCreateViewer(env,'qtcoin'))
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(1)
     env.Load(file_env)
 

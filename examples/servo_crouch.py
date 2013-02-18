@@ -29,7 +29,7 @@ import openhubo
 if __name__=='__main__':
 
     env = Environment()
-    env.Add(RaveCreateViewer(env,'qtcoin'))
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(5)
 
     [robot,controller,ind]=openhubo.load_simplefloor(env)

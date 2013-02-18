@@ -76,7 +76,7 @@ if __name__=='__main__':
     from openravepy import *
     from servo import *
     env=Environment()
-    #env.Add(RaveCreateViewer(env,'qtcoin'))
+    #(env,options)=openhubo.setup('qtcoin')
     [robot,ctrl,ind,refrobot]=openhubo.load_rlhuboplus(env)
     env.StartSimulation(timestep=0.0005)
 

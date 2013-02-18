@@ -197,7 +197,6 @@ def plot_projected_com(robot):
 
 def plotProjectedCOG(robot):
     return plot_projected_com(robot)
-
     
 def plotBodyCOM(env,link,handle=None,color=array([0,1,0])):
     return plot_body_com(env,link,handle,color)
@@ -282,13 +281,49 @@ def CloseRightHand(robot,angle=pi/2):
     time.sleep(1)
     return True
 
+import logging
+import debug
+from optparse import OptionParser
+from openravepy.misc import OpenRAVEGlobalArguments
 
-if __name__=='__main__':
-    from openravepy import *
-    from servo import *
-    env=Environment()
-    env.Add(RaveCreateViewer(env,'qtcoin'))
-    robot=load_simplefloor(env)
-    env.StartSimulation(timestep=0.0005)
+def setup(viewername=None,create=True):
+    parser = OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.')
+    OpenRAVEGlobalArguments.addOptions(parser)
+    parser.add_option('--robot', action="store",type='string',dest='robotfile',default='rlhuboplus.robot.xml',
+                      help='Robot XML file to load (default=%default)')
+    parser.add_option('--scene', action="store",type='string',dest='scenefile',default='floor.env.xml',
+                      help='Scene file to load (default=%default)')
+    parser.add_option('--example', action="store",type='string',dest='example',default=None,
+                      help='Run an example')
+    (options, leftargs) = parser.parse_args()
 
+    if viewername:
+        #Overwrite command line option with explicit argument?
+        options._viewer=viewername
 
+    #TODO: Ignoring Mac compatibility since openhubo is linux only
+    if create:
+        return (OpenRAVEGlobalArguments.parseAndCreate(options),options)
+    else:
+        return options
+
+if __name__ == '__main__':
+    options=setup(None,False)
+
+    if options.example:
+        import fnmatch
+        import os
+        from openravepy import raveLogInfo
+        expath=os.environ['OPENHUBO_DIR'] + '/examples/'
+        for f in os.listdir(expath):
+            if fnmatch.fnmatch(f, options.example):
+                raveLogInfo("Found example {}".format(options.example))
+                break
+
+        execfile(expath+options.example)
+        var=raw_input('Would you like to drop into IPython to inspect variables? [y/N]?')
+        if var=='y' or var=='Y' or var=='yes':
+            import IPython
+            IPython.embed() 
+            print "Cleaning up after inspection..."
+            env.Destroy()

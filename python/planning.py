@@ -56,6 +56,7 @@ def RunTrajectoryFromFile(robot,planner,autoinit=True):
     ctrl=PlayTrajWithPhysics(robot,traj,autoinit)
 
 def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False):
+    #TODO eliminate adding controller here
     #Lock the environment, halt simulation in preparation
     
     env=robot.GetEnv()
@@ -88,7 +89,7 @@ def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False
             #Only approximate time here
             t=t+.1
             time.sleep(.1)
-            handle=plotProjectedCOG(robot)
+            handle=openhubo.plot_projected_com(robot)
 
     if resetafter:
         env.StopSimulation()

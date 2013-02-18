@@ -223,7 +223,7 @@ if __name__=='__main__':
         traj_name = 'trajectories/pump_reach.traj.txt'
 
     env = Environment()
-    env.Add(RaveCreateViewer(env,'qtcoin'))
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
     timestep=0.0005

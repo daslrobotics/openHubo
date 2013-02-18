@@ -61,7 +61,7 @@ if __name__=='__main__':
 
     env = Environment()
     env.SetDebugLevel(4)
-    env.Add(RaveCreateViewer(env,'qtcoin'))
+    (env,options)=openhubo.setup('qtcoin')
 
     [robot,controller,ind,ref,recorder]=openhubo.load(env,None,'simpleFloor.env.xml',True)
 

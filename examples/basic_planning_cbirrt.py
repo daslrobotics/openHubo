@@ -25,7 +25,7 @@ from planning import *
 if __name__=='__main__':
 
     env = Environment()
-    env.Add(RaveCreateViewer(env,'qtcoin'))
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(3)
     env.Load('physics.xml')
 

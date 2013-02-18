@@ -23,7 +23,7 @@ def createTrajectory(robot):
 if __name__=='__main__':
 
     env = Environment()
-    env.Add(RaveCreateViewer(env,'qtcoin'))
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
     timestep=0.0005
