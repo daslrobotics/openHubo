@@ -30,13 +30,13 @@ if __name__=='__main__':
 
     env = Environment()
     (env,options)=openhubo.setup('qtcoin')
-    env.SetDebugLevel(5)
+    env.SetDebugLevel(4)
 
-    [robot,controller,ind]=openhubo.load_simplefloor(env)
+    [robot,controller,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
     print robot
     print controller
 
-    env.StartSimulation(timestep=0.0005)
+    env.StartSimulation(openhubo.TIMESTEP)
 
     robot.GetController().SendCommand('set degrees ')
 

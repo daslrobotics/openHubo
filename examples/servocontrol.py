@@ -57,7 +57,7 @@ if __name__=='__main__':
         #Note that you can specify the input format as either degrees or
         #radians, but the internal format is radians
         #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        env.StartSimulation(timestep=0.0005)
+        env.StartSimulation(openhubo.TIMESTEP)
 
     time.sleep(1)
    

@@ -58,6 +58,8 @@ def RunTrajectoryFromFile(robot,planner,autoinit=True):
 def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False):
     #TODO eliminate adding controller here
     #Lock the environment, halt simulation in preparation
+    #import pdb
+    #pdb.set_trace()
     
     env=robot.GetEnv()
     #May be a better way to do this without causing so much interruption
@@ -70,16 +72,16 @@ def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False
         robot.SetController(ctrl)
     else:
         ctrl=robot.GetController()
-    ctrl.SendCommand('set gains 50 0 7')
+    ctrl.SendCommand('set gains 100 0 16')
     ctrl.SetPath(traj)
     #Resets initial pose, so now we need to set any DOF not in trajectory
     if autoinit:
         setInitialPose(robot)
-        time.sleep(.1)
-    with env:
-        #Eventuall make this variable? might not matter if .0005 is good
-        env.StartSimulation(openhubo.TIMESTEP)
-        ctrl.SetDesired(robot.GetDOFValues())
+    ctrl.SetDesired(robot.GetDOFValues())
+    #Eventuall make this variable? might not matter if .0005 is good
+    env.StartSimulation(openhubo.TIMESTEP)
+    #ctrl.SetDesired(robot.GetDOFValues())
+    time.sleep(1)
     ctrl.SendCommand('start')
    
     if waitdone:

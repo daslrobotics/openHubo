@@ -26,15 +26,11 @@ import matplotlib.pyplot as plt
 
 if __name__=='__main__':
 
-    env = Environment()
     (env,options)=openhubo.setup('qtcoin')
-    env.SetDebugLevel(4)
-
-    #Use standalone physics engine 
-    env.Load('physics.xml')
+    env.SetDebugLevel(3)
     
     #Load environment and robot with default settings
-    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
+    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
 
     #l1=robot.GetJoint('LAR_dummy')
     #l2=robot.GetJoint('RAR_dummy')
@@ -43,7 +39,7 @@ if __name__=='__main__':
     env.Load('physics.xml')
     physics=env.GetPhysicsEngine()
     steps=4000
-    timestep=float(sys.argv[1])
+    timestep=openhubo.TIMESTEP
 
     #Initialize numpy arrays to store data efficiently
     LFz=zeros(steps)
@@ -87,7 +83,6 @@ if __name__=='__main__':
     #plt.axis([t[0],t[-1],-500,0])
     #plt.show()
 
-    #env.StartSimulation(0.0005)
     #RFT=robot.GetAttachedSensor('rightFootFT').GetSensor()
     ##show the history of measured forces
     #print RFT.SendCommand('gethist')

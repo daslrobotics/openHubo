@@ -27,21 +27,10 @@ import openhubo
 
 if __name__=='__main__':
     
-
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
-    #-- Set the robot controller and start the simulation
-    t0=time.time()
-    with env:
-        env.Load(file_env)
-    t1=time.time()
-    (env,options)=openhubo.setup('qtcoin')
-    with env:
-        robot = env.GetRobots()[0]
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile)
 
-        env.StopSimulation()
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        env.StartSimulation(timestep=0.0005)
+    env.StartSimulation(openhubo.TIMESTEP)
     print t1-t0
