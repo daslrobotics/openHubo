@@ -109,6 +109,11 @@ then
     clean-all.sh
 fi
 
+#Check if python dependencies are installed (may not work for older Ubuntu versions)
+for dep in ipython python-matplotlib python-scipy
+do
+    verify-dep $dep
+done
 BASE_DIR=`git rev-parse --show-toplevel`
 
 check-submodules

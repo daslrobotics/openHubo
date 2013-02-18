@@ -314,23 +314,24 @@ def setup(viewername=None,create=True):
     parser.add_option('--example', action="store",type='string',dest='example',default=None,
                       help='Run an example')
     parser.add_option('--nointeract', action="store_false",dest='interact',default=True,
-                      help='Run an example')
+                      help='Disable interactive prompt and exit after running')
     parser.add_option('--debug', action="store_true",dest='pydebug',default=False,
-                      help='Run an example')
+                      help='Enable python debugger')
     (options, leftargs) = parser.parse_args()
 
     if viewername:
         #Overwrite command line option with explicit argument?
         options._viewer=viewername
 
-    #TODO: Ignoring Mac compatibility since openhubo is linux only
     if create:
         env=rave.Environment()
         atexit.register(safe_quit,env)
         OpenRAVEGlobalArguments.parseEnvironment(options,env)
         return (env,options)
-    else:
+    elif len(leftargs)>0:
         return (options,leftargs[0])
+    else:
+        return (options,None)
 
 if __name__ == '__main__':
     """Run openhubo to see example files and use the IPython shell for inspection and debugging."""
@@ -357,7 +358,9 @@ if __name__ == '__main__':
         if options.interact:
             var=raw_input('Would you like to drop into IPython to inspect variables? [y/N]?')
             if var=='y' or var=='Y' or var=='yes':
-                import IPython
-                IPython.embed() 
-                print "Cleaning up after inspection..."
-                env.Destroy()
+                try:
+                    import IPython
+                    IPython.embed() 
+                    print "Cleaning up after inspection..."
+                except ImportError:
+                    print "IPython not installed!"
