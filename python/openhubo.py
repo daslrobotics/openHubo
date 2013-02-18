@@ -304,7 +304,8 @@ def setup(viewername=None,create=True):
     :param viewername: Name of viewer plugin to use (defaults to no viewer)
     :param create: If true, set up and return environment. Otherwise, parse and return options.
     """
-    parser = OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.')
+    parser = OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.',
+                          usage='usage: %prog [options] script')
     OpenRAVEGlobalArguments.addOptions(parser)
     parser.add_option('--robot', action="store",type='string',dest='robotfile',default='rlhuboplus.robot.xml',
                       help='Robot XML file to load (default=%default)')
@@ -329,26 +330,29 @@ def setup(viewername=None,create=True):
         OpenRAVEGlobalArguments.parseEnvironment(options,env)
         return (env,options)
     else:
-        return options
+        return (options,leftargs[0])
 
 if __name__ == '__main__':
     """Run openhubo to see example files and use the IPython shell for inspection and debugging."""
-    options=setup(None,False)
+    (options,scriptname)=setup(None,False)
 
     if options.pydebug:
         import debug
 
-    if options.example:
-        import fnmatch
-        import os
-        from openravepy import raveLogInfo
-        expath=os.environ['OPENHUBO_DIR'] + '/examples/'
-        for f in os.listdir(expath):
-            if fnmatch.fnmatch(f, options.example):
-                raveLogInfo("Found example {}".format(options.example))
-                break
+    if options.example or scriptname:
 
-        execfile(expath+options.example)
+        if scriptname:
+            execfile(scriptname)
+        else:
+            import fnmatch
+            import os
+            from openravepy import raveLogInfo
+            expath=os.environ['OPENHUBO_DIR'] + '/examples/'
+            for f in os.listdir(expath):
+                if fnmatch.fnmatch(f, options.example):
+                    raveLogInfo("Found example {}".format(options.example))
+                    break
+            execfile(expath+options.example)
 
         if options.interact:
             var=raw_input('Would you like to drop into IPython to inspect variables? [y/N]?')
