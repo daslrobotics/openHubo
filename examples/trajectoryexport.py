@@ -23,12 +23,12 @@ def createTrajectory(robot):
 if __name__=='__main__':
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
-    timestep=0.0005
+    timestep=openhubo.TIMESTEP
 
-    [robot,controller,ind]=openhubo.load_simplefloor(env)
+    [robot,controller,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
 
     pose0=array(zeros(robot.GetDOF()))
 

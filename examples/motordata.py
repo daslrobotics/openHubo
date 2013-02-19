@@ -79,7 +79,7 @@ if __name__=='__main__':
 
     env = Environment()
     env.SetDebugLevel(4)
-    env.SetViewer('qtcoin')
+    (env,options)=openhubo.setup('qtcoin')
     time.sleep(.25)
 
     env.Load('physics.xml')

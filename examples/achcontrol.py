@@ -52,7 +52,7 @@ if __name__=='__main__':
     #success = RaveLoadPlugin('librplanners.so')
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
     timestep=0.01

@@ -29,7 +29,7 @@ def swing_and_measure(robot,pose):
     robot.GetController().SetDesired(pose)
     maxF=300
     for k in range(5000):
-        env.StepSimulation(0.0005)
+        env.StepSimulation(openhubo.TIMESTEP)
         h=[]
         for s in robot.GetAttachedSensors():
             force=s.GetSensor().GetSensorData().force
@@ -55,28 +55,30 @@ def swing_and_measure(robot,pose):
             cop=s.GetAttachingLink().GetTransform()*mat(array(localCoP)).T
             r=norm(force)/maxF
             h.append(env.plot3(cop[:-1].T,10,[r,.5,0]))
-            h=openhubo.plot_masses(robot)
+            #h=openhubo.plot_masses(robot)
         
 if __name__=='__main__':
 
     env = Environment()
-    env.SetDebugLevel(4)
-    env.SetViewer('qtcoin')
+    env.SetDebugLevel(3)
+    (env,options)=openhubo.setup('qtcoin')
 
-    [robot,controller,ind,ref,recorder]=openhubo.load(env,None,'simpleFloor.env.xml',True)
+    env.Load('physics.xml')
+    [robot,controller,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
 
     with env:
         for s in robot.GetAttachedSensors():
             s.GetSensor().Configure(Sensor.ConfigureCommand.PowerOff)
-            s.GetSensor().SendCommand('histlen 100')
+            s.GetSensor().SendCommand('histlen 10')
             s.GetSensor().Configure(Sensor.ConfigureCommand.PowerOn)
         controller.SendCommand('set radians ')
 
     #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-    env.StartSimulation(timestep=0.0005)
-    pose=zeros(robot.GetDOF())
+    env.StartSimulation(openhubo.TIMESTEP)
+    time.sleep(1)
     env.StopSimulation()
 
+    pose=zeros(robot.GetDOF())
     pose[ind('REP')]=-pi/4
     pose[ind('LEP')]=-pi/4
     pose[ind('RSP')]=-pi/4
@@ -91,4 +93,4 @@ if __name__=='__main__':
 
     swing_and_measure(robot,pose)
 
-    env.StartSimulation(timestep=0.0005)
+    env.StartSimulation(openhubo.TIMESTEP)

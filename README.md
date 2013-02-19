@@ -1,7 +1,7 @@
 Authors: Robert Ellenberg, Richard Vallett, and R.J. Gross
 To setup plugins for openrave, source setup-plugins.sh:
 
-    source ./setup-plugins.sh
+    source ./setup
 
 If you have any trouble building, or have conflicts with your current setup,
 it may be easier to clean up everything completely, and rebuild. From the
@@ -30,17 +30,3 @@ If you would like to run the achcontroller example, make sure that hubo-ach is
 installed (see the github repo for instructions)
 
 https://github.com/hubo/hubo-ach
-
-Assuming you have downloaded the repository in ~/hubo-ach, you can use the
-included script to start hubo-ach:
-
-./ach-run.sh
-
-This creates the ACH channels for the hubo's reference pose, state, and
-parameters. The script also starts the hubo main loop, which sends CAN messages
-over virtual or physical CAN interfaces. The script is configured by default to
-send only virtual CAN messages, since the necessary CAN hardware is not likely
-installed on your PC. TO use phsyical can channels, remove the -v flag in the
-last line of the script:
-
-sudo ~/hubo-ach/hubo-main -v

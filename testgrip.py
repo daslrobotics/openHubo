@@ -72,8 +72,8 @@ if __name__=='__main__':
     from servo import *
     env=Environment()
     env.SetDebugLevel(3)
-    env.SetViewer('qtcoin')
-    [robot,ctrl,ind,recorder]=load(env,'gripper.env.xml',True,True)
+    (env,options)=openhubo.setup('qtcoin')
+    [robot,ctrl,ind,recorder]=load(env,None,'gripper.env.xml',True)
     rod=env.GetKinBody('rod')
     trans=rod.GetTransform()
     pose=ones(robot.GetDOF())*.8

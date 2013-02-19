@@ -3,7 +3,7 @@
 from openravepy import *
 import numpy
 env = Environment() # create openrave environment
-env.SetViewer('qtcoin') # attach viewer (optional)
+(env,options)=openhubo.setup('qtcoin') # attach viewer (optional)
 env.Load('data/lab1.env.xml') # load a simple scene
 
 Tz = matrixFromAxisAngle([0,0,numpy.pi/4])

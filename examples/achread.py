@@ -33,7 +33,7 @@ if __name__=='__main__':
     #success = RaveLoadPlugin('librplanners.so')
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
     timestep=0.01
@@ -50,10 +50,9 @@ if __name__=='__main__':
         ind = openhubo.makeNameToIndexConverter(robot)
 
         #initialize the servo controller
-        controller=RaveCreateController(env,'achcontroller')
+        controller=RaveCreateController(env,'achreadcontroller')
         robot.SetController(controller)
         controller.SendCommand("SetCheckCollisions false")
-        controller.SendCommand("SetReadOnly 1")
 
         #Set an initial pose before the simulation starts
 

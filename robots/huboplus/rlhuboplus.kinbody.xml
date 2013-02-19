@@ -89,8 +89,11 @@
     </body>
 
     <joint name="RAR_dummy" type="hinge" enable="false">
+        <!-- TODO align anchor to physics FT sensor location-->
         <Body>Body_RAR</Body>
         <Body>rightFoot</Body>
+        <offsetfrom>rightFoot</offsetfrom>
+        <anchor>0 0 0</anchor>
         <limits>0 0</limits>
     </joint>
 
@@ -287,7 +290,7 @@
         <body>Body_Hip</body>
         <offsetfrom>Body_Hip</offsetfrom>
         <anchor>0.013850358943 -0.000007806523 0.035461283862</anchor>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <limitsdeg>-90 90</limitsdeg>
 		<maxvel>3.77</maxvel>
 		<maxaccel>7.20</maxaccel>
@@ -663,8 +666,11 @@
     </body>
 
     <joint name="LAR_dummy" type="hinge" enable="false">
+        <!-- TODO align anchor to physics FT sensor location-->
         <Body>Body_LAR</Body>
         <Body>leftFoot</Body>
+        <offsetfrom>leftFoot</offsetfrom>
+        <anchor>0 0 0</anchor>
         <limits>0 0</limits>
     </joint>
 
@@ -748,7 +754,6 @@
         <translation>-0.036207973807 0.000083124345 -0.001266848323</translation>
         <rotationaxis> 1 0 0 -15</rotationaxis>
         <geom type="trimesh">
-
             <translation>0.036207973807 -0.000083124345 0.001266848323</translation>
             <donotrender>Body_RSR_1.wrl 1 </donotrender>
             <data>convhull_RSR_1.wrl 1 </data>
@@ -1096,9 +1101,12 @@
     </body>
 
     <Joint name="RWP_dummy" type="hinge" enable="false">
+        <!-- Fix dummy anchor to parent reference frame-->
+        <!-- TODO align anchor to physics FT sensor location-->
         <body>Body_RWP</body>
         <body>rightPalm</body>
         <offsetfrom>Body_RWP</offsetfrom>
+        <anchor>0.000258199377 0.011441986656 0.046147242821</anchor>
         <limitsdeg>0 0</limitsdeg>
     </Joint>
 
@@ -1156,9 +1164,12 @@
     </body>
 
     <Joint name="LWP_dummy" type="hinge" enable="false">
+        <!-- Fix dummy anchor to parent reference frame-->
+        <!-- TODO align anchor to physics FT sensor location-->
         <body>Body_LWP</body>
         <body>leftPalm</body>
         <offsetfrom>Body_LWP</offsetfrom>
+        <anchor>0.000258199377 -0.011441986656 0.046147242821</anchor>
         <limitsdeg>0 0</limitsdeg>
     </Joint>
 
@@ -1316,7 +1327,5 @@
 
     <adjacent>leftFoot Body_LAR</adjacent>
     <adjacent>rightFoot Body_RAR</adjacent>
-    <!--<kinbody file="righthand.kinbody.xml"/>-->
-    <!--<kinbody file="lefthand.kinbody.xml"/>-->
 
 </kinbody>

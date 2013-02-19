@@ -23,30 +23,13 @@ import datetime
 import sys
 import openhubo
 
+#Get the global environment for simulation
+
 if __name__=='__main__':
-
-    #-- Read the name of the xml file passed as an argument
-    #-- or use the default name
-    try:
-        file_env = sys.argv[1]
-    except IndexError:
-        file_env = 'rlhuboplus.robot.xml'
-
-    env = Environment()
+    
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
-    #-- Set the robot controller and start the simulation
-    t0=time.time()
-    with env:
-        env.Load(file_env)
-    t1=time.time()
-    env.SetViewer('qtcoin')
-    with env:
-        robot = env.GetRobots()[0]
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,None,False,False)
 
-        env.StopSimulation()
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        env.StartSimulation(timestep=0.0005)
-    print t1-t0
+    env.StartSimulation(openhubo.TIMESTEP)

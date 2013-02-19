@@ -22,8 +22,7 @@ def createTrajectory(robot):
 """ Simple test script to run some of the functions above. """
 if __name__=='__main__':
 
-    env = Environment()
-    env.SetViewer('qtcoin')
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
     env.Load('physics.xml')

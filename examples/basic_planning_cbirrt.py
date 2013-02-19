@@ -25,11 +25,11 @@ from planning import *
 if __name__=='__main__':
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(3)
-    env.Load('physics.xml')
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
+    env.Load('physics.xml')
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
 
     probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
     env.LoadProblem(probs_cbirrt,robot.GetName())
@@ -60,7 +60,6 @@ if __name__=='__main__':
     first_pose.filename='firstpose.traj'
     print first_pose.Serialize()
    
-    openhubo.pause()
     first_pose.run()
     openhubo.pause()
     RunTrajectoryFromFile(robot,first_pose,False)

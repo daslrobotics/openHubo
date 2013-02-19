@@ -57,7 +57,7 @@ def load_simplefloor(env):
     """
     return load(env,None,'simpleFloor.env.xml',True)
 
-def load(env,robotname,scenename=None,stop=False,physics=True,ghost=True):
+def load(env,robotname,scenename=None,stop=False,physics='physics.xml',ghost=True):
     """ Load a robot model into the given environment, configuring a
     trajectorycontroller and a reference robot to show desired movements vs. actual
     pose. The returned tuple contains:
@@ -94,24 +94,22 @@ def load(env,robotname,scenename=None,stop=False,physics=True,ghost=True):
 
         robot.SetDOFValues(zeros(robot.GetDOF()))
 
-        if not physics:
+        ref_robot=None
+        if physics and env.GetPhysicsEngine().GetXMLId()=='GenericPhysicsEngine':
+            rave.raveLogInfo('Loading physics parameters from {}'.format(physics))
+            env.Load(physics)
+        elif not physics:
             env.SetPhysicsEngine(rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
 
-        collisionChecker = rave.RaveCreateCollisionChecker(env,'pqp')
-        if collisionChecker==None:
-            collisionChecker = rave.RaveCreateCollisionChecker(env,'ode')
-            warnings.warn('Note: Using ODE collision checker since PQP is not available')
-        env.SetCollisionChecker(collisionChecker)
-
-        ref_robot=None
-        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine' and physics:
+        #Force new controller since it's easier
+        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine':
+            rave.raveLogInfo('Creating controller for physics simulation')
             controller=rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
+            #TODO: set gains elsewhere?
             controller.SendCommand('set gains 50 0 8')
-            #set_finger_torque(robot,4.0)
 
             #Load ref robot and colorize
-            #TODO: Load the actual robot as a copy, then strip out extra junk there
             if robotname:
                 ref_robot=env.ReadRobotURI(robotname)
                 ref_robot.SetName('ref_'+robot.GetName())
@@ -124,6 +122,12 @@ def load(env,robotname,scenename=None,stop=False,physics=True,ghost=True):
             #Just load ideal controller if physics engine is not present
             controller=rave.RaveCreateController(env,'idealcontroller')
             robot.SetController(controller)
+
+        collisionChecker = rave.RaveCreateCollisionChecker(env,'pqp')
+        if collisionChecker==None:
+            collisionChecker = rave.RaveCreateCollisionChecker(env,'ode')
+            warnings.warn('Note: Using ODE collision checker since PQP is not available')
+        env.SetCollisionChecker(collisionChecker)
     
     ind=makeNameToIndexConverter(robot)
 
@@ -197,7 +201,6 @@ def plot_projected_com(robot):
 
 def plotProjectedCOG(robot):
     return plot_projected_com(robot)
-
     
 def plotBodyCOM(env,link,handle=None,color=array([0,1,0])):
     return plot_body_com(env,link,handle,color)
@@ -282,13 +285,82 @@ def CloseRightHand(robot,angle=pi/2):
     time.sleep(1)
     return True
 
+import logging
+from optparse import OptionParser
+from openravepy.misc import OpenRAVEGlobalArguments
+import atexit
 
-if __name__=='__main__':
-    from openravepy import *
-    from servo import *
-    env=Environment()
-    env.SetViewer('qtcoin')
-    robot=load_simplefloor(env)
-    env.StartSimulation(timestep=0.0005)
+def safe_quit(env):
+    """ Exit callback to ensure that openrave closes safely."""
+    #Somewhat overkill, try to avoid annoying segfaults
+    rave.raveLogDebug("Safely exiting rave environment...")
+    if env:
+        env.Destroy()
+    rave.RaveDestroy()
 
 
+def setup(viewername=None,create=True):
+    """ Setup openhubo environment and viewer when run from the command line.
+    :param viewername: Name of viewer plugin to use (defaults to no viewer)
+    :param create: If true, set up and return environment. Otherwise, parse and return options.
+    """
+    parser = OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.',
+                          usage='usage: %prog [options] script')
+    OpenRAVEGlobalArguments.addOptions(parser)
+    parser.add_option('--robot', action="store",type='string',dest='robotfile',default='rlhuboplus.robot.xml',
+                      help='Robot XML file to load (default=%default)')
+    parser.add_option('--scene', action="store",type='string',dest='scenefile',default='floor.env.xml',
+                      help='Scene file to load (default=%default)')
+    parser.add_option('--example', action="store",type='string',dest='example',default=None,
+                      help='Run an example')
+    parser.add_option('--nointeract', action="store_false",dest='interact',default=True,
+                      help='Disable interactive prompt and exit after running')
+    parser.add_option('--debug', action="store_true",dest='pydebug',default=False,
+                      help='Enable python debugger')
+    (options, leftargs) = parser.parse_args()
+
+    if viewername:
+        #Overwrite command line option with explicit argument?
+        options._viewer=viewername
+
+    if create:
+        env=rave.Environment()
+        atexit.register(safe_quit,env)
+        OpenRAVEGlobalArguments.parseEnvironment(options,env)
+        return (env,options)
+    elif len(leftargs)>0:
+        return (options,leftargs[0])
+    else:
+        return (options,None)
+
+if __name__ == '__main__':
+    """Run openhubo to see example files and use the IPython shell for inspection and debugging."""
+    (options,scriptname)=setup(None,False)
+
+    if options.pydebug:
+        import debug
+
+    if options.example or scriptname:
+
+        if scriptname:
+            execfile(scriptname)
+        else:
+            import fnmatch
+            import os
+            from openravepy import raveLogInfo
+            expath=os.environ['OPENHUBO_DIR'] + '/examples/'
+            for f in os.listdir(expath):
+                if fnmatch.fnmatch(f, options.example):
+                    raveLogInfo("Found example {}".format(options.example))
+                    break
+            execfile(expath+options.example)
+
+        if options.interact:
+            var=raw_input('Would you like to drop into IPython to inspect variables? [y/N]?')
+            if var=='y' or var=='Y' or var=='yes':
+                try:
+                    import IPython
+                    IPython.embed() 
+                    print "Cleaning up after inspection..."
+                except ImportError:
+                    print "IPython not installed!"

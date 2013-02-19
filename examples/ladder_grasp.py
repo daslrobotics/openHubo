@@ -48,7 +48,7 @@ if __name__=='__main__':
 
     file_env = 'ladderclimb.env.xml'
     env = Environment()
-    env.SetViewer('qtcoin')
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(3)
 
     # Load the environment
@@ -64,7 +64,7 @@ if __name__=='__main__':
     #Make any adjustments to initial pose here
     handles=[]
     for k in links:
-        handles.append(plotBodyCOM(env,k))
+        handles.append(openhubo.plotBodyCOM(env,k))
     #pause()
     
     grips = makeGripTransforms(links) 

@@ -90,7 +90,7 @@ if __name__=='__main__':
     from numpy.linalg import *
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    (env,options)=openhubo.setup('qtcoin')
     time.sleep(.5)
     # 3 = fatal, error, and warnings, but not debug output
     env.SetDebugLevel(5)

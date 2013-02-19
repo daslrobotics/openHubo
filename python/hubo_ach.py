@@ -75,10 +75,9 @@ def build_joint_index_map(robot):
 if __name__=='__main__':
     from openravepy import *
     from servo import *
-    env=Environment()
-    #env.SetViewer('qtcoin')
-    [robot,ctrl,ind,refrobot]=openhubo.load_rlhuboplus(env)
-    env.StartSimulation(timestep=0.0005)
+
+    (env,options)=openhubo.setup('qtcoin')
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,None,False,False)
 
     outputmap=build_joint_index_map(robot)
     print outputmap

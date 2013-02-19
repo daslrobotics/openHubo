@@ -118,7 +118,7 @@ def run_experiment(tag,translation,params,Fzmin=-50.0,viewer=False):
 
     env = Environment()
     if viewer:
-        env.SetViewer('qtcoin')
+        (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(3)
     time.sleep(.25)
 
