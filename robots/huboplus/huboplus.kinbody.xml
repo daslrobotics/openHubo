@@ -65,7 +65,7 @@
         <body>Body_Hip</body>
         <offsetfrom>Body_Hip</offsetfrom>
         <anchor>0.013850358943 -0.000007806523 0.035461283862</anchor>
-        <axis>0 0 1</axis>
+        <axis>0 0 -1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
 		<maxvel>3.77</maxvel>
 		<maxaccel>7.20</maxaccel>
@@ -567,6 +567,8 @@
     <joint name="RAR_dummy" type="hinge" enable="false">
         <Body>Body_RAR</Body>
         <Body>rightFoot</Body>
+        <offsetfrom>rightFoot</offsetfrom>
+        <anchor>0 0 0</anchor>
         <limits>0 0</limits>
     </joint>
 
@@ -685,6 +687,8 @@
     <joint name="LAR_dummy" type="hinge" enable="false">
         <Body>Body_LAR</Body>
         <Body>leftFoot</Body>
+        <offsetfrom>leftFoot</offsetfrom>
+        <anchor>0 0 0</anchor>
         <limits>0 0</limits>
     </joint>
 
@@ -1116,10 +1120,12 @@
     </body>
 
     <Joint name="RWP_dummy" type="hinge" enable="false">
+        <!-- TODO fix to actual FT location-->
         <body>Body_RWP</body>
         <body>rightPalm</body>
         <offsetfrom>Body_RWP</offsetfrom>
-        <limitsdeg>0 0</limitsdeg>
+        <anchor>0.000258199377 0.011441986656 0.046147242821</anchor>
+        <limits>0 0</limits>
     </Joint>
 
 
@@ -1178,12 +1184,13 @@
     </body>
 
     <Joint name="LWP_dummy" type="hinge" enable="false">
+        <!-- TODO fix to actual FT location-->
         <body>Body_LWP</body>
         <body>leftPalm</body>
         <offsetfrom>Body_LWP</offsetfrom>
-        <limitsdeg>0 0</limitsdeg>
+        <anchor>0.000258199377 -0.011441986656 0.046147242821</anchor>
+        <limits>0 0</limits>
     </Joint>
-
 
     <body name="Body_HNR" type="dynamic">
         <offsetfrom>Body_Torso</offsetfrom>
