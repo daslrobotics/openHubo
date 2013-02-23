@@ -63,7 +63,6 @@ if __name__=='__main__':
     env.SetDebugLevel(3)
     (env,options)=openhubo.setup('qtcoin')
 
-    env.Load('physics.xml')
     [robot,controller,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
 
     with env:

@@ -46,13 +46,11 @@ def makeGripTransforms(links):
 
 if __name__=='__main__':
 
-    file_env = 'ladderclimb.env.xml'
-    env = Environment()
     (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(3)
 
     # Load the environment
-    [robot, ctrl, ind,ref,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','ladderclimb.env.xml',True)
+    [robot, ctrl, ind,ref,recorder]=openhubo.load(env,options.robotfile,'ladderclimb.env.xml',True)
     pose=zeros(robot.GetDOF())
     robot.SetDOFValues(pose)
 

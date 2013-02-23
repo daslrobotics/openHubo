@@ -25,8 +25,6 @@ if __name__=='__main__':
     (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
-    env.Load('physics.xml')
-
     [robot,controller,ind,ref,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
 
     pose0=array(zeros(robot.GetDOF()))

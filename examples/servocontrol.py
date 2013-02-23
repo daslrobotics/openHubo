@@ -27,52 +27,27 @@ if __name__=='__main__':
 
     (env,options)=openhubo.setup('qtcoin',True)
     env.SetDebugLevel(4)
-    #(env,options)=openhubo.setup('qtcoin')
     time.sleep(.25)
-    #-- Set the robot controller and start the simulation
-    with env:
-        #NOTE: Make sure to use this sequence of commands WITHIN a "with env:"
-        #block to ensure that the model loads correctly.
-        env.StopSimulation()
-        env.Load('simpleFloor.env.xml')
-        robot = env.GetRobots()[0]
 
-        #Define a joint name lookup closure for the robot
-        ind=openhubo.makeNameToIndexConverter(robot)
-
-        pose=zeros(robot.GetDOF())
-        #Very important to make sure the initial pose is not colliding
-        robot.SetDOFValues(pose)
-
-        robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'pqp')
-        if not collisionChecker:
-            print "Using ODE since PQP is not available..."
-            collisionChecker = RaveCreateCollisionChecker(env,'ode')
-
-        env.SetCollisionChecker(collisionChecker)
-
-        ctrl=robot.GetController()
-        ctrl.SendCommand('setgains 100 0 8')
-        #Note that you can specify the input format as either degrees or
-        #radians, but the internal format is radians
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        env.StartSimulation(openhubo.TIMESTEP)
-
-    time.sleep(1)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
+    time.sleep(.5)
+    env.StartSimulation(openhubo.TIMESTEP)
+    time.sleep(.5)
    
     #Change the pose to lift the elbows and send
-    ctrl.SendCommand('set radians')
+    ctrl.SendCommand('set radians ')
+    pose=robot.GetDOFValues()
     pose[ind('REP')]=-pi/2
     pose[ind('LEP')]=-pi/2
     ctrl.SetDesired(pose)
-    openhubo.pause(1)
+
+    openhubo.pause(2)
 
     ctrl.SendCommand('openloop '+' '.join(['{}'.format(x) for x in range(42,57)]))
     for i in range(42,57):
         pose[i]=pi/2
     ctrl.SetDesired(pose)
-    openhubo.pause(1)
+    openhubo.pause(2)
 
     pose[42:57]=0
     ctrl.SetDesired(pose)

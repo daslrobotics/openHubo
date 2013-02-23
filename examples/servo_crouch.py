@@ -28,10 +28,8 @@ import openhubo
 
 if __name__=='__main__':
 
-    env = Environment()
     (env,options)=openhubo.setup('qtcoin')
-    env.SetDebugLevel(4)
-
+    env.SetDebugLevel(3)
     [robot,controller,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
     print robot
     print controller

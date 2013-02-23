@@ -14,7 +14,6 @@ import time
 import datetime
 import sys
 import os
-import openhubo
 from generalik import *
 from cbirrt import *
 import openhubo
@@ -28,7 +27,6 @@ if __name__=='__main__':
     (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(3)
 
-    env.Load('physics.xml')
     [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
 
     probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
