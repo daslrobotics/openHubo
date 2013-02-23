@@ -50,14 +50,17 @@ def model_test_factory(filename=None):
             print     LSerr
             print     RSerr
 
-            if anchor.has_key('LWP'):
+            if anchor.has_key('LWR'):
+                LWerr=constraints_3dof(z=anchor['LWY'],y=anchor['LWP'],x=anchor['LWR'])
+                RWerr=constraints_3dof(z=anchor['RWY'],y=anchor['RWP'],x=anchor['RWR'])
+            elif anchor.has_key('LWP'):
                 LWerr=constraints_3dof(z=anchor['LWY'],y=anchor['LWP'])
                 RWerr=constraints_3dof(z=anchor['RWY'],y=anchor['RWP'])
-                print     LWerr
-                print     RWerr
             else:
                 LWerr=zeros(3)
                 RWerr=zeros(3)
+            print     LWerr
+            print     RWerr
 
             LHerr=constraints_3dof(anchor['LHR'],anchor['LHP'],anchor['LHY'])
             RHerr=constraints_3dof(anchor['RHR'],anchor['RHP'],anchor['RHY'])

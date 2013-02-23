@@ -116,7 +116,7 @@
         <!--Body_RKP Parent Center of Mass to Base -->
         <translation>-0.017964195566 -0.018555646442 0.146319183413</translation>
         <!--Body_RKP Parent to Current -->
-        <translation>-0.000007056145 0.075000000000 0.299932496470</translation>
+        <translation>0.000000000000 0.075000000000 0.299932496470</translation>
         <!--Body_RHP Base to Center of Mass -->
         <translation>0.020290849195 -0.060372996030 -0.190372003572</translation>
         <geom type="trimesh">
@@ -154,7 +154,7 @@
         <!--Body_RHP Parent Center of Mass to Base -->
         <translation>-0.020290849195 0.060372996030 0.190372003572</translation>
         <!--Body_RHP Parent to Current -->
-        <translation>0.000015857850 -0.054000000000 -0.000084613594</translation>
+        <translation>0.000000000000 -0.054000000000 0.000000000000</translation>
         <!--Body_RHR Base to Center of Mass -->
         <translation>0.013710070529 -0.011029879677 -0.011997271412</translation>
         <geom type="trimesh">
@@ -193,7 +193,7 @@
         <!--Body_RHR Parent Center of Mass to Base -->
         <translation>-0.013710070529 0.011029879677 0.011997271412</translation>
         <!--Body_RHR Parent to Current -->
-        <translation>-0.000019999375 -0.000002936829 0.091080362166</translation>
+        <translation>0.000000000000 0.000000000000 0.091080362166</translation>
         <!--Body_RHY Base to Center of Mass -->
         <translation>0.010679328026 -0.000069644812 -0.050419213512</translation>
         <geom type="trimesh">
@@ -404,7 +404,7 @@
         <!--Body_LHY Parent Center of Mass to Base -->
         <translation>0.011068912725 0.000017567568 0.044092693677</translation>
         <!--Body_LHY Parent to Current -->
-        <translation>-0.000009992379 0.088500007621 -0.086588867160</translation>
+        <translation>-0.000000000000 0.088500007621 -0.086588867160</translation>
         <!--Body_LHY Base to Center of Mass -->
         <translation>0.010679328026 0.000069644812 -0.050419213512</translation>
         <geom type="trimesh">
@@ -448,7 +448,7 @@
         <!--Body_LHR Parent Center of Mass to Base -->
         <translation>-0.010679328026 -0.000069644812 0.050419213512</translation>
         <!--Body_LHR Parent to Current -->
-        <translation>0.000019999375 -0.000002936829 -0.091080362166</translation>
+        <translation>0.000000000000 -0.000000000000 -0.091080362166</translation>
         <!--Body_LHR Base to Center of Mass -->
         <translation>0.013710070529 0.011029879677 -0.011997271412</translation>
         <geom type="trimesh">
@@ -487,7 +487,7 @@
         <!--Body_LHP Parent Center of Mass to Base -->
         <translation>-0.013710070529 -0.011029879677 0.011997271412</translation>
         <!--Body_LHP Parent to Current -->
-        <translation>-0.000015857850 -0.054000000000 0.000084613594</translation>
+        <translation>0.000000000000 -0.054000000000 0.000000000000</translation>
         <!--Body_LHP Base to Center of Mass -->
         <translation>0.020290849195 0.060372996030 -0.190372003572</translation>
         <geom type="trimesh">
@@ -526,7 +526,7 @@
         <!--Body_LKP Parent Center of Mass to Base -->
         <translation>-0.020290849195 -0.060372996030 0.190372003572</translation>
         <!--Body_LKP Parent to Current -->
-        <translation>0.000007056145 0.075000000000 -0.299932496470</translation>
+        <translation>0.000000000000 0.075000000000 -0.299932496470</translation>
         <!--Body_LKP Base to Center of Mass -->
         <translation>0.017964195566 -0.018555646442 -0.146319183413</translation>
         <geom type="trimesh">
@@ -716,7 +716,7 @@
         <!--Body_LSR Parent Center of Mass to Base -->
         <translation>-0.017333106239 -0.056754362788 -0.000000060319</translation>
         <!--Body_LSR Parent to Current -->
-        <translation>0.025496881336 0.072000000000 0.000398423489</translation>
+        <translation>0.026000000000 0.072000000000 0.000000000000</translation>
         <!--Body_LSR Base to Center of Mass -->
         <translation>-0.032905519588 -0.000090229042 -0.003114071068</translation>
         <geom type="trimesh">
@@ -750,7 +750,7 @@
         <!--Body_RSR Parent Center of Mass to Base -->
         <translation>-0.017333106239 0.056754362788 -0.000000060319</translation>
         <!--Body_RSR Parent to Current -->
-        <translation>0.025496881336 -0.072000000000 0.000398423489</translation>
+        <translation>0.026000000000 -0.072000000000 0.000000000000</translation>
         <!--Body_RSR Base to Center of Mass -->
         <translation>-0.032905519588 0.000090229042 -0.003114071068</translation>
         <geom type="trimesh">
@@ -784,7 +784,7 @@
         <!--Body_LSY Parent Center of Mass to Base -->
         <translation>0.032905519588 0.000090229042 0.003114071068</translation>
         <!--Body_LSY Parent to Current -->
-        <translation>-0.026513917210 0.000000000000 -0.024917307121</translation>
+        <translation>-0.026000000000 0.000000000000 -0.024917307121</translation>
         <!--Body_LSY Base to Center of Mass -->
         <translation>0.007526422951 -0.001938510205 -0.089454011601</translation>
         <geom type="trimesh">
@@ -822,7 +822,7 @@
         <!--Body_RSY Parent Center of Mass to Base -->
         <translation>0.032905519588 -0.000090229042 0.003114071068</translation>
         <!--Body_RSY Parent to Current -->
-        <translation>-0.026513917210 0.000000000000 -0.024917307121</translation>
+        <translation>-0.026000000000 0.000000000000 -0.024917307121</translation>
         <!--Body_RSY Base to Center of Mass -->
         <translation>0.007526422951 0.001938510205 -0.089454011601</translation>
         <geom type="trimesh">
@@ -1004,7 +1004,7 @@
         <!--Body_LWR Parent Center of Mass to Base -->
         <translation>0.002758464322 0.000037197851 0.046421648761</translation>
         <!--Body_LWR Parent to Current -->
-        <translation>0.001909308299 0.000000000001 -0.122185083140</translation>
+        <translation>0.000000000000 0.000000000000 -0.122185083140</translation>
         <!--Body_LWR Base to Center of Mass -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
         <geom type="trimesh">
@@ -1029,7 +1029,7 @@
         <!--Body_RWR Parent Center of Mass to Base -->
         <translation>0.002758464322 -0.000037197851 0.046421648761</translation>
         <!--Body_RWR Parent to Current -->
-        <translation>0.001909308299 -0.000000000001 -0.122185083140</translation>
+        <translation>0.000000000000 0.000000000000 -0.122185083140</translation>
         <!--Body_RWR Base to Center of Mass -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
         <geom type="trimesh">
