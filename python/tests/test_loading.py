@@ -84,4 +84,5 @@ if __name__=='__main__':
     test4=model_test_factory('rlhuboplus.fingerless.robot.xml')
     test5=model_test_factory('hubo2.robot.xml')
     test6=model_test_factory('rlhubo2.robot.xml')
+    test7=model_test_factory('rlhuboplus.cushionhands.robot.xml')
     unittest.main(verbosity=2,testRunner=unittest.TextTestRunner())

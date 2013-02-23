@@ -120,6 +120,7 @@
         <translation>0.000000000000 0.088499911702 -0.076468866947</translation>
         <!--Body_LHY Base to Center of Mass -->
         <translation>0.034706500276 0.000037480007 -0.072615273181</translation>
+
         <geom type="trimesh">
             <translation>-0.034706500276 -0.000037480007 0.072615273181</translation>
             <donotrender>Body_LHY_1.wrl 1 </donotrender>
@@ -157,7 +158,7 @@
         <!--Body_RHR Parent Center of Mass to Base -->
         <translation>-0.034706500276 0.000037480007 0.072615273181</translation>
         <!--Body_RHR Parent to Current -->
-        <translation>0.052000092706 0.000000000000 -0.091004024142</translation>
+        <translation>0.052 0.000000000000 -0.091004024142</translation>
         <!--Body_RHR Base to Center of Mass -->
         <translation>-0.049747912596 -0.012531116599 -0.015643664572</translation>
         <geom type="trimesh">
@@ -190,9 +191,9 @@
     <body name="Body_LHR" type="dynamic">
         <offsetfrom>Body_LHY</offsetfrom>
         <!--Body_LHR Parent Center of Mass to Base -->
-        <translation>-0.034706500276 0.000037480007 0.072615273181</translation>
+        <translation>-0.034706500276 -0.000037480007 0.072615273181</translation>
         <!--Body_LHR Parent to Current -->
-        <translation>0.052000092706 -0.000000000000 -0.091004024142</translation>
+        <translation>0.052 0.000000000000 -0.091004024142</translation>
         <!--Body_LHR Base to Center of Mass -->
         <translation>-0.049747912596 0.012531116599 -0.015643664572</translation>
         <geom type="trimesh">
@@ -227,7 +228,7 @@
         <!--Body_RHP Parent Center of Mass to Base -->
         <translation>0.049747912596 0.012531116599 0.015643664572</translation>
         <!--Body_RHP Parent to Current -->
-        <translation>-0.052907422189 -0.065574802280 0.000000000000</translation>
+        <translation>-0.052 -0.065574802280 0.000000000000</translation>
         <!--Body_RHP Base to Center of Mass -->
         <translation>0.019504891350 0.059577480789 -0.175201757627</translation>
         <geom type="trimesh">
@@ -267,7 +268,7 @@
         <!--Body_LHP Parent Center of Mass to Base -->
         <translation>0.049747912596 -0.012531116599 0.015643664572</translation>
         <!--Body_LHP Parent to Current -->
-        <translation>-0.052907422189 0.065574802280 0.000000000000</translation>
+        <translation>-0.052 0.065574802280 0.000000000000</translation>
         <!--Body_LHP Base to Center of Mass -->
         <translation>0.019504891350 -0.059577480789 -0.175201757627</translation>
         <geom type="trimesh">
@@ -877,7 +878,7 @@
     <body name="Body_LSY" type="dynamic">
         <offsetfrom>Body_LSR</offsetfrom>
         <!--Body_LSY Parent Center of Mass to Base -->
-        <translation>0.036207973807 -0.000083124345 0.001266848323</translation>
+        <translation>0.036207973807 0.000083124345 0.001266848323</translation>
         <!--Body_LSY Parent to Current -->
         <translation>-0.026900000000 0.000000000000 -0.024500000000</translation>
         <!--Body_LSY Base to Center of Mass -->
