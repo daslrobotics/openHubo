@@ -773,7 +773,8 @@
         <offsetfrom>Body_RSR</offsetfrom>
         <anchor>0.036207973807 -0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-165 19</limitsdeg>
+        <initial>0.26179938779</initial>
+        <limitsdeg>-150 34</limitsdeg>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>35</maxtorque>
@@ -808,7 +809,8 @@
         <offsetfrom>Body_LSR</offsetfrom>
         <anchor>0.036207973807 0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-19 165</limitsdeg>
+        <initial>-0.26179938779</initial>
+        <limitsdeg>-34 150</limitsdeg>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>35</maxtorque>
@@ -924,7 +926,8 @@
         <offsetfrom>Body_REP</offsetfrom>
         <anchor>0.021734910228 0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-143 4</limitsdeg>
+        <initial>0.17453292519</initial>
+        <limitsdeg>-133 14</limitsdeg>
 		<maxvel>7.85</maxvel>
 		<maxaccel>15.00</maxaccel>
 		<maxtorque>25</maxtorque>
@@ -959,7 +962,8 @@
         <offsetfrom>Body_LEP</offsetfrom>
         <anchor>0.021734910228 -0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-143 4</limitsdeg>
+        <initial>0.17453292519</initial>
+        <limitsdeg>-133 14</limitsdeg>
 		<maxvel>7.85</maxvel>
 		<maxaccel>15.00</maxaccel>
 		<maxtorque>25</maxtorque>

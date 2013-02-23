@@ -793,8 +793,8 @@
         <offsetfrom>Body_RSR</offsetfrom>
         <anchor>0.036207973807 -0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <!--Estimated based on model range of motion-->
-        <limitsdeg>-180 27</limitsdeg>
+        <initial>0.26179938779</initial>
+        <limitsdeg>-150 34</limitsdeg>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>35</maxtorque>
@@ -828,8 +828,8 @@
         <offsetfrom>Body_LSR</offsetfrom>
         <anchor>0.036207973807 0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <!--Estimated based on model range of motion-->
-        <limitsdeg>-27 180</limitsdeg>
+        <initial>-0.26179938779</initial>
+        <limitsdeg>-34 150</limitsdeg>
 		<maxvel>9.42</maxvel>
 		<maxaccel>18.00</maxaccel>
 		<maxtorque>35</maxtorque>
@@ -950,8 +950,8 @@
         <offsetfrom>Body_REP</offsetfrom>
         <anchor>0.021734910228 0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
-        <!--Estimated from model (real elbow by default only moves up ~130 deg.)-->
-        <limitsdeg>-170 4</limitsdeg>
+        <initial>0.17453292519</initial>
+        <limitsdeg>-133 14</limitsdeg>
 		<maxvel>7.85</maxvel>
 		<maxaccel>15.00</maxaccel>
 		<maxtorque>25</maxtorque>
@@ -991,8 +991,8 @@
         <offsetfrom>Body_LEP</offsetfrom>
         <anchor>0.021734910228 -0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
-        <!--Estimated from model (real elbow by default only moves up ~130 deg.)-->
-        <limitsdeg>-170 4</limitsdeg>
+        <initial>0.17453292519</initial>
+        <limitsdeg>-133 14</limitsdeg>
 		<maxvel>7.85</maxvel>
 		<maxaccel>15.00</maxaccel>
 		<maxtorque>25</maxtorque>
@@ -1137,7 +1137,7 @@
     <body name="Body_LWP" type="dynamic">
         <offsetfrom>Body_LWY</offsetfrom>
         <!--Body_LWP Parent Center of Mass to Base -->
-        <translation>0.001220192079 0.000635233335 0.023804318643</translation>
+        <translation>0.001220192079 -0.000635233335 0.023804318643</translation>
         <!--Body_LWP Parent to Current -->
         <translation>0.000000000000 -0.010000000000 -0.052549999972</translation>
         <!--Body_LWP Base to Center of Mass -->

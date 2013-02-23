@@ -32,6 +32,12 @@ def model_test_factory(filename=None):
             (self.env,options)=openhubo.setup()
             self.env.SetDebugLevel(2)
             [self.robot,ctrl,ind,ref,recorder]=openhubo.load(self.env,filename,None,True,False)
+            pose=zeros(self.robot.GetDOF())
+            #pose[ind('RSR')]=15*pi/180
+            #pose[ind('LSR')]=-15*pi/180
+            #pose[ind('REP')]=-10*pi/180
+            #pose[ind('LEP')]=-10*pi/180
+            self.robot.SetDOFValues(pose)
 
         def tearDown(self):
             self.env.Destroy()
