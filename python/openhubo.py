@@ -7,6 +7,7 @@ import time
 import datetime
 import warnings
 import sys
+import matplotlib.pyplot as plt
 
 # Interactive script 
 if hasattr(sys,'ps1') or sys.flags.interactive:
@@ -285,6 +286,43 @@ def CloseRightHand(robot,angle=pi/2):
     time.sleep(1)
     return True
 
+class ServoPlotter:
+    """A simple class to import recorded servo data and plot a specific subset
+    of joints. matplotlib.pyplot commands are embedded in the class so you can
+    easily customize the plot.
+    :param filename: file containing recorded servo data. """
+
+    def __init__(self,filename=None):
+        self.jointdata={}
+        self.import_servo_data(filename)
+        self.plt=plt
+        self.show=plt.show
+
+    def import_servo_data(self,filename,clearold=False):
+        """ Read in servo data from the filename provided."""
+
+        with open(filename,'r') as f:
+            gainstring=f.readline().rstrip()
+            servostrings=f.readlines()
+
+        if clearold:
+            self.jointdata={}
+
+        for l in servostrings:
+            data=l.rstrip().split(' ')
+            #Store a dictionary of lists?
+            self.jointdata.setdefault(data[0],[float(x) for x in data[1:]])
+
+    def plot(self,servolist=[]):
+        for s in servolist:
+            REF='{}_REF'.format(s)
+            plt.plot(self.jointdata[REF],'+',hold=True)
+            plt.plot(self.jointdata[s],hold=True)
+
+
+#-----------------------------------------------------------
+# Executable setup
+#-----------------------------------------------------------
 import logging
 from optparse import OptionParser
 from openravepy.misc import OpenRAVEGlobalArguments
