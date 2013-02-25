@@ -292,11 +292,13 @@ class ServoPlotter:
     easily customize the plot.
     :param filename: file containing recorded servo data. """
 
-    def __init__(self,filename=None):
+    def __init__(self,filename=None,servolist=[]):
         self.jointdata={}
         self.import_servo_data(filename)
         self.plt=plt
         self.show=plt.show
+        if len(servolist)>0:
+            self.plot(servolist)
 
     def import_servo_data(self,filename,clearold=False):
         """ Read in servo data from the filename provided."""

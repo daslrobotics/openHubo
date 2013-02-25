@@ -30,14 +30,24 @@ if __name__=='__main__':
     (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,['door.env.xml'],True)
-    door=env.GetRobot('doorbot')
-    door.SetController(RaveCreateController(env,'servocontroller'))
-    spring=door.GetController()
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,None,'pendulum.env.xml',True)
+    robot.SetController(RaveCreateController(env,'servocontroller'))
+    spring=robot.GetController()
     with env:
-        spring.SendCommand('springdamper 0 1')
-        spring.SendCommand('set gainvec   0 10 0 1   1 10 0 0 ')
-    time.sleep(0.1)
-    env.StartSimulation(openhubo.TIMESTEP)
+        spring.SendCommand('springdamper 0 ')
+        spring.SendCommand('setgains 10 0 1 ')
+        spring.SendCommand('record_on')
+        spring.SetDesired([1])
+        robot.SetDOFValues([1])
+    #time.sleep(0.1)
+    #env.StartSimulation(openhubo.TIMESTEP)
 
+    time.sleep(.1)
+    openhubo.pause()
 
+    for k in range(20000):
+        env.StepSimulation(openhubo.TIMESTEP)
+
+    spring.SendCommand('record_off pendulum.txt ')
+    p=openhubo.ServoPlotter('pendulum.txt',['j0'])
+    
