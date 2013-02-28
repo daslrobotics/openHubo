@@ -19,6 +19,7 @@ __license__ = 'GPLv3 license'
 from openravepy import *
 import sys
 import csv
+import os.path
 
 def makeJointDict(robot):
     env = robot.GetEnv()
@@ -32,12 +33,13 @@ def makeJointDict(robot):
 
 if __name__=='__main__':
 
-    #-- Read the name of the xml file passed as an argument
-    #-- or use the default name
+    # Read the name of the xml file passed as an argument
+    # or use the default name
+    
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'hubo2/hubo2.robot.xml'
+        file_env = 'huboplus.robot.xml'
 
     env = Environment()
     env.Load(file_env)
@@ -48,20 +50,19 @@ if __name__=='__main__':
     jointMap={}
 
     #Strip off the xml suffix to create a file prefix
-    file_prefix=file_env[:-4]
+    file_prefix=os.path.splitext(file_env)[0]
 
     #Open a "standard" file name to store the joint mapping
-    with open('{}.joints.csv'.format(file_prefix),'wb') as f:
+    with open(file_prefix + '.joints.csv','wb') as f:
         writer=csv.writer(f,delimiter=' ') 
         for k in robot.GetJoints():
             # The line below builds a dictionary of joint names and DOF indices 
             jointMap[k.GetName()]=k.GetDOFIndex()
             # Print the same data to the screen with a formatted string
-            print "{}:{}".format(k.GetName(),k.GetDOFIndex())
+            print '%s:%s' % (k.GetName(), k.GetDOFIndex())
             # Use the CSV writer to export the data by row
             writer.writerow([k.GetName(),jointMap[k.GetName()]])
 
-    with open('{}.joints.m'.format(file_prefix),'w') as f:
+    with open(file_prefix + '.joints.m','w') as f:
         for k in robot.GetJoints():
-            f.write('{}={};\n'.format(k.GetName(),jointMap[k.GetName()]))
-
+            f.write('%s=%s;\n' % (k.GetName(),jointMap[k.GetName()]))
