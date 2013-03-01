@@ -32,7 +32,7 @@ class ServoTest:
             plt.plot(self.jointdata[s],hold=True)
 
 def sendServoCommand(robot,raw=array(zeros(60))):
-    """ Send an array of servo positions directly to the robot. """
+    """ DEPRECATED: Send an array of servo positions directly to the robot. """
     robot.GetController().SetDesired(raw)
 
 def sendSparseServoCommand(robot,posDict):
