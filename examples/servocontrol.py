@@ -43,11 +43,13 @@ if __name__=='__main__':
 
     openhubo.pause(2)
 
-    ctrl.SendCommand('openloop '+' '.join(['{}'.format(x) for x in range(42,57)]))
-    for i in range(42,57):
-        pose[i]=pi/2
-    ctrl.SetDesired(pose)
-    openhubo.pause(2)
+    #Hack to get hand 
+    if robot.GetName() == 'rlhuboplus' or robot.GetName() == 'huboplus':
+        ctrl.SendCommand('openloop '+' '.join(['{}'.format(x) for x in range(42,57)]))
+        for i in range(42,57):
+            pose[i]=pi/2
+        ctrl.SetDesired(pose)
+        openhubo.pause(2)
 
-    pose[42:57]=0
-    ctrl.SetDesired(pose)
+        pose[42:57]=0
+        ctrl.SetDesired(pose)

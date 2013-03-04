@@ -132,7 +132,27 @@ def load(env,robotname,scenename=None,stop=False,physics='physics.xml',ghost=Tru
     
     ind=makeNameToIndexConverter(robot)
 
+    align_robot(robot)
+
     return (robot,controller,ind,ref_robot,recorder)
+
+def align_robot(robot,floorheight=0,floornormal=[0,0,1]):
+    """ Align robot to floor, spaced slightly above"""
+    env=robot.GetEnv()
+    vertex1=zeros(3)
+    #vertex2=zeros(3)
+    with env:
+        for l in robot.GetLinks():
+            bb=l.ComputeAABB()
+            vertex1=minimum(bb.pos()-bb.extents(),vertex1)
+            #vertex2=maximum(bb.pos()+bb.extents(),vertex2)
+        T=robot.GetTransform()
+        dh=floorheight-vertex1[2]
+
+        # add height change to robot
+        T[2,3]+=dh+.001
+        robot.SetTransform(T)
+        #TODO: reset velocity?
 
 def load_rlhuboplus(env,scenename=None,stop=False):
     """ Load the rlhuboplus model into the given environment, configuring a
@@ -357,6 +377,8 @@ def setup(viewername=None,create=True):
                       help='Disable interactive prompt and exit after running')
     parser.add_option('--debug', action="store_true",dest='pydebug',default=False,
                       help='Enable python debugger')
+    parser.add_option('--physicsxml', action="store",dest='physicsfile',default=None,
+                      help='Load physics engine config from XML file')
     (options, leftargs) = parser.parse_args()
 
     if viewername:
