@@ -25,51 +25,31 @@ import openhubo
 
 if __name__=='__main__':
 
-    #-- Read the name of the xml file passed as an argument
-    #-- or use the default name
-    try:
-        file_env = sys.argv[1]
-    except IndexError:
-        file_env = 'scenes/simpleFloor.env.xml'
-
-    env = Environment()
+    (env,options)=openhubo.setup('qtcoin',True)
     env.SetDebugLevel(4)
-    env.SetViewer('qtcoin')
     time.sleep(.25)
-    #-- Set the robot controller and start the simulation
-    with env:
-        #NOTE: Make sure to use this sequence of commands WITHIN a "with env:"
-        #block to ensure that the model loads correctly.
-        env.StopSimulation()
-        env.Load(file_env)
-        robot = env.GetRobots()[0]
 
-        #Define a joint name lookup closure for the robot
-        ind=openhubo.makeNameToIndexConverter(robot)
-
-        robot.SetDOFValues([pi/4,-pi/4],[ind('LSR'),ind('RSR')])
-        pose=array(zeros(60))
-        robot.SetController(RaveCreateController(env,'servocontroller'))
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
-
-    
-        robot.GetController().SendCommand('setgains 50 0 7 .9998 .1')
-        #Note that you can specify the input format as either degrees or
-        #radians, but the internal format is radians
-        robot.GetController().SendCommand('set degrees')
-        pose[ind('LSR')]=45
-        pose[ind('RSR')]=-45
-        robot.GetController().SetDesired(pose)
-
-        #Use .0005 timestep for non-realtime simulation with ODE to reduce jitter.
-        env.StartSimulation(timestep=0.0005)
-
-    time.sleep(3)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
+    time.sleep(.5)
+    env.StartSimulation(openhubo.TIMESTEP)
+    time.sleep(.5)
    
-    #Change the pose to lift the elbows and resend
-    pose[ind('REP')]=-pi/8
-    pose[ind('LEP')]=-pi/8
+    #Change the pose to lift the elbows and send
+    ctrl.SendCommand('set radians ')
+    pose=robot.GetDOFValues()
+    pose[ind('REP')]=-pi/2
+    pose[ind('LEP')]=-pi/2
+    ctrl.SetDesired(pose)
 
-    robot.GetController().SetDesired(pose)
+    openhubo.pause(2)
 
+    #Hack to get hand 
+    if robot.GetName() == 'rlhuboplus' or robot.GetName() == 'huboplus':
+        ctrl.SendCommand('openloop '+' '.join(['{}'.format(x) for x in range(42,57)]))
+        for i in range(42,57):
+            pose[i]=pi/2
+        ctrl.SetDesired(pose)
+        openhubo.pause(2)
+
+        pose[42:57]=0
+        ctrl.SetDesired(pose)

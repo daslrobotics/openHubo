@@ -20,7 +20,7 @@ from openravepy import *
 from numpy import *
 import time
 import sys
-import tab
+import openhubo
 
 def checkCollision(robot,bodies):
     #Check the first body against the rest
@@ -74,10 +74,10 @@ if __name__=='__main__':
     try:
         file_env = sys.argv[1]
     except IndexError:
-        file_env = 'huboplus/huboplus.robot.xml'
+        file_env = 'huboplus.robot.xml'
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(1)
     env.Load(file_env)
 

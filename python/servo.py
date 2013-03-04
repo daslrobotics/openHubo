@@ -1,17 +1,11 @@
 #!/usr/bin/env python
 
 """ OpenHubo servo functions """
-
-import tab
-from openravepy import *
-from numpy import *
-from numpy.linalg import *
+from numpy import pi,array,zeros
+import openhubo
 import sys
 import time
-import openhubo
 import collections
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
 
 class ServoTest:
 
@@ -37,45 +31,8 @@ class ServoTest:
             plt.plot(self.jointdata[REF],'+',hold=True)
             plt.plot(self.jointdata[s],hold=True)
 
-#TODO: Work with the concept of activeDOF?
-
-shortcuts=collections.namedtuple('Shortcuts',['env','robot','controller','pose'])
-
-def setupEnv():
-    env = Environment()
-    #env.SetViewer('qtcoin')
-    #time.sleep(.5)
-    env.SetDebugLevel(DebugLevel.Info)
-    timestep=0.0005
-
-    with env:
-        env.StopSimulation()
-        env.Load('simpleFloor.env.xml')
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
-        robot = env.GetRobots()[0]
-        #Create a "shortcut" function to translate joint names to indices
-        ind = openhubo.makeNameToIndexConverter(robot)
-
-        #initialize the servo controller
-        controller=RaveCreateController(env,'servocontroller')
-        robot.SetController(controller)
-
-        #Set an initial pose before the simulation starts
-        controller.SendCommand('setgains 50 0 8')
-
-        pose=array(zeros(robot.GetDOF()))
-
-        pose[ind('RSR')]=-pi/8
-        pose[ind('LSR')]=pi/8
-
-        #Set initial pose to avoid thumb collisions
-        robot.SetDOFValues(pose)
-        controller.SetDesired(pose)
-    return shortcuts(env,robot,controller,pose)
-
 def sendServoCommand(robot,raw=array(zeros(60))):
-    """ Send an array of servo positions directly to the robot. """
+    """ DEPRECATED: Send an array of servo positions directly to the robot. """
     robot.GetController().SetDesired(raw)
 
 def sendSparseServoCommand(robot,posDict):
@@ -127,12 +84,16 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
 
 """ Examples to learn how to use the new servocontroller."""
 if __name__=='__main__':
+    import matplotlib.pyplot as plt
+    from openravepy import *
+    from numpy import *
+    from numpy.linalg import *
 
     env = Environment()
-    env.SetViewer('qtcoin')
+    (env,options)=openhubo.setup('qtcoin')
     time.sleep(.5)
     # 3 = fatal, error, and warnings, but not debug output
-    env.SetDebugLevel(3)
+    env.SetDebugLevel(5)
 
     timestep=0.0005
 
@@ -155,12 +116,10 @@ if __name__=='__main__':
         robot.SetController(controller)
 
         #Set an initial pose before the simulation starts
-        controller.SendCommand('setgains 50 0 8')
+        controller.SendCommand('setgains 200 0 8')
+        controller.SendCommand('set radians')
 
         pose=array(zeros(robot.GetDOF()))
-
-        pose[ind('RSR')]=-pi/8
-        pose[ind('LSR')]=pi/8
 
         #Set initial pose to avoid thumb collisions
         robot.SetDOFValues(pose)
@@ -169,11 +128,8 @@ if __name__=='__main__':
         # pre-simulation tweaks
     env.StartSimulation(timestep=timestep)
     time.sleep(1)
-    controller.SendCommand('record_on')
     #Use the new SetDesired command to set a whole pose at once.
     #Manually align the goal pose and the initial pose so the thumbs clear
-    pose[ind('RSR')]=-22.5*pi/180
-    pose[ind('LSR')]=22.5*pi/180
 
     #The name-to-index closure makes it easy to index by name 
     # (though a bit more expensive)
@@ -189,9 +145,12 @@ if __name__=='__main__':
     controller.SetDesired(pose)
     time.sleep(2)
 
+    filename='recorded_positions.txt'
+    controller.SendCommand('record_on {}'.format(filename))
+    time.sleep(1)
     print "Testing single joint pose"
 
-    controller.SendCommand('set degrees')
+    controller.SendCommand('set degrees ')
 
     controller.SendCommand('setpos1 {} {} '.format(ind('LSP'),-60))
 
@@ -206,9 +165,8 @@ if __name__=='__main__':
     time.sleep(2)
     print controller.SendCommand('getpos1 {} '.format(ind('LEP')))
 
-    filename='recorded_positions.txt'
     controller.SendCommand('record_off {}'.format(filename))
-
+    time.sleep(1)
     test=ServoTest(filename)
     servos=['LEP','LWP'] 
     test.plot(servos)

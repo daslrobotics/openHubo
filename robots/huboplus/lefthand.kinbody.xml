@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="plusLeftHand" makejoinedlinksadjacent="true">
+    <KinBody name="leftIndexFinger" file="fingers/leftIndexFinger.kinbody.xml">
+    </KinBody>
+
+    <!--Have to redo all the adjacencies when a body is redefined like this...-->
+
+    <KinBody name="leftMiddleFinger" file="fingers/leftMiddleFinger.kinbody.xml">
+    </KinBody>
+
+    <!--Have to redo all the adjacencies when a body is redefined like this...-->
+    <adjacent>Body_LWP leftMiddleProximal</adjacent>
+    <adjacent>Body_LWP leftMiddleMedial</adjacent>
+
+    <KinBody name="leftRingFinger" file="fingers/leftRingFinger.kinbody.xml">
+    </KinBody>
+
+    <!--Have to redo all the adjacencies when a body is redefined like this...-->
+    <KinBody name="leftPinkyFinger" file="fingers/leftPinkyFinger.kinbody.xml">
+    </KinBody>
+
+
+    <KinBody name="leftThumbFinger" file="fingers/leftThumbFinger.kinbody.xml">
+    </KinBody>
+
+    <!--Have to redo all the adjacencies when a body is redefined like this...-->
+
+    <adjacent>leftIndexProximal leftIndexMedial</adjacent>
+    <adjacent>leftIndexMedial leftIndexDistal</adjacent>
+    <adjacent>leftMiddleProximal leftMiddleMedial</adjacent>
+    <adjacent>leftMiddleMedial leftMiddleDistal</adjacent>
+    <adjacent>leftRingProximal leftRingMedial</adjacent>
+    <adjacent>leftRingMedial leftRingDistal</adjacent>
+    <adjacent>leftPinkyProximal leftPinkyMedial</adjacent>
+    <adjacent>leftPinkyMedial leftPinkyDistal</adjacent>
+    <adjacent>leftThumbProximal leftThumbMedial</adjacent>
+    <adjacent>leftThumbMedial leftThumbDistal</adjacent>
+    <adjacent>leftIndexProximal leftPalm</adjacent>
+    <adjacent>leftMiddleProximal leftPalm</adjacent>
+    <adjacent>leftRingProximal leftPalm</adjacent>
+    <adjacent>leftPinkyProximal leftPalm</adjacent>
+    <adjacent>leftThumbProximal leftPalm</adjacent>
+</KinBody>

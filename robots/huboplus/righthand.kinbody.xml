@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="plusRightHand" makejoinedlinksadjacent="true">
+    <KinBody name="rightIndexFinger" file="fingers/rightIndexFinger.kinbody.xml">
+    </KinBody>
+
+    <KinBody name="rightMiddleFinger" file="fingers/rightMiddleFinger.kinbody.xml">
+    </KinBody>
+
+    <KinBody name="rightRingFinger" file="fingers/rightRingFinger.kinbody.xml">
+    </KinBody>
+
+    <KinBody name="rightPinkyFinger" file="fingers/rightPinkyFinger.kinbody.xml">
+    </KinBody>
+
+    <KinBody name="rightThumbFinger" file="fingers/rightThumbFinger.kinbody.xml">
+    </KinBody>
+
+</KinBody>

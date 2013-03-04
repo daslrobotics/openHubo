@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="rightArm" makejoinedlinksadjacent="true">
+    <modelsdir>models</modelsdir>
+    <Body name="Torso" type="dynamic">
+    </Body>
+
+    <Body name="Body_RSP" type="dynamic">
+        <offsetfrom>Torso</offsetfrom>
+
+        <Translation>0.005494756 0.000506882 0.048924021</Translation>
+
+        <Translation>0 -0.1425 0</Translation>
+        <Translation>0.017375862 -0.056462706 -0.000002143</Translation>
+        <Geom type="cylinder" render="false">
+            <Translation>-0.0045 -.070 0</Translation>
+            <Translation>-0.017375862 0.056462706 0.000002143</Translation>
+            <RotationAxis>0 0 1 90</RotationAxis>
+            <radius>.055</radius>
+            <height>.133</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
+        </Geom>
+        <Geom type="trimesh">
+            <Translation>-0.017375862 0.056462706 0.000002143</Translation>
+            <Render>Body_RSP.wrl    1</Render>
+            <data>dummyBox.wrl .0002</data>
+            <diffusecolor>.5 .5 .5</diffusecolor>
+        </Geom>
+        <Mass type="custom">
+            <total>0.696196989</total>
+            <inertia>0.000915048 0.000172338 -0.000000272 0.000172338 0.000937024 0.000000272 -0.000000272 0.000000272 0.001287655</inertia>
+        </Mass>
+    </Body>
+
+    <Joint name="RSP" type="hinge">
+        <Body>Torso</Body>
+        <Body>Body_RSP</Body>
+        <offsetfrom>Body_RSP</offsetfrom>
+        <anchor>-0.017375862 0.056462706 0.000002143</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-150 150</limitsdeg>
+    </Joint>
+    <adjacent>Body_RSP Body_RSR</adjacent>
+
+    <Body name="Body_RSR" type="dynamic">
+        <offsetfrom>Body_RSP</offsetfrom>
+        <Translation>-0.017375862 0.056462706 0.000002143</Translation>
+        <Translation>.025 -.072 0</Translation>
+        <Translation>-0.032544374 0.002402058 -0.004360644</Translation>
+
+        <Geom type="trimesh">
+            <Translation>0.032544374 -0.002402058 0.004360644</Translation>
+            <Render>Body_RSR.wrl    1</Render>
+            <data>dummyBox.wrl .0002</data>
+        </Geom>
+
+        <Geom type="cylinder" render="false">
+            <Translation>0.032544374 -0.002402058 0.004360644</Translation>
+            <Translation>-0.026 0 -0.038</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>0.045</radius>
+            <height>0.076</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
+        </Geom>
+        <Mass type="custom">
+            <total>0.348180156</total>
+            <inertia>0.000273479 -0.000007678 0.000009906 -0.000007678 0.000247752 0.000010681 0.000009906 0.000010681 0.000216759</inertia>
+        </Mass>
+    </Body>
+
+    <Joint name="RSR" type="hinge">
+        <Body>Body_RSP</Body>
+        <Body>Body_RSR</Body>
+        <offsetfrom>Body_RSR</offsetfrom>
+        <anchor>0.032544374 -0.002402058 0.004360644</anchor>
+        <axis>1 0 0</axis>
+        <limitsdeg>-180 10</limitsdeg>
+    </Joint>
+    <adjacent>Body_RSR Body_RSY</adjacent>
+    <adjacent>Body_RSP Body_RSY</adjacent>
+
+    <Body name="Body_RSY" type="dynamic">
+        <offsetfrom>Body_RSR</offsetfrom>
+        <Translation>0.032544374 -0.002402058 0.004360644</Translation>
+        <Translation>-0.0269 0.0 -0.0245</Translation>
+        <Translation>0.007506423 0.001888922 -0.089712642</Translation>
+        <Geom type="cylinder" render="false">
+            <Translation>-0.007506423 -0.001888922 0.089712642</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.001 0 -0.101</Translation>
+            <radius>0.0445</radius>
+            <height>0.10</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>-0.007506423 -0.001888922 0.089712642</Translation>
+            <Translation>0.023 0.000 -0.155</Translation>
+            <radius>.027</radius>
+            <height>.085</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
+        </Geom>
+        <Geom type="trimesh">
+            <Translation>-0.007506423 -0.001888922 0.089712642</Translation>
+            <Render>Body_RSY.wrl    1</Render>
+            <data>dummyBox.wrl .0002</data>
+        </Geom>
+        <Mass type="sphere">
+            <total>1.407493330</total>
+            <radius>.045</radius>
+        </Mass>
+    </Body>
+
+    <Joint name="RSY" type="hinge">
+        <Body>Body_RSR</Body>
+        <Body>Body_RSY</Body>
+        <offsetfrom>Body_RSY</offsetfrom>
+        <anchor>-0.007506423 -0.001888922 0.089712642</anchor>
+        <axis>0 0 1</axis>
+        <limitsdeg>-157 157</limitsdeg>
+    </Joint>
+    <adjacent>Body_RSP Body_RSY</adjacent>
+    <adjacent>Body_RSR Body_RSY</adjacent>
+
+    <Body name="Body_REP" type="dynamic">
+        <offsetfrom>Body_RSY</offsetfrom>
+        <Translation>-0.007506423 -0.001888922 0.089712642</Translation>
+        <Translation>.022279 -.0115 -.154441</Translation>
+        <Translation>-0.013771295 0.006562470 -0.019735321</Translation>
+        <Geom type="trimesh">
+            <Translation>0.013771295 -0.006562470 0.019735321</Translation>
+            <Render>Body_REP.wrl    1</Render>
+            <data>dummyBox.wrl .0002</data>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>0.013771295 -0.006562470 0.019735321</Translation>
+            <Translation>-0.022 0.012 -0.025</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>0.044</radius>
+            <height>0.051</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
+        </Geom>
+        <Mass type="custom">
+            <total>0.090349046</total>
+            <inertia>0.000067021 0.000002584 -0.000013385 0.000002584 0.000075166 0.000004623 -0.000013385 0.000004623 0.000077705</inertia>
+        </Mass>
+    </Body>
+
+    <Joint name="REP" type="hinge">
+        <Body>Body_RSY</Body>
+        <Body>Body_REP</Body>
+        <offsetfrom>Body_REP</offsetfrom>
+        <anchor>0.013771295 -0.006562470 0.019735321</anchor>
+        <axis>0 1 0</axis>
+        <limitsdeg>-144 20</limitsdeg>
+    </Joint>
+    <adjacent>Body_RSY Body_REP</adjacent>
+
+    <Body name="Body_RWY" type="dynamic">
+        <offsetfrom>Body_REP</offsetfrom>
+        <Translation>0.013771295 -0.006562470 0.019735321</Translation>
+        <Translation>-.022001 .0115 -.041</Translation>
+        <Translation>-0.003372725 0.000033462 -0.039374046</Translation>
+        <Geom type="trimesh">
+            <Translation>0.003372725 -0.000033462 0.039374046</Translation>
+            <Render>Body_RWY.wrl    1</Render>
+            <data>dummyBox.wrl .0002</data>
+        </Geom>
+        <Geom type="cylinder" render="false">
+            <Translation>0.003372725 -0.000033462 0.039374046</Translation>
+            <Translation>0 0 -.066</Translation>
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <radius>0.045</radius>
+            <height>0.112</height>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
+        </Geom>
+        <Mass type="custom">
+            <total>0.278223950</total>
+            <inertia>0.000458115 0.000000401 -0.000015682 0.000000401 0.000449915 -0.000000059 -0.000015682 -0.000000059 0.000200816</inertia>
+        </Mass>
+    </Body>
+
+    <Joint name="RWY" type="hinge">
+        <Body>Body_REP</Body>
+        <Body>Body_RWY</Body>
+        <offsetfrom>Body_RWY</offsetfrom>
+        <anchor>0.003372725 -0.000033462 0.039374046</anchor>
+        <axis>0 0 1</axis>
+        <limitsdeg>-160 160</limitsdeg>
+    </Joint>
+    <adjacent>Body_REP Body_RWY</adjacent>
+    <adjacent>Body_RSY Body_RWY</adjacent>
+
+    <Body name="rightUJoint" type="dynamic">
+        <offsetfrom>Body_RWY</offsetfrom> 
+        <Translation>0.003372725 -0.000033462 0.039374046</Translation>
+        <Translation>0 0 -.122</Translation> 
+        <Geom type="box" render="false">
+            <extents>.005 .005 .005</extents>
+            <Transparency>.3</Transparency>
+            <Diffusecolor>.8 .8 .5</Diffusecolor>
+        </Geom>
+        <Geom type="trimesh">
+            <Render>Body_UJoint.wrl    1</Render>
+            <data>dummyBox.wrl .001</data>
+        </Geom>
+        <Mass type="box">
+            <total>0.003017047</total>
+            <extents>.005 .005 .005</extents>
+        </Mass>
+    </Body>
+
+    <Joint name="RWR" type="hinge">
+        <Body>Body_RWY</Body>
+        <Body>rightUJoint</Body>
+        <offsetfrom>rightUJoint</offsetfrom>
+        <axis>1 0 0</axis>
+        <limitsdeg>-30 30</limitsdeg>
+    </Joint>
+    <adjacent>Body_RWY rightUJoint</adjacent>
+
+    <Body name="rightPalmDummy" type="dynamic">
+        <offsetfrom>rightUJoint</offsetfrom> 
+    </Body>
+
+    <Joint name="RWP" type="hinge">
+        <Body>rightUJoint</Body>
+        <Body>rightPalmDummy</Body>
+        <offsetfrom>rightPalmDummy</offsetfrom>
+        <axis>0 1 0</axis>
+        <limitsdeg>-30 30</limitsdeg>
+    </Joint>
+    <adjacent>rightUJoint rightPalmDummy</adjacent>
+    <adjacent>Body_RWY rightPalmDummy</adjacent>
+</KinBody>

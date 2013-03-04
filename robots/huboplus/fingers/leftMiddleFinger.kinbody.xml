@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="Finger" makejoinedlinksadjacent="true">
+
+    <Body name="leftMiddleProximal" type="dynamic">
+<offsetfrom>Body_LWP</offsetfrom>
+        <!-- LWP Center of Mass to Base -->
+        <translation>0.000258199377 -0.011441986656 0.046147242821</translation>
+        <Translation>0.028499 0.020675 -0.083923</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 1 90</RotationAxis>
+        <RotationAxis>1 0 0 -45</RotationAxis>
+        <Translation>-0.019 0 0</Translation>
+        <Translation>0    0.01131   -0.01131</Translation>
+        <Geom type="box">
+            <extents> 0.016	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.016 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.012</total>
+        </Mass>
+    </Body>
+
+    <Body name="leftMiddleMedial" type="dynamic">
+        <offsetfrom>leftMiddleProximal</offsetfrom>
+        <Translation> 0.027 0 0</Translation>
+        <Geom type="box">
+            <extents> 0.011	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.011 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.006</total>
+        </Mass>
+    </Body>
+
+    <Body name="leftMiddleDistal" type="dynamic">
+        <offsetfrom>leftMiddleMedial</offsetfrom>
+        <Translation> 0.025 0 0</Translation>
+        <Geom type="box">
+            <Translation>-0.004 0 0</Translation>
+            <extents> 0.010	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.006 0 0</Translation>
+            <radius> 0.011</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.010</total>
+        </Mass>
+    </Body>
+
+    <Joint name="leftMiddleKnuckle1" type="hinge">
+        <Body>Body_LWP</Body>
+        <Body>leftMiddleProximal</Body>
+        <offsetfrom>leftMiddleProximal</offsetfrom>
+        <axis>0 0 -1</axis>
+        <anchor>-0.016 0 0</anchor>
+<maxtorque>20</maxtorque>
+        <limitsdeg>-1 91</limitsdeg>
+    </Joint>
+
+    <Joint name="leftMiddleKnuckle2" ype="hinge">
+        <Body>leftMiddleProximal</Body>
+        <Body>leftMiddleMedial</Body>
+        <offsetfrom>leftMiddleProximal</offsetfrom>
+        <anchor>0.016 0 0</anchor>
+        <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
+        <limitsdeg>-1 91</limitsdeg>
+    </Joint>
+    <adjacent> leftMiddleProximal leftMiddleMedial</adjacent>
+
+    <Joint name="leftMiddleKnuckle3" type="hinge">
+        <Body>leftMiddleMedial</Body>
+        <Body>leftMiddleDistal</Body>
+        <offsetfrom>leftMiddleMedial</offsetfrom>
+        <anchor>0.011 0 0</anchor>
+        <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
+        <limitsdeg>-1 91</limitsdeg>
+    </Joint>
+    <adjacent> leftMiddleDistal leftMiddleMedial</adjacent>
+
+</KinBody>

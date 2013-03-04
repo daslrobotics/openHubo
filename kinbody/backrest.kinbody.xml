@@ -1,0 +1,12 @@
+<KinBody name="backrest">
+    <Translation>0 .610 .798</Translation>
+    <Body type="static">
+        <!--Upper left corner is considered "contact point"-->
+        <Translation>0 .1 -.1</Translation>
+        <Geom type="box">
+            <extents>.5 .1 .1</extents>
+            <diffuseColor>.81 .4 .4</diffuseColor>
+            <ambientColor>0.8 0.5 0.6</ambientColor>
+        </Geom>
+    </Body>
+</KinBody>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<KinBody name="Finger" makejoinedlinksadjacent="true">
+
+    <Body name="rightPinkyProximal" type="dynamic">
+<offsetfrom>Body_RWP</offsetfrom>
+        <translation>0.000258199377 0.011441986656 0.046147242821</translation>
+        <Translation>0.028499 -0.020675 -0.083923</Translation>
+        <RotationAxis>1 0 0 90</RotationAxis>
+        <RotationAxis>0 0 -1 90</RotationAxis>
+        <RotationAxis>1 0 0 45</RotationAxis>
+        <Translation>-0.057 0 0</Translation>
+        <translation> 0   -0.0113   -0.0113 </translation>
+        <Geom type="box">
+            <extents> 0.016	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.016 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.012</total>
+        </Mass>
+    </Body>
+
+    <Body name="rightPinkyMedial" type="dynamic">
+        <offsetfrom>rightPinkyProximal</offsetfrom>
+        <Translation> 0.027 0 0</Translation>
+        <Geom type="box">
+            <extents> 0.011	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.011 0 0</Translation>
+            <radius> 0.008</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.006</total>
+        </Mass>
+    </Body>
+
+    <Body name="rightPinkyDistal" type="dynamic">
+        <offsetfrom>rightPinkyMedial</offsetfrom>
+        <Translation> 0.025 0 0</Translation>
+        <Geom type="box">
+            <Translation>-0.004 0 0</Translation>
+            <extents> 0.010	0.008 0.008</extents>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Geom type="cylinder">
+            <RotationAxis>1 0 0 90</RotationAxis>
+            <Translation>0.006 0 0</Translation>
+            <radius> 0.011</radius>
+            <height>0.016</height>
+            <DiffuseColor>0.2 0.2 0.2</DiffuseColor>
+        </Geom>
+        <Mass type="mimicgeom">
+            <total>0.010</total>
+        </Mass>
+    </Body>
+
+    <Joint name="rightPinkyKnuckle1" type="hinge">
+        <Body>Body_RWP</Body>
+        <Body>rightPinkyProximal</Body>
+        <offsetfrom>rightPinkyProximal</offsetfrom>
+        <axis>0 0 -1</axis>
+        <anchor>-0.016 0 0</anchor>
+<maxtorque>20</maxtorque>
+        <limitsdeg>-1 91</limitsdeg>
+    </Joint>
+    <adjacent> rightPinkyProximal Body_RWP</adjacent>
+    <adjacent> rightPinkyProximal rightPalm</adjacent>
+
+    <Joint name="rightPinkyKnuckle2" type="hinge">
+        <Body>rightPinkyProximal</Body>
+        <Body>rightPinkyMedial</Body>
+        <offsetfrom>rightPinkyProximal</offsetfrom>
+        <anchor>0.016 0 0</anchor>
+        <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
+        <limitsdeg>-1 91</limitsdeg>
+    </Joint>
+    <adjacent> rightPinkyProximal rightPinkyMedial</adjacent>
+    <adjacent> rightPinkyPinky Body_RWP</adjacent>
+
+    <Joint name="rightPinkyKnuckle3" type="hinge">
+        <Body>rightPinkyMedial</Body>
+        <Body>rightPinkyDistal</Body>
+        <offsetfrom>rightPinkyMedial</offsetfrom>
+        <anchor>0.011 0 0</anchor>
+        <axis>0 0 -1</axis>
+<maxtorque>20</maxtorque>
+        <limitsdeg>-1 91</limitsdeg>
+    </Joint>
+    <adjacent> rightPinkyDistal rightPinkyMedial</adjacent>
+
+</KinBody>

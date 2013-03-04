@@ -19,30 +19,24 @@ __license__ = 'GPLv3 license'
 from openravepy import *
 import time
 import scipy
-import tab
+import openhubo
 from numpy import *
 from numpy.linalg import *
 import sys
 from servo import *
+import openhubo
 
 if __name__=='__main__':
-    file_env = 'scenes/simpleFloor.env.xml'
 
-    env = Environment()
-    env.SetViewer('qtcoin')
-    env.SetDebugLevel(4)
+    (env,options)=openhubo.setup('qtcoin')
+    env.SetDebugLevel(3)
+    [robot,controller,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
+    print robot
+    print controller
 
-    with env:
-        env.StopSimulation()
-        env.Load(file_env)
-        robot = env.GetRobots()[0]
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
-        env.SetCollisionChecker(collisionChecker)
-        robot.SetController(RaveCreateController(env,'servocontroller'))
-        env.StartSimulation(timestep=0.0005)
+    env.StartSimulation(openhubo.TIMESTEP)
 
-    time.sleep(3)
-    robot.GetController().SendCommand('set degrees')
+    robot.GetController().SendCommand('set degrees ')
 
     sendSparseServoCommand(robot,{'LHP':-20,'LKP':40,'LAP':-20,'RHP':-20,'RKP':40,'RAP':-20})
 
