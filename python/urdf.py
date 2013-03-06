@@ -1,3 +1,6 @@
+# Based on the python URDF implementation by Antonio El Khoury
+# Available at https://github.com/laas/robot_model_py
+
 import string
 import xml.dom.minidom
 from xml.dom.minidom import Document
@@ -972,9 +975,20 @@ class URDF(object):
 
 if __name__ == '__main__':
     import startup
-    filename=sys.argv[1]
+
+    try:
+        filename=sys.argv[1]
+    except IndexError:
+        print "Please supply a URDF filename to convert!"
+
+    try:
+        outname=sys.argv[2]
+    except IndexError:
+        outname="default.robot.xml"
+
+    print "Using {} as output name for OpenRAVE XML robot".format(outname)
 
     model=URDF.load_xml_file(filename)
 
-    with open('test.xml','w') as f:
+    with open(outname,'w') as f:
         f.write(model.to_openrave_xml())
