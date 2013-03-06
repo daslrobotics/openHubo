@@ -562,12 +562,10 @@ class JointLimit(object):
         return xml
 
     def to_openrave_xml(self,doc):
-        xml = create_element(doc,'limits',[self.lower,self.upper])
-        xml.appendChild(create, 'effort', self.effort)
-        set_attribute(xml, 'velocity', self.velocity)
-        set_attribute(xml, 'lower', self.lower)
-        set_attribute(xml, 'upper', self.upper)
-        return xml
+        limit = create_element(doc,'limits',[self.lower,self.upper])
+        maxvel = create_element(doc,'maxvel',self.velocity)
+        maxtrq = create_element(doc,'maxtorque',self.effort)
+        return [limit,maxvel,maxtrq]
 
     def __str__(self):
         s = "Effort: {0}\n".format(self.effort)
