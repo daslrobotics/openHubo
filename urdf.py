@@ -3,6 +3,7 @@ import xml.dom.minidom
 from xml.dom.minidom import Document
 import sys
 from numpy import array,eye,reshape,pi
+import re
 
 def reindent(s, numSpaces):
     """Reindent a string for tree structure pretty printing."""
@@ -38,7 +39,7 @@ def set_attribute(node, name, value):
         value = str(value)
     node.setAttribute(name, value)
 
-def set_content(node,data):
+def set_content(doc,node,data):
     if data is None:
         return
     if type([]) == type(data) or type(()) == type(data):
@@ -47,7 +48,7 @@ def set_content(node,data):
         data = pfloat(data)
     elif type(data) != type(''):
         data = str(data)
-    node.text=data
+    node.appendChild(doc.createTextNode(data))
 
 def short(doc, name, key, value):
     element = doc.createElement(name)
@@ -63,7 +64,7 @@ def create_element(doc, name, contents=None, key=None, value=None):
             contents = pfloat(contents)
         elif type(contents) != type(''):
             contents = str(contents)
-        element.text=contents
+        element.appendChild(doc.createTextNode(contents))
 
     if key is not None:
         set_attribute(element, key, value)
@@ -271,7 +272,7 @@ class Sphere(Geometry):
 
 
 class Mesh(Geometry):
-    def __init__(self, filename=None, scale=None):
+    def __init__(self, filename=None, scale=1):
         self.filename = filename
         self.scale = scale
 
@@ -280,7 +281,7 @@ class Mesh(Geometry):
         fn = node.getAttribute('filename')
         s = node.getAttribute('scale')
         if s == "":
-            s = None
+            s = 1
         else:
             xyz = node.getAttribute('scale').split()
             scale = map(float, xyz)
@@ -296,7 +297,8 @@ class Mesh(Geometry):
 
     def to_openrave_xml(self, doc):
         xml = short(doc, "geometry","type","trimesh")
-        xml.appendChild(create_element(doc, "data", [self.filename, self.scale]))
+        f=re.sub(r"package:\/\/","../../",self.filename)
+        xml.appendChild(create_element(doc, "data", [f, self.scale]))
         return xml
 
     def __str__(self):
@@ -350,7 +352,7 @@ class Inertial(object):
         text='{ixx} {ixy} {ixz}\n{ixy} {iyy} {iyz}\n{ixz} {iyz} {izz}'.format(**self.matrix)
         xml.appendChild(create_element(doc,"inertia",text))
 
-        add(doc, xml, self.origin)
+        add_openrave(doc, xml, self.origin)
         return xml
 
     def __str__(self):
@@ -436,10 +438,27 @@ class Joint(object):
     def to_openrave_xml(self, doc):
         xml = doc.createElement("joint")
         set_attribute(xml, "name", self.name)
-        set_attribute(xml, "type", self.joint_type)
+        s=""
+        if self.joint_type == Joint.UNKNOWN:
+            s = "unknown"
+        elif self.joint_type == Joint.REVOLUTE:
+            s = "hinge"
+        elif self.joint_type == Joint.CONTINUOUS:
+            s = "hinge"
+            set_attribute(xml, "circular", "true")
+
+        elif self.joint_type == Joint.PRISMATIC:
+            s = "slider"
+        elif self.joint_type == Joint.FIXED:
+            s = "hinge"
+            set_attribute(xml, "enable", "false")
+        
+        set_attribute(xml, "type", s)
         xml.appendChild( create_element(doc, "body", self.parent) )
         xml.appendChild( create_element(doc, "body" , self.child ) )
+        xml.appendChild( create_element(doc, "offsetfrom" , self.parent) )
         add_openrave(doc, xml, self.origin)
+        xml.getElementsByTagName('translation')[0].tagName="anchor"
         if self.axis is not None:
             xml.appendChild( create_element(doc, "axis", self.axis) )
         add_openrave(doc, xml, self.limits)
@@ -612,6 +631,7 @@ class Link(object):
         xml.setAttribute("name", self.name)
         add_openrave( doc, xml, self.collision)
         add_openrave( doc, xml, self.inertial)
+        xml.getElementsByTagName('translation')[0].tagName="com"
         return xml
 
     def __str__(self):
@@ -687,16 +707,22 @@ class Pose(object):
 
     def to_openrave_xml(self, doc):
         xml = doc.createElement("translation")
-        set_content(xml,self.position)
-        print xml.text
-        rotr = doc.createElement("rotationaxis")
-        set_content(rotr,[1,0,0,self.rotation[0]*180.0/pi])
-        rotp = doc.createElement("rotationaxis")
-        set_content(rotr,[0,1,0,self.rotation[0]*180.0/pi])
-        roty = doc.createElement("rotationaxis")
-        set_content(rotr,[0,0,1,self.rotation[0]*180.0/pi])
+        set_content(doc,xml,self.position)
+        elements=[xml]
+        if not self.rotation[0] == 0:
+            rotr = doc.createElement("rotationaxis")
+            set_content(doc,rotr,[1,0,0,self.rotation[0]*180.0/pi])
+            elements.append(rotr)
+        if not self.rotation[1] == 0:
+            rotp = doc.createElement("rotationaxis")
+            set_content(doc,rotp,[0,1,0,self.rotation[1]*180.0/pi])
+            elements.append(rotp)
+        if not self.rotation[2] == 0:
+            roty = doc.createElement("rotationaxis")
+            set_content(doc,roty,[0,0,1,self.rotation[2]*180.0/pi])
+            elements.append(roty)
 
-        return [xml,rotr,rotp,roty]
+        return elements
 
     def __str__(self):
         return "Position: {0}\nRotation: {1}".format(self.position,
@@ -884,8 +910,27 @@ class URDF(object):
         doc.appendChild(root)
         root.setAttribute("name", self.name)
 
+        kinbody = doc.createElement("kinbody")
+        root.appendChild(kinbody)
+        kinbody.setAttribute("name", self.name)
+
         for element in self.elements:
-            root.appendChild(element.to_openrave_xml(doc))
+            kinbody.appendChild(element.to_openrave_xml(doc))
+
+        #Post-processing to add offsetfrom statements
+
+        for j in self.joints.keys():
+            for l in kinbody.getElementsByTagName('body'):
+                if l.getAttribute('name')== self.joints[j].child:
+                    #Add offsetfrom declarration and joint anchor as transform
+                    l.appendChild( create_element(doc, "offsetfrom" , self.joints[j].parent) )
+                    add_openrave(doc,l,self.joints[j].origin)
+                    break
+
+        #Add adjacencies
+        for j in self.joints.values():
+            kinbody.appendChild(create_element(doc,"adjacent",[j.parent, j.child]))
+
 
         return doc.toprettyxml()
 
@@ -925,6 +970,7 @@ class URDF(object):
         self.child_map = {}
 
 if __name__ == '__main__':
+    import startup
     filename=sys.argv[1]
 
     model=URDF.load_xml_file(filename)
