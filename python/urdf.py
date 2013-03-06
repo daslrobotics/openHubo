@@ -974,7 +974,10 @@ class URDF(object):
         self.child_map = {}
 
 if __name__ == '__main__':
-    import startup
+    try:
+        import startup
+    except ImportError:
+        pass
 
     try:
         filename=sys.argv[1]
