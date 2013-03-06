@@ -13,10 +13,12 @@ def reindent(s, numSpaces):
     return s
 
 def add(doc, base, element):
+    """Add an XML element for URDF export"""
     if element is not None:
         base.appendChild( element.to_xml(doc) )
 
 def add_openrave(doc, base, element):
+    """Add an XML element for OpenRAVE XML export"""
     if element is not None:
         newelements=element.to_openrave_xml(doc) 
         if type(newelements)==type([]):
@@ -40,6 +42,7 @@ def set_attribute(node, name, value):
     node.setAttribute(name, value)
 
 def set_content(doc,node,data):
+    """Create a text node and add it to the current element"""
     if data is None:
         return
     if type([]) == type(data) or type(()) == type(data):
