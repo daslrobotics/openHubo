@@ -2,7 +2,7 @@ import string
 import xml.dom.minidom
 from xml.dom.minidom import Document
 from urdf import children,add,set_attribute
-from numpy import array,eye,reshape
+from numpy import array,eye,reshape,pi
 
 def read_value(node,fn=float):
     """Read in values and apply a text formatting function"""
@@ -133,9 +133,15 @@ class Mesh(Geometry):
 
 
 class Mass(object):
-    def __init__(self, matrix=eye(3),
-                 mass=1.0, com=[0,0,0]):
-        self.matrix = matrix
+    def __init__(self, ixx=0.0, ixy=0.0, ixz=0.0, iyy=0.0, iyz=0.0, izz=0.0,
+                 mass=1.0, com=array([0,0,0])):
+        self.matrix = {}
+        self.matrix['ixx'] = ixx
+        self.matrix['ixy'] = ixy
+        self.matrix['ixz'] = ixz
+        self.matrix['iyy'] = iyy
+        self.matrix['iyz'] = iyz
+        self.matrix['izz'] = izz
         self.mass = mass
         self.com = com
 
@@ -144,7 +150,14 @@ class Mass(object):
         inert = Mass()
         for child in children(node):
             if child.localName=='inertia':
-                inert.matrix = [float(x) for x in child.text().split(' ')]
+                I = [float(x) for x in child.text().split(' ')]
+                self.matrix['ixx'] = I[0]
+                self.matrix['ixy'] = I[1]
+                self.matrix['ixz'] = I[2]
+                self.matrix['iyy'] = I[4]
+                self.matrix['iyz'] = I[5]
+                self.matrix['izz'] = I[8]
+
             elif child.localName=='mass':
                 inert.mass = float(child.text())
             elif child.localName == 'com':
@@ -158,8 +171,7 @@ class Mass(object):
         xml.appendChild(short(doc, "mass", "value", self.mass))
 
         inertia = doc.createElement("inertia")
-        for (n,v) in self.matrix.items():
-            set_attribute(inertia, n, v)
+        inertia.text='{ixx} {ixy} {ixz}\n{ixy} {iyy} {iyz} {ixz} {iyz} {izz}'.format(*matrix)
         xml.appendChild(inertia)
 
         add(doc, xml, self.origin)
@@ -179,15 +191,10 @@ class Mass(object):
 
 class Joint(object):
     UNKNOWN = 'unknown'
-    REVOLUTE = 'revolute'
-    CONTINUOUS = 'continuous'
-    PRISMATIC = 'prismatic'
-    FLOATING = 'floating'
-    PLANAR = 'planar'
-    FIXED = 'fixed'
+    HINGE = 'hinge'
+    SLIDER = 'slider'
 
-
-    def __init__(self, name, parent, child, joint_type, axis=None, origin=None,
+    def __init__(self, name, parent, child, joint_type, axis=None, anchor=None,
                  limits=None, dynamics=None, safety=None, calibration=None,
                  mimic=None):
         self.name = name
@@ -195,7 +202,7 @@ class Joint(object):
         self.child = child
         self.joint_type = joint_type
         self.axis = axis
-        self.origin = origin
+        self.anchor = anchor
         self.limits = limits
         self.dynamics = dynamics
         self.safety = safety
@@ -206,17 +213,22 @@ class Joint(object):
     def parse(node, verbose=True):
         joint = Joint(node.getAttribute('name'), None, None,
                       node.getAttribute('type'))
+        parent_found=False
         for child in children(node):
-            if child.localName == 'parent':
-                joint.parent = child.getAttribute('link')
-            elif child.localName == 'child':
-                joint.child = child.getAttribute('link')
+            if child.localName == 'body':
+                if parent_found:
+                    joint.child = child.text
+                else:
+                    joint.parent = child.text
+                    parent_found=True
             elif child.localName == 'axis':
-                joint.axis = child.getAttribute('xyz')
-            elif child.localName == 'origin':
-                joint.origin = Pose.parse(child)
-            elif child.localName == 'limit':
-                joint.limits = JointLimit.parse(child)
+                joint.axis = read_value(child.text)
+            elif child.localName == 'anchor':
+                joint.anchor = child.text
+            elif child.localName == 'limits':
+                joint.limits = read_value(child.text)
+            elif child.localName == 'limitsdeg':
+                joint.limits = read_value(child.text)*pi/180
             elif child.localName == 'dynamics':
                 joint.dynamics = Dynamics.parse(child)
             elif child.localName == 'safety_controller':
@@ -236,7 +248,7 @@ class Joint(object):
         set_attribute(xml, "type", self.joint_type)
         xml.appendChild( short(doc, "parent", "link", self.parent) )
         xml.appendChild( short(doc, "child" , "link", self.child ) )
-        add(doc, xml, self.origin)
+        add(doc, xml, self.anchor)
         if self.axis is not None:
             xml.appendChild( short(doc, "axis", "xyz", self.axis) )
         add(doc, xml, self.limits)
@@ -270,7 +282,7 @@ class Joint(object):
             print("unknown joint type")
 
         s +=  "Axis: {0}\n".format(self.axis)
-        s +=  "Origin:\n{0}\n".format(reindent(str(self.origin), 1))
+        s +=  "Origin:\n{0}\n".format(reindent(str(self.anchor), 1))
         s += "Limits:\n"
         s += reindent(str(self.limits), 1) + "\n"
         s += "Dynamics:\n"
