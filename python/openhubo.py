@@ -58,7 +58,7 @@ def load_simplefloor(env):
     """
     return load(env,None,'simpleFloor.env.xml',True)
 
-def load(env,robotname,scenename=None,stop=False,physics='physics.xml',ghost=True):
+def load(env,robotname,scenename=None,stop=False,physics='physics.xml',ghost=False):
     """ Load a robot model into the given environment, configuring a
     trajectorycontroller and a reference robot to show desired movements vs. actual
     pose. The returned tuple contains:
@@ -110,19 +110,17 @@ def load(env,robotname,scenename=None,stop=False,physics='physics.xml',ghost=Tru
             #TODO: set gains elsewhere?
             controller.SendCommand('set gains 50 0 8')
 
-            #Load ref robot and colorize
-            if robotname:
-                ref_robot=env.ReadRobotURI(robotname)
-                ref_robot.SetName('ref_'+robot.GetName())
-                ref_robot.Enable(False)
-                env.Add(ref_robot)
-                ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
-                controller.SendCommand("set visrobot "+ref_robot.GetName())
-                set_robot_color(ref_robot,[.7,.7,.5],[.7,.7,.5],trans=.5)
         else:
             #Just load ideal controller if physics engine is not present
             controller=rave.RaveCreateController(env,'idealcontroller')
             robot.SetController(controller)
+
+        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine' or ghost:
+            #Load ref robot and colorize
+            if robotname:
+                ref_robot=load_ghost(env,robotname,prefix="ref_")
+                if controller.GetXMLId()!='idealcontroller':
+                    controller.SendCommand("set visrobot "+ref_robot.GetName())
 
         collisionChecker = rave.RaveCreateCollisionChecker(env,'pqp')
         if collisionChecker==None:
@@ -135,6 +133,16 @@ def load(env,robotname,scenename=None,stop=False,physics='physics.xml',ghost=Tru
     align_robot(robot)
 
     return (robot,controller,ind,ref_robot,recorder)
+
+def load_ghost(env,robotname,prefix="ref_",color=[.8,.8,.4]):
+
+    ref_robot=env.ReadRobotURI(robotname)
+    ref_robot.SetName(prefix+ref_robot.GetName())
+    ref_robot.Enable(False)
+    env.Add(ref_robot)
+    ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
+    set_robot_color(ref_robot,color,color,trans=.5)
+    return ref_robot
 
 def align_robot(robot,floorheight=0,floornormal=[0,0,1]):
     """ Align robot to floor, spaced slightly above"""
