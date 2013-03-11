@@ -80,24 +80,24 @@ if __name__=='__main__':
     plt.plot(t,array(LFz)/m/9.8,'b',t,array(RFz)/m/9.8,'r')
     plt.grid(b=True)
     plt.title('Ratio of measured forces vs. body mass at each foot')
-    #plt.axis([t[0],t[-1],-500,0])
-    #plt.show()
+    plt.axis([t[0],t[-1],-500,0])
+    plt.show()
 
-    #RFT=robot.GetAttachedSensor('rightFootFT').GetSensor()
-    ##show the history of measured forces
-    #print RFT.SendCommand('gethist')
-    #time.sleep(0.5)
-    ##Try to set history longer
-    #RFT.SendCommand('histlen 50')
-    #time.sleep(0.5)
-    ##It doesn't work because the sensor was running
-    #print RFT.SendCommand('gethist')
+    RFT=robot.GetAttachedSensor('rightFootFT').GetSensor()
+    #show the history of measured forces
+    print RFT.SendCommand('gethist')
+    time.sleep(0.5)
+    #Try to set history longer
+    RFT.SendCommand('histlen 50')
+    time.sleep(0.5)
+    #It doesn't work because the sensor was running
+    print RFT.SendCommand('gethist')
 
-    ##Proper way: power "down", change length, power "up"
-    #RFT.Configure(Sensor.ConfigureCommand.PowerOff)
-    #print RFT.SendCommand('histlen 50')
-    #RFT.Configure(Sensor.ConfigureCommand.PowerOn)
-    #time.sleep(0.25)
-    #print RFT.SendCommand('gethist')
+    #Proper way: power "down", change length, power "up"
+    RFT.Configure(Sensor.ConfigureCommand.PowerOff)
+    print RFT.SendCommand('histlen 50')
+    RFT.Configure(Sensor.ConfigureCommand.PowerOn)
+    time.sleep(0.25)
+    print RFT.SendCommand('gethist')
 
 

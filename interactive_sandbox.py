@@ -30,6 +30,6 @@ if __name__=='__main__':
     (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,None,False,False)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True,options.physicsfile,False)
 
     env.StartSimulation(openhubo.TIMESTEP)

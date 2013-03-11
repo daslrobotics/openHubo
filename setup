@@ -190,3 +190,12 @@ do
 done
 
 ln -sf python/openhubo.py openhubo
+
+read -p "Create openhubo symlink in /usr/local/bin? [Y/n]?" INSTALL_OPENHUBO_SYMLINK
+if [[ $INSTALL_OPENHUBO_SYMLINK == 'n' || $INSTALL_OPENHUBO_SYMLINK == 'N' ]]
+then
+    #Do nothing
+    echo "Skipping symlink..."
+else
+    sudo ln -sf $BASE_DIR/python/openhubo.py /usr/local/bin/openhubo
+fi
