@@ -427,18 +427,11 @@ if __name__ == '__main__':
                     raveLogInfo("Found example {}".format(options.example))
                     break
             execfile(expath+options.example)
-
-        #if options.interact:
-            ##var=raw_input('Would you like to drop into IPython to inspect variables? [y/N]?')
-            ##if var=='y' or var=='Y' or var=='yes':
-            #interact=True
-        #else:
-            #interact=False
             
-        if options.interact:
-            try:
-                import IPython
-                IPython.embed() 
-                print "Cleaning up after inspection..."
-            except ImportError:
-                print "IPython not installed!"
+    if options.interact:
+        try:
+            import IPython
+            IPython.embed() 
+            print "Cleaning up after inspection..."
+        except ImportError:
+            print "IPython not installed!"
