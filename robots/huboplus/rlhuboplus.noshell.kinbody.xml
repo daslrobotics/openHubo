@@ -77,7 +77,35 @@
             <donotrender>Body_RAR_2.wrl 1 </donotrender>
             <data>convhull_RAR_NoShell_2.wrl 1 </data>
         </geom>
-		
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.051509407797 0.002163982128 0.069388069491</translation>
+            <!-- Local marker Location -->
+            <translation>-0.0055 0.054203 -0.062399</translation>
+            <radius>.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.051509407797 0.002163982128 0.069388069491</translation>
+            <!-- Local marker Location -->
+            <translation>-0.1255 0.054203 -0.062399</translation>
+            <radius>.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.051509407797 0.002163982128 0.069388069491</translation>
+            <!-- Local marker Location -->
+            <translation>-0.1255 -0.062 -0.062399</translation>
+            <radius>.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.051509407797 0.002163982128 0.069388069491</translation>
+            <!-- Local marker Location -->
+            <translation>-0.0055 -0.062 -0.062399</translation>
+            <radius>.008</radius>
+        </geom>
+
         <mass type="custom">
             <total>1.003176884538</total>
             <inertia>
@@ -281,6 +309,118 @@
             <translation>0 0 .06</translation>
             <radius>.05</radius>
             <height>.12</height>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>0.04 0.1 0.0722</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>-0.04 0.1 0.0722</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>0.04499 0.1547 0.031</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>-0.059044 0.1547 0.0375</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>-0.03 0.1547 -0.174</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>0.03 0.1547 -0.174</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>0.0922 0.095 -0.1775</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>-0.0947 0.063979 -0.1775</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>0.04 -0.1 0.0722</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>-0.04 -0.1 0.0722</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>0.04499 -0.1547 0.031</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>-0.059044 -0.1547 0.0375</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>-0.03 -0.1547 -0.174</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>0.03 -0.1547 -0.174</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>0.0922 -0.095 -0.1775</translation>
+            <radius>0.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.012258116293 0.002473149928 0.048635606065</translation>
+            <!-- Local marker Location -->
+            <translation>-0.0947 -0.063979 -0.1775</translation>
+            <radius>0.008</radius>
         </geom>
         <mass type="custom">
             <total>7.503338799400</total>
@@ -599,6 +739,34 @@
             <translation>0.051509407797 -0.002163982128 0.069388069491</translation>
             <donotrender>Body_LAR_2.wrl 1 </donotrender>
             <data>convhull_LAR_NoShell_2.wrl 1 </data>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+            <!-- Local marker Location -->
+            <translation>-0.0055 -0.054203 -0.062399</translation>
+            <radius>.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+            <!-- Local marker Location -->
+            <translation>-0.1255 -0.054203 -0.062399</translation>
+            <radius>.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+            <!-- Local marker Location -->
+            <translation>-0.1255 0.062 -0.062399</translation>
+            <radius>.008</radius>
+        </geom>
+        <geom type="sphere">
+            <!-- Inverse COM Offset -->
+            <translation>0.051509407797 -0.002163982128 0.069388069491</translation>
+            <!-- Local marker Location -->
+            <translation>-0.0055 0.062 -0.062399</translation>
+            <radius>.008</radius>
         </geom>
 		
         <mass type="custom">
