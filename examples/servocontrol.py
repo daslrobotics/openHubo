@@ -45,7 +45,7 @@ if __name__=='__main__':
 
     #Hack to get hand 
     if robot.GetName() == 'rlhuboplus' or robot.GetName() == 'huboplus':
-        ctrl.SendCommand('openloop '+' '.join(['{}'.format(x) for x in range(42,57)]))
+        ctrl.SendCommand('directtorque '+' '.join(['{}'.format(x) for x in range(42,57)]))
         for i in range(42,57):
             pose[i]=pi/2
         ctrl.SetDesired(pose)

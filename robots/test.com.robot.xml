@@ -2,22 +2,20 @@
     <translation>0 0 .501</translation>
 
     <KinBody name="comball">
-        <Body name="ball1" type="dynamic">
-            <translation>.1 0 0</translation>
+        <Body type="dynamic" name="ball1">
             <Geom type="sphere">
-            <translation>-.1 0 0</translation>
                 <radius>.5</radius>
                 <diffuseColor>.81 .4 .4</diffuseColor>
             </Geom>
             <Mass type="custom">
                 <total>10</total>
-                <com>.0 0 0</com>
+                <com>.1 0 0</com>
                 <inertia>1 0 0 0 1 0 0 0 1</inertia>
             </Mass>
         </Body>
         <Body type="dynamic" name="ball2">
             <offsetfrom>ball1</offsetfrom>
-            <translation>-.1 1.1 0</translation>
+            <translation>0 1 0</translation>
             <Geom type="sphere">
                 <radius>.5</radius>
                 <diffuseColor>.81 .4 .4</diffuseColor>
