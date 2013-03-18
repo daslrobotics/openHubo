@@ -1,0 +1,17 @@
+<Robot name="test-com">
+    <translation>0 0 .501</translation>
+
+    <KinBody name="comball">
+        <Body type="dynamic">
+            <Geom type="sphere">
+                <radius>.5</radius>
+                <diffuseColor>.81 .4 .4</diffuseColor>
+            </Geom>
+            <Mass type="custom">
+                <total>10</total>
+                <com>.1 0 0</com>
+                <inertia>.1 0 0 0 .1 0 0 0 .1</inertia>
+            </Mass>
+        </Body>
+    </KinBody>
+</Robot>

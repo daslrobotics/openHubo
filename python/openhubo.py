@@ -144,7 +144,7 @@ def load_ghost(env,robotname,prefix="ref_",color=[.8,.8,.4]):
     set_robot_color(ref_robot,color,color,trans=.5)
     return ref_robot
 
-def align_robot(robot,floorheight=0,floornormal=[0,0,1]):
+def align_robot(robot,floorheight=0.002,floornormal=[0,0,1]):
     """ Align robot to floor, spaced slightly above"""
     env=robot.GetEnv()
     vertex1=zeros(3)
@@ -158,7 +158,7 @@ def align_robot(robot,floorheight=0,floornormal=[0,0,1]):
         dh=floorheight-vertex1[2]
 
         # add height change to robot
-        T[2,3]+=dh+.001
+        T[2,3]+=dh
         robot.SetTransform(T)
         #TODO: reset velocity?
 
@@ -392,6 +392,9 @@ def setup(viewername=None,create=True):
     if viewername:
         #Overwrite command line option with explicit argument?
         options._viewer=viewername
+    if options.robotfile=="none" or options.robotfile=="None":
+        #use command line fake for "none"
+        options.robotfile=None
 
     if create:
         env=rave.Environment()
@@ -424,13 +427,11 @@ if __name__ == '__main__':
                     raveLogInfo("Found example {}".format(options.example))
                     break
             execfile(expath+options.example)
-
-        if options.interact:
-            var=raw_input('Would you like to drop into IPython to inspect variables? [y/N]?')
-            if var=='y' or var=='Y' or var=='yes':
-                try:
-                    import IPython
-                    IPython.embed() 
-                    print "Cleaning up after inspection..."
-                except ImportError:
-                    print "IPython not installed!"
+            
+    if options.interact:
+        try:
+            import IPython
+            IPython.embed() 
+            print "Cleaning up after inspection..."
+        except ImportError:
+            print "IPython not installed!"

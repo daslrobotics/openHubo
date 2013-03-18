@@ -126,7 +126,6 @@ cd $BASE_DIR/openmr/
 [ -d build ] || mkdir build
 cd build
 cmake ../src/
-make
 make install
 
 echo ""
@@ -134,10 +133,8 @@ echo "Building OpenGRASP ForceSensor plugin..."
 echo ""
 
 cd $BASE_DIR/forceSensor
-[ -d build ] || mkdir build
-cd build
-cmake ../
-make
+make clean
+cmake .
 make install
 
 echo ""
@@ -157,7 +154,6 @@ do
     [ -d build ] || mkdir build
     cd build
     cmake ../
-    make
     make install
 done
 
@@ -183,10 +179,18 @@ do
     PLUGIN_CHECK=`echo $PLUGINS_LIST | grep $f`
     if [[ ${#PLUGIN_CHECK} == 0 ]]
     then
-        echo "$f NOT found by OpenRAVE, please check that the plugins dir is properly sourced."
+        echo "$f NOT found by OpenRAVE, please check the build log above!"
     else
         echo "$f found by OpenRAVE"
     fi
 done
 
 ln -sf python/openhubo.py openhubo
+
+read -p "Create openhubo symlink in /usr/local/bin? [y/N]?" INSTALL_OPENHUBO_SYMLINK
+if [[ $INSTALL_OPENHUBO_SYMLINK == 'y' || $INSTALL_OPENHUBO_SYMLINK == 'Y' ]]
+then
+    sudo ln -sf $BASE_DIR/python/openhubo.py /usr/local/bin/openhubo
+else
+    echo "Skipping symlink..."
+fi
