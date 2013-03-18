@@ -115,7 +115,7 @@ def load(env,robotname,scenename=None,stop=False,physics='physics.xml',ghost=Fal
             controller=rave.RaveCreateController(env,'idealcontroller')
             robot.SetController(controller)
 
-        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine' or ghost:
+        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine' and ghost:
             #Load ref robot and colorize
             if robotname:
                 ref_robot=load_ghost(env,robotname,prefix="ref_")
