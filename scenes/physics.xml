@@ -8,6 +8,7 @@
             <cfm>0.00001</cfm>
             <dcontactapprox>1</dcontactapprox>
             <numiterations>150</numiterations>
+            <surfacelayer>0.0005</surfacelayer>
         </odeproperties>
     </physicsengine>
 </Environment>
