@@ -68,7 +68,7 @@ def load(env,robotname,scenename=None,stop=False,physics='physics.xml',ghost=Fal
         :ref_robot: handle to visiualization "ghost" robot
         :recorder: video recorder python class for quick video dumps
     """
-
+    print physics
     # Set the robot controller and start the simulation
     recorder=viewerrecorder(env)
     #Default to "sim-timed video" i.e. plays back much faster
@@ -97,7 +97,7 @@ def load(env,robotname,scenename=None,stop=False,physics='physics.xml',ghost=Fal
 
         ref_robot=None
         if physics and env.GetPhysicsEngine().GetXMLId()=='GenericPhysicsEngine':
-            rave.raveLogInfo('Loading physics parameters from {}'.format(physics))
+            rave.raveLogInfo('Loading physics parameters from {0}'.format(physics))
             env.Load(physics)
         elif not physics:
             env.SetPhysicsEngine(rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
@@ -150,15 +150,14 @@ def align_robot(robot,floorheight=0.002,floornormal=[0,0,1]):
     vertex1=zeros(3)
     #vertex2=zeros(3)
     with env:
+        T=robot.GetTransform()
         for l in robot.GetLinks():
             bb=l.ComputeAABB()
             vertex1=minimum(bb.pos()-bb.extents(),vertex1)
             #vertex2=maximum(bb.pos()+bb.extents(),vertex2)
-        T=robot.GetTransform()
         dh=floorheight-vertex1[2]
-
         # add height change to robot
-        T[2,3]+=dh
+        T[2,3]=dh
         robot.SetTransform(T)
         #TODO: reset velocity?
 
