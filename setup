@@ -118,24 +118,18 @@ BASE_DIR=`git rev-parse --show-toplevel`
 
 check-submodules
 
-echo ""
-echo "Building OpenMR Servo Controller Plugin..."
-echo ""
+for p in openmr forceSensor
+do
+    echo ""
+    echo "Building $p Plugin..."
+    echo ""
 
-cd $BASE_DIR/openmr/
-[ -d build ] || mkdir build
-cd build
-cmake ../src/
-make install
-
-echo ""
-echo "Building OpenGRASP ForceSensor plugin..."
-echo ""
-
-cd $BASE_DIR/forceSensor
-make clean
-cmake .
-make install
+    cd $BASE_DIR/$p/
+    [ -d build ] || mkdir build
+    cd build
+    cmake ../src/
+    make install
+done
 
 echo ""
 echo "Building CoMPS plugins..."
