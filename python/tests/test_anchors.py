@@ -106,13 +106,14 @@ def constraints_3dof(x=array([]),y=array([]),z=array([])):
         diff2=0.0
     return [diff2,diff1,diff0]
 
+test_anchor1=model_test_factory('huboplus.robot.xml')
+test_anchor2=model_test_factory('rlhuboplus.robot.xml')
+test_anchor3=model_test_factory('rlhuboplus.noshell.robot.xml')
+test_anchor4=model_test_factory('rlhuboplus.fingerless.robot.xml')
+test_anchor5=model_test_factory('hubo2.robot.xml')
+test_anchor6=model_test_factory('rlhubo2.robot.xml')
+test_anchor7=model_test_factory('rlhuboplus.cushionhands.robot.xml')
+
 if __name__=='__main__':
-    test1=model_test_factory('huboplus.robot.xml')
-    test2=model_test_factory('rlhuboplus.robot.xml')
-    test3=model_test_factory('rlhuboplus.noshell.robot.xml')
-    test4=model_test_factory('rlhuboplus.fingerless.robot.xml')
-    test5=model_test_factory('hubo2.robot.xml')
-    test6=model_test_factory('rlhubo2.robot.xml')
-    test7=model_test_factory('rlhuboplus.cushionhands.robot.xml')
     unittest.main(verbosity=2,testRunner=unittest.TextTestRunner())
 

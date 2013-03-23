@@ -1,4 +1,3 @@
-
 ## {{{ http://code.activestate.com/recipes/572182/ (r2)
 import sys, termios, atexit
 from select import select

@@ -27,7 +27,9 @@ if __name__=='__main__':
     (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(3)
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
+    options.physicsfile='physics.xml'
+
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
 
     probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
     env.LoadProblem(probs_cbirrt,robot.GetName())

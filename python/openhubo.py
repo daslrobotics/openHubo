@@ -8,16 +8,105 @@ import datetime
 import warnings
 import sys
 import matplotlib.pyplot as plt
+import logging
+from optparse import OptionParser,Values
+import instant_debug
+import re
+from servo import *
 
 # Interactive script 
 if hasattr(sys,'ps1') or sys.flags.interactive:
     print "Loading OpenHubo interactive tools..."
     import startup
 
-""" A collection of useful functions to run openhubo models.
+""" A collection of useful functions to run openHubo models.
 As common functions are developed, they will be added here.
 """
 TIMESTEP=0.001
+
+hubo_ach_map={"RHY":26, "RHR":27, "RHP":28, "RKN":29, "RAP":30, "RAR":31, "LHY":19, "LHR":20, "LHP":21, "LKN":22, "LAP":23, "LAR":24, "RSP":11, "RSR":12, "RSY":13, "REB":14, "RWY":15, "RWR":16, "RWP":17, "LSP":4, "LSR":5, "LSY":6, "LEB":7, "LWY":8, "LWR":9, "LWP":10, "NKY":1, "NK1":2, "NK2":3, "WST":0, "RF1":32, "RF2":33, "RF3":34, "RF4":35, "RF5":36, "LF1":37, "LF2":38, "LF3":39, "LF4":40, "LF5":41}
+
+def get_name_from_huboname(inname,robot):
+    huboname=inname.encode('ASCII')
+    #Cheat a little since hubonames are roman characters
+    if (huboname == "LKN" or huboname == "RKN"): 
+        name=huboname[0:2]+'P'
+    
+    elif (huboname == "LEB" or huboname == "REB"): 
+        name=huboname[0:2]+'P'
+    
+    elif (huboname == "WST" ): 
+        name = "HPY"
+    
+    elif (huboname == "NKY"): 
+        name="NKY"
+    
+    elif (huboname == "NK1"): 
+        name="HNR"
+    
+    elif (huboname == "NK2"): 
+        name="HNP"
+    
+    else:
+        name=huboname
+    #TODO: Fingers
+
+    #FIXME: a bit inefficient but easy to code
+    if robot.GetJoint(name):
+        return name
+    else:
+        return None
+
+def get_huboname_from_name(inname):
+    name=inname.encode('ASCII')
+    #Cheat a little since names are roman characters
+    if (name == "LKP" or name == "RKP"): 
+        achname=name[0:2]+'N'
+    
+    elif (name == "LEP" or name == "REP"): 
+        achname=name[0:2]+'B'
+    
+    elif (name == "HPY" or name == "TSY"): 
+        achname = "WST"
+    
+    elif (name == "HNY"): 
+        achname="NKY"
+    
+    elif (name == "HNR"): 
+        achname="NK1"
+    
+    elif (name == "HNP"): 
+        achname="NK2"
+    
+    elif re.search('Knuckle',name) and not re.search('[23]',name):
+        name=re.sub('left','LF',name)
+        name=re.sub('right','RF',name)
+        name=re.sub('Knuckle','',name)
+        name=re.sub('Thumb','1',name)
+        name=re.sub('Index','2',name)
+        name=re.sub('Middle','3',name)
+        name=re.sub('Ring','4',name)
+        name=re.sub('Pinky','4',name)
+        print name
+        achname = name[:-1]
+    else:
+        achname=name
+
+    if hubo_ach_map.has_key(achname):
+        return achname
+    else:
+        return None
+
+def build_joint_index_map(robot):
+    jointlist=zeros(robot.GetDOF())-1
+    for j in robot.GetJoints():
+        name=j.GetName()
+        print name
+        huboname=get_huboname_from_name(name)
+        print huboname
+        if huboname:
+            jointlist[j.GetDOFIndex()]=jointmap[huboname]
+    return jointlist
 
 def set_robot_color(robot,dcolor=[.5,.5,.5],acolor=[.5,.5,.5],trans=0,links=[]):
     """Iterate over a robot's links and set color / transparency."""
@@ -41,16 +130,38 @@ def pause(t=-1):
     elif t>=0:
         time.sleep(t)
         
-def makeNameToIndexConverter(robot):
+def makeNameToIndexConverter(robot,huboach=False):
+    return make_name_to_index_converter(robot,huboach)
+
+def make_name_to_index_converter(robot,huboach=False):
     """ A closure to easily convert from a string joint name to the robot's
     actual DOF index, for use in creating/editing trajectories."""
-    def convert(name):
-        j=robot.GetJoint(name)
-        if not(j==None):
-            return robot.GetJoint(name).GetDOFIndex()
-        else:
-            return -1
+    if huboach:
+        def convert(name):
+            j=get_name_from_huboname(name)
+            if j is not None:
+                return j.GetDOFIndex()
+            else:
+                return -1
+    else:
+        def convert(name):
+            j=robot.GetJoint(name)
+            if j is not None:
+                return j.GetDOFIndex()
+            else:
+                return -1
     return convert
+
+def make_dof_value_map(robot):
+    names = [j.GetName() for j in robot.GetJoints()]
+    indices = [j.GetDOFIndex() for j in robot.GetJoints()]
+
+    def get_dofs():
+        values=robot.GetDOFValues()
+        for (i,n) in zip(indices,names):
+            pose.setdefault(n,values[i])
+
+    return get_dofs
 
 def load_simplefloor(env):
     """ Load up and configure the simpleFloor environment for hacking with
@@ -58,76 +169,101 @@ def load_simplefloor(env):
     """
     return load(env,None,'simpleFloor.env.xml',True)
 
-def load(env,robotname,scenename=None,stop=False,physics='physics.xml',ghost=False):
-    """ Load a robot model into the given environment, configuring a
-    trajectorycontroller and a reference robot to show desired movements vs. actual
-    pose. The returned tuple contains:
+def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,options=Values()):
+    """ Load files and configure the simulation environment based on arguments and the options structure.    
+    The returned tuple contains:
         :robot: handle to the created robot
         :controller: either trajectorycontroller or idealcontroller depending on physics
         name-to-joint-index converter
         :ref_robot: handle to visiualization "ghost" robot
         :recorder: video recorder python class for quick video dumps
     """
+    
+    if not (type(robotfile) is list or type(robotfile) is str):
+        rave.raveLogWarn("Assuming 2nd argument is options structure...")
+        options=robotfile
 
-    # Set the robot controller and start the simulation
-    recorder=viewerrecorder(env)
-    #Default to "sim-timed video" i.e. plays back much faster
-    recorder.videoparams[0:2]=[1024,768]
-    recorder.realtime=False
-
+    if hasattr(options,'record'):
+        # Set the robot controller and start the simulation
+        recorder=viewerrecorder(env)
+        #Default to "sim-timed video" i.e. plays back much faster
+        recorder.videoparams[0:2]=[1024,768]
+        recorder.realtime=False
+    else:
+        recorder=None
+    
+    if not hasattr(options,'stop'):
+        options.stop=stop
+    if not hasattr(options,'scenefile'):
+        options.scenefile=scenefile
+    if not hasattr(options,'robotfile'):
+        options.robotfile=robotfile
+    if not hasattr(options,'physicsfile'):
+        if physics is True:
+            options.physicsfile='physics.xml'
+        else:
+            options.physicsfile=physics
+    if not hasattr(options,'ghost'):
+        options.ghost=ghost
+        
     with env:
-        if stop:
+        if options.stop:
             env.StopSimulation()
 
-        if type(scenename) is list:
-            for n in scenename:
-                loaded=env.Load(n)
-        elif type(scenename) is str:
-            loaded=env.Load(scenename)
+        if type(options.scenefile) is list:
+            for n in options.scenefile:
+                env.Load(n)
+        elif type(options.scenefile) is str:
+            env.Load(options.scenefile)
 
         #This method ensures that the URI is preserved in the robot
-        if robotname!=None:
-            robot=env.ReadRobotURI(robotname)
+        if options.robotfile!=None:
+            robot=env.ReadRobotURI(options.robotfile)
             env.Add(robot)
         else:
-            #TODO: fix this assumption, could cause trouble with multiple robots
             robot=env.GetRobots()[0]
 
         robot.SetDOFValues(zeros(robot.GetDOF()))
 
         ref_robot=None
-        if physics and env.GetPhysicsEngine().GetXMLId()=='GenericPhysicsEngine':
-            rave.raveLogInfo('Loading physics parameters from {}'.format(physics))
-            env.Load(physics)
-        elif not physics:
+        if options.physicsfile and env.GetPhysicsEngine().GetXMLId()=='GenericPhysicsEngine':
+            rave.raveLogInfo('Loading physics parameters from "{}"'.format(options.physicsfile))
+            env.Load(options.physicsfile)
+        elif not options.physicsfile:
             env.SetPhysicsEngine(rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
+        else:
+            rave.raveLogWarn("Physics engine already configured, using current settings...")
 
         #Force new controller since it's easier
         if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine':
             rave.raveLogInfo('Creating controller for physics simulation')
             controller=rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
-            #TODO: set gains elsewhere?
+            #TODO: validate gains
             controller.SendCommand('set gains 50 0 8')
 
         else:
             #Just load ideal controller if physics engine is not present
+            rave.raveLogInfo('Physics engine not loaded, using idealcontroller...')
             controller=rave.RaveCreateController(env,'idealcontroller')
             robot.SetController(controller)
 
-        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine' and ghost:
-            #Load ref robot and colorize
-            if robotname:
-                ref_robot=load_ghost(env,robotname,prefix="ref_")
-                if controller.GetXMLId()!='idealcontroller':
+        if options.ghost:
+            #Load ghost robot and colorize
+            if options.robotfile:
+                ref_robot=load_ghost(env,options.robotfile,prefix="ref_")
+                #If using physics, link robots together (assumes that proper controller is used)
+                if options.physicsfile:
                     controller.SendCommand("set visrobot "+ref_robot.GetName())
 
         collisionChecker = rave.RaveCreateCollisionChecker(env,'pqp')
         if collisionChecker==None:
             collisionChecker = rave.RaveCreateCollisionChecker(env,'ode')
-            warnings.warn('Note: Using ODE collision checker since PQP is not available')
+            rave.raveLogWarn('Using ODE collision checker since PQP is not available...')
         env.SetCollisionChecker(collisionChecker)
-    
+   
+    if hasattr(options,'huboach') and options.huboach:
+        ind
     ind=makeNameToIndexConverter(robot)
 
     align_robot(robot)
@@ -353,8 +489,6 @@ class ServoPlotter:
 #-----------------------------------------------------------
 # Executable setup
 #-----------------------------------------------------------
-import logging
-from optparse import OptionParser
 from openravepy.misc import OpenRAVEGlobalArguments
 import atexit
 
@@ -385,8 +519,10 @@ def setup(viewername=None,create=True):
                       help='Disable interactive prompt and exit after running')
     parser.add_option('--debug', action="store_true",dest='pydebug',default=False,
                       help='Enable python debugger')
-    parser.add_option('--physicsxml', action="store",dest='physicsfile',default=None,
+    parser.add_option('--physicsfile', action="store",dest='physicsfile',default=None,
                       help='Load physics engine config from XML file')
+    parser.add_option('--test', action="store_true",dest='test',default=False,
+                      help='Run python test suite')
     (options, leftargs) = parser.parse_args()
 
     if viewername:

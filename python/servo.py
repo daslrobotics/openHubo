@@ -2,7 +2,6 @@
 
 """ OpenHubo servo functions """
 from numpy import pi,array,zeros
-import openhubo
 import sys
 import time
 import collections
