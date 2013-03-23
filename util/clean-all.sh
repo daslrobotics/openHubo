@@ -13,4 +13,3 @@ do
     echo "Removing build folder in "`pwd`
     [ -d build ] && rm -rf build
 done
-

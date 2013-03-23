@@ -10,9 +10,7 @@ import sys
 import matplotlib.pyplot as plt
 import logging
 from optparse import OptionParser,Values
-import instant_debug
 import re
-from servo import *
 
 # Interactive script 
 if hasattr(sys,'ps1') or sys.flags.interactive:
@@ -521,8 +519,6 @@ def setup(viewername=None,create=True):
                       help='Enable python debugger')
     parser.add_option('--physicsfile', action="store",dest='physicsfile',default=None,
                       help='Load physics engine config from XML file')
-    parser.add_option('--test', action="store_true",dest='test',default=False,
-                      help='Run python test suite')
     (options, leftargs) = parser.parse_args()
 
     if viewername:

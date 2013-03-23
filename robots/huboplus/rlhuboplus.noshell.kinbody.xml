@@ -950,7 +950,7 @@
         <offsetfrom>Body_REP</offsetfrom>
         <anchor>0.021734910228 0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
-        <initial>0.17453292519</initial>
+        <initial>0.17453292519943295</initial>
         <limitsdeg>-133 14</limitsdeg>
 		<maxvel>7.85</maxvel>
 		<maxaccel>15.00</maxaccel>
@@ -991,7 +991,7 @@
         <offsetfrom>Body_LEP</offsetfrom>
         <anchor>0.021734910228 -0.017831394355 0.061087268246</anchor>
         <axis>0 1 0</axis>
-        <initial>0.17453292519</initial>
+        <initial>0.17453292519943295</initial>
         <limitsdeg>-133 14</limitsdeg>
 		<maxvel>7.85</maxvel>
 		<maxaccel>15.00</maxaccel>

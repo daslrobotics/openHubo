@@ -35,6 +35,4 @@ if __name__=='__main__':
     options.ghost=False
     [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True,options.physicsfile,False)
-
     env.StartSimulation(openhubo.TIMESTEP)
