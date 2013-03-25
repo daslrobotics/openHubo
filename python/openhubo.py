@@ -181,9 +181,9 @@ def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,op
         rave.raveLogWarn("Assuming 2nd argument is options structure...")
         options=robotfile
 
-    if hasattr(options,'record'):
+    if hasattr(options,'recordfile'):
         # Set the robot controller and start the simulation
-        recorder=viewerrecorder(env)
+        recorder=viewerrecorder(env,filename=options.recordfile)
         #Default to "sim-timed video" i.e. plays back much faster
         recorder.videoparams[0:2]=[1024,768]
         recorder.realtime=False
@@ -387,8 +387,8 @@ def plot_masses(robot,color=array([.8,.5,.3]),ccolor=[0,.8,.8]):
         m=l.GetMass()
         total+=m
         #Area of box corresponds to mass
-        handles.append(robot.GetEnv().plot3(origin,5.0*power(m,.5),array(color)))
-    handles.append(robot.GetEnv().plot3(find_com(robot),5.0*power(total,.5),ccolor))
+        handles.append(robot.GetEnv().plot3(origin,m/100.,array(color),True))
+    handles.append(robot.GetEnv().plot3(find_com(robot),m/100.,ccolor,True))
     return handles
 
 def CloseLeftHand(robot,angle=pi/2):
@@ -517,6 +517,8 @@ def setup(viewername=None,create=True):
                       help='Disable interactive prompt and exit after running')
     parser.add_option('--debug', action="store_true",dest='pydebug',default=False,
                       help='Enable python debugger')
+    parser.add_option('--record', action="store",dest='recordfile',default=None,
+                      help='Enable video recording to the given file name (requires script commands to start and stop)')
     parser.add_option('--physicsfile', action="store",dest='physicsfile',default=None,
                       help='Load physics engine config from XML file')
     (options, leftargs) = parser.parse_args()
