@@ -81,10 +81,13 @@ if __name__=='__main__':
     for k in range(40):
         data=traj.Sample(float(k)/10)
         print data[ind('LKP')]
-    
-    write_youngbum_traj(traj,robot,0.005,range(28),'test2.traj',True)
+   
+    #Dump all DOFs to youngbum format
+    write_youngbum_traj(traj,robot,0.005,'traj_example_youngbum.traj')
 
-    controller.SetPath(traj)
-    controller.SendCommand('start')
-    while not(controller.IsDone()):
-        time.sleep(.1)
+    #Only use a selection of DOF's instead of everything
+    write_youngbum_traj(traj,robot,0.005,'traj_example_youngbum2.traj',dofs=range(28))
+    
+    #Write to hubo-read-trajectory compatible format
+    write_hubo_traj(traj,robot,0.05,'traj_example_hubo.traj')
+

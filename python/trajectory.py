@@ -77,7 +77,7 @@ def read_youngbum_traj(filename,robot,dt=.01,scale=1.0,retime=True):
 
     return traj
 
-def write_youngbum_traj(traj,robot,dt,dofs,filename='exported.traj',achformat=False):
+def write_youngbum_traj(traj,robot,dt,filename='exported.traj',dofs=None,oldnames=False):
     """ Create a text trajectory in youngbum's style, assuming no offsets or
     scaling, and openHubo default sign convention.
     """
@@ -91,9 +91,11 @@ def write_youngbum_traj(traj,robot,dt,dofs,filename='exported.traj',achformat=Fa
     scalelist=[]
     offsetlist=[]
 
+    if dofs is None:
+        dofs=range(robot.GetDOF())
     for d in dofs:
         name=robot.GetJointFromDOFIndex(d).GetName()
-        if achformat:
+        if oldnames:
             namelist.append(openhubo.get_huboname_from_name(name))
         else:
             namelist.append(name)
@@ -116,6 +118,33 @@ def write_youngbum_traj(traj,robot,dt,dofs,filename='exported.traj',achformat=Fa
             waypt=traj.Sample(t)
             vals=config.ExtractJointValues(waypt,robot,dofs)
             f.write(' '.join(['{}'.format(x) for x in vals])+'\n')
+
+def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
+    """ Create a text trajectory for reading into hubo-read-trajectory."""
+    config=robot.GetConfigurationSpecification()
+    ind=openhubo.makeNameToIndexConverter(robot)
+
+    f=open(filename,'w')
+
+
+    #Find overall trajectory properties
+    T=traj.GetDuration()
+    steps=int(T/dt)
+   
+    #Get all the DOF's..
+    dofs = range(robot.GetDOF())
+    with open(filename,'w') as f:
+        for t in arange(0,T,dt):
+            waypt=traj.Sample(t)
+            #Extract DOF values
+            vals=config.ExtractJointValues(waypt,robot,dofs)
+            #start with array of zeros size of hubo-ach trajectory width
+            mapped_vals=zeros(max(openhubo.hubo_map.values()))
+            for d in dofs:
+                n = robot.GetJointFromDOFIndex(d).GetName()
+                if openhubo.hubo_map.has_key(n):
+                    mapped_vals[openhubo.hubo_map[n]]=vals[d]
+            f.write(' '.join(['{}'.format(x) for x in mapped_vals])+'\n')
 
 def read_text_traj(filename,robot,dt=.01,scale=1.0):
     """ Read in trajectory data stored in Youngbum's format (100Hz data):
