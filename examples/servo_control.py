@@ -29,6 +29,7 @@ if __name__=='__main__':
     env.SetDebugLevel(4)
     time.sleep(.25)
 
+    #Note that the load function now directly parses the option structure
     options.physicsfile=True
     [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
     time.sleep(.5)

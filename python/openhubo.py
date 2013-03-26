@@ -25,54 +25,54 @@ TIMESTEP=0.001
 
 #KLUDGE: hard code the mapping (how often will it change, really?). Include openhubo synonyms here for fast lookup.
 hubo_map={'RHY':26,
-              'RHR':27,
-              'RHP':28,
-              'RKN':29,
-              'RKP':29,
-              'RAP':30,
-              'RAR':31,
-              'LHY':19,
-              'LHR':20,
-              'LHP':21,
-              'LKN':22,
-              'LKP':22,
-              'LAP':23,
-              'LAR':24,
-              'RSP':11,
-              'RSR':12,
-              'RSY':13,
-              'REB':14,
-              'REP':14,
-              'RWY':15,
-              'RWR':16,
-              'RWP':17,
-              'LSP':4,
-              'LSR':5,
-              'LSY':6,
-              'LEB':7, 
-              'LEP':7, 
-              'LWY':8,
-              'LWR':9, 
-              'LWP':10,
-              'NKY':1,
-              'HNY':1,
-              'NK1':2,
-              'HNR':2,
-              'NK2':3, 
-              'HNP':3, 
-              'WST':0,
-              'HPY':0,
-              'TSY':0,
-              'RF1':32,
-              'RF2':33,
-              'RF3':34, 
-              'RF4':35,
-              'RF5':36,
-              'LF1':37,
-              'LF2':38, 
-              'LF3':39, 
-              'LF4':40, 
-              'LF5':41}
+          'RHR':27,
+          'RHP':28,
+          'RKN':29,
+          'RKP':29,
+          'RAP':30,
+          'RAR':31,
+          'LHY':19,
+          'LHR':20,
+          'LHP':21,
+          'LKN':22,
+          'LKP':22,
+          'LAP':23,
+          'LAR':24,
+          'RSP':11,
+          'RSR':12,
+          'RSY':13,
+          'REB':14,
+          'REP':14,
+          'RWY':15,
+          'RWR':16,
+          'RWP':17,
+          'LSP':4,
+          'LSR':5,
+          'LSY':6,
+          'LEB':7, 
+          'LEP':7, 
+          'LWY':8,
+          'LWR':9, 
+          'LWP':10,
+          'NKY':1,
+          'HNY':1,
+          'NK1':2,
+          'HNR':2,
+          'NK2':3, 
+          'HNP':3, 
+          'WST':0,
+          'HPY':0,
+          'TSY':0,
+          'RF1':32,
+          'RF2':33,
+          'RF3':34, 
+          'RF4':35,
+          'RF5':36,
+          'LF1':37,
+          'LF2':38, 
+          'LF3':39, 
+          'LF4':40, 
+          'LF5':41}
 
 class Pose:
     """Easy-to-use wrapper for an array of DOF values for a robot. The Pose class
@@ -108,22 +108,42 @@ class Pose:
 
         return jointmap
 
-    def __init__(self,robot,ctrl=None):
+    def __init__(self,robot=None,ctrl=None,values=None):
         self.robot=robot
         self.jointmap=Pose.build_jointmap(robot)
-        self.update()
+        if values is not None:
+            #Will throw size exception if values is too short
+            self.values=values
+        elif robot is not None:
+            self.update()
+        else:
+            self.values=zeros(robot.GetDOF())
         self.ctrl=ctrl
 
     def update(self,newvalues=None):
+        """manually assign new values, or poll for new values from robot"""
         if newvalues is None:
             self.values=self.robot.GetDOFValues()
         elif len(newvalues)==len(self.values):
             self.values=array(newvalues)
             #TODO: exception throw here?
 
+    def to_waypt(self,dt=1,affine=zeros(7)):
+        #list constructor does shallow copy here
+        waypt =  list(self.values)
+        #Add affine pose information if needed
+        waypt.extend(affine)
+        waypt.append(dt)
+        return waypt
+
     def send(self):
-        self.ctrl.SetDesired(pose.values)
+        self.ctrl.SetDesired(self.values)
     
+    def pretty(self):
+        for d, v in enumerate(self.values):
+            print '{0} = {1}'.format(
+                self.robot.GetJointFromDOFIndex(d).GetName(),v)
+                
     #TODO: Test if type checking slows down these functions
     def __getitem__(self,key):
         """ Lookup the joint name and return the value"""

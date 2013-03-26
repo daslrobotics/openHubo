@@ -7,6 +7,48 @@ import openhubo
 from TransformMatrix import *
 from rodrigues import *
 
+hubo_read_trajectory_map={
+    'RHY':0,
+    'RHR':1,
+    'RHP':2,
+    'RKN':3,
+    'RAP':4,
+    'RAR':5,
+    'LHY':6,
+    'LHR':7,
+    'LHP':8,
+    'LKN':9,
+    'LAP':10,
+    'LAR':11,
+    'RSP':12,
+    'RSR':13,
+    'RSY':14,
+    'REB':15,
+    'RWY':16,
+    'RWR':17,
+    'RWP':18,
+    'LSP':19,
+    'LSR':20,
+    'LSY':21,
+    'LEB':22,
+    'LWY':23,
+    'LWR':24,
+    'LWP':25,
+    'NKY':26,
+    'NK1':27,
+    'NK2':28,
+    'WST':29,
+    'RF1':30,
+    'RF2':31,
+    'RF3':32,
+    'RF4':33,
+    'RF5':34,
+    'LF1':35,
+    'LF2':36,
+    'LF3':37,
+    'LF4':38,
+    'LF5':39}
+
 def create_trajectory(robot):
     """ Create a trajectory based on a robot's config spec"""
     traj=RaveCreateTrajectory(robot.GetEnv(),'')
@@ -126,7 +168,6 @@ def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
 
     f=open(filename,'w')
 
-
     #Find overall trajectory properties
     T=traj.GetDuration()
     steps=int(T/dt)
@@ -143,7 +184,8 @@ def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
             for d in dofs:
                 n = robot.GetJointFromDOFIndex(d).GetName()
                 if openhubo.hubo_map.has_key(n):
-                    mapped_vals[openhubo.hubo_map[n]]=vals[d]
+                    hname=openhubo.get_huboname_from_name(n)
+                    mapped_vals[hubo_read_trajectory_map[hname]]=vals[d]
             f.write(' '.join(['{}'.format(x) for x in mapped_vals])+'\n')
 
 def read_text_traj(filename,robot,dt=.01,scale=1.0):
