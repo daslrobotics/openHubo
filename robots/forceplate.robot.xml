@@ -14,8 +14,9 @@
         <body name="link1" type="dynamic">
             <offsetfrom>interface</offsetfrom>
             <translation>0 0 0.11</translation>
+            <rotationaxis>1 0 0 90</rotationaxis>
             <geometry type="box">
-                <extents>.2 .2 .1</extents>
+                <extents>.2 .1 .2</extents>
             </geometry>
             <mass type="mimicgeom">
                 <total>10</total>
@@ -24,7 +25,8 @@
 
         <body name="link2" type="dynamic">
             <offsetfrom>link1</offsetfrom>
-            <translation>0 0 0.11</translation>
+            <translation>0 0.11 0</translation>
+            <rotationaxis>1 0 0 90</rotationaxis>
             <geometry type="box">
                 <extents>.2 .2 .1</extents>
             </geometry>

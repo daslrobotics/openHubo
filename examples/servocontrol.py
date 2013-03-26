@@ -29,7 +29,8 @@ if __name__=='__main__':
     env.SetDebugLevel(4)
     time.sleep(.25)
 
-    [robot,ctrl,__,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
+    options.physicsfile=True
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
     time.sleep(.5)
     env.StartSimulation(openhubo.TIMESTEP)
     time.sleep(.5)

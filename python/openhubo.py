@@ -345,10 +345,12 @@ def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,op
             options.physicsfile='physics.xml'
         else:
             options.physicsfile=physics
+    elif options.physicsfile==True:
+            options.physicsfile='physics.xml'
     if not hasattr(options,'ghost'):
         options.ghost=ghost
     if not hasattr(options,'atheight'):
-        options.atheight=0.002
+        options.atheight=None
     
     #TODO: sort through the spaghetti code... 
     with env:
@@ -408,8 +410,7 @@ def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,op
         env.SetCollisionChecker(collisionChecker)
    
     ind=makeNameToIndexConverter(robot)
-
-    if options.atheight:
+    if options.atheight is not None:
         align_robot(robot,options.atheight)
         if ref_robot:
             align_robot(ref_robot,options.atheight)
@@ -434,15 +435,15 @@ def make_ghost_from_robot(robot,prefix="ref_",color=[.8,.8,.4]):
 def align_robot(robot,floorheight=0.002,floornormal=[0,0,1]):
     """ Align robot to floor, spaced slightly above"""
     env=robot.GetEnv()
-    vertex1=zeros(3)
     #vertex2=zeros(3)
+    heights=[]
     with env:
         for l in robot.GetLinks():
             bb=l.ComputeAABB()
-            vertex1=minimum(bb.pos()-bb.extents(),vertex1)
-            #vertex2=maximum(bb.pos()+bb.extents(),vertex2)
+            heights.append((bb.pos()-bb.extents())[2])
+
         T=robot.GetTransform()
-        dh=floorheight-vertex1[2]
+        dh=floorheight-min(heights)
 
         # add height change to robot
         T[2,3]+=dh
@@ -514,6 +515,25 @@ def plotProjectedCOG(robot):
 @deprecate
 def plotBodyCOM(env,link,handle=None,color=array([0,1,0])):
     return plot_body_com(link,handle,color)
+
+def plot_contacts(robot):
+    env=robot.GetEnv()
+    with env:
+        # setup the collision checker to return contacts
+        env.GetCollisionChecker().SetCollisionOptions(rave.CollisionOptions.Contacts)
+
+        # get first collision
+        report = rave.CollisionReport()
+        collision=env.CheckCollision(robot,report=report)
+        rave.raveLogInfo('%d contacts'%len(report.contacts))
+        positions = [c.pos for c in report.contacts]
+
+    if len(positions):
+        h1=env.plot3(array(positions),10,[.7,.3,.3])
+    else:
+        h1=None
+
+    return h1
 
 def plot_body_com(link,handle=None,color=array([0,1,0])):
     """ efficiently plot the center of mass of a given link"""
@@ -696,6 +716,9 @@ def setup(viewername=None,create=True):
         #use command line fake for "none"
         options.robotfile=None
 
+    if options.scenefile=="none" or options.scenefile=="None":
+        #use command line fake for "none"
+        options.scenefile=None
     if create:
         env=rave.Environment()
         atexit.register(safe_quit,env)
@@ -710,13 +733,14 @@ def setup(viewername=None,create=True):
 
 if __name__ == '__main__':
     """Run openhubo to see example files and use the IPython shell for inspection and debugging."""
-    def signal_handler(signal, frame):
-        try:
-            import IPython
-            IPython.embed() 
-        except ImportError:
-            print "IPython not installed!"
-    signal.signal(signal.SIGINT, signal_handler)
+    #def signal_handler(signal, frame):
+        #try:
+            #import IPython
+            #IPython.embed() 
+            #sys.exit(0)
+        #except ImportError:
+            #print "IPython not installed!"
+    #signal.signal(signal.SIGINT, signal_handler)
     (options,scriptname)=setup(None,False)
 
     if options.pydebug:
