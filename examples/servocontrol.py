@@ -29,17 +29,18 @@ if __name__=='__main__':
     env.SetDebugLevel(4)
     time.sleep(.25)
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
+    [robot,ctrl,__,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
     time.sleep(.5)
     env.StartSimulation(openhubo.TIMESTEP)
     time.sleep(.5)
    
     #Change the pose to lift the elbows and send
     ctrl.SendCommand('set radians ')
-    pose=robot.GetDOFValues()
-    pose[ind('REP')]=-pi/2
-    pose[ind('LEP')]=-pi/2
-    ctrl.SetDesired(pose)
+    #0.7.1 Syntax change: Note the new "Pose" class:
+    pose=Pose(robot,ctrl)
+    pose['REP']=-pi/2
+    pose['LEP']=-pi/2
+    pose.send()
 
     openhubo.pause(2)
 
@@ -48,8 +49,8 @@ if __name__=='__main__':
         ctrl.SendCommand('directtorque '+' '.join(['{}'.format(x) for x in range(42,57)]))
         for i in range(42,57):
             pose[i]=pi/2
-        ctrl.SetDesired(pose)
+        pose.send()
         openhubo.pause(2)
 
         pose[42:57]=0
-        ctrl.SetDesired(pose)
+        pose.send()

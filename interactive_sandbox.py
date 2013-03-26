@@ -28,11 +28,11 @@ import openhubo
 if __name__=='__main__':
     
     (env,options)=openhubo.setup('qtcoin')
-    env.SetDebugLevel(4)
+    env.SetDebugLevel(3)
     
-    #Options structure is populated by command line as well as in code
+    #Options structure is populated by command line as well as easily in code
     options.stop=True
-    options.ghost=False
     [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
 
     env.StartSimulation(openhubo.TIMESTEP)
+

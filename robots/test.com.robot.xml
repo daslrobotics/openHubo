@@ -21,9 +21,9 @@
                 <diffuseColor>.81 .4 .4</diffuseColor>
             </Geom>
             <Mass type="custom">
-                <total>11</total>
-                <com>.05 .05 0</com>
-                <inertia>1.25 -.25 0 -.25 1.25 0 0 0 1.5</inertia>
+                <total>10</total>
+                <com>-.1 0 0</com>
+                <inertia>1 0 0 0 1 0 0 0 1</inertia>
             </Mass>
         </Body>
         <joint name="j0" type="hinge" circular="true">

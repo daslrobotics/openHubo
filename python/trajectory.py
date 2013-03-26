@@ -4,7 +4,6 @@ from servo import *
 from numpy import pi
 import re
 import openhubo 
-import hubo_ach
 from TransformMatrix import *
 from rodrigues import *
 
@@ -95,7 +94,7 @@ def write_youngbum_traj(traj,robot,dt,dofs,filename='exported.traj',achformat=Fa
     for d in dofs:
         name=robot.GetJointFromDOFIndex(d).GetName()
         if achformat:
-            namelist.append(hubo_ach.get_achname_from_name(name))
+            namelist.append(openhubo.get_huboname_from_name(name))
         else:
             namelist.append(name)
         #TODO make this an argument?
