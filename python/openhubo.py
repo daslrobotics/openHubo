@@ -12,15 +12,24 @@ import logging
 from optparse import OptionParser,Values
 import re
 import signal
+import IPython
+from deprecated import *
 
-# Interactive script 
+""" openhubo python module and main executable. Most of openhubo's functionality
+is available through this module.
+
+Command line usage of openhubo and examples:
+    openhubo --example myexample.py --robot myrobot.xml
+
+The older python syntax is also usable for launching openhubo scripts:
+    python [-i] examples/myexample.py
+"""
+
+# If run using interactive prompt:
 if hasattr(sys,'ps1') or sys.flags.interactive:
-    print "Loading OpenHubo interactive tools..."
+    print "Loading OpenHubo interactive session..."
     import startup
 
-""" A collection of useful functions to run openHubo models.
-As common functions are developed, they will be added here.
-"""
 TIMESTEP=0.001
 
 #KLUDGE: hard code the mapping (how often will it change, really?). Include openhubo synonyms here for fast lookup.
@@ -159,7 +168,11 @@ class Pose:
         if type(key)==slice or type(key)==int:
             self.values[key]=value
 
-def get_name_from_huboname(inname,robot):
+def get_name_from_huboname(inname,robot=None):
+    """ Map a name from the openhubo standard to the original hubo naming
+    scheme.
+
+    """
     huboname=inname.encode('ASCII')
     #Cheat a little since hubonames are roman characters
     if (huboname == "LKN" or huboname == "RKN"): 
@@ -184,13 +197,18 @@ def get_name_from_huboname(inname,robot):
         name=huboname
     #TODO: Fingers
 
-    #FIXME: a bit inefficient but easy to code
-    if robot.GetJoint(name):
+    if robot is None:
+        warnings.warn("No robot provided, skipping name check")
+        return name
+    elif robot.GetJoint(name):
         return name
     else:
         return None
 
 def get_huboname_from_name(inname):
+    """Get a hubo-standard joint name from the openhubo name (mostly the same,
+    but they differ slightly for some joints.
+    """
     name=inname.encode('ASCII')
     #Cheat a little since names are roman characters
     if (name == "LKP" or name == "RKP"): 
@@ -335,9 +353,9 @@ def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,op
     """ Load files and configure the simulation environment based on arguments and the options structure.    
     The returned tuple contains:
         :robot: handle to the created robot
-        :controller: either trajectorycontroller or idealcontroller depending on physics
-        name-to-joint-index converter
-        :ref_robot: handle to visiualization "ghost" robot
+        :ctrl: either trajectorycontroller or idealcontroller depending on physics
+        :ind: name-to-joint-index converter
+        :ref: handle to visualization "ghost" robot
         :recorder: video recorder python class for quick video dumps
     """
     
@@ -761,6 +779,13 @@ if __name__ == '__main__':
         #except ImportError:
             #print "IPython not installed!"
     #signal.signal(signal.SIGINT, signal_handler)
+    print "Using Ipython for exceptions..."
+    #def excepthook(type, value, traceback):
+        #IPython.embed()
+    #sys.excepthook = excepthook
+    from IPython.core import ultratb
+    sys.excepthook = ultratb.FormattedTB(mode='Verbose',
+         color_scheme='Linux', call_pdb=1)
     (options,scriptname)=setup(None,False)
 
     if options.pydebug:
@@ -784,12 +809,7 @@ if __name__ == '__main__':
         #Enable interactive mode and load a simple environment
         options.interact=True
         execfile('interactive_sandbox.py')
-        
             
     if options.interact:
-        try:
-            import IPython
-            IPython.embed() 
-            print "Cleaning up after inspection..."
-        except ImportError:
-            print "IPython not installed!"
+        IPython.embed() 
+        print "Cleaning up after inspection..."
