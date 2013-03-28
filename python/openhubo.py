@@ -726,8 +726,6 @@ parser.add_option('--example', action="store",type='string',dest='example',defau
                   help='Run an example')
 parser.add_option('--nointeract', action="store_false",dest='interact',default=True,
                   help='Disable interactive prompt and exit after running')
-parser.add_option('--debug', action="store_true",dest='pydebug',default=False,
-                  help='Enable python debugger')
 parser.add_option('--record', action="store",dest='recordfile',default=None,
                   help='Enable video recording to the given file name (requires script commands to start and stop)')
 parser.add_option('--physicsfile', action="store",dest='physicsfile',default=None,
@@ -770,26 +768,13 @@ def setup(viewername=None,create=True):
 
 
 if __name__ == '__main__':
-    """Run openhubo to see example files and use the IPython shell for inspection and debugging."""
-    #def signal_handler(signal, frame):
-        #try:
-            #import IPython
-            #IPython.embed() 
-            #sys.exit(0)
-        #except ImportError:
-            #print "IPython not installed!"
-    #signal.signal(signal.SIGINT, signal_handler)
+
+    #Set up ipdb for better exception handling and debugging
     print "Using Ipython for exceptions..."
-    #def excepthook(type, value, traceback):
-        #IPython.embed()
-    #sys.excepthook = excepthook
     from IPython.core import ultratb
     sys.excepthook = ultratb.FormattedTB(mode='Verbose',
          color_scheme='Linux', call_pdb=1)
     (options,scriptname)=setup(None,False)
-
-    if options.pydebug:
-        import debug
 
     if options.example or scriptname:
 
