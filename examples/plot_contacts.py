@@ -34,7 +34,7 @@ if __name__ == "__main__":
     env.SetDebugLevel(2)
     time.sleep(.25)
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,options)
 
     stop=False
 

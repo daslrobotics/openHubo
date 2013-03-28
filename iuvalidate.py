@@ -284,7 +284,7 @@ class effector_log:
             #TODO: save robot hash?
             pickle.dump([self.data[:self.count,:],self.com[:self.count,:],names,robotname],f)
 
-    def load(self,filename):
+    def load_scene(self,filename):
         with open(filename,'r') as f:
             self.data=pickle.load(f)
             self.count=size(self.data,0)
@@ -455,7 +455,7 @@ if __name__=='__main__':
     env.SetDebugLevel(3)
    
     # rlhuboplus models don't work with the affine transformations (i.e. use huboplus.robot.xml for ideal sim   
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,file_robot,envname,True,physicson)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,file_robot,envname,True,physicson)
     
     make_robot_transform(robot)
 

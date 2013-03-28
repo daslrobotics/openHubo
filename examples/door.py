@@ -30,7 +30,7 @@ if __name__=='__main__':
     (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,['door.env.xml'],True)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,options.robotfile,['door.env.xml'],True)
     door=env.GetRobot('doorbot')
     door.SetController(RaveCreateController(env,'servocontroller'))
     spring=door.GetController()

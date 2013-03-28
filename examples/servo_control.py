@@ -29,7 +29,7 @@ if __name__=='__main__':
 
     #Note that the load function now directly parses the option structure
     options.physicsfile=True
-    [robot,ctrl,ind,ref,recorder]=load(env,options)
+    [robot,ctrl,ind,ref,recorder]=load_scene(env,options)
     sleep(.5)
     env.StartSimulation(TIMESTEP)
     sleep(.5)

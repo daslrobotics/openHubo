@@ -63,7 +63,7 @@ if __name__=='__main__':
     env.SetDebugLevel(3)
     (env,options)=openhubo.setup('qtcoin')
 
-    [robot,controller,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
+    [robot,controller,ind,ref,recorder]=openhubo.load_scene(env,options.robotfile,options.scenefile,True)
 
     with env:
         for s in robot.GetAttachedSensors():

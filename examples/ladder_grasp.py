@@ -50,7 +50,7 @@ if __name__=='__main__':
     env.SetDebugLevel(3)
 
     # Load the environment
-    [robot, ctrl, ind,ref,recorder]=openhubo.load(env,options.robotfile,'ladderclimb.env.xml',True)
+    [robot, ctrl, ind,ref,recorder]=openhubo.load_scene(env,options.robotfile,'ladderclimb.env.xml',True)
     pose=zeros(robot.GetDOF())
     robot.SetDOFValues(pose)
 

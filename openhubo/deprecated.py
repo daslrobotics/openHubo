@@ -20,7 +20,7 @@ def load_rlhuboplus(env,scenename=None,stop=False):
     pose. The returned tuple contains the robots, controller, and a
     name-to-joint-index converter.
     """
-    return load(env,'rlhuboplus.robot.xml',scenename,stop)
+    return load_scene(env,'rlhuboplus.robot.xml',scenename,stop)
 
 def hubo2_left_palm():
     R=mat([[-0.5000,    -0.5000,   0.7071],

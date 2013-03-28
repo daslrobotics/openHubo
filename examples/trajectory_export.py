@@ -28,7 +28,7 @@ if __name__=='__main__':
 
     timestep=openhubo.TIMESTEP
 
-    [robot,controller,ind,ref,recorder]=openhubo.load(env,options)
+    [robot,controller,ind,ref,recorder]=openhubo.load_scene(env,options)
 
     pose0=Pose(robot,controller)
     pose0.update()

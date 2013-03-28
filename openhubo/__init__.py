@@ -15,7 +15,7 @@ import datetime
 import sys
 import matplotlib.pyplot as plt
 import re
-import viewerrecorder
+from recorder import viewerrecorder
 
 #Specific useful functions
 from optparse import OptionParser,Values
@@ -345,9 +345,9 @@ def load_simplefloor(env):
     """ Load up and configure the simpleFloor environment for hacking with
     physics. Sets some useful defaults.
     """
-    return load(env,None,'simpleFloor.env.xml',True)
+    return load_scene(env,None,'simpleFloor.env.xml',True)
 
-def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,options=Values()):
+def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,options=Values()):
     """ Load files and configure the simulation environment based on arguments and the options structure.    
     The returned tuple contains:
         :robot: handle to the created robot

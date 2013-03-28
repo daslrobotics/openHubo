@@ -29,7 +29,7 @@ if __name__=='__main__':
 
     options.physicsfile='physics.xml'
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,options)
 
     probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
     env.LoadProblem(probs_cbirrt,robot.GetName())

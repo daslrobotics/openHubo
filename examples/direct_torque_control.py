@@ -30,7 +30,7 @@ if __name__=='__main__':
     time.sleep(.25)
 
     #Set up environment and stop the simulation if running (since timestep may be different)
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,options.robotfile,options.scenefile,True)
    
     with env:
         #Lock environment to override the servo controller with a controller that does nothing

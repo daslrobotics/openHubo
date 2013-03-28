@@ -81,7 +81,7 @@ def model_test_factory(filename=None):
             self.env.SetDebugLevel(2)
             options.robotfile=filename
             options.physicsfile=None
-            [self.robot,ctrl,self.ind,ref,recorder]=openhubo.load(self.env,options)
+            [self.robot,ctrl,self.ind,ref,recorder]=openhubo.load_scene(self.env,options)
 
         def tearDown(self):
             self.env.Destroy()

@@ -50,7 +50,7 @@ if __name__=='__main__':
     env.SetDebugLevel(3)
     
     #Load environment and robot with default settings
-    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
+    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load_scene(env,options.robotfile,options.scenefile,True)
 
     physics=env.GetPhysicsEngine()
     timestep=openhubo.TIMESTEP

@@ -84,7 +84,7 @@ if __name__=='__main__':
 
     env.Load('physics.xml')
 
-    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load(env,options.robotfile,'floor.env.xml',True)
+    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load_scene(env,options.robotfile,'floor.env.xml',True)
 
     # Build pose from current DOF values, specify a test pose, and update the desired pose
     pose=zeros(robot.GetDOF())
