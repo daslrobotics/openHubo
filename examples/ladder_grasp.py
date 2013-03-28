@@ -8,24 +8,17 @@ from openravepy import *
 from numpy import *
 from numpy.linalg import inv
 
-#useful libraries
-from str2num import *
-import time
-import datetime
-import sys
-import os
-
 #comps-plugins
 from rodrigues import *
 from TransformMatrix import *
 from TSR import *
 
 #OpenHubo python modules
-import openhubo
-from generalik import *
-from cbirrt import *
-from openhubo import pause
-from planning import *
+from openhubo import *
+from openhubo.generalik import *
+from openhubo.cbirrt import *
+from openhubo.planning import *
+from openhubo.deprecated import *
 
 def makeGripTransforms(links):
     grips = []
@@ -46,11 +39,11 @@ def makeGripTransforms(links):
 
 if __name__=='__main__':
 
-    (env,options)=openhubo.setup('qtcoin')
+    (env,options)=setup('qtcoin')
     env.SetDebugLevel(3)
 
     # Load the environment
-    [robot, ctrl, ind,ref,recorder]=openhubo.load_scene(env,options.robotfile,'ladderclimb.env.xml',True)
+    [robot, ctrl, ind,ref,recorder]=load_scene(env,options.robotfile,'ladderclimb.env.xml',True)
     pose=zeros(robot.GetDOF())
     robot.SetDOFValues(pose)
 
@@ -58,11 +51,10 @@ if __name__=='__main__':
     #pause()
     stairs=env.GetKinBody('ladder')
     links=stairs.GetLinks()
-    ind=openhubo.makeNameToIndexConverter(robot)
     #Make any adjustments to initial pose here
     handles=[]
     for k in links:
-        handles.append(openhubo.plotBodyCOM(env,k))
+        handles.append(plot_body_com(k))
     #pause()
     
     grips = makeGripTransforms(links) 
@@ -76,7 +68,7 @@ if __name__=='__main__':
     env.LoadProblem(probs_cbirrt,robot.GetName())
     
     setInitialPose(robot)
-    time.sleep(1)
+    sleep(1)
     
     #Define manips used and goals
     z1=.05
@@ -132,7 +124,7 @@ if __name__=='__main__':
     first_pose.filename='firstpose.traj'
     print first_pose.Serialize()
     success=first_pose.run()
-    openhubo.pause()
+    pause()
     
     RunTrajectoryFromFile(robot,first_pose)
 

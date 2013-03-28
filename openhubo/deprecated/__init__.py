@@ -57,7 +57,7 @@ def CloseLeftHand(robot,angle=pi/2):
     #TODO: make this general, for now only works on rlhuboplus
     #TODO: use trajectory controller to close hands smoothly
     ctrl=robot.GetController()
-    ctrl.SendCommand('set radians')
+    ctrl.SendCommand('set radians ')
     fingers=['Index','Middle','Ring','Pinky','Thumb']
 
     prox=[robot.GetJoint('left{}Knuckle{}'.format(x,1)).GetDOFIndex() for x in fingers]
@@ -85,7 +85,7 @@ def CloseRightHand(robot,angle=pi/2):
     #TODO: make this general, for now only works on rlhuboplus
     
     ctrl=robot.GetController()
-    ctrl.SendCommand('set radians')
+    ctrl.SendCommand('set radians ')
     fingers=['Index','Middle','Ring','Pinky','Thumb']
 
     prox=[robot.GetJoint('right{}Knuckle{}'.format(x,1)).GetDOFIndex() for x in fingers]

@@ -168,6 +168,18 @@ class Pose:
         if type(key)==slice or type(key)==int:
             self.values[key]=value
 
+    def __add__(self,other):
+        #TODO: size checking
+        return self.values+other[:]
+
+    def __sub__(self,other):
+        #TODO: size checking
+        return self.values-other[:]
+
+    def __abs__(self):
+        #TODO: size checking
+        return abs(self.values)
+
 def get_name_from_huboname(inname,robot=None):
     """ Map a name from the openhubo standard to the original hubo naming
     scheme.

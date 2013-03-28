@@ -19,10 +19,6 @@ __license__ = 'GPLv3 license'
 from openravepy import *
 from numpy import *
 import time
-import datetime
-import sys
-import openhubo
-import matplotlib.pyplot as plt
 
 def build_ftmap(robot,linknames,ftdata):
 
@@ -46,14 +42,13 @@ def map_joint_torques(robot,torques):
 
 if __name__=='__main__':
 
-    (env,options)=openhubo.setup('qtcoin')
+    (env,options)=setup('qtcoin')
     env.SetDebugLevel(3)
     
     #Load environment and robot with default settings
-    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load_scene(env,options.robotfile,options.scenefile,True)
+    [robot,ctrl,ind,ref_robot,recorder]=load_scene(env,options)
 
     physics=env.GetPhysicsEngine()
-    timestep=openhubo.TIMESTEP
     
     l1=robot.GetLink('leftFoot')
     l2=robot.GetLink('rightFoot')
@@ -64,14 +59,14 @@ if __name__=='__main__':
 
     #openhubo.pause()
     for k in range(steps):
-        env.StepSimulation(timestep)
+        env.StepSimulation(TIMESTEP)
         FT1= physics.GetLinkForceTorque(l1)
         FT2= physics.GetLinkForceTorque(l2)
 
     print FT1
     st1=env.GetSimulationTime()
     t1=time.time()
-    print "timestep = {}, Took {} real sec. for {} sim sec.".format(timestep,t1-t0,float(st1-st0)/1000000)
+    print "timestep = {}, Took {} real sec. for {} sim sec.".format(TIMESTEP,t1-t0,float(st1-st0)/1000000)
 
     ftmap=build_ftmap(robot,['leftFoot','rightFoot'],[FT1,FT2])
    
