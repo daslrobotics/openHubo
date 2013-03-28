@@ -39,4 +39,5 @@ if __name__=='__main__':
     
     with env:
         traj=trajectory.read_swarthmore_traj('DoorOpen.txt',robot,.01,True)
+    trajectory.write_hubo_traj(traj,robot,0.01,'dooropen_left.traj.txt')
     ctrl.SetPath(traj)
