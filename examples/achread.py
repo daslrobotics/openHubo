@@ -3,10 +3,7 @@
 from openravepy import *
 from numpy import *
 from numpy.linalg import *
-import sys
-import time
-from copy import copy
-import openhubo
+from openhubo import *
 import matplotlib.pyplot as plt
 
 def analyzeTime(filename):

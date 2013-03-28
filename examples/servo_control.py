@@ -18,23 +18,21 @@ __license__ = 'GPLv3 license'
 
 from openravepy import *
 from numpy import *
-import time
-import sys
-from servo import *
-import openhubo 
+from time import sleep
+from openhubo import *
 
 if __name__=='__main__':
 
-    (env,options)=openhubo.setup('qtcoin',True)
+    (env,options)=setup('qtcoin',True)
     env.SetDebugLevel(4)
-    time.sleep(.25)
+    sleep(.25)
 
     #Note that the load function now directly parses the option structure
     options.physicsfile=True
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
-    time.sleep(.5)
-    env.StartSimulation(openhubo.TIMESTEP)
-    time.sleep(.5)
+    [robot,ctrl,ind,ref,recorder]=load(env,options)
+    sleep(.5)
+    env.StartSimulation(TIMESTEP)
+    sleep(.5)
    
     #Change the pose to lift the elbows and send
     ctrl.SendCommand('set radians ')
@@ -44,7 +42,7 @@ if __name__=='__main__':
     pose['LEP']=-pi/2
     pose.send()
 
-    openhubo.pause(2)
+    pause(2)
 
     #Hack to get hand 
     if robot.GetName() == 'rlhuboplus' or robot.GetName() == 'huboplus':
@@ -52,7 +50,7 @@ if __name__=='__main__':
         for i in range(42,57):
             pose[i]=pi/2
         pose.send()
-        openhubo.pause(2)
+        pause(2)
 
         pose[42:57]=0
         pose.send()

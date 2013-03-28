@@ -1,20 +1,3 @@
-#!/usr/bin/env python
-from numpy import pi,array,deprecate
-import openravepy as rave
-from TransformMatrix import *
-from recorder import viewerrecorder
-import time
-import datetime
-import warnings
-import sys
-import matplotlib.pyplot as plt
-import logging
-from optparse import OptionParser,Values
-import re
-import signal
-import IPython
-from deprecated import *
-
 """ openhubo python module and main executable. Most of openhubo's functionality
 is available through this module.
 
@@ -24,6 +7,21 @@ Command line usage of openhubo and examples:
 The older python syntax is also usable for launching openhubo scripts:
     python [-i] examples/myexample.py
 """
+
+#Generally useful libraries
+import openravepy as rave
+import time
+import datetime
+import sys
+import matplotlib.pyplot as plt
+import re
+import viewerrecorder
+
+#Specific useful functions
+from optparse import OptionParser,Values
+from numpy import zeros,pi,array,deprecate
+from time import sleep
+from warnings import warn
 
 # If run using interactive prompt:
 if hasattr(sys,'ps1') or sys.flags.interactive:
@@ -198,7 +196,7 @@ def get_name_from_huboname(inname,robot=None):
     #TODO: Fingers
 
     if robot is None:
-        warnings.warn("No robot provided, skipping name check")
+        warn("No robot provided, skipping name check")
         return name
     elif robot.GetJoint(name):
         return name
@@ -279,7 +277,7 @@ def pause(t=-1):
     if t==-1:
         raw_input('Press any key to continue...')
     elif t>=0:
-        time.sleep(t)
+        sleep(t)
 
 @deprecate        
 def makeNameToIndexConverter(robot,autotranslate=True):
@@ -365,12 +363,12 @@ def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,op
 
     if hasattr(options,'recordfile'):
         # Set the robot controller and start the simulation
-        recorder=viewerrecorder(env,filename=options.recordfile)
+        vidrecorder=recorder.viewerrecorder(env,filename=options.recordfile)
         #Default to "sim-timed video" i.e. plays back much faster
-        recorder.videoparams[0:2]=[1024,768]
-        recorder.realtime=False
+        vidrecorder.videoparams[0:2]=[1024,768]
+        vidrecorder.realtime=False
     else:
-        recorder=None
+        vidrecorder=None
     
     if not hasattr(options,'stop'):
         options.stop=stop
@@ -458,7 +456,7 @@ def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,op
         if ref_robot:
             align_robot(ref_robot,options.atheight)
 
-    return (robot,controller,ind,ref_robot,recorder)
+    return (robot,controller,ind,ref_robot,vidrecorder)
 
 def load_ghost(env,robotname,prefix="ref_",color=[.8,.8,.4]):
     """ Create a ghost robot to overlay with an existing robot in the world to show an alternate state."""
@@ -494,46 +492,9 @@ def align_robot(robot,floorheight=0.002,floornormal=[0,0,1]):
         robot.SetTransform(T)
         #TODO: reset velocity?
 
-@deprecate
-def load_rlhuboplus(env,scenename=None,stop=False):
-    """ Load the rlhuboplus model into the given environment, configuring a
-    servocontroller and a reference robot to show desired movements vs. actual
-    pose. The returned tuple contains the robots, controller, and a
-    name-to-joint-index converter.
-    """
-    return load(env,'rlhuboplus.robot.xml',scenename,stop)
-
-def hubo2_left_palm():
-    R=mat([[-0.5000,    -0.5000,   0.7071],
-        [0.5000,   0.5000,   0.7071],
-        [-0.7071,   0.7071,         0]])
-
-    t=mat([.009396,-.010145,-.022417]).T
-    return MakeTransform(R,t)
-
-def hubo2_right_palm():
-    return MakeTransform(R_hubo2_right_palm(),t_hubo2_right_palm())
-
-def R_hubo2_right_palm():
-    return mat( [[-0.5000,    0.5000,    0.7071],
-            [-0.5000,    0.5000,   -0.7071],
-            [-0.7071,   -0.7071,         0]])
-
-def t_hubo2_right_palm():
-    return mat([.009396,.010145,-.022417]).T
-
-def hubo2_left_foot():
-    R=mat(eye(3))
-    t=mat([-.040497,.005,-.104983]).T+mat([0.042765281437, -0.002531569047,0.063737248723]).T
-    return MakeTransform(R,t)
-
-def hubo2_right_foot():
-    R=mat(eye(3))
-    t=mat([-.040497,-.005,-.104983]).T+mat([0.042765281437, 0.002531569047,0.063737248723]).T
-    return MakeTransform(R,t)
-
-############################################################
+#####################################################################
 # Mass functions
+#####################################################################
 
 def find_com(robot):
     com_trans=array([0.0,0.0,0.0])
@@ -551,14 +512,6 @@ def find_mass(robot):
         mass=mass+l.GetMass()
 
     return mass
-
-@deprecate
-def plotProjectedCOG(robot):
-    return plot_projected_com(robot)
-
-@deprecate
-def plotBodyCOM(env,link,handle=None,color=array([0,1,0])):
-    return plot_body_com(link,handle,color)
 
 def plot_contacts(robot):
     env=robot.GetEnv()
@@ -602,74 +555,20 @@ def plot_projected_com(robot):
     handle=env.plot3(points=proj_com,pointsize=12,colors=array([0,1,1]))
     return handle
 
-def plot_masses(robot,color=array([.8,.5,.3]),ccolor=[0,.8,.8]):
+def plot_masses(robot,color=array([.8,.5,.3]),com_color=[0,.8,.8]):
+    """Plot spheres at each link center of mass. The volume of each sphere
+    corresponds to to the sphere's mass in 10'ths of a kg.
+    """
     handles=[]
     total=0
     for l in robot.GetLinks():
         origin=l.GetGlobalCOM()
         m=l.GetMass()
         total+=m
-        #Area of box corresponds to mass
         handles.append(robot.GetEnv().plot3(origin,m/100.,array(color),True))
-    handles.append(robot.GetEnv().plot3(find_com(robot),m/100.,ccolor,True))
+    handles.append(robot.GetEnv().plot3(find_com(robot),m/100.,com_color,True))
     return handles
 
-def CloseLeftHand(robot,angle=pi/2):
-    #assumes the robot is still, uses direct control
-    #TODO: make this general, for now only works on rlhuboplus
-    #TODO: use trajectory controller to close hands smoothly
-    ctrl=robot.GetController()
-    ctrl.SendCommand('set radians')
-    fingers=['Index','Middle','Ring','Pinky','Thumb']
-
-    prox=[robot.GetJoint('left{}Knuckle{}'.format(x,1)).GetDOFIndex() for x in fingers]
-    med=[robot.GetJoint('left{}Knuckle{}'.format(x,2)).GetDOFIndex() for x in fingers]
-    dist=[robot.GetJoint('left{}Knuckle{}'.format(x,3)).GetDOFIndex() for x in fingers]
-    pose=robot.GetDOFValues()
-    for k in prox:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-
-    for k in med:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-
-    for k in dist:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-
-def CloseRightHand(robot,angle=pi/2):
-    #assumes the robot is still, uses direct control
-    #TODO: make this general, for now only works on rlhuboplus
-    
-    ctrl=robot.GetController()
-    ctrl.SendCommand('set radians')
-    fingers=['Index','Middle','Ring','Pinky','Thumb']
-
-    prox=[robot.GetJoint('right{}Knuckle{}'.format(x,1)).GetDOFIndex() for x in fingers]
-    med=[robot.GetJoint('right{}Knuckle{}'.format(x,2)).GetDOFIndex() for x in fingers]
-    dist=[robot.GetJoint('right{}Knuckle{}'.format(x,3)).GetDOFIndex() for x in fingers]
-
-    #TODO: Fix this "cheat" of waiting a fixed amount of real time
-    pose=robot.GetDOFValues()
-    for k in prox:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-
-    for k in med:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-
-    for k in dist:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-    return True
 
 class ServoPlotter:
     """A simple class to import recorded servo data and plot a specific subset
@@ -706,10 +605,6 @@ class ServoPlotter:
             plt.plot(self.jointdata[REF],'+',hold=True)
             plt.plot(self.jointdata[s],hold=True)
 
-
-#-----------------------------------------------------------
-# Executable setup
-#-----------------------------------------------------------
 from openravepy.misc import OpenRAVEGlobalArguments
 import atexit
 
@@ -771,36 +666,3 @@ def setup(viewername=None,create=True):
     else:
         return (options,None)
 
-
-
-if __name__ == '__main__':
-
-    #Set up ipdb for better exception handling and debugging
-    print "Using Ipython for exceptions..."
-    from IPython.core import ultratb
-    sys.excepthook = ultratb.FormattedTB(mode='Verbose',
-         color_scheme='Linux', call_pdb=1)
-    (options,scriptname)=setup(None,False)
-
-    if options.example or scriptname:
-
-        if scriptname:
-            execfile(scriptname)
-        else:
-            import fnmatch
-            import os
-            from openravepy import raveLogInfo
-            expath=os.environ['OPENHUBO_DIR'] + '/examples/'
-            for f in os.listdir(expath):
-                if fnmatch.fnmatch(f, options.example):
-                    raveLogInfo("Found example {}".format(options.example))
-                    break
-            execfile(expath+options.example)
-    else:
-        #Enable interactive mode and load a simple environment
-        options.interact=True
-        execfile('interactive_sandbox.py')
-            
-    if options.interact:
-        IPython.embed() 
-        print "Cleaning up after inspection..."

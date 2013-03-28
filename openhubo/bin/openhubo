@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+#
+#Set up ipdb for better exception handling and debugging
+import IPython
+from IPython.core import ultratb
+from openravepy import raveLogInfo
+from openhubo import setup
+
+from fnmatch import fnmatch
+from os import listdir,environ
+import sys
+
+"""openhubo executable"""
+
+print "Using Ipython for exceptions..."
+sys.excepthook = ultratb.FormattedTB(mode='Verbose',
+                                     color_scheme='Linux', call_pdb=1)
+(options,scriptname)=setup(None,False)
+
+if options.example or scriptname:
+
+    if scriptname:
+        execfile(scriptname)
+    else:
+        expath=environ['OPENHUBO_DIR'] + '/examples/'
+        for f in listdir(expath):
+            if fnmatch(f, options.example):
+                raveLogInfo("Found example {}".format(options.example))
+                break
+        execfile(expath+options.example)
+else:
+    #Enable interactive mode and load a simple environment
+    options.interact=True
+    execfile('interactive_sandbox.py')
+
+if options.interact:
+    IPython.embed()
+    print "Cleaning up after inspection..."
