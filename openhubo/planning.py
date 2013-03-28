@@ -3,24 +3,17 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-from openravepy import *
-from numpy import *
 from numpy.linalg import inv
-from str2num import *
-from rodrigues import *
+from rodrigues import rodrigues
 from TransformMatrix import *
 from TSR import *
-from openhubo import plotProjectedCOG
+from openhubo import plot_projected_com, TIMESTEP
+from openhubo.deprecated import CloseLeftHand,CloseRightHand
+import time as _time
 
-import time
-import datetime
-import sys
-import os
-
-from generalik import *
-from cbirrt import *
-import openhubo
-from openhubo import pause
+import openravepy as _rave
+import generalik as _ik
+import cbirrt as _rrt
 
 #TODO: rename functions to fit new style
 
@@ -48,10 +41,10 @@ def RunTrajectoryFromFile(robot,planner,autoinit=True):
     trajstring=f.read()
     f.close()
 
-    traj=RaveCreateTrajectory(robot.GetEnv(),'')
+    traj=_rave.RaveCreateTrajectory(robot.GetEnv(),'')
     traj.deserialize(trajstring)
 
-    planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
+    _rave.planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
     ctrl=PlayTrajWithPhysics(robot,traj,autoinit)
 
@@ -66,7 +59,7 @@ def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False
     env.StopSimulation()
 
     if robot.GetController().GetXMLId()!='trajectorycontroller':
-        ctrl=RaveCreateController(env,'trajectorycontroller')
+        ctrl=_rave.RaveCreateController(env,'trajectorycontroller')
         #Not sure if this is necessary
         oldctrl=robot.GetController()
         robot.SetController(ctrl)
@@ -79,9 +72,9 @@ def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False
         setInitialPose(robot)
     ctrl.SetDesired(robot.GetDOFValues())
     #Eventuall make this variable? might not matter if .0005 is good
-    env.StartSimulation(openhubo.TIMESTEP)
-    #ctrl.SetDesired(robot.GetDOFValues())
-    time.sleep(1)
+    env.StartSimulation(TIMESTEP)
+
+    _time.sleep(1)
     ctrl.SendCommand('start')
    
     if waitdone:
@@ -90,66 +83,14 @@ def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False
             print "Real time {}, sim time {}".format(t,ctrl.GetTime())
             #Only approximate time here
             t=t+.1
-            time.sleep(.1)
-            handle=openhubo.plot_projected_com(robot)
+            _time.sleep(.1)
+            handle=plot_projected_com(robot)
 
     if resetafter:
         env.StopSimulation()
         ctrl.Reset()
 
     return ctrl
-
-def CloseLeftHand(robot,angle=pi/2):
-    #assumes the robot is still, uses direct control
-    #TODO: make this general, for now only works on rlhuboplus
-    ctrl=robot.GetController()
-    dofs=range(robot.GetDOF())
-    med=dofs[-13::3]
-    dist=dofs[-14::3]
-    prox=dofs[-15::3]
-
-    pose=robot.GetDOFValues()
-    for k in prox:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-
-    for k in med:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-
-    for k in dist:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-
-def CloseRightHand(robot,angle=pi/2):
-    #assumes the robot is still, uses direct control
-    #TODO: make this general, for now only works on rlhuboplus
-    ctrl=robot.GetController()
-    dofs=range(robot.GetDOF())
-    med=dofs[-28:-15:3]
-    dist=dofs[-29:-15:3]
-    prox=dofs[-30:-15:3]
-
-    #TODO: Fix this "cheat" of waiting a fixed amount of real time
-    pose=robot.GetDOFValues()
-    for k in prox:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-
-    for k in med:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-
-    for k in dist:
-        pose[k]=angle
-    ctrl.SetDesired(pose)
-    time.sleep(1)
-    return True
 
 def plotTransforms(env,transforms,color=array([0,1,0])):
     #For now just plot points, eventually plot csys
@@ -162,12 +103,12 @@ def plotTransforms(env,transforms,color=array([0,1,0])):
 def showGoal(env,T):     
     #TODO: Potential memory leak here?
     with env:
-        dummy=RaveCreateKinBody(env,'')
+        dummy=_rave.RaveCreateKinBody(env,'')
         dummy.SetName('dummy_1')
         dummy.InitFromBoxes(numpy.array([[0,0,0,0.01,0.03,0.06]]),True)
         env.Add(dummy,True)
         dummy.SetTransform(array(T))
-    time.sleep(5)
+    _time.sleep(5)
     env.Remove(dummy)
     return 0
     

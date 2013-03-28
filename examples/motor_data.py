@@ -13,9 +13,10 @@
 
 from openhubo import *
 from openhubo.motor import *
-from openrave import *
+from openravepy import *
 from numpy import *
 import matplotlib.pyplot as plt
+import time
 
 (env,options)=setup('qtcoin')
 env.SetDebugLevel(4)
@@ -26,15 +27,14 @@ env.Load('physics.xml')
 [robot,ctrl,ind,ref_robot,recorder]=load_scene(env,options.robotfile,'floor.env.xml',True)
 
 # Build pose from current DOF values, specify a test pose, and update the desired pose
-pose=zeros(robot.GetDOF())
-robot.SetDOFValues(pose)
-pose[ind('RKP')]=.5
-pose[ind('LKP')]=.5
-pose[ind('LHP')]=-.25
-pose[ind('RHP')]=-.25
-pose[ind('LAP')]=-.25
-pose[ind('RAP')]=-.25
-ctrl.SetDesired(pose)
+pose=Pose(robot,ctrl)
+pose['RKP']=.5
+pose['LKP']=.5
+pose['LHP']=-.25
+pose['RHP']=-.25
+pose['LAP']=-.25
+pose['RAP']=-.25
+pose.send()
 
 p=env.GetPhysicsEngine()
 data=zeros((10000,12))
@@ -51,10 +51,10 @@ data=[]
 t0=time.time()
 motor=MotorModel(j1,Ks,R,N)
 
-for k in range(5000):
-    pose[ind('RSP')]=.2*sin(k*2*pi*TIMESTEP)
-    pose[ind('LSP')]=.2*sin(k*2*pi*TIMESTEP)
-    ctrl.SetDesired(pose)
+for k in range(3000):
+    pose['RSP']=.2*sin(k*2*pi*TIMESTEP)
+    pose['LSP']=.2*sin(k*2*pi*TIMESTEP)
+    pose.send()
     env.StepSimulation(TIMESTEP)
     data.append(motor.get_state())
 

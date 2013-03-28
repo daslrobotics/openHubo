@@ -1,15 +1,11 @@
 #!/usr/bin/env python
-from __future__ import with_statement # for python 2.5
+
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
-from openravepy import CollisionReport
-from numpy import *
-from str2num import *
-from rodrigues import *
-from TransformMatrix import *
-from TSR import *
-import time
 
+from openravepy import CollisionReport
+from rodrigues import rodrigues
+import time as _time
 
 class GeneralIK:
     def __init__(self,robot,problem,tsrlist=[],sample_bw=False):
@@ -94,7 +90,7 @@ class GeneralIK:
             #rezero to prevent getting stuck...at major speed penalty
             self.robot.SetDOFValues(self.zero)
             self.run(auto,extra)
-            time.sleep(.1)
+            _time.sleep(.1)
         return self.solved()
     
     def continousSolve(self,itrs=1000,auto=False,extra=[]):
@@ -108,20 +104,9 @@ class GeneralIK:
             #rezero to prevent getting stuck...at major speed penalty
             self.robot.SetDOFValues(self.zero)
             self.run(auto,extra)
-            time.sleep(.1)
+            _time.sleep(.1)
         return self.solved()
     
     def resetZero(self):
         self.zero=self.robot.GetDOFValues()
     
-if __name__ == '__main__':
-    
-    juiceTSR = TSR()
-    juiceTSR.Tw_e = MakeTransform(rodrigues([pi/2, 0, 0]),mat([0, 0.22, 0.1]).T)
-    juiceTSR.Bw = mat([0, 0,   0, 0,   -0.02, 0.02,   0, 0,   0, 0,   -pi, pi])
-    juiceTSR.manipindex = 0
-    
-    test=GeneralIK('','',[juiceTSR],False)
-    test.supportlinks=['leftFootBase']
-    test.cogtarget=(.1,.2,.3)
-    print test.Serialize()

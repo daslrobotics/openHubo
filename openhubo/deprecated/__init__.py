@@ -2,16 +2,8 @@
 Designed only for from x import * for openhubo, do not use as standalone module!
 """
 from numpy import pi,array,deprecate
-import openravepy as rave
-from TransformMatrix import *
-from recorder import viewerrecorder
-import time
-import datetime
-import warnings
-import sys
-import logging
-from optparse import OptionParser,Values
-import re
+import openravepy as _rave
+import time as _time
 
 @deprecate
 def load_rlhuboplus(env,scenename=None,stop=False):
@@ -75,17 +67,17 @@ def CloseLeftHand(robot,angle=pi/2):
     for k in prox:
         pose[k]=angle
     ctrl.SetDesired(pose)
-    time.sleep(1)
+    _time.sleep(1)
 
     for k in med:
         pose[k]=angle
     ctrl.SetDesired(pose)
-    time.sleep(1)
+    _time.sleep(1)
 
     for k in dist:
         pose[k]=angle
     ctrl.SetDesired(pose)
-    time.sleep(1)
+    _time.sleep(1)
 
 @deprecate
 def CloseRightHand(robot,angle=pi/2):
@@ -105,15 +97,15 @@ def CloseRightHand(robot,angle=pi/2):
     for k in prox:
         pose[k]=angle
     ctrl.SetDesired(pose)
-    time.sleep(1)
+    _time.sleep(1)
 
     for k in med:
         pose[k]=angle
     ctrl.SetDesired(pose)
-    time.sleep(1)
+    _time.sleep(1)
 
     for k in dist:
         pose[k]=angle
     ctrl.SetDesired(pose)
-    time.sleep(1)
+    _time.sleep(1)
     return True

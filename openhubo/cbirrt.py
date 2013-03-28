@@ -28,11 +28,10 @@
 
 # -*- coding: utf-8 -*-
 
-from numpy import *
-from rodrigues import *
-from TransformMatrix import *
-import copy
-from TSR import *
+from numpy import pi,zeros,array,mat
+import copy as _copy
+import TSR as _TSR
+import TransformMatrix as _Trans
 
 class Cbirrt:
     #TODO: Define copy constructor
@@ -52,16 +51,16 @@ class Cbirrt:
     
     def insertTSRChain(self,chain):
         #TODO: Is it better to pass in by reference to make it easy to change?
-        self.tsr_chains.append(copy.deepcopy(chain))
+        self.tsr_chains.append(_copy.deepcopy(chain))
 
     def Serialize(self):
         cmd='RunCBiRRT' 
         cmd = cmd + ' filename {} timelimit {} smoothingitrs {}'.format(self.filename,self.timelimit,self.smoothing)
         goalSampling=False
         if len(self.jointgoals)>0:
-            cmd=cmd+' jointgoals {} {}'.format(len(self.jointgoals),Serialize1DMatrix(mat(self.jointgoals)))
+            cmd=cmd+' jointgoals {} {}'.format(len(self.jointgoals),_Trans.Serialize1DMatrix(mat(self.jointgoals)))
         if len(self.jointstarts)>0:
-            cmd=cmd+' jointstarts {} {}'.format(len(self.jointstarts),Serialize1DMatrix(mat(self.jointstarts)))
+            cmd=cmd+' jointstarts {} {}'.format(len(self.jointstarts),_Trans.Serialize1DMatrix(mat(self.jointstarts)))
         for chain in self.tsr_chains:
             cmd=cmd+'{}'.format(chain.Serialize())
             if chain.bSampleStartFromChain or chain.bSampleGoalFromChain:
@@ -100,5 +99,3 @@ class Cbirrt:
             activedof.extend(manips[i].GetArmJoints().tolist())
         robot.SetActiveDOFs(activedof)
         return activedof
-        
-#TODO: test functions?

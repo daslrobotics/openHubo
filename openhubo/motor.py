@@ -16,6 +16,7 @@ __license__ = 'GPLv3 license'
 
 import openravepy as _rave
 import matplotlib.pyplot as _plt
+from numpy import pi as _pi
 
 class MotorModel:
 
@@ -31,7 +32,7 @@ class MotorModel:
             return joint.GetVelocities()[0]
         self.get_vel=get_vel
         self.axis=joint.GetAxis
-        self.Kv=60./Ks/2/pi
+        self.Kv=60./Ks/2/_pi
         self.R=R
         self.N=N
 
@@ -39,7 +40,7 @@ class MotorModel:
         [force,torque]=self.get_ft()
         T=torque.dot(self.axis())
         w=self.get_vel()
-        wm=N*w
+        wm=self.N*w
         Tm=T/self.N
         i=(Tm)/self.Kv
         V=self.R*i+self.Kv*wm
