@@ -3,7 +3,7 @@ from openravepy import RaveCreateTrajectory,poseFromMatrix,matrixFromPose,planni
 #from servo import *
 from numpy import pi,arange,zeros
 import re
-from openhubo import Pose,make_name_to_index_converter,get_huboname_from_name,hubo_map
+from .core import Pose,make_name_to_index_converter,get_huboname_from_name,hubo_map
 #from TransformMatrix import *
 #from rodrigues import *
 

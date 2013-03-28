@@ -9,22 +9,24 @@ The older python syntax is also usable for launching openhubo scripts:
 """
 
 #Generally useful libraries
-import openravepy as rave
-import time
-import datetime
-import sys
-import matplotlib.pyplot as plt
-import re
-from recorder import viewerrecorder
+import openravepy as _rave
+import sys as _sys
+import matplotlib.pyplot as _plt
+import re as _re
+from recorder import viewerrecorder as _recorder
+import atexit
 
 #Specific useful functions
+from openravepy.misc import OpenRAVEGlobalArguments
+from openravepy import raveLogWarn,raveLogDebug,raveLogInfo
 from optparse import OptionParser,Values
 from numpy import zeros,pi,array,deprecate
 from time import sleep
+from datetime import datetime 
 from warnings import warn
 
 # If run using interactive prompt:
-if hasattr(sys,'ps1') or sys.flags.interactive:
+if hasattr(_sys,'ps1') or _sys.flags.interactive:
     print "Loading OpenHubo interactive session..."
     import startup
 
@@ -227,15 +229,15 @@ def get_huboname_from_name(inname):
     elif (name == "HNP"): 
         achname="NK2"
     
-    elif re.search('Knuckle',name) and not re.search('[23]',name):
-        name=re.sub('left','LF',name)
-        name=re.sub('right','RF',name)
-        name=re.sub('Knuckle','',name)
-        name=re.sub('Thumb','1',name)
-        name=re.sub('Index','2',name)
-        name=re.sub('Middle','3',name)
-        name=re.sub('Ring','4',name)
-        name=re.sub('Pinky','4',name)
+    elif _re.search('Knuckle',name) and not _re.search('[23]',name):
+        name=_re.sub('left','LF',name)
+        name=_re.sub('right','RF',name)
+        name=_re.sub('Knuckle','',name)
+        name=_re.sub('Thumb','1',name)
+        name=_re.sub('Index','2',name)
+        name=_re.sub('Middle','3',name)
+        name=_re.sub('Ring','4',name)
+        name=_re.sub('Pinky','4',name)
         achname = name[:-1]
     else:
         achname=name
@@ -269,7 +271,7 @@ def set_robot_color(robot,dcolor=[.5,.5,.5],acolor=[.5,.5,.5],trans=0,links=[]):
 
 def get_timestamp(lead='_'):
     """Return a simple formatted timestamp for creating files and such."""
-    return lead+datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+    return lead+datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 
 def pause(t=-1):
     """ A simple pause function to emulate matlab's pause(t). 
@@ -358,12 +360,12 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
     """
     
     if not (type(robotfile) is list or type(robotfile) is str):
-        rave.raveLogWarn("Assuming 2nd argument is options structure...")
+        raveLogWarn("Assuming 2nd argument is options structure...")
         options=robotfile
 
     if hasattr(options,'recordfile'):
         # Set the robot controller and start the simulation
-        vidrecorder=recorder.viewerrecorder(env,filename=options.recordfile)
+        vidrecorder=_recorder(env,filename=options.recordfile)
         #Default to "sim-timed video" i.e. plays back much faster
         vidrecorder.videoparams[0:2]=[1024,768]
         vidrecorder.realtime=False
@@ -415,25 +417,25 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
 
         ref_robot=None
         if options.physicsfile and env.GetPhysicsEngine().GetXMLId()=='GenericPhysicsEngine':
-            rave.raveLogInfo('Loading physics parameters from "{}"'.format(options.physicsfile))
+            raveLogInfo('Loading physics parameters from "{}"'.format(options.physicsfile))
             env.Load(options.physicsfile)
         elif not options.physicsfile:
-            env.SetPhysicsEngine(rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
+            env.SetPhysicsEngine(_rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
         else:
-            rave.raveLogWarn("Physics engine already configured, using current settings...")
+            raveLogWarn("Physics engine already configured, using current settings...")
 
         #Force new controller since it's easier
         if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine':
-            rave.raveLogInfo('Creating controller for physics simulation')
-            controller=rave.RaveCreateController(env,'trajectorycontroller')
+            raveLogInfo('Creating controller for physics simulation')
+            controller=_rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
             #TODO: validate gains
             controller.SendCommand('set gains 50 0 8')
 
         else:
             #Just load ideal controller if physics engine is not present
-            rave.raveLogInfo('Physics engine not loaded, using idealcontroller...')
-            controller=rave.RaveCreateController(env,'idealcontroller')
+            raveLogInfo('Physics engine not loaded, using idealcontroller...')
+            controller=_rave.RaveCreateController(env,'idealcontroller')
             robot.SetController(controller)
 
         if options.ghost:
@@ -444,10 +446,10 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
                 if options.physicsfile:
                     controller.SendCommand("set visrobot "+ref_robot.GetName())
 
-        collisionChecker = rave.RaveCreateCollisionChecker(env,'pqp')
+        collisionChecker = _rave.RaveCreateCollisionChecker(env,'pqp')
         if collisionChecker==None:
-            collisionChecker = rave.RaveCreateCollisionChecker(env,'ode')
-            rave.raveLogWarn('Using ODE collision checker since PQP is not available...')
+            collisionChecker = _rave.RaveCreateCollisionChecker(env,'ode')
+            raveLogWarn('Using ODE collision checker since PQP is not available...')
         env.SetCollisionChecker(collisionChecker)
    
     ind=makeNameToIndexConverter(robot)
@@ -465,7 +467,7 @@ def load_ghost(env,robotname,prefix="ref_",color=[.8,.8,.4]):
     ref_robot.SetName(prefix+ref_robot.GetName())
     ref_robot.Enable(False)
     env.Add(ref_robot)
-    ref_robot.SetController(rave.RaveCreateController(env,'mimiccontroller'))
+    ref_robot.SetController(_rave.RaveCreateController(env,'mimiccontroller'))
     set_robot_color(ref_robot,color,color,trans=.5)
     return ref_robot
 
@@ -517,12 +519,12 @@ def plot_contacts(robot):
     env=robot.GetEnv()
     with env:
         # setup the collision checker to return contacts
-        env.GetCollisionChecker().SetCollisionOptions(rave.CollisionOptions.Contacts)
+        env.GetCollisionChecker().SetCollisionOptions(_rave.CollisionOptions.Contacts)
 
         # get first collision
-        report = rave.CollisionReport()
+        report = _rave.CollisionReport()
         collision=env.CheckCollision(robot,report=report)
-        rave.raveLogInfo('%d contacts'%len(report.contacts))
+        raveLogInfo('%d contacts'%len(report.contacts))
         positions = [c.pos for c in report.contacts]
 
     if len(positions):
@@ -576,11 +578,13 @@ class ServoPlotter:
     easily customize the plot.
     :param filename: file containing recorded servo data. """
 
+    #Static plotting functions for simplicity
+    make_plot=_plt.plot
+    show=_plt.show
+
     def __init__(self,filename=None,servolist=[]):
         self.jointdata={}
         self.import_servo_data(filename)
-        self.plt=plt
-        self.show=plt.show
         if len(servolist)>0:
             self.plot(servolist)
 
@@ -602,19 +606,17 @@ class ServoPlotter:
     def plot(self,servolist=[]):
         for s in servolist:
             REF='{}_REF'.format(s)
-            plt.plot(self.jointdata[REF],'+',hold=True)
-            plt.plot(self.jointdata[s],hold=True)
+            make_plot(self.jointdata[REF],'+',hold=True)
+            make_plot(self.jointdata[s],hold=True)
 
-from openravepy.misc import OpenRAVEGlobalArguments
-import atexit
 
 def safe_quit(env):
     """ Exit callback to ensure that openrave closes safely."""
     #Somewhat overkill, try to avoid annoying segfaults
-    rave.raveLogDebug("Safely exiting rave environment...")
+    raveLogDebug("Safely exiting rave environment...")
     if env:
         env.Destroy()
-    rave.RaveDestroy()
+    _rave.RaveDestroy()
 
 parser = OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.',
                       usage='usage: %prog [options] script')
@@ -657,7 +659,7 @@ def setup(viewername=None,create=True):
         #use command line fake for "none"
         options.scenefile=None
     if create:
-        env=rave.Environment()
+        env=_rave.Environment()
         atexit.register(safe_quit,env)
         OpenRAVEGlobalArguments.parseEnvironment(options,env)
         return (env,options)

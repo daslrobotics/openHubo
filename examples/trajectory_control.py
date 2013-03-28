@@ -4,53 +4,50 @@ from openhubo import *
 from openravepy import *
 from numpy import *
 from openhubo.trajectory import *
-#TODO: Work with the concept of activeDOF?
-
 
 """ Simple test script to run some of the functions above. """
-if __name__=='__main__':
 
-    (env,options)=setup('qtcoin')
-    env.SetDebugLevel(4)
-    
-    options.physicsfile='physics.xml'
-    options.ghost=True
+(env,options)=setup('qtcoin')
+env.SetDebugLevel(4)
 
-    [robot,ctrl,ind,ref,recorder]=load_scene(env,options)
-    env.StartSimulation(TIMESTEP)
+options.physicsfile='physics.xml'
+options.ghost=True
 
-    #Initialize pose object and trajectory for robot
-    pose=Pose(robot,ctrl)
-    [traj,config]=create_trajectory(robot)
+[robot,ctrl,ind,ref,recorder]=load_scene(env,options)
+env.StartSimulation(TIMESTEP)
 
-    traj_append(traj,pose.to_waypt(0.01))
+#Initialize pose object and trajectory for robot
+pose=Pose(robot,ctrl)
+[traj,config]=create_trajectory(robot)
 
-    pose['LAP']=-pi/8
-    pose['RAP']=-pi/8
+traj_append(traj,pose.to_waypt(0.01))
 
-    pose['LKP']=pi/4
-    pose['RKP']=pi/4
+pose['LAP']=-pi/8
+pose['RAP']=-pi/8
 
-    pose['LHP']=-pi/8
-    pose['RHP']=-pi/8
+pose['LKP']=pi/4
+pose['RKP']=pi/4
 
-    pose['LSP']=-pi/8
-    pose['LEP']=-pi/4
+pose['LHP']=-pi/8
+pose['RHP']=-pi/8
 
-    traj_append(traj,pose.to_waypt(1.0))
+pose['LSP']=-pi/8
+pose['LEP']=-pi/4
 
-    pose[:]=0.0
+traj_append(traj,pose.to_waypt(1.0))
 
-    traj_append(traj,pose.to_waypt(1.0))
+pose[:]=0.0
 
-    planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
+traj_append(traj,pose.to_waypt(1.0))
 
-    print "Showing samples of knee pose at given times:"
-    for k in range(40):
-        data=traj.Sample(float(k)/10)
-        print data[ind('LKP')]
-    
-    ctrl.SetPath(traj)
-    ctrl.SendCommand('start')
-    while not(controller.IsDone()):
-        time.sleep(.1)
+planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
+
+print "Showing samples of knee pose at given times:"
+for k in range(40):
+    data=traj.Sample(float(k)/10)
+    print data[ind('LKP')]
+
+ctrl.SetPath(traj)
+ctrl.SendCommand('start')
+while not(ctrl.IsDone()):
+    sleep(.1)
