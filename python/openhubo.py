@@ -130,7 +130,7 @@ class Pose:
 
     def to_waypt(self,dt=1,affine=zeros(7)):
         #list constructor does shallow copy here
-        waypt =  list(self.values)
+        waypt =  [float(v) for v in self.values]
         #Add affine pose information if needed
         waypt.extend(affine)
         waypt.append(dt)
