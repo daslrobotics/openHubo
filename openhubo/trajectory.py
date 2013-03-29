@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-from openravepy import RaveCreateTrajectory,poseFromMatrix,matrixFromPose,planningutils
-#from servo import *
+
+import openravepy as _rave
 from numpy import pi,arange,zeros
-import re
-from .core import Pose,make_name_to_index_converter,get_huboname_from_name,hubo_map
-#from TransformMatrix import *
-#from rodrigues import *
+import re as _re
+import openhubo as _oh
 
 hubo_read_trajectory_map={
     'RHY':0,
@@ -55,17 +53,16 @@ def traj_append(traj,waypt):
 
 def create_trajectory(robot):
     """ Create a trajectory based on a robot's config spec"""
-    traj=RaveCreateTrajectory(robot.GetEnv(),'')
+    traj=_rave.RaveCreateTrajectory(robot.GetEnv(),'')
     config=robot.GetConfigurationSpecification()
     config.AddDeltaTimeGroup()
     traj.Init(config)
     return [traj,config]
 
-def read_swarthmore_traj(filename,robot,dt=.01,retime=True,lead_time=0.0):
+def read_swarthmore_traj(filename,robot,dt=.01,retime=True):
     """ Read in trajectory data stored in Swarthmore's format
         (data by row, single space separated)
     """
-    #TODO: handle multiple spaces
     #Setup trajectory and source file
     [traj,config]=create_trajectory(robot)
 
@@ -80,7 +77,7 @@ def read_swarthmore_traj(filename,robot,dt=.01,retime=True,lead_time=0.0):
     signs=[-1,1,-1,-1,1,-1,1]
     offsets=[0,0,15.0,0,0,0,0]
     #names=['WST','RSP','RSR','RSY','REP','RWY','RWP']
-    pose=Pose(robot)
+    pose=_oh.Pose(robot)
 
     while True: 
         string=f.readline().rstrip()
@@ -170,7 +167,7 @@ def write_youngbum_traj(traj,robot,dt,filename='exported.traj',dofs=None,oldname
     for d in dofs:
         name=robot.GetJointFromDOFIndex(d).GetName()
         if oldnames:
-            namelist.append(get_huboname_from_name(name))
+            namelist.append(_oh.get_huboname_from_name(name))
         else:
             namelist.append(name)
         #TODO make this an argument?
@@ -216,7 +213,7 @@ def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
             for d in dofs:
                 n = robot.GetJointFromDOFIndex(d).GetName()
                 if hubo_map.has_key(n):
-                    hname=get_huboname_from_name(n)
+                    hname=_oh.get_huboname_from_name(n)
                     mapped_vals[hubo_read_trajectory_map[hname]]=vals[d]
             f.write(' '.join(['{}'.format(x) for x in mapped_vals])+'\n')
 
@@ -232,7 +229,7 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
     """
     #TODO: handle multiple spaces
     #Setup trajectory and source file
-    ind=make_name_to_index_converter(robot)
+    ind=_oh.make_name_to_index_converter(robot)
     #Affine DOF are not controlled, so fill with zeros
     affinedof=zeros(7) 
 

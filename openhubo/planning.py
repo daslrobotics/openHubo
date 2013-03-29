@@ -1,19 +1,21 @@
-#!/usr/bin/env python
-from __future__ import with_statement # for python 2.5
+"""Planning helper functions for openhubo.
+
+Mostly out-of-date but still useful functions for working with openrave planners.
+"""
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
-
-from numpy.linalg import inv
-from rodrigues import rodrigues
-from TransformMatrix import *
-from TSR import *
-from openhubo import plot_projected_com, TIMESTEP
-from openhubo.deprecated import CloseLeftHand,CloseRightHand
-import time as _time
 
 import openravepy as _rave
 import generalik as _ik
 import cbirrt as _rrt
+import TransformMatrix as _trans
+import TSR as _tsr
+
+from numpy.linalg import inv
+from rodrigues import rodrigues
+from openhubo import plot_projected_com, TIMESTEP
+from openhubo.deprecated import CloseLeftHand,CloseRightHand
+import time as _time
 
 #TODO: rename functions to fit new style
 
@@ -29,9 +31,9 @@ def MakeInPlaceConstraint(robot,manipname):
             break
     print manipindex
 
-    tsr=TSR(T0_w,Tw_e,mat(zeros(12)),manipindex)
+    tsr=_tsr.TSR(T0_w,Tw_e,mat(zeros(12)),manipindex)
     print tsr.manipindex
-    chain=TSRChain(0,1,1)
+    chain=_tsr.TSRChain(0,1,1)
     chain.insertTSR(tsr)
     return chain
 
@@ -131,7 +133,7 @@ def supportTorsoPose(supports):
         t=t+(T[:3,-1]+mat([-.1,0,L[s]]).T)*w[s]
         wsum+=w[s]
         
-    affineTSR=TSR(MakeTransform(mat(eye(3)),t/wsum))
+    affineTSR=TSR(_trans.MakeTransform(mat(eye(3)),t/wsum))
     affineTSR.Bw=mat([-.05,.05,-.05,.05,-.1,.15,0,0,0,0,-pi/16,pi/16])
     affineTSR.manipindex=4
     return affineTSR
@@ -255,5 +257,3 @@ def planSequence(robot,problem,init,final=[],trans=[]):
             return False
     
     return True
-
-

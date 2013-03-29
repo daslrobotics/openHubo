@@ -8,26 +8,25 @@ The older python syntax is also usable for launching openhubo scripts:
     python [-i] examples/myexample.py
 """
 
-#Generally useful libraries
-import openravepy as _rave
+import numpy as _np
 import sys as _sys
 import matplotlib.pyplot as _plt
 import re as _re
+import atexit as _atexit
+import optparse as _optparse
+
+import openravepy as _rave
 from recorder import viewerrecorder as _recorder
-import atexit
 
 #Specific useful functions
 from openravepy.misc import OpenRAVEGlobalArguments
-from openravepy import raveLogWarn,raveLogDebug,raveLogInfo
-from optparse import OptionParser,Values
-from numpy import zeros,pi,array,deprecate
+from numpy import pi,array,zeros
 from time import sleep
 from datetime import datetime 
 from warnings import warn
 
 # If run using interactive prompt:
 if hasattr(_sys,'ps1') or _sys.flags.interactive:
-    print "Loading OpenHubo interactive session..."
     import startup
 
 TIMESTEP=0.001
@@ -83,6 +82,7 @@ hubo_map={'RHY':26,
           'LF4':40, 
           'LF5':41}
 
+
 class Pose:
     """Easy-to-use wrapper for an array of DOF values for a robot. The Pose class
         behaves like a combination of a dictionary and an array. You can look
@@ -99,6 +99,7 @@ class Pose:
         4. Send a pose to the robot's controller:
             pose.send()
     """
+
     @staticmethod
     def build_jointmap(robot):
         jointmap={}
@@ -180,10 +181,10 @@ class Pose:
         #TODO: size checking
         return abs(self.values)
 
+
 def get_name_from_huboname(inname,robot=None):
     """ Map a name from the openhubo standard to the original hubo naming
     scheme.
-
     """
     huboname=inname.encode('ASCII')
     #Cheat a little since hubonames are roman characters
@@ -293,23 +294,6 @@ def pause(t=-1):
     elif t>=0:
         sleep(t)
 
-@deprecate        
-def makeNameToIndexConverter(robot,autotranslate=True):
-    """ A closure to easily convert from a string joint name to the robot's
-    actual DOF index. 
-    
-    Example usage:
-        #create function for a robot
-        pose=robot.GetDOFValues()
-        ind = make_name_to_index_converter(robot)
-        #Use the function to find an index in a vector of DOF values
-        pose[ind('LHP')]=pi/4
-        #This way you don't have to remember the DOF index of a joint to tweak it.
-
-    NOTE: Deprecated 3/25/2013
-    """
-    return make_name_to_index_converter(robot,autotranslate)
-
 def make_name_to_index_converter(robot,autotranslate=True):
     """ A closure to easily convert from a string joint name to the robot's
     actual DOF index. 
@@ -342,26 +326,7 @@ def make_name_to_index_converter(robot,autotranslate=True):
                 return None
     return convert
 
-@deprecate
-def make_dof_value_map(robot):
-    names = [j.GetName() for j in robot.GetJoints()]
-    indices = [j.GetDOFIndex() for j in robot.GetJoints()]
-
-    def get_dofs():
-        values=robot.GetDOFValues()
-        for (i,n) in zip(indices,names):
-            pose.setdefault(n,values[i])
-
-    return get_dofs
-
-@deprecate
-def load_simplefloor(env):
-    """ Load up and configure the simpleFloor environment for hacking with
-    physics. Sets some useful defaults.
-    """
-    return load_scene(env,None,'simpleFloor.env.xml',True)
-
-def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,options=Values()):
+def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,options=_optparse.Values()):
     """ Load files and configure the simulation environment based on arguments and the options structure.    
     The returned tuple contains:
         :robot: handle to the created robot
@@ -372,7 +337,7 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
     """
     
     if not (type(robotfile) is list or type(robotfile) is str):
-        raveLogWarn("Assuming 2nd argument is options structure...")
+        _rave.raveLogWarn("Assuming 2nd argument is options structure...")
         options=robotfile
 
     if hasattr(options,'recordfile'):
@@ -429,16 +394,16 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
 
         ref_robot=None
         if options.physicsfile and env.GetPhysicsEngine().GetXMLId()=='GenericPhysicsEngine':
-            raveLogInfo('Loading physics parameters from "{}"'.format(options.physicsfile))
+            _rave.raveLogInfo('Loading physics parameters from "{}"'.format(options.physicsfile))
             env.Load(options.physicsfile)
         elif not options.physicsfile:
             env.SetPhysicsEngine(_rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
         else:
-            raveLogWarn("Physics engine already configured, using current settings...")
+            _rave.raveLogWarn("Physics engine already configured, using current settings...")
 
         #Force new controller since it's easier
         if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine':
-            raveLogInfo('Creating controller for physics simulation')
+            _rave.raveLogInfo('Creating controller for physics simulation')
             controller=_rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
             #TODO: validate gains
@@ -446,7 +411,7 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
 
         else:
             #Just load ideal controller if physics engine is not present
-            raveLogInfo('Physics engine not loaded, using idealcontroller...')
+            _rave.raveLogInfo('Physics engine not loaded, using idealcontroller...')
             controller=_rave.RaveCreateController(env,'idealcontroller')
             robot.SetController(controller)
 
@@ -461,7 +426,7 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
         collisionChecker = _rave.RaveCreateCollisionChecker(env,'pqp')
         if collisionChecker==None:
             collisionChecker = _rave.RaveCreateCollisionChecker(env,'ode')
-            raveLogWarn('Using ODE collision checker since PQP is not available...')
+            _rave.raveLogWarn('Using ODE collision checker since PQP is not available...')
         env.SetCollisionChecker(collisionChecker)
    
     ind=makeNameToIndexConverter(robot)
@@ -536,7 +501,7 @@ def plot_contacts(robot):
         # get first collision
         report = _rave.CollisionReport()
         collision=env.CheckCollision(robot,report=report)
-        raveLogInfo('%d contacts'%len(report.contacts))
+        _rave.raveLogInfo('%d contacts'%len(report.contacts))
         positions = [c.pos for c in report.contacts]
 
     if len(positions):
@@ -625,12 +590,12 @@ class ServoPlotter:
 def safe_quit(env):
     """ Exit callback to ensure that openrave closes safely."""
     #Somewhat overkill, try to avoid annoying segfaults
-    raveLogDebug("Safely exiting rave environment...")
+    _rave.raveLogDebug("Safely exiting rave environment...")
     if env:
         env.Destroy()
     _rave.RaveDestroy()
 
-parser = OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.',
+parser = _optparse.OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.',
                       usage='usage: %prog [options] script')
 OpenRAVEGlobalArguments.addOptions(parser)
 parser.add_option('--robot', action="store",type='string',dest='robotfile',default='rlhuboplus.robot.xml',
