@@ -6,15 +6,15 @@ __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
 import openravepy as _rave
-import generalik as _ik
-import cbirrt as _rrt
 import TransformMatrix as _trans
 import TSR as _tsr
+import numpy as _np
+import generalik as _generalik
+import cbirrt as _cbirrt
 
-from numpy.linalg import inv
-from rodrigues import rodrigues
+from numpy import mat, eye, pi
+
 from openhubo import plot_projected_com, TIMESTEP
-from openhubo.deprecated import CloseLeftHand,CloseRightHand
 import time as _time
 
 #TODO: rename functions to fit new style
@@ -23,15 +23,15 @@ def MakeInPlaceConstraint(robot,manipname):
     manips=robot.GetManipulators()
     manip=robot.GetManipulator(manipname)
     link=manip.GetEndEffector()
-    T0_w=mat(link.GetTransform())
-    Tw_e=mat(eye(4))
+    T0_w=_np.mat(link.GetTransform())
+    Tw_e=_np.mat(_np.eye(4))
     for i in range(len(manips)):
         if manips[i].GetName()==manipname:
             manipindex=i
             break
     print manipindex
 
-    tsr=_tsr.TSR(T0_w,Tw_e,mat(zeros(12)),manipindex)
+    tsr=_tsr.TSR(T0_w,Tw_e,_np.mat(_np.zeros(12)),manipindex)
     print tsr.manipindex
     chain=_tsr.TSRChain(0,1,1)
     chain.insertTSR(tsr)
@@ -48,14 +48,14 @@ def RunTrajectoryFromFile(robot,planner,autoinit=True):
 
     _rave.planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
-    ctrl=PlayTrajWithPhysics(robot,traj,autoinit)
+    PlayTrajWithPhysics(robot,traj,autoinit)
 
 def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False):
     #TODO eliminate adding controller here
     #Lock the environment, halt simulation in preparation
     #import pdb
     #pdb.set_trace()
-    
+
     env=robot.GetEnv()
     #May be a better way to do this without causing so much interruption
     env.StopSimulation()
@@ -63,7 +63,6 @@ def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False
     if robot.GetController().GetXMLId()!='trajectorycontroller':
         ctrl=_rave.RaveCreateController(env,'trajectorycontroller')
         #Not sure if this is necessary
-        oldctrl=robot.GetController()
         robot.SetController(ctrl)
     else:
         ctrl=robot.GetController()
@@ -78,11 +77,11 @@ def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False
 
     _time.sleep(1)
     ctrl.SendCommand('start')
-   
+
     if waitdone:
         t=0
         while not(ctrl.IsDone()):
-            print "Real time {}, sim time {}".format(t,ctrl.GetTime())
+            print "Real time {}, sim time {}".for_np.mat(t,ctrl.GetTime())
             #Only approximate time here
             t=t+.1
             _time.sleep(.1)
@@ -94,32 +93,34 @@ def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False
 
     return ctrl
 
-def plotTransforms(env,transforms,color=array([0,1,0])):
+def plotTransforms(env,transforms,color=None):
     #For now just plot points, eventually plot csys
     #TODO: lump points into a single vector instead of individual handles like this
+    if color is None:
+        color=_np.array([0,1,0])
     handles=[]
     for t in transforms:
         handles.append(env.plot3(points=t[:-1,3].T,pointsize=10.0,colors=color))
     return handles
- 
-def showGoal(env,T):     
+
+def showGoal(env,T):
     #TODO: Potential memory leak here?
     with env:
         dummy=_rave.RaveCreateKinBody(env,'')
         dummy.SetName('dummy_1')
-        dummy.InitFromBoxes(numpy.array([[0,0,0,0.01,0.03,0.06]]),True)
+        dummy.InitFromBoxes(_np([[0,0,0,0.01,0.03,0.06]]),True)
         env.Add(dummy,True)
-        dummy.SetTransform(array(T))
+        dummy.SetTransform(_np.array(T))
     _time.sleep(5)
     env.Remove(dummy)
     return 0
-    
+
 def supportTorsoPose(supports):
     #Calculate torso pose based on grip manips (i.e. best guess based on some parameters
     # Update the passed in reference with the Torso Manip
-    t=mat([0,0,0]).T
+    t=_np.mat([0,0,0]).T
     #Define ideal vertical offsets from each end effector
-    numS=len(supports)
+
     L={'leftArmManip':.1,'rightArmManip':.1,'leftFootManip':.75,'rightFootManip':.75}
     w={'leftArmManip':1,'rightArmManip':1,'leftFootManip':5,'rightFootManip':5}
     wsum=0
@@ -128,13 +129,13 @@ def supportTorsoPose(supports):
         #TODO: use centroid calculation instead of mean?
         if s == 'affineManip':
             continue
-        T=supports[s].endPose()       
+        T=supports[s].endPose()
         #print T[:3,-1]
-        t=t+(T[:3,-1]+mat([-.1,0,L[s]]).T)*w[s]
+        t=t+(T[:3,-1]+_np.mat([-.1,0,L[s]]).T)*w[s]
         wsum+=w[s]
-        
-    affineTSR=TSR(_trans.MakeTransform(mat(eye(3)),t/wsum))
-    affineTSR.Bw=mat([-.05,.05,-.05,.05,-.1,.15,0,0,0,0,-pi/16,pi/16])
+
+    affineTSR=_tsr.TSR(_trans.MakeTransform(_np.mat(_np.eye(3)),t/wsum))
+    affineTSR.Bw=_np.mat([-.05,.05,-.05,.05,-.1,.15,0,0,0,0,-_np.pi/16,_np.pi/16])
     affineTSR.manipindex=4
     return affineTSR
 
@@ -146,7 +147,7 @@ def findCentroid(x,y):
     Cx=1/(6*A)*sum((x[:-1]+x[1:])*(x[:-1]*y[1:]-x[1:]*y[:-1]))
     #Cy
     Cy=1/(6*A)*sum((y[:-1]+y[1:])*(x[:-1]*y[1:]-x[1:]*y[:-1]))
-    return array([Cx,Cy])
+    return _np.array([Cx,Cy])
 
 def findGraspFromGoal(goal):
     #TODO: eventually make this scan the environment etc. and do real grasp calculation
@@ -175,7 +176,7 @@ def setInitialPose(robot):
     robot.SetActiveDOFValues([0,pi/4,0,-.5,0,0,0])
     robot.SetActiveDOFs(robot.GetManipulator('rightArm').GetArmIndices())
     robot.SetActiveDOFValues([0,-pi/4,0,-.5,0,0,0])
-    #hack to close the fingers enough to avoid other body parts. 
+    #hack to close the fingers enough to avoid other body parts.
     #TODO: grasping routine?
     robot.SetDOFValues([pi/8,pi/8,pi/8],[robot.GetJointIndex('rightThumbKnuckle1'),robot.GetJointIndex('rightThumbKnuckle2'),robot.GetJointIndex('rightThumbKnuckle3')])
     robot.SetDOFValues([pi/8,pi/8,pi/8],[robot.GetJointIndex('leftThumbKnuckle1'),robot.GetJointIndex('leftThumbKnuckle2'),robot.GetJointIndex('leftThumbKnuckle3')])
@@ -188,7 +189,7 @@ def findPoseIntersection(robot,problem,init,final):
                 # Identical manipulator name and goal means overlap
                 trans.setdefault(k,init[k])
     return trans
-    
+
 def solveWholeBodyPose(robot,problem,tsrs):
     """Useful GeneralIK wrapper to check if a goal combination is reasonable"""
     supportlinks=[]
@@ -196,22 +197,22 @@ def solveWholeBodyPose(robot,problem,tsrs):
     for k in tsrs.keys():
         supportlinks.append(robot.GetManipulator(k).GetEndEffector().GetName())
 
-    ik=GeneralIK(robot,problem,tsrs.values())
+    ik=_generalik.GeneralIK(robot,problem,tsrs.values())
 
     #TODO: make this run even if solution is found?
     ik.continousSolve(1000,True,[3])
-    
+
     if ik.solved():
         ik.goto()
         print "Found first transition solution"
         if len(ik.supportlinks):
-            response=problem.SendCommand('CheckSupport supportlinks {} {}'.format(len(supportlinks),' '.join(supportlinks)))
+            response=problem.SendCommand('CheckSupport supportlinks {} {}'.for_np.mat(len(supportlinks),' '.join(supportlinks)))
             collision=robot.GetEnv().CheckCollision(robot)
             if response[0]=='1' and not(collision):
                 return True
         else:
             return True
-    
+
     return False
 
 def planSequence(robot,problem,init,final=[],trans=[]):
@@ -221,39 +222,30 @@ def planSequence(robot,problem,init,final=[],trans=[]):
         #find all supporting end effectors from manips
         for k in trans.keys():
             supportlinks.append(robot.GetManipulator(k).GetEndEffector().GetName())
-            
-        #init.setdefault('affineManip',supportTorsoPose(trans))
-        #final.setdefault('affineManip',supportTorsoPose(trans))       
 
-    init_ik=GeneralIK(robot,problem,init.values())
-    planner=Cbirrt(problem)
-    #Eliminate support links since CoG projection doesn't work on a ladder
-    #init_ik.supportlinks=supportlinks
-    #init_ik.cogtarget=(0.0,0,0)
-    
+    init_ik=_generalik.GeneralIK(robot,problem,init.values())
+
     print init_ik.Serialize()
     init_ik.activate()
     init_ik.findSolution(50)
-    
+
     if init_ik.solved():
         init_ik.goto()
         print "Found first transition solution"
-        problem.SendCommand('CheckSupport supportlinks {} {}'.format(len(supportlinks),' '.join(supportlinks)))
+        problem.SendCommand('CheckSupport supportlinks {} {}'.for_np.mat(len(supportlinks),' '.join(supportlinks)))
     else:
         return False
 
     if len(final)>0:
-        #final.setdefault('affineManip',supportTorsoPose(final))
-        #final['affineManip'].Bw=mat([-.01,.01,-.01,.01,-.05,.1,0,0,0,0,0,0])
         #Look for transition pose AS SUBSET of init
-        final_ik=GeneralIK(robot,problem,final.values())
+        final_ik=_generalik.GeneralIK(robot,problem,final.values())
         final_ik.supportlinks=supportlinks
         print final_ik.Serialize()
         final_ik.findSolution(50)
         if final_ik.solved() and init_ik.solved():
             print "Found second transition solution"
             final_ik.goto()
-        else: 
+        else:
             return False
-    
+
     return True

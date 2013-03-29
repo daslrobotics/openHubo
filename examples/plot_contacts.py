@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (C) 2009-2011 Rosen Diankov (rosen.diankov@gmail.com)
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,8 @@ from optparse import OptionParser
 import time
 import openravepy
 import openhubo
-import kbhit 
+from openhubo import kbhit
+
 if not __openravepy_build_doc__:
     from numpy import *
     from openravepy import *
@@ -41,7 +42,7 @@ if __name__ == "__main__":
     # Set the floor and other bodies to be slightly transparent to better visualize interpenetrations
     for b in env.GetBodies():
         if not b == robot:
-            set_robot_color(b,trans=.4)
+            openhubo.set_robot_color(b,trans=.4)
 
     while ~stop:
         if kbhit.kbhit():
@@ -49,7 +50,5 @@ if __name__ == "__main__":
 
         handles=openhubo.plot_contacts(robot)
 
-        time.sleep(0.02)
-    raw_input('press any key to exit')
-
+        openhubo.sleep(0.02)
 
