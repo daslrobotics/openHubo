@@ -16,9 +16,10 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-from openravepy import *
-from numpy import *
+from numpy import array,zeros
 import time
+import openhubo
+from openhubo import TIMESTEP,pause,sleep
 
 def build_ftmap(robot,linknames,ftdata):
 
@@ -29,7 +30,7 @@ def build_ftmap(robot,linknames,ftdata):
         vec.extend(ft[0])
         vec.extend(ft[1])
         ftmap.setdefault(l,array(vec))
-    
+
     return ftmap
 
 def map_joint_torques(robot,torques):
@@ -42,14 +43,14 @@ def map_joint_torques(robot,torques):
 
 if __name__=='__main__':
 
-    (env,options)=setup('qtcoin')
+    (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(3)
-    
+
     #Load environment and robot with default settings
-    [robot,ctrl,ind,ref_robot,recorder]=load_scene(env,options)
+    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load_scene(env,options)
 
     physics=env.GetPhysicsEngine()
-    
+
     l1=robot.GetLink('leftFoot')
     l2=robot.GetLink('rightFoot')
 
@@ -69,7 +70,7 @@ if __name__=='__main__':
     print "timestep = {}, Took {} real sec. for {} sim sec.".format(TIMESTEP,t1-t0,float(st1-st0)/1000000)
 
     ftmap=build_ftmap(robot,['leftFoot','rightFoot'],[FT1,FT2])
-   
+
     #Shorthand for a vector of zero accelerations for the inverse dynamics function
     dofaccelerations=[]
     #Find static solution total torques:

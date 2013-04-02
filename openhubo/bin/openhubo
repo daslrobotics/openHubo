@@ -9,6 +9,7 @@ from openhubo.core import setup
 from fnmatch import fnmatch
 import os as _os
 import sys as _sys
+import openhubo as _oh
 
 
 print "Using Ipython for exceptions..."
@@ -29,18 +30,21 @@ if options.example or scriptname:
         execfile(expath+options.example)
 else:
     #Enable interactive mode and load a simple environment
+    (env,options)=_oh.setup('qtcoin')
+    env.SetDebugLevel(3)
+
+    #Options structure is populated by command line as well as easily in code
+    options.stop=True
+    [robot,ctrl,ind,ref,recorder]=_oh.load_scene(env,options)
+
+    env.StartSimulation(openhubo.TIMESTEP)
+
+if options.interact:
+    #boilerplate imports for easy interactive work
+    print "Importing openravepy, numpy, and openhubo for interactive session..."
+    import startup
     from openravepy import *
     from numpy import *
     from openhubo import *
-    (env,options)=setup('qtcoin')
-    env.SetDebugLevel(3)
-    
-    #Options structure is populated by command line as well as easily in code
-    options.stop=True
-    [robot,ctrl,ind,ref,recorder]=load_scene(env,options)
-
-    env.StartSimulation(TIMESTEP)
-
-if options.interact:
     IPython.embed()
     print "Cleaning up after inspection..."
