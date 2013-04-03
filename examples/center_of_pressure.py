@@ -16,9 +16,9 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-from openravepy import *
-from numpy import *
+from numpy import sign,mat,array,pi
 from numpy.linalg import norm
+from openravepy import Sensor
 import openhubo
 import openhubo.kbhit as kbhit
 import time
@@ -60,9 +60,8 @@ def swing_and_measure(pose):
 
 if __name__=='__main__':
 
-    env = Environment()
-    env.SetDebugLevel(3)
     (env,options)=openhubo.setup('qtcoin')
+    env.SetDebugLevel(3)
     options.physicsfile='physics.xml'
 
     [robot,controller,ind,ref,recorder]=openhubo.load_scene(env,options)

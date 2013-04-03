@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
-from openravepy import *
-from numpy import *
-from numpy.linalg import *
-from openhubo import *
+import openhubo
+from openravepy import RaveCreateController
 import matplotlib.pyplot as plt
+from numpy import diff
 
 def analyzeTime(filename):
     with open(filename,'r') as f:

@@ -24,10 +24,6 @@ import openravepy
 import openhubo
 from openhubo import kbhit
 
-if not __openravepy_build_doc__:
-    from numpy import *
-    from openravepy import *
-
 if __name__ == "__main__":
     """Modified version of contact display from openrave examples"""
 

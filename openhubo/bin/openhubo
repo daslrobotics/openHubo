@@ -40,11 +40,15 @@ else:
     env.StartSimulation(openhubo.TIMESTEP)
 
 if options.interact:
-    #boilerplate imports for easy interactive work
-    print "Importing openravepy, numpy, and openhubo for interactive session..."
-    import startup
-    from openravepy import *
-    from numpy import *
-    from openhubo import *
+    if options.noimports:
+        print "Skipping bulk imports for interactive prompt..."
+
+    else:
+        #boilerplate imports for easy interactive work
+        print "Importing openravepy, numpy, and openhubo for interactive session..."
+        import openhubo.startup
+        from openravepy import *
+        from numpy import *
+        from openhubo import *
     IPython.embed()
     print "Cleaning up after inspection..."

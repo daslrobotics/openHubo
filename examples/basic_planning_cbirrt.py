@@ -3,36 +3,34 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-from openravepy import *
-from numpy import *
-from numpy.linalg import inv
-from TSR import *
-from openhubo.generalik import *
-from openhubo.cbirrt import *
-from openhubo import *
-#dump of planning functions
-from openhubo.planning import *
+import openhubo
+import openhubo.planning as planning
 
-(env,options)=setup('qtcoin')
+from numpy import pi
+from openhubo import pause
+from TSR import TSR,TSRChain
+from openravepy import RaveCreateProblem
+
+(env,options)=openhubo.setup('qtcoin')
 env.SetDebugLevel(3)
 
 options.physicsfile='physics.xml'
 
-[robot,ctrl,ind,ref,recorder]=load_scene(env,options)
+[robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,options)
 
 probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
 env.LoadProblem(probs_cbirrt,robot.GetName())
 
-first_pose=Cbirrt(probs_cbirrt)
-setInitialPose(robot)
+first_pose=planning.Cbirrt(probs_cbirrt)
+planning.setInitialPose(robot)
 
 ## Create an example goal pose (The result of all of these steps should be a
 # goal pose vector)
-pose=robot.GetDOFValues()
+pose=openhubo.Pose(robot,ctrl)
 start_position=robot.GetTransform()
 
-pose[ind('RSP')]=-pi/4
-pose[ind('LSP')]=-pi/4
+pose['RSP']=-pi/4
+pose['LSP']=-pi/4
 
 #Choose degrees of freedom that are allowed to be moved to explore towards
 #the goal.
@@ -40,24 +38,24 @@ activedofs=first_pose.ActivateManipsByIndex(robot,[0,1])
 activedofs.append(ind('LHP'))
 activedofs.append(ind('RHP'))
 
-#Set the goal pose as 
+#Set the goal pose as
 for x in activedofs:
     first_pose.jointgoals.append(pose[x])
 #Add in hip pitches
-robot.SetActiveDOFs(activedofs) 
+robot.SetActiveDOFs(activedofs)
 
 first_pose.filename='firstpose.traj'
 print first_pose.Serialize()
 
 first_pose.run()
 pause()
-RunTrajectoryFromFile(robot,first_pose,False)
+planning.RunTrajectoryFromFile(robot,first_pose,False)
 
 ## Now, reset to initial conditions and activate whole body
 env.StopSimulation()
-second_pose=Cbirrt(probs_cbirrt)
-setInitialPose(robot)
-robot.SetTransform(start_position) 
+second_pose=planning.Cbirrt(probs_cbirrt)
+planning.setInitialPose(robot)
+robot.SetTransform(start_position)
 
 ## This time, use the whole body (or at least, all 4 manipulators)
 activedofs=second_pose.ActivateManipsByIndex(robot,[0,1,2,3])
@@ -82,4 +80,4 @@ second_pose.psample=.05
 
 print second_pose.Serialize()
 second_pose.run()
-RunTrajectoryFromFile(robot,second_pose,False)
+planning.RunTrajectoryFromFile(robot,second_pose,False)

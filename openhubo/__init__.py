@@ -9,7 +9,6 @@ The older python syntax is also usable for launching openhubo scripts:
 """
 
 import numpy as _np
-import sys as _sys
 import matplotlib.pyplot as _plt
 import re as _re
 import atexit as _atexit
@@ -24,12 +23,8 @@ from time import sleep
 from datetime import datetime
 from warnings import warn
 
-# If run using interactive prompt:
-if hasattr(_sys,'ps1') or _sys.flags.interactive:
-    import startup
 
 TIMESTEP=0.001
-
 
 #KLUDGE: hard code the mapping (how often will it change, really?). Include openhubo synonyms here for fast lookup.
 hubo_map={'RHY':26,
@@ -608,6 +603,7 @@ class ServoPlotter:
 
         with open(filename,'r') as f:
             gainstring=f.readline().rstrip()
+            print gainstring
             servostrings=f.readlines()
 
         if clearold:
@@ -655,6 +651,8 @@ def _create_parser():
                     help='Create a ghost robot to show desired vs. actual pose')
     parser.add_option('--atheight', action="store",type="float", dest='atheight',default=None,
                     help='Align the robot\'s feet at the given absolute Z height')
+    parser.add_option('--no-interactive-imports', action="store_true", dest='noimports',default=False,
+                    help='Disable bulk imports for interactive prompt (useful for debugging import errors)')
     return parser
 
 def setup(viewername=None,create=True):

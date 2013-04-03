@@ -6,13 +6,12 @@ __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
 import openravepy as _rave
-import TransformMatrix as _trans
 import TSR as _tsr
 import numpy as _np
-import generalik as _generalik
-import cbirrt as _cbirrt
 
-from numpy import mat, eye, pi
+from numpy import pi,mat
+import copy as _copy
+import TransformMatrix as _Trans
 
 from openhubo import plot_projected_com, TIMESTEP
 import time as _time
@@ -134,7 +133,7 @@ def supportTorsoPose(supports):
         t=t+(T[:3,-1]+_np.mat([-.1,0,L[s]]).T)*w[s]
         wsum+=w[s]
 
-    affineTSR=_tsr.TSR(_trans.MakeTransform(_np.mat(_np.eye(3)),t/wsum))
+    affineTSR=_tsr.TSR(_Trans.MakeTransform(_np.mat(_np.eye(3)),t/wsum))
     affineTSR.Bw=_np.mat([-.05,.05,-.05,.05,-.1,.15,0,0,0,0,-_np.pi/16,_np.pi/16])
     affineTSR.manipindex=4
     return affineTSR
@@ -197,7 +196,7 @@ def solveWholeBodyPose(robot,problem,tsrs):
     for k in tsrs.keys():
         supportlinks.append(robot.GetManipulator(k).GetEndEffector().GetName())
 
-    ik=_generalik.GeneralIK(robot,problem,tsrs.values())
+    ik=GeneralIK(robot,problem,tsrs.values())
 
     #TODO: make this run even if solution is found?
     ik.continousSolve(1000,True,[3])
@@ -223,7 +222,7 @@ def planSequence(robot,problem,init,final=[],trans=[]):
         for k in trans.keys():
             supportlinks.append(robot.GetManipulator(k).GetEndEffector().GetName())
 
-    init_ik=_generalik.GeneralIK(robot,problem,init.values())
+    init_ik=GeneralIK(robot,problem,init.values())
 
     print init_ik.Serialize()
     init_ik.activate()
@@ -238,7 +237,7 @@ def planSequence(robot,problem,init,final=[],trans=[]):
 
     if len(final)>0:
         #Look for transition pose AS SUBSET of init
-        final_ik=_generalik.GeneralIK(robot,problem,final.values())
+        final_ik=GeneralIK(robot,problem,final.values())
         final_ik.supportlinks=supportlinks
         print final_ik.Serialize()
         final_ik.findSolution(50)
@@ -249,3 +248,177 @@ def planSequence(robot,problem,init,final=[],trans=[]):
             return False
 
     return True
+
+
+class Cbirrt:
+    #TODO: Define copy constructor
+    #TODO: figure out if this makes sense to pack the problem in this way
+    def __init__(self, problem,tsr_chains=[],filename='cmovetraj.txt',timelimit=30,smoothing=10):
+        self.problem=problem
+        self.tsr_chains=tsr_chains
+        self.filename=filename
+        self.timelimit=timelimit
+        self.smoothing=smoothing
+        self.psample=.1
+        self.supportlinks=[]
+        self.jointgoals=[]
+        self.jointstarts=[]
+        self.solved=False
+        self.exactsupport=False
+
+    def insertTSRChain(self,chain):
+        #TODO: Is it better to pass in by reference to make it easy to change?
+        self.tsr_chains.append(_copy.deepcopy(chain))
+
+    def Serialize(self):
+        cmd='RunCBiRRT'
+        cmd = cmd + ' filename {} timelimit {} smoothingitrs {}'.format(self.filename,self.timelimit,self.smoothing)
+        goalSampling=False
+        if len(self.jointgoals)>0:
+            cmd=cmd+' jointgoals {} {}'.format(len(self.jointgoals),_Trans.Serialize1DMatrix(mat(self.jointgoals)))
+        if len(self.jointstarts)>0:
+            cmd=cmd+' jointstarts {} {}'.format(len(self.jointstarts),_Trans.Serialize1DMatrix(mat(self.jointstarts)))
+        for chain in self.tsr_chains:
+            cmd=cmd+'{}'.format(chain.Serialize())
+            if chain.bSampleStartFromChain or chain.bSampleGoalFromChain:
+                goalSampling=True
+        if goalSampling:
+            cmd=cmd+' psample {}'.format(self.psample)
+        if len(self.supportlinks)>0:
+            cmd=cmd+' supportlinks {} {}'.format(len(self.supportlinks),' '.join(self.supportlinks))
+            cmd=cmd+' exactsupport {}'.format(int(self.exactsupport))
+
+        #print cmd
+        return cmd
+
+    def run(self):
+        stat = self.problem.SendCommand(self.Serialize())
+        if stat == '1':
+            self.solved=True
+            return True
+        return False
+
+    def playback(self,force=False):
+        if self.solved==True:
+            return self.problem.SendCommand('traj {}'.format(self.filename))
+        elif force:
+            print 'Forcing playback of trajectory {}'.format(self.filename)
+            return self.problem.SendCommand('traj {}'.format(self.filename))
+        else:
+            print 'Current solution not ready, use run() to generate'
+
+    def ActivateManipsByIndex(self,robot,maniplist,extramanips=[]):
+        manips=robot.GetManipulators()
+        activedof=[]
+        for i in maniplist:
+            activedof.extend(manips[i].GetArmJoints().tolist())
+        for i in extramanips:
+            activedof.extend(manips[i].GetArmJoints().tolist())
+        robot.SetActiveDOFs(activedof)
+        return activedof
+
+
+
+class GeneralIK:
+    def __init__(self,robot,problem,tsrlist=[],sample_bw=False):
+        self.robot=robot
+        self.problem=problem
+        self.tsrlist=tsrlist
+        self.sample_bw=sample_bw
+        self.soln=[]
+        self.activedofs=[]
+        self.zero=robot.GetDOFValues()
+        self.supportlinks=[]
+        self.cogtarget=()
+
+    def Serialize(self):
+        L=len(self.tsrlist)
+        cmd='DoGeneralIK exec nummanips {}'.format(L)
+        for k in self.tsrlist:
+            cmd=cmd+' '
+            #Assumes that Bw encloses T0_e
+            if self.sample_bw:
+                #TODO: save the sampled goal for future use
+                cmd=cmd+'maniptm {} {}'.format(k.manipindex,_Trans.SerializeTransform(k.sample()))
+            else:
+                T0_e=k.T0_w*k.Tw_e
+                cmd=cmd+'maniptm {} {}'.format(k.manipindex,_Trans.SerializeTransform(T0_e))
+            #NOTE: "planning" robot treats torso pose as a manipulator, which
+            #clashes a bit with the idea that the torso should be specified by torsotm
+        if len(self.supportlinks)>0:
+            cmd=cmd+' supportlinks {} {}'.format(len(self.supportlinks),' '.join(self.supportlinks))
+        if len(self.cogtarget)>0:
+            cmd=cmd+' movecog {} {} {}'.format(self.cogtarget[0],self.cogtarget[1],self.cogtarget[2])
+        return cmd
+    def appendTSR(self,tsr):
+        self.tsrlist.append(tsr)
+
+    def activate(self,extra=[]):
+        if len(self.activedofs)==0:
+            manips=self.robot.GetManipulators()
+            #print manips
+            for m in self.tsrlist:
+                #print m
+                #print robot
+                #print manips[m.manipindex].GetArmIndices()
+                #print activedofs
+                self.activedofs.extend(manips[m.manipindex].GetArmIndices())
+            for m in extra:
+                self.activedofs.extend(manips[m].GetArmIndices())
+        #print self.activedofs
+        self.robot.SetActiveDOFs(self.activedofs)
+
+    def run(self,auto=False,extra=[]):
+
+        if auto:
+            self.activate(extra)
+        response=self.problem.SendCommand(self.Serialize())
+
+        if len(response)>0:
+            collisions=_rave.CollisionReport()
+            if self.robot.CheckSelfCollision(collisions):
+                print "Self-collision between links {} and {}!".format(collisions.plink1,collisions.plink2)
+                return False
+            if self.robot.GetEnv().CheckCollision(self.robot,collisions):
+                print "Environment collision between links {} and {}!".format(collisions.plink1,collisions.plink2)
+                return False
+            self.soln=[float(x) for x in response[:-1].split(' ')]
+            return True
+
+    def goto(self):
+        self.activate()
+        self.robot.SetDOFValues(self.soln,self.activedofs)
+        self.robot.WaitForController(.2)
+
+    def solved(self):
+        return len(self.soln)>0
+
+    def findSolution(self,itrs=10,auto=False,extra=[]):
+        #Enable TSR sampling
+        self.sample_bw=True
+        for k in range(itrs):
+            if self.solved():
+                break
+            #rezero to prevent getting stuck...at major speed penalty
+            self.robot.SetDOFValues(self.zero)
+            self.run(auto,extra)
+            _time.sleep(.1)
+        return self.solved()
+
+    def continousSolve(self,itrs=1000,auto=False,extra=[]):
+        #Enable TSR sampling
+        self.sample_bw=True
+        for k in range(itrs):
+            if not(self.robot.GetEnv().CheckCollision(self.robot)) and not(self.robot.CheckSelfCollision()) and self.solved():
+                print "Valid solution found!"
+                #TODO: log solutuon + affine DOF
+
+            #rezero to prevent getting stuck...at major speed penalty
+            self.robot.SetDOFValues(self.zero)
+            self.run(auto,extra)
+            _time.sleep(.1)
+        return self.solved()
+
+    def resetZero(self):
+        self.zero=self.robot.GetDOFValues()
+
