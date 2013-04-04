@@ -1,0 +1,52 @@
+<robot name="pendulum">
+    <kinbody name="pendulum_kb">
+        <body name="base" type="static">
+            <translation>0 0 1</translation>
+            <geom type="box">
+                <extents>1 1 1</extents>
+                <diffusecolor>.2 .2 .2</diffusecolor>
+            </geom>
+        </body>
+
+        <body name="pole" type="dynamic">
+            <offsetfrom>base</offsetfrom>
+            <translation>0 1.05 0</translation>
+            <geometry type="cylinder">
+                <height>.1</height>
+                <radius>.05</radius>
+            </geometry>
+            <mass type="mimicgeom">
+                <total>10</total>
+            </mass>
+        </body>
+
+        <body name="arm" type="dynamic">
+            <offsetfrom>pole</offsetfrom>
+            <translation>0 0.05 -0.4</translation>
+            <geom type="box">
+                <extents>0.05 0.05 .5</extents>
+            </geom>
+            <mass type="custom">
+                <total>10</total>
+                <com>0 0 -1</com>
+            </mass>
+        </body>
+
+        <joint name="dummy_pole" type="hinge" enable="false">
+            <body>base</body>
+            <body>pole</body>
+            <limitsdeg>0 0</limitsdeg>
+        </joint>
+
+        <joint name="j0" type="hinge" circular="true">
+            <body>pole</body>
+            <body>arm</body>
+            <offsetfrom>pole</offsetfrom>
+            <axis>0 1 0</axis>
+        </joint>
+
+        <adjacent>pole base</adjacent>
+        <adjacent>pole arm</adjacent>
+
+    </kinbody>
+</robot>

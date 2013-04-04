@@ -29,37 +29,27 @@ if not __openravepy_build_doc__:
 
 if __name__ == "__main__":
     """Modified version of contact display from openrave examples"""
-    env=Environment()
-    openhubo.load(env,'rlhuboplus.robot.xml','ladder.env.xml',False,False)
-    env.SetViewer('qtcoin')
-    robot=env.GetRobots()[0]
-    env.SetCollisionChecker(RaveCreateCollisionChecker(env,'pqp'))
-    raw_input('press key to show at least one contact point')
+
+    (env,options)=openhubo.setup('qtcoin',True)
+    env.SetDebugLevel(2)
+    time.sleep(.25)
+
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
+
     stop=False
+
+    # Set the floor and other bodies to be slightly transparent to better visualize interpenetrations
+    for b in env.GetBodies():
+        if not b == robot:
+            set_robot_color(b,trans=.4)
+
     while ~stop:
         if kbhit.kbhit():
             stop=True
-        with env:
-            # move both arms to collision
-            lindex = robot.GetJoint('LSP').GetDOFIndex()
-            rindex = robot.GetJoint('RSP').GetDOFIndex()
-            robot.SetDOFValues([0.226,-1.058],[lindex,rindex])
-        
-            # setup the collision checker to return contacts
-            env.GetCollisionChecker().SetCollisionOptions(CollisionOptions.Contacts)
 
-            # get first collision
-            report = CollisionReport()
-            collision=env.CheckCollision(robot,report=report)
-            print '%d contacts'%len(report.contacts)
-            positions = [c.pos for c in report.contacts]
+        handles=openhubo.plot_contacts(robot)
 
-        if len(positions):
-            h1=env.plot3(array(positions),10,[.7,.1,0])
-        else:
-            h1=[]
-
-        time.sleep(0.05)
+        time.sleep(0.02)
     raw_input('press any key to exit')
 
 

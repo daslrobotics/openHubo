@@ -1,0 +1,58 @@
+<robot name="forceplate">
+    <kinbody name="structure">
+
+        <body name="interface" type="dynamic">
+            <translation>0 0 0.02</translation>
+            <geometry type="box">
+                <extents>.2 .2 .01</extents>
+            </geometry>
+            <mass type="mimicgeom">
+                <total>.01</total>
+            </mass>
+        </body>
+
+        <body name="link1" type="dynamic">
+            <offsetfrom>interface</offsetfrom>
+            <translation>0 0 0.11</translation>
+            <rotationaxis>1 0 0 90</rotationaxis>
+            <geometry type="box">
+                <extents>.2 .1 .2</extents>
+            </geometry>
+            <mass type="mimicgeom">
+                <total>10</total>
+            </mass>
+        </body>
+
+        <body name="link2" type="dynamic">
+            <offsetfrom>link1</offsetfrom>
+            <translation>0 0.11 0</translation>
+            <rotationaxis>1 0 0 90</rotationaxis>
+            <geometry type="box">
+                <extents>.2 .2 .1</extents>
+            </geometry>
+            <mass type="mimicgeom">
+                <total>10</total>
+            </mass>
+        </body>
+
+
+        <joint name="j1" type="hinge" enable="false">
+            <body>interface</body>
+            <body>link1</body>
+            <limits>0 0</limits>
+        </joint>
+
+        <joint name="j2" type="hinge" enable="false">
+            <body>link1</body>
+            <body>link2</body>
+            <limits>0 0</limits>
+        </joint>
+
+    </kinbody>
+
+    <AttachedSensor name="FT">
+        <link>interface</link>
+        <sensor type="ForceSensor">
+        </sensor>
+    </AttachedSensor>
+</robot>

@@ -8,16 +8,255 @@ import datetime
 import warnings
 import sys
 import matplotlib.pyplot as plt
+import logging
+from optparse import OptionParser,Values
+import re
+import signal
+import IPython
 
-# Interactive script 
+""" openhubo python module and main executable. Most of openhubo's functionality
+is available through this module.
+
+Command line usage of openhubo and examples:
+    openhubo --example myexample.py --robot myrobot.xml
+
+The older python syntax is also usable for launching openhubo scripts:
+    python [-i] examples/myexample.py
+"""
+
+# If run using interactive prompt:
 if hasattr(sys,'ps1') or sys.flags.interactive:
-    print "Loading OpenHubo interactive tools..."
+    print "Loading OpenHubo interactive session..."
     import startup
 
-""" A collection of useful functions to run openhubo models.
-As common functions are developed, they will be added here.
-"""
 TIMESTEP=0.001
+
+#KLUDGE: hard code the mapping (how often will it change, really?). Include openhubo synonyms here for fast lookup.
+hubo_map={'RHY':26,
+          'RHR':27,
+          'RHP':28,
+          'RKN':29,
+          'RKP':29,
+          'RAP':30,
+          'RAR':31,
+          'LHY':19,
+          'LHR':20,
+          'LHP':21,
+          'LKN':22,
+          'LKP':22,
+          'LAP':23,
+          'LAR':24,
+          'RSP':11,
+          'RSR':12,
+          'RSY':13,
+          'REB':14,
+          'REP':14,
+          'RWY':15,
+          'RWR':16,
+          'RWP':17,
+          'LSP':4,
+          'LSR':5,
+          'LSY':6,
+          'LEB':7, 
+          'LEP':7, 
+          'LWY':8,
+          'LWR':9, 
+          'LWP':10,
+          'NKY':1,
+          'HNY':1,
+          'NK1':2,
+          'HNR':2,
+          'NK2':3, 
+          'HNP':3, 
+          'WST':0,
+          'HPY':0,
+          'TSY':0,
+          'RF1':32,
+          'RF2':33,
+          'RF3':34, 
+          'RF4':35,
+          'RF5':36,
+          'LF1':37,
+          'LF2':38, 
+          'LF3':39, 
+          'LF4':40, 
+          'LF5':41}
+
+class Pose:
+    """Easy-to-use wrapper for an array of DOF values for a robot. The Pose class
+        behaves like a combination of a dictionary and an array. You can look
+        up joints by DOF index, openHubo joint name, or Hubo-ach joint name.
+
+        --Examples--
+        1. Create a pose from a robot:
+            pose=Pose(robot,[ctrl])
+        2. Get / Change a joint value in the local pose:
+            pose['REP']
+            pose['LHP']=pi/4
+        3. Update to the latest robot pose:
+            pose.update()
+        4. Send a pose to the robot's controller:
+            pose.send()
+    """
+    @staticmethod
+    def build_jointmap(robot):
+        jointmap={}
+        for j in robot.GetJoints():
+            name=j.GetName()
+            index=j.GetDOFIndex()
+            jointmap.setdefault(name,index)
+            #Add the index itself to replicate old behavior
+            # Might be slow, but the point of this is simplicity. 
+            #jointmap.setdefault(index,index)
+
+            #Check if hubo-ach name is different and add synonym
+            huboname=get_huboname_from_name(name)
+            if huboname != name:
+                jointmap.setdefault(huboname,index)
+
+        return jointmap
+
+    def __init__(self,robot=None,ctrl=None,values=None):
+        self.robot=robot
+        self.jointmap=Pose.build_jointmap(robot)
+        if values is not None:
+            #Will throw size exception if values is too short
+            self.values=values
+        elif robot is not None:
+            self.update()
+        else:
+            self.values=zeros(robot.GetDOF())
+        self.ctrl=ctrl
+
+    def update(self,newvalues=None):
+        """manually assign new values, or poll for new values from robot"""
+        if newvalues is None:
+            self.values=self.robot.GetDOFValues()
+        elif len(newvalues)==len(self.values):
+            self.values=array(newvalues)
+            #TODO: exception throw here?
+
+    def to_waypt(self,dt=1,affine=zeros(7)):
+        #list constructor does shallow copy here
+        waypt =  [float(v) for v in self.values]
+        #Add affine pose information if needed
+        waypt.extend(affine)
+        waypt.append(dt)
+        return waypt
+
+    def send(self):
+        self.ctrl.SetDesired(self.values)
+    
+    def pretty(self):
+        for d, v in enumerate(self.values):
+            print '{0} = {1}'.format(
+                self.robot.GetJointFromDOFIndex(d).GetName(),v)
+                
+    #TODO: Test if type checking slows down these functions
+    def __getitem__(self,key):
+        """ Lookup the joint name and return the value"""
+        if type(key)==str:
+            return self.values[self.jointmap[key]]
+        if type(key)==slice or type(key)==int:
+            return self.values[key]
+
+    def __setitem__(self,key,value):
+        """ Lookup the joint name and assign the specified value """
+        if type(key)==str:
+            self.values[self.jointmap[key]]=value
+        if type(key)==slice or type(key)==int:
+            self.values[key]=value
+
+def get_name_from_huboname(inname,robot=None):
+    """ Map a name from the openhubo standard to the original hubo naming
+    scheme.
+
+    """
+    huboname=inname.encode('ASCII')
+    #Cheat a little since hubonames are roman characters
+    if (huboname == "LKN" or huboname == "RKN"): 
+        name=huboname[0:2]+'P'
+    
+    elif (huboname == "LEB" or huboname == "REB"): 
+        name=huboname[0:2]+'P'
+    
+    elif (huboname == "WST" ): 
+        name = "HPY"
+    
+    elif (huboname == "NKY"): 
+        name="NKY"
+    
+    elif (huboname == "NK1"): 
+        name="HNR"
+    
+    elif (huboname == "NK2"): 
+        name="HNP"
+    
+    else:
+        name=huboname
+    #TODO: Fingers
+
+    if robot is None:
+        warnings.warn("No robot provided, skipping name check")
+        return name
+    elif robot.GetJoint(name):
+        return name
+    else:
+        return None
+
+def get_huboname_from_name(inname):
+    """Get a hubo-standard joint name from the openhubo name (mostly the same,
+    but they differ slightly for some joints.
+    """
+    name=inname.encode('ASCII')
+    #Cheat a little since names are roman characters
+    if (name == "LKP" or name == "RKP"): 
+        achname=name[0:2]+'N'
+    
+    elif (name == "LEP" or name == "REP"): 
+        achname=name[0:2]+'B'
+    
+    elif (name == "HPY" or name == "TSY"): 
+        achname = "WST"
+    
+    elif (name == "HNY"): 
+        achname="NKY"
+    
+    elif (name == "HNR"): 
+        achname="NK1"
+    
+    elif (name == "HNP"): 
+        achname="NK2"
+    
+    elif re.search('Knuckle',name) and not re.search('[23]',name):
+        name=re.sub('left','LF',name)
+        name=re.sub('right','RF',name)
+        name=re.sub('Knuckle','',name)
+        name=re.sub('Thumb','1',name)
+        name=re.sub('Index','2',name)
+        name=re.sub('Middle','3',name)
+        name=re.sub('Ring','4',name)
+        name=re.sub('Pinky','4',name)
+        achname = name[:-1]
+    else:
+        achname=name
+
+    if hubo_map.has_key(achname):
+        return achname
+    else:
+        return None
+
+def build_joint_index_map(robot):
+    """ Low level function to build a map of joint names and indices"""
+    jointlist=zeros(robot.GetDOF())-1
+    for j in robot.GetJoints():
+        name=j.GetName()
+        print name
+        huboname=get_huboname_from_name(name)
+        print huboname
+        if huboname:
+            jointlist[j.GetDOFIndex()]=jointmap[huboname]
+    return jointlist
 
 def set_robot_color(robot,dcolor=[.5,.5,.5],acolor=[.5,.5,.5],trans=0,links=[]):
     """Iterate over a robot's links and set color / transparency."""
@@ -40,101 +279,188 @@ def pause(t=-1):
         raw_input('Press any key to continue...')
     elif t>=0:
         time.sleep(t)
-        
-def makeNameToIndexConverter(robot):
+
+@deprecate        
+def makeNameToIndexConverter(robot,autotranslate=True):
     """ A closure to easily convert from a string joint name to the robot's
-    actual DOF index, for use in creating/editing trajectories."""
-    def convert(name):
-        j=robot.GetJoint(name)
-        if not(j==None):
-            return robot.GetJoint(name).GetDOFIndex()
-        else:
-            return -1
+    actual DOF index. 
+    
+    Example usage:
+        #create function for a robot
+        pose=robot.GetDOFValues()
+        ind = make_name_to_index_converter(robot)
+        #Use the function to find an index in a vector of DOF values
+        pose[ind('LHP')]=pi/4
+        #This way you don't have to remember the DOF index of a joint to tweak it.
+
+    NOTE: Deprecated 3/25/2013
+    """
+    return make_name_to_index_converter(robot,autotranslate)
+
+def make_name_to_index_converter(robot,autotranslate=True):
+    """ A closure to easily convert from a string joint name to the robot's
+    actual DOF index. 
+    
+    Example usage:
+        #create function for a robot
+        pose=robot.GetDOFValues()
+        ind = make_name_to_index_converter(robot)
+        #Use the function to find an index in a vector of DOF values
+        pose[ind('LHP')]=pi/4
+        #This way you don't have to remember the DOF index of a joint to tweak it.
+    """
+    if autotranslate:
+        def convert(name):
+            j=robot.GetJoint(name)
+            if j is not None:
+                return j.GetDOFIndex()
+
+            j=robot.GetJoint(get_name_from_huboname(name,robot))
+            if j is not None:
+                return j.GetDOFIndex()
+            
+            return None
+    else:
+        def convert(name):
+            j=robot.GetJoint(name)
+            if j is not None:
+                return j.GetDOFIndex()
+            else:
+                return None
     return convert
 
+@deprecate
+def make_dof_value_map(robot):
+    names = [j.GetName() for j in robot.GetJoints()]
+    indices = [j.GetDOFIndex() for j in robot.GetJoints()]
+
+    def get_dofs():
+        values=robot.GetDOFValues()
+        for (i,n) in zip(indices,names):
+            pose.setdefault(n,values[i])
+
+    return get_dofs
+
+@deprecate
 def load_simplefloor(env):
     """ Load up and configure the simpleFloor environment for hacking with
     physics. Sets some useful defaults.
     """
     return load(env,None,'simpleFloor.env.xml',True)
 
-def load(env,robotname,scenename=None,stop=False,physics='physics.xml',ghost=False):
-    """ Load a robot model into the given environment, configuring a
-    trajectorycontroller and a reference robot to show desired movements vs. actual
-    pose. The returned tuple contains:
+def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,options=Values()):
+    """ Load files and configure the simulation environment based on arguments and the options structure.    
+    The returned tuple contains:
         :robot: handle to the created robot
-        :controller: either trajectorycontroller or idealcontroller depending on physics
-        name-to-joint-index converter
-        :ref_robot: handle to visiualization "ghost" robot
+        :ctrl: either trajectorycontroller or idealcontroller depending on physics
+        :ind: name-to-joint-index converter
+        :ref: handle to visualization "ghost" robot
         :recorder: video recorder python class for quick video dumps
     """
-    print physics
-    # Set the robot controller and start the simulation
-    recorder=viewerrecorder(env)
-    #Default to "sim-timed video" i.e. plays back much faster
-    recorder.videoparams[0:2]=[1024,768]
-    recorder.realtime=False
+    
+    if not (type(robotfile) is list or type(robotfile) is str):
+        rave.raveLogWarn("Assuming 2nd argument is options structure...")
+        options=robotfile
 
+    if hasattr(options,'recordfile'):
+        # Set the robot controller and start the simulation
+        recorder=viewerrecorder(env,filename=options.recordfile)
+        #Default to "sim-timed video" i.e. plays back much faster
+        recorder.videoparams[0:2]=[1024,768]
+        recorder.realtime=False
+    else:
+        recorder=None
+    
+    if not hasattr(options,'stop'):
+        options.stop=stop
+    if not hasattr(options,'scenefile'):
+        options.scenefile=scenefile
+    if not hasattr(options,'robotfile'):
+        options.robotfile=robotfile
+    if not hasattr(options,'physicsfile'):
+        if physics is True:
+            options.physicsfile='physics.xml'
+        elif hasattr(options,'physics'):
+            if options.physics=='ode' or options.physics=True:
+                options.physicsfile='physics.xml'
+        else:
+            #TODO: better logic here
+            options.physicsfile=physics
+
+    elif options.physicsfile==True:
+            options.physicsfile='physics.xml'
+    if not hasattr(options,'ghost'):
+        options.ghost=ghost
+    if not hasattr(options,'atheight'):
+        options.atheight=None
+    
+    #TODO: sort through the spaghetti code... 
     with env:
-        if stop:
+        if options.stop:
             env.StopSimulation()
 
-        if type(scenename) is list:
-            for n in scenename:
-                loaded=env.Load(n)
-        elif type(scenename) is str:
-            loaded=env.Load(scenename)
+        if type(options.scenefile) is list:
+            for n in options.scenefile:
+                env.Load(n)
+        elif type(options.scenefile) is str:
+            env.Load(options.scenefile)
 
         #This method ensures that the URI is preserved in the robot
-        if robotname!=None:
-            robot=env.ReadRobotURI(robotname)
+        if options.robotfile!=None:
+            robot=env.ReadRobotURI(options.robotfile)
             env.Add(robot)
         else:
-            #TODO: fix this assumption, could cause trouble with multiple robots
             robot=env.GetRobots()[0]
 
         robot.SetDOFValues(zeros(robot.GetDOF()))
 
         ref_robot=None
-        if physics and env.GetPhysicsEngine().GetXMLId()=='GenericPhysicsEngine':
-            rave.raveLogInfo('Loading physics parameters from {0}'.format(physics))
-            env.Load(physics)
-        elif not physics:
+        if options.physicsfile and env.GetPhysicsEngine().GetXMLId()=='GenericPhysicsEngine':
+            rave.raveLogInfo('Loading physics parameters from "{}"'.format(options.physicsfile))
+            env.Load(options.physicsfile)
+        elif not options.physicsfile:
             env.SetPhysicsEngine(rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
+        else:
+            rave.raveLogWarn("Physics engine already configured, using current settings...")
 
         #Force new controller since it's easier
         if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine':
             rave.raveLogInfo('Creating controller for physics simulation')
             controller=rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
-            #TODO: set gains elsewhere?
+            #TODO: validate gains
             controller.SendCommand('set gains 50 0 8')
 
         else:
             #Just load ideal controller if physics engine is not present
+            rave.raveLogInfo('Physics engine not loaded, using idealcontroller...')
             controller=rave.RaveCreateController(env,'idealcontroller')
             robot.SetController(controller)
 
-        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine' or ghost:
-            #Load ref robot and colorize
-            if robotname:
-                ref_robot=load_ghost(env,robotname,prefix="ref_")
-                if controller.GetXMLId()!='idealcontroller':
+        if options.ghost:
+            #Load ghost robot and colorize
+            if options.robotfile:
+                ref_robot=load_ghost(env,options.robotfile,prefix="ref_")
+                #If using physics, link robots together (assumes that proper controller is used)
+                if options.physicsfile:
                     controller.SendCommand("set visrobot "+ref_robot.GetName())
 
         collisionChecker = rave.RaveCreateCollisionChecker(env,'pqp')
         if collisionChecker==None:
             collisionChecker = rave.RaveCreateCollisionChecker(env,'ode')
-            warnings.warn('Note: Using ODE collision checker since PQP is not available')
+            rave.raveLogWarn('Using ODE collision checker since PQP is not available...')
         env.SetCollisionChecker(collisionChecker)
-    
+   
     ind=makeNameToIndexConverter(robot)
-
-    align_robot(robot)
+    if options.atheight is not None:
+        align_robot(robot,options.atheight)
+        if ref_robot:
+            align_robot(ref_robot,options.atheight)
 
     return (robot,controller,ind,ref_robot,recorder)
 
 def load_ghost(env,robotname,prefix="ref_",color=[.8,.8,.4]):
+    """ Create a ghost robot to overlay with an existing robot in the world to show an alternate state."""
 
     ref_robot=env.ReadRobotURI(robotname)
     ref_robot.SetName(prefix+ref_robot.GetName())
@@ -144,23 +470,30 @@ def load_ghost(env,robotname,prefix="ref_",color=[.8,.8,.4]):
     set_robot_color(ref_robot,color,color,trans=.5)
     return ref_robot
 
+def make_ghost_from_robot(robot,prefix="ref_",color=[.8,.8,.4]):
+    """ Not yet implemented """
+    pass
+
 def align_robot(robot,floorheight=0.002,floornormal=[0,0,1]):
     """ Align robot to floor, spaced slightly above"""
     env=robot.GetEnv()
-    vertex1=zeros(3)
     #vertex2=zeros(3)
+    heights=[]
     with env:
         T=robot.GetTransform()
         for l in robot.GetLinks():
             bb=l.ComputeAABB()
-            vertex1=minimum(bb.pos()-bb.extents(),vertex1)
-            #vertex2=maximum(bb.pos()+bb.extents(),vertex2)
-        dh=floorheight-vertex1[2]
+            heights.append((bb.pos()-bb.extents())[2])
+
+        T=robot.GetTransform()
+        dh=floorheight-min(heights)
+
         # add height change to robot
         T[2,3]=dh
         robot.SetTransform(T)
         #TODO: reset velocity?
 
+@deprecate
 def load_rlhuboplus(env,scenename=None,stop=False):
     """ Load the rlhuboplus model into the given environment, configuring a
     servocontroller and a reference robot to show desired movements vs. actual
@@ -218,6 +551,47 @@ def find_mass(robot):
 
     return mass
 
+@deprecate
+def plotProjectedCOG(robot):
+    return plot_projected_com(robot)
+
+@deprecate
+def plotBodyCOM(env,link,handle=None,color=array([0,1,0])):
+    return plot_body_com(link,handle,color)
+
+def plot_contacts(robot):
+    env=robot.GetEnv()
+    with env:
+        # setup the collision checker to return contacts
+        env.GetCollisionChecker().SetCollisionOptions(rave.CollisionOptions.Contacts)
+
+        # get first collision
+        report = rave.CollisionReport()
+        collision=env.CheckCollision(robot,report=report)
+        rave.raveLogInfo('%d contacts'%len(report.contacts))
+        positions = [c.pos for c in report.contacts]
+
+    if len(positions):
+        h1=env.plot3(array(positions),10,[.7,.3,.3])
+    else:
+        h1=None
+
+    return h1
+
+def plot_body_com(link,handle=None,color=array([0,1,0])):
+    """ efficiently plot the center of mass of a given link"""
+    origin=link.GetGlobalCOM()
+    m=link.GetMass()
+    #Fetch environment from robot parent
+    env=link.GetParent().GetEnv()
+    if handle==None:
+        handle=env.plot3(points=origin,pointsize=5.0*m,colors=color)
+    else:
+        neworigin=[1,0,0,0]
+        neworigin.extend(origin.tolist())
+        handle.SetTransform(matrixFromPose(neworigin))
+    return handle
+
 def plot_projected_com(robot):
     proj_com=find_com(robot)
     #assume zero height floor for now
@@ -225,23 +599,6 @@ def plot_projected_com(robot):
 
     env=robot.GetEnv()
     handle=env.plot3(points=proj_com,pointsize=12,colors=array([0,1,1]))
-    return handle
-
-def plotProjectedCOG(robot):
-    return plot_projected_com(robot)
-    
-def plotBodyCOM(env,link,handle=None,color=array([0,1,0])):
-    return plot_body_com(env,link,handle,color)
-
-def plot_body_com(env,link,handle=None,color=array([0,1,0])):
-    origin=link.GetGlobalCOM()
-    m=link.GetMass()
-    if handle==None:
-        handle=env.plot3(points=origin,pointsize=5.0*m,colors=color)
-    else:
-        neworigin=[1,0,0,0]
-        neworigin.extend(origin.tolist())
-        handle.SetTransform(matrixFromPose(neworigin))
     return handle
 
 def plot_masses(robot,color=array([.8,.5,.3]),ccolor=[0,.8,.8]):
@@ -252,8 +609,8 @@ def plot_masses(robot,color=array([.8,.5,.3]),ccolor=[0,.8,.8]):
         m=l.GetMass()
         total+=m
         #Area of box corresponds to mass
-        handles.append(robot.GetEnv().plot3(origin,5.0*power(m,.5),array(color)))
-    handles.append(robot.GetEnv().plot3(find_com(robot),5.0*power(total,.5),ccolor))
+        handles.append(robot.GetEnv().plot3(origin,m/100.,array(color),True))
+    handles.append(robot.GetEnv().plot3(find_com(robot),m/100.,ccolor,True))
     return handles
 
 def CloseLeftHand(robot,angle=pi/2):
@@ -352,8 +709,6 @@ class ServoPlotter:
 #-----------------------------------------------------------
 # Executable setup
 #-----------------------------------------------------------
-import logging
-from optparse import OptionParser
 from openravepy.misc import OpenRAVEGlobalArguments
 import atexit
 
@@ -365,27 +720,34 @@ def safe_quit(env):
         env.Destroy()
     rave.RaveDestroy()
 
+parser = OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.',
+                      usage='usage: %prog [options] script')
+OpenRAVEGlobalArguments.addOptions(parser)
+parser.add_option('--robot', action="store",type='string',dest='robotfile',default='rlhuboplus.robot.xml',
+                  help='Robot XML file to load (default=%default)')
+parser.add_option('--scene', action="store",type='string',dest='scenefile',default='floor.env.xml',
+                  help='Scene file to load (default=%default)')
+parser.add_option('--example', action="store",type='string',dest='example',default=None,
+                  help='Run an example')
+parser.add_option('--nointeract', action="store_false",dest='interact',default=True,
+                  help='Disable interactive prompt and exit after running')
+parser.add_option('--record', action="store",dest='recordfile',default=None,
+                  help='Enable video recording to the given file name (requires script commands to start and stop)')
+parser.add_option('--physicsfile', action="store",dest='physicsfile',default=None,
+                  help='Load physics engine config from XML file')
+parser.add_option('--ghost', action="store_true",dest='ghost',default=None,
+                  help='Create a ghost robot to show desired vs. actual pose')
+parser.add_option('--atheight', action="store",type="float", dest='atheight',default=None,
+                  help='Align the robot\'s feet at the given absolute Z height')
+
+def show_options():
+    parser.print_help()
 
 def setup(viewername=None,create=True):
     """ Setup openhubo environment and viewer when run from the command line.
     :param viewername: Name of viewer plugin to use (defaults to no viewer)
     :param create: If true, set up and return environment. Otherwise, parse and return options.
     """
-    parser = OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.',
-                          usage='usage: %prog [options] script')
-    OpenRAVEGlobalArguments.addOptions(parser)
-    parser.add_option('--robot', action="store",type='string',dest='robotfile',default='rlhuboplus.robot.xml',
-                      help='Robot XML file to load (default=%default)')
-    parser.add_option('--scene', action="store",type='string',dest='scenefile',default='floor.env.xml',
-                      help='Scene file to load (default=%default)')
-    parser.add_option('--example', action="store",type='string',dest='example',default=None,
-                      help='Run an example')
-    parser.add_option('--nointeract', action="store_false",dest='interact',default=True,
-                      help='Disable interactive prompt and exit after running')
-    parser.add_option('--debug', action="store_true",dest='pydebug',default=False,
-                      help='Enable python debugger')
-    parser.add_option('--physicsxml', action="store",dest='physicsfile',default=None,
-                      help='Load physics engine config from XML file')
     (options, leftargs) = parser.parse_args()
 
     if viewername:
@@ -395,6 +757,9 @@ def setup(viewername=None,create=True):
         #use command line fake for "none"
         options.robotfile=None
 
+    if options.scenefile=="none" or options.scenefile=="None":
+        #use command line fake for "none"
+        options.scenefile=None
     if create:
         env=rave.Environment()
         atexit.register(safe_quit,env)
@@ -405,12 +770,16 @@ def setup(viewername=None,create=True):
     else:
         return (options,None)
 
-if __name__ == '__main__':
-    """Run openhubo to see example files and use the IPython shell for inspection and debugging."""
-    (options,scriptname)=setup(None,False)
 
-    if options.pydebug:
-        import debug
+
+if __name__ == '__main__':
+
+    #Set up ipdb for better exception handling and debugging
+    print "Using Ipython for exceptions..."
+    from IPython.core import ultratb
+    sys.excepthook = ultratb.FormattedTB(mode='Verbose',
+         color_scheme='Linux', call_pdb=1)
+    (options,scriptname)=setup(None,False)
 
     if options.example or scriptname:
 
@@ -426,11 +795,11 @@ if __name__ == '__main__':
                     raveLogInfo("Found example {}".format(options.example))
                     break
             execfile(expath+options.example)
+    else:
+        #Enable interactive mode and load a simple environment
+        options.interact=True
+        execfile('interactive_sandbox.py')
             
     if options.interact:
-        try:
-            import IPython
-            IPython.embed() 
-            print "Cleaning up after inspection..."
-        except ImportError:
-            print "IPython not installed!"
+        IPython.embed() 
+        print "Cleaning up after inspection..."

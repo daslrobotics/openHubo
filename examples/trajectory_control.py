@@ -7,7 +7,6 @@ from numpy.linalg import *
 import sys
 import time
 from copy import copy
-import openhubo
 from trajectory import *
 #TODO: Work with the concept of activeDOF?
 
@@ -22,20 +21,17 @@ def createTrajectory(robot):
 """ Simple test script to run some of the functions above. """
 if __name__=='__main__':
 
-    env = Environment()
     (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
-    timestep=openhubo.TIMESTEP
-
-    [robot,controller,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
+    [robot,controller,ind,ref,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
 
     pose0=array(zeros(robot.GetDOF()))
 
     controller.SetDesired(pose0)
     robot.SetDOFValues(pose0)
 
-    env.StartSimulation(timestep=timestep)
+    env.StartSimulation(openhubo.TIMESTEP)
 
     pose1=pose0.copy()
     print pose1
@@ -48,6 +44,9 @@ if __name__=='__main__':
 
     pose1[ind('LHP')]=-pi/8
     pose1[ind('RHP')]=-pi/8
+
+    pose1[ind('LSP')]=-pi/8
+    pose1[ind('LEP')]=-pi/4
 
     traj=RaveCreateTrajectory(env,'')
 
@@ -82,8 +81,6 @@ if __name__=='__main__':
         data=traj.Sample(float(k)/10)
         print data[ind('LKP')]
     
-    write_youngbum_traj(traj,robot,0.005,range(28),'test2.traj',True)
-
     controller.SetPath(traj)
     controller.SendCommand('start')
     while not(controller.IsDone()):

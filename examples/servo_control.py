@@ -19,20 +19,40 @@ __license__ = 'GPLv3 license'
 from openravepy import *
 from numpy import *
 import time
-import datetime
 import sys
-import openhubo
-
-#Get the global environment for simulation
+from servo import *
+import openhubo 
 
 if __name__=='__main__':
-    
-    (env,options)=openhubo.setup('qtcoin')
-    env.SetDebugLevel(3)
-    
-    #Options structure is populated by command line as well as easily in code
-    options.stop=True
+
+    (env,options)=openhubo.setup('qtcoin',True)
+    env.SetDebugLevel(4)
+    time.sleep(.25)
+
+    #Note that the load function now directly parses the option structure
+    options.physicsfile=True
     [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
-
+    time.sleep(.5)
     env.StartSimulation(openhubo.TIMESTEP)
+    time.sleep(.5)
+   
+    #Change the pose to lift the elbows and send
+    ctrl.SendCommand('set radians ')
+    #0.7.1 Syntax change: Note the new "Pose" class:
+    pose=Pose(robot,ctrl)
+    pose['REP']=-pi/2
+    pose['LEP']=-pi/2
+    pose.send()
 
+    openhubo.pause(2)
+
+    #Hack to get hand 
+    if robot.GetName() == 'rlhuboplus' or robot.GetName() == 'huboplus':
+        ctrl.SendCommand('directtorque '+' '.join(['{}'.format(x) for x in range(42,57)]))
+        for i in range(42,57):
+            pose[i]=pi/2
+        pose.send()
+        openhubo.pause(2)
+
+        pose[42:57]=0
+        pose.send()

@@ -19,37 +19,25 @@ __license__ = 'GPLv3 license'
 from openravepy import *
 from numpy import *
 import time
+import datetime
 import sys
-from servo import *
-import openhubo 
+import openhubo
+import trajectory
+
+#Get the global environment for simulation
 
 if __name__=='__main__':
+    
+    (env,options)=openhubo.setup('qtcoin')
+    env.SetDebugLevel(5)
+    
+    #Options structure is populated by command line as well as easily in code
+    options.stop=True
+    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
 
-    (env,options)=openhubo.setup('qtcoin',True)
-    env.SetDebugLevel(4)
-    time.sleep(.25)
-
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
-    time.sleep(.5)
     env.StartSimulation(openhubo.TIMESTEP)
-    time.sleep(.5)
-   
-    #Change the pose to lift the elbows and send
-    ctrl.SendCommand('set radians ')
-    pose=robot.GetDOFValues()
-    pose[ind('REP')]=-pi/2
-    pose[ind('LEP')]=-pi/2
-    ctrl.SetDesired(pose)
-
-    openhubo.pause(2)
-
-    #Hack to get hand 
-    if robot.GetName() == 'rlhuboplus' or robot.GetName() == 'huboplus':
-        ctrl.SendCommand('openloop '+' '.join(['{}'.format(x) for x in range(42,57)]))
-        for i in range(42,57):
-            pose[i]=pi/2
-        ctrl.SetDesired(pose)
-        openhubo.pause(2)
-
-        pose[42:57]=0
-        ctrl.SetDesired(pose)
+    
+    with env:
+        traj=trajectory.read_swarthmore_traj('DoorOpen.txt',robot,.01,True)
+    trajectory.write_hubo_traj(traj,robot,0.01,'dooropen_left.traj.txt')
+    ctrl.SetPath(traj)

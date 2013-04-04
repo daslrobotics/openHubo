@@ -7,7 +7,7 @@ from copy import copy
 
 class viewerrecorder:
 
-    def __init__(self,env,copyfrom=None):
+    def __init__(self,env,copyfrom=None,filename='default.avi'):
         if copyfrom==None:
             self.filename='recorded_video'
             self.codec=13

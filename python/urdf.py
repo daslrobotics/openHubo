@@ -357,8 +357,8 @@ class Inertial(object):
         xml.appendChild(create_element(doc, "total", self.mass))
         text='{ixx} {ixy} {ixz}\n{ixy} {iyy} {iyz}\n{ixz} {iyz} {izz}'.format(**self.matrix)
         xml.appendChild(create_element(doc,"inertia",text))
-
         add_openrave(doc, xml, self.origin)
+        xml.getElementsByTagName('translation')[0].tagName="com"
         return xml
 
     def __str__(self):
@@ -635,7 +635,6 @@ class Link(object):
         xml.setAttribute("name", self.name)
         add_openrave( doc, xml, self.collision)
         add_openrave( doc, xml, self.inertial)
-        xml.getElementsByTagName('translation')[0].tagName="com"
         return xml
 
     def __str__(self):

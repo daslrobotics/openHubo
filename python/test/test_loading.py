@@ -76,14 +76,14 @@ def model_test_factory(filename=None):
 
     return TestLoading
 
+test_load1=model_test_factory('huboplus.robot.xml')
+test_load2=model_test_factory('rlhuboplus.robot.xml')
+test_load3=model_test_factory('rlhuboplus.noshell.robot.xml')
+test_load4=model_test_factory('rlhuboplus.fingerless.robot.xml')
+test_load5=model_test_factory('hubo2.robot.xml')
+test_load6=model_test_factory('rlhubo2.robot.xml')
+test_load7=model_test_factory('rlhuboplus.cushionhands.robot.xml')
+
 if __name__=='__main__':
 
-    test1=model_test_factory('huboplus.robot.xml')
-    test2=model_test_factory('rlhuboplus.robot.xml')
-    test3=model_test_factory('rlhuboplus.noshell.robot.xml')
-    test4=model_test_factory('rlhuboplus.fingerless.robot.xml')
-    test5=model_test_factory('hubo2.robot.xml')
-    test6=model_test_factory('rlhubo2.robot.xml')
-    test7=model_test_factory('rlhuboplus.cushionhands.robot.xml')
-    test8=model_test_factory('drchubo.dae')
     unittest.main(verbosity=2,testRunner=unittest.TextTestRunner())

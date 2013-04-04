@@ -9,16 +9,16 @@ import threading
 
 class TestServoCommands(unittest.TestCase):
     def setUp(self):
-        env=Environment()
-        env.Load('physics.xml')
-        [robot,controller,ind,ref_robot,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
+
+        (env,options)=openhubo.setup()
+        env.SetDebugLevel(2)
+        #NOTE: Loads trajectory controller, which passes servo commands down
+        options.physicsfile='physics.xml'
+        options.scenefile=None
+        [self.robot,self.controller,self.ind,__,__]=openhubo.load(env,options)
+        env.GetPhysicsEngine().SetGravity([0,0,0])
         self.env=env
-        print env.GetPhysicsEngine()
-        self.robot=robot
-        self.controller=controller
-        self.pose=zeros(robot.GetDOF())
-        self.ind=ind
-        self.controller.SendCommand('set gains 50 0 8')
+        self.pose=zeros(self.robot.GetDOF())
         self.env.StartSimulation(0.0005)
 
     def tearDown(self):

@@ -26,7 +26,7 @@ if __name__=='__main__':
 
     timestep=0.01
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,None,True,False)
+    [robot,ctrl,ind,__,recorder]=openhubo.load(env,options)
 
     #Override default controller with ach-read controller
     ctrl=RaveCreateController(env,'achreadcontroller')
