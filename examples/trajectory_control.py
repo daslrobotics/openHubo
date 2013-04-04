@@ -1,26 +1,23 @@
-#!/usr/bin/env python
+"""Trajectory Control example for hubo+ model."""
+import openhubo as oh
+import openravepy.planningutils as planningutils
+import openhubo.trajectory as trajectory
+from numpy import pi
 
-from openhubo import *
-from openravepy import *
-from numpy import *
-from openhubo.trajectory import *
-
-""" Simple test script to run some of the functions above. """
-
-(env,options)=setup('qtcoin')
+[env,options]=oh.setup('qtcoin')
 env.SetDebugLevel(4)
 
 options.physicsfile='physics.xml'
 options.ghost=True
 
-[robot,ctrl,ind,ref,recorder]=load_scene(env,options)
-env.StartSimulation(TIMESTEP)
+[robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
+env.StartSimulation(oh.TIMESTEP)
 
 #Initialize pose object and trajectory for robot
-pose=Pose(robot,ctrl)
-[traj,config]=create_trajectory(robot)
+pose=oh.Pose(robot,ctrl)
+[traj,config]=trajectory.create_trajectory(robot)
 
-traj_append(traj,pose.to_waypt(0.01))
+trajectory.traj_append(traj,pose.to_waypt(0.01))
 
 pose['LAP']=-pi/8
 pose['RAP']=-pi/8
@@ -34,11 +31,11 @@ pose['RHP']=-pi/8
 pose['LSP']=-pi/8
 pose['LEP']=-pi/4
 
-traj_append(traj,pose.to_waypt(1.0))
+trajectory.traj_append(traj,pose.to_waypt(1.0))
 
 pose[:]=0.0
 
-traj_append(traj,pose.to_waypt(1.0))
+trajectory.traj_append(traj,pose.to_waypt(1.0))
 
 planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
@@ -50,4 +47,4 @@ for k in range(40):
 ctrl.SetPath(traj)
 ctrl.SendCommand('start')
 while not(ctrl.IsDone()):
-    sleep(.1)
+    oh.sleep(.1)
