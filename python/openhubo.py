@@ -381,7 +381,7 @@ def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,op
         if physics is True:
             options.physicsfile='physics.xml'
         elif hasattr(options,'physics'):
-            if options.physics=='ode' or options.physics=True:
+            if options.physics=='ode' or options.physics==True:
                 options.physicsfile='physics.xml'
         else:
             #TODO: better logic here
