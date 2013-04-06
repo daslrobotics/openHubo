@@ -381,8 +381,13 @@ def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,op
     if not hasattr(options,'physicsfile'):
         if physics is True:
             options.physicsfile='physics.xml'
+        elif hasattr(options,'physics'):
+            if options.physics=='ode' or options.physics==True:
+                options.physicsfile='physics.xml'
         else:
+            #TODO: better logic here
             options.physicsfile=physics
+
     elif options.physicsfile==True:
             options.physicsfile='physics.xml'
     if not hasattr(options,'ghost'):
@@ -476,6 +481,7 @@ def align_robot(robot,floorheight=0.002,floornormal=[0,0,1]):
     #vertex2=zeros(3)
     heights=[]
     with env:
+        T=robot.GetTransform()
         for l in robot.GetLinks():
             bb=l.ComputeAABB()
             heights.append((bb.pos()-bb.extents())[2])
@@ -484,7 +490,7 @@ def align_robot(robot,floorheight=0.002,floornormal=[0,0,1]):
         dh=floorheight-min(heights)
 
         # add height change to robot
-        T[2,3]+=dh
+        T[2,3]=dh
         robot.SetTransform(T)
         #TODO: reset velocity?
 
