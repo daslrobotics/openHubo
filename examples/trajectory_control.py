@@ -1,7 +1,7 @@
 """Trajectory Control example for hubo+ model."""
 import openhubo as oh
-import openravepy.planningutils as planningutils
-import openhubo.trajectory as trajectory
+from openravepy import planningutils
+from openhubo import trajectory
 from numpy import pi
 
 [env,options]=oh.setup('qtcoin')

@@ -4,7 +4,7 @@
 import IPython
 from IPython.core import ultratb
 from openravepy import raveLogInfo
-from openhubo.core import setup
+from openhubo import setup
 
 from fnmatch import fnmatch
 import os as _os

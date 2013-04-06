@@ -3,22 +3,10 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-#Basics for OpenRAVE
-from openravepy import *
-from numpy import *
-from numpy.linalg import inv
 
-#comps-plugins
-from rodrigues import *
-from TransformMatrix import *
-from TSR import *
-
-#OpenHubo python modules
-from openhubo import *
-from openhubo.generalik import *
-from openhubo.cbirrt import *
-from openhubo.planning import *
-from openhubo.deprecated import *
+import openhubo as oh
+import openhubo.comps as comps
+import openhubo.planning as planning
 
 def makeGripTransforms(links):
     grips = []
@@ -56,24 +44,24 @@ if __name__=='__main__':
     for k in links:
         handles.append(plot_body_com(k))
     #pause()
-    
-    grips = makeGripTransforms(links) 
+
+    grips = makeGripTransforms(links)
     griphandles=plotTransforms(env,grips,array([0,0,1]))
-    
+
     #pause()
     # make a list of Link transformations
-    
+
     probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
-    
+
     env.LoadProblem(probs_cbirrt,robot.GetName())
-    
+
     setInitialPose(robot)
     sleep(1)
-    
+
     #Define manips used and goals
     z1=.05
     theta=0.5
-    LH=0    
+    LH=0
     RH=8
     POST=8
     RUNG0=16
@@ -84,11 +72,11 @@ if __name__=='__main__':
     #Post grips at shoulder height
     rgrip1=TSR(grips[3+RH],MakeTransform(eye(3),matrix([.0,-.015,0]).T),mat([0,0, 0,0, -z1,z1, 0,0 ,0,0, -theta,theta]),1)
     lgrip1=TSR(grips[3],MakeTransform(eye(3),matrix([.0,.015,0]).T),mat([0,0, 0,0, -z1,z1, 0,0 ,0,0, -theta,theta]),0)
-    
+
     #Rung grips at shoulder height
     rgrip2=TSR(grips[RUNG0+2*RUNG+RH],MakeTransform(eye(3),matrix([.0,-.015,0]).T),mat([0,0, 0,0, -z1,z1, 0,0 ,0,0, -theta,theta]),1)
     lgrip2=TSR(grips[RUNG0+2*RUNG],MakeTransform(eye(3),matrix([.0,.015,0]).T),mat([0,0, 0,0, -z1,z1, 0,0 ,0,0, -theta,theta]),0)
-    
+
     #Step onto first rung
     lstep1=TSR(grips[RUNG0+LF],MakeTransform(eye(3),matrix([.0,0,.014]).T),mat([0,0, 0,0, 0,0, 0,0 ,-pi/3,0, 0,0]),2)
     rstep1=TSR(grips[RUNG0+RF],MakeTransform(eye(3),matrix([.0,0,0.014]).T),mat([0,0, 0,0, 0,0, 0,0 ,-theta,theta, 0,0]),3)
@@ -99,10 +87,10 @@ if __name__=='__main__':
 
     print "Place the robot in the desired starting position"
     #TODO: Sample the Right foot floating base pose, passed in as a separate TSR chain?
-    
-    
+
+
     #solveWholeBodyPose(robot,probs_cbirrt,pose1)
-    
+
     first_pose=Cbirrt(probs_cbirrt)
 
     chains=[TSRChain(0,1,0) for x in range(3)]
@@ -118,14 +106,14 @@ if __name__=='__main__':
     #Add in hip pitches
     activedofs.append(ind('LHP'))
     activedofs.append(ind('RHP'))
-    robot.SetActiveDOFs(activedofs) 
+    robot.SetActiveDOFs(activedofs)
 
     first_pose.supportlinks=['leftFoot','rightFoot']
     first_pose.filename='firstpose.traj'
     print first_pose.Serialize()
     success=first_pose.run()
     pause()
-    
+
     RunTrajectoryFromFile(robot,first_pose)
 
     CloseLeftHand(robot,pi/3)

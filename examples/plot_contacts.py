@@ -38,7 +38,7 @@ if __name__ == "__main__":
     # Set the floor and other bodies to be slightly transparent to better visualize interpenetrations
     for b in env.GetBodies():
         if not b == robot:
-            openhubo.set_robot_color(b,trans=.4)
+            openhubo.set_robot_color(b,trans=.3)
 
     while ~stop:
         if kbhit.kbhit():

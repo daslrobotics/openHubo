@@ -5,10 +5,11 @@ __license__ = 'GPLv3 license'
 
 import openhubo
 import openhubo.planning as planning
+import openhubo.comps as comps
 
 from numpy import pi
 from openhubo import pause
-from TSR import TSR,TSRChain
+from openhubo.comps.TSR import TSR,TSRChain
 from openravepy import RaveCreateProblem
 
 (env,options)=openhubo.setup('qtcoin')
@@ -21,7 +22,7 @@ options.physicsfile='physics.xml'
 probs_cbirrt = RaveCreateProblem(env,'CBiRRT')
 env.LoadProblem(probs_cbirrt,robot.GetName())
 
-first_pose=planning.Cbirrt(probs_cbirrt)
+first_pose=comps.Cbirrt(probs_cbirrt)
 planning.setInitialPose(robot)
 
 ## Create an example goal pose (The result of all of these steps should be a
@@ -49,11 +50,12 @@ print first_pose.Serialize()
 
 first_pose.run()
 pause()
+env.StartSimulation(openhubo.TIMESTEP)
 planning.RunTrajectoryFromFile(robot,first_pose,False)
 
 ## Now, reset to initial conditions and activate whole body
 env.StopSimulation()
-second_pose=planning.Cbirrt(probs_cbirrt)
+second_pose=comps.Cbirrt(probs_cbirrt)
 planning.setInitialPose(robot)
 robot.SetTransform(start_position)
 
@@ -80,4 +82,5 @@ second_pose.psample=.05
 
 print second_pose.Serialize()
 second_pose.run()
+env.StartSimulation(openhubo.TIMESTEP)
 planning.RunTrajectoryFromFile(robot,second_pose,False)
