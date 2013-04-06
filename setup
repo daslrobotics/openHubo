@@ -179,10 +179,20 @@ do
     fi
 done
 
-read -p "Create openhubo symlink in /usr/local/bin? [y/N]?" INSTALL_OPENHUBO_SYMLINK
-if [[ $INSTALL_OPENHUBO_SYMLINK == 'y' || $INSTALL_OPENHUBO_SYMLINK == 'Y' ]]
+# Canonicalize symlink path to be installed
+OPENHUBO_LOCAL_EXEC_PATH=`readlink -f "$BASE_DIR/openhubo/bin/openhubo"`
+OPENHUBO_BIN_PATH=$(which openhubo)
+
+if [[ ${#OPENHUBO_BIN_PATH} > 0 ]]
 then
-    sudo ln -sf $BASE_DIR/openhubo/bin/openhubo /usr/local/bin/openhubo
+    OPENHUBO_CURRENT_LINK_TARGET=$(readlink $OPENHUBO_BIN_PATH)
+fi
+#TODO: simplify this part
+if [[ ! $OPENHUBO_LOCAL_EXEC_PATH == $OPENHUBO_CURRENT_LINK_TARGET ]]
+then
+    OPENHUBO_LINK='/usr/local/bin/openhubo'
+    echo -e "\nCreating openhubo symlink at $OPENHUBO_LINK"
+    sudo ln -sf $BASE_DIR/openhubo/bin/openhubo $OPENHUBO_LINK
 else
-    echo "Skipping symlink..."
+    echo -e "\nopenhubo symlink found at $OPENHUBO_CURRENT_LINK_TARGET"
 fi
