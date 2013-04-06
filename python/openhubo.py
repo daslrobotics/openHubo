@@ -13,6 +13,7 @@ from optparse import OptionParser,Values
 import re
 import signal
 import IPython
+from deprecated import *
 
 """ openhubo python module and main executable. Most of openhubo's functionality
 is available through this module.
