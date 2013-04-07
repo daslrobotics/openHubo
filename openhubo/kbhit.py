@@ -29,9 +29,12 @@ def getche():
     putch(ch)
     return ch
 
-def kbhit():
+def kbhit(read=False):
     dr,dw,de = select([sys.stdin], [], [], 0)
-    return dr <> []
+    ready=dr <> []
+    if read and ready:
+        return getch()
+    return ready
 
 if __name__ == '__main__':
     atexit.register(set_normal_term)

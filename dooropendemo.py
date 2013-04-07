@@ -33,7 +33,7 @@ if __name__=='__main__':
     
     #Options structure is populated by command line as well as easily in code
     options.stop=True
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,options)
 
     env.StartSimulation(openhubo.TIMESTEP)
     

@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-from openravepy import RaveCreateTrajectory,poseFromMatrix,matrixFromPose,planningutils
-#from servo import *
-from numpy import pi,arange,zeros
-import re
-from openhubo import Pose,make_name_to_index_converter,get_huboname_from_name,hubo_map
-#from TransformMatrix import *
-#from rodrigues import *
+
+import openravepy as _rave
+from numpy import pi,arange,zeros,array
+import openhubo as _oh
+import openhubo.comps as _comps
 
 hubo_read_trajectory_map={
     'RHY':0,
@@ -55,34 +53,32 @@ def traj_append(traj,waypt):
 
 def create_trajectory(robot):
     """ Create a trajectory based on a robot's config spec"""
-    traj=RaveCreateTrajectory(robot.GetEnv(),'')
+    traj=_rave.RaveCreateTrajectory(robot.GetEnv(),'')
     config=robot.GetConfigurationSpecification()
     config.AddDeltaTimeGroup()
     traj.Init(config)
     return [traj,config]
 
-def read_swarthmore_traj(filename,robot,dt=.01,retime=True,lead_time=0.0):
+def read_swarthmore_traj(filename,robot,dt=.01,retime=True):
     """ Read in trajectory data stored in Swarthmore's format
         (data by row, single space separated)
     """
-    #TODO: handle multiple spaces
     #Setup trajectory and source file
     [traj,config]=create_trajectory(robot)
 
     f=open(filename,'r')
 
-    #Read in header row to find joint names
-    header=f.readline().rstrip()
-    print header.split(' ')
+    #Read in blank header row
+    f.readline().rstrip()
 
     #Hard code names based on guess from DoorOpen.txt
     names=['WST','LSP','LSR','LSY','LEP','LWY','LWP']
     signs=[-1,1,-1,-1,1,-1,1]
     offsets=[0,0,15.0,0,0,0,0]
     #names=['WST','RSP','RSR','RSY','REP','RWY','RWP']
-    pose=Pose(robot)
+    pose=_oh.Pose(robot)
 
-    while True: 
+    while True:
         string=f.readline().rstrip()
         if len(string)==0:
             break
@@ -90,10 +86,10 @@ def read_swarthmore_traj(filename,robot,dt=.01,retime=True,lead_time=0.0):
 
         for (i,n) in enumerate(names):
             pose[n]=(jointvals[i]-offsets[i])*pi/180*signs[i]
-        traj_append(traj,pose.to_waypt(dt)) 
+        traj_append(traj,pose.to_waypt(dt))
 
     if retime:
-        print planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
+        print _rave.planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
     f.close()
     return traj
 
@@ -107,35 +103,29 @@ def read_youngbum_traj(filename,robot,dt=.01,scale=1.0,retime=True):
     #TODO: handle multiple spaces
     #Setup trajectory and source file
     [traj,config]=create_trajectory(robot)
-    pose=Pose(robot)
-    #Affine DOF are not controlled, so fill with zeros
-    affinedof=zeros(7) 
+    pose=_oh.Pose(robot)
 
     f=open(filename,'r')
 
     #Read in header row to find joint names
     header=f.readline().rstrip()
-    print header.split(' ')
-
     names=header.split(' ')
 
     #Read in sign row
     signlist=f.readline().rstrip().split(' ')
     signs=[]
-    print signlist
     for s in signlist:
         if s == '+':
             signs.append(1)
         else:
             signs.append(-1)
-    
+
     #Read in offset row (fill with zeros if not used)
     offsetlist=f.readline().rstrip().split(' ')
-    print offsetlist
     offsets=[float(x) for x in offsetlist]
 
     k=0
-    while True: 
+    while True:
         string=f.readline().rstrip()
         if len(string)==0:
             break
@@ -147,7 +137,7 @@ def read_youngbum_traj(filename,robot,dt=.01,scale=1.0,retime=True):
         traj.Insert(k,pose.to_waypt(dt))
         k=k+1
     if retime:
-        planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
+        _rave.planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
     return traj
 
@@ -155,9 +145,8 @@ def write_youngbum_traj(traj,robot,dt,filename='exported.traj',dofs=None,oldname
     """ Create a text trajectory in youngbum's style, assuming no offsets or
     scaling, and openHubo default sign convention.
     """
-    ind=make_name_to_index_converter(robot)
-    [traj,config]=create_trajectory(robot)
 
+    config=robot.GetConfigurationSpecification()
     f=open(filename,'w')
 
     namelist=[]
@@ -170,7 +159,7 @@ def write_youngbum_traj(traj,robot,dt,filename='exported.traj',dofs=None,oldname
     for d in dofs:
         name=robot.GetJointFromDOFIndex(d).GetName()
         if oldnames:
-            namelist.append(get_huboname_from_name(name))
+            namelist.append(_oh.get_huboname_from_name(name))
         else:
             namelist.append(name)
         #TODO make this an argument?
@@ -180,8 +169,7 @@ def write_youngbum_traj(traj,robot,dt,filename='exported.traj',dofs=None,oldname
 
     #Find overall trajectory properties
     T=traj.GetDuration()
-    steps=int(T/dt)
-    
+
     with  open(filename,'w') as f:
         f.write(' '.join(namelist)+'\n')
         f.write(' '.join(signlist)+'\n')
@@ -196,14 +184,13 @@ def write_youngbum_traj(traj,robot,dt,filename='exported.traj',dofs=None,oldname
 def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
     """ Create a text trajectory for reading into hubo-read-trajectory."""
     config=robot.GetConfigurationSpecification()
-    ind=make_name_to_index_converter(robot)
 
     f=open(filename,'w')
 
     #Find overall trajectory properties
     T=traj.GetDuration()
-    steps=int(T/dt)
-   
+    #steps=int(T/dt)
+
     #Get all the DOF's..
     dofs = range(robot.GetDOF())
     with open(filename,'w') as f:
@@ -212,11 +199,11 @@ def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
             #Extract DOF values
             vals=config.ExtractJointValues(waypt,robot,dofs)
             #start with array of zeros size of hubo-ach trajectory width
-            mapped_vals=zeros(max(hubo_map.values()))
+            mapped_vals=zeros(max(_oh.hubo_map.values()))
             for d in dofs:
                 n = robot.GetJointFromDOFIndex(d).GetName()
-                if hubo_map.has_key(n):
-                    hname=get_huboname_from_name(n)
+                if _oh.hubo_map.has_key(n):
+                    hname=_oh.get_huboname_from_name(n)
                     mapped_vals[hubo_read_trajectory_map[hname]]=vals[d]
             f.write(' '.join(['{}'.format(x) for x in mapped_vals])+'\n')
 
@@ -232,16 +219,14 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
     """
     #TODO: handle multiple spaces
     #Setup trajectory and source file
-    ind=make_name_to_index_converter(robot)
-    #Affine DOF are not controlled, so fill with zeros
-    affinedof=zeros(7) 
+    ind=_oh.make_name_to_index_converter(robot)
 
     f=open(filename,'r')
 
     #Read in header row to find joint names
     header=f.readline().rstrip()
     #print header.split(' ')
-    
+    [traj,config]=create_trajectory(robot)
     k=0
     indices={}
     Tindices={}
@@ -265,7 +250,7 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
             signs.append(1)
         else:
             signs.append(-1)
-    
+
     #Read in offset row (fill with zeros if not used)
     offsetlist=f.readline().rstrip().split(' ')
     offsets=[float(x) for x in offsetlist]
@@ -273,27 +258,22 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
     scalelist=f.readline().rstrip().split(' ')
     scales=[float(x) for x in scalelist]
 
-    k=0
-    while True: 
+    pose=_oh.Pose(robot)
+    while True:
         string=f.readline().rstrip()
         if len(string)==0:
             break
         vals=[float(x) for x in string.split(' ')]
-        data=zeros(robot.GetDOF())
         Tdata=zeros(6)
-        for i in range(len(vals)):
+        for i,v in enumerate(vals):
             if indices.has_key(i):
-                data[indices[i]]=(vals[i]+offsets[i])*scales[i]*signs[i]*scale
+                pose[indices[i]]=(vals[i]+offsets[i])*scales[i]*signs[i]*scale
             elif Tindices.has_key(i):
                 Tdata[Tindices[i]]=(vals[i]+offsets[i])*scales[i]*signs[i]*scale
         #TODO: clip joint vals at limits
-        T=MakeTransform(rodrigues(Tdata[3:]),mat(Tdata[0:3]).T)
-        waypt=list(data)
-        #Assume full affine control 
-        waypt.extend(poseFromMatrix(array(T)))
-        waypt.append(dt)
-        traj.Insert(k,waypt)
-        k=k+1
+        #TODO: use axis angle form for RPY data?
+        T=array(_comps.Transform.make_transform(Tdata[3:],Tdata[0:3]))
+        traj_append(traj,pose.to_waypt(dt,_rave.poseFromMatrix(T)))
 
     return traj
 
@@ -305,10 +285,9 @@ def makeJointValueExtractor(robot,traj,config):
 
 def makeTransformExtractor(robot,traj,config):
     """Closure to pull a transform out of a trajectory waypoint"""
-    v=poseFromMatrix(eye(4))
     def GetTransformFromWaypoint(index):
         #Ugly way to extract transform because the ExtractAffineValues function
-        #is not yet bound 
-        return matrixFromPose(traj.GetWaypoint(index)[-8:-1])
+        #is not yet bound
+        return _rave.matrixFromPose(traj.GetWaypoint(index)[-8:-1])
     return GetTransformFromWaypoint
 

@@ -19,8 +19,6 @@ __license__ = 'GPLv3 license'
 from openravepy import *
 from numpy import *
 import time
-import datetime
-import sys
 import openhubo
 import matplotlib.pyplot as plt
 
@@ -28,14 +26,12 @@ if __name__=='__main__':
 
     (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(3)
-    
-    #Load environment and robot with default settings
-    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
 
-    #l1=robot.GetJoint('LAR_dummy')
-    #l2=robot.GetJoint('RAR_dummy')
-    l1=robot.GetLink('leftFoot')
-    l2=robot.GetLink('rightFoot')
+    #Load environment and robot with default settings
+    [robot,ctrl,ind,ref_robot,recorder]=openhubo.load_scene(env,options.robotfile,options.scenefile,True)
+
+    j1=robot.GetJoint('LAR_dummy')
+    j2=robot.GetJoint('RAR_dummy')
     env.Load('physics.xml')
     physics=env.GetPhysicsEngine()
     steps=4000
@@ -50,15 +46,16 @@ if __name__=='__main__':
     RMy=zeros(steps)
     rsr=zeros(steps)
     rsrdof=ind('RSR')
-    
+
     t=[float(x)*timestep for x in range(steps)]
 
     t0=time.time()
     st0=env.GetSimulationTime()
     for k in range(steps):
         env.StepSimulation(timestep)
-        [force1,torque1]= physics.GetLinkForceTorque(l1)
-        [force2,torque2]= physics.GetLinkForceTorque(l2)
+        [force1,torque1]= physics.GetJointForceTorque(j1)
+        [force2,torque2]= physics.GetJointForceTorque(j2)
+        #TODO: Adjust joint anchor to FT sensor Csys
         #print force1[-1],force2[-1]
         LFz[k]=force1[-1]
         RFz[k]=force2[-1]
@@ -67,11 +64,11 @@ if __name__=='__main__':
         LMy[k]=torque1[1]
         RMy[k]=torque2[1]
         rsr[k]=robot.GetDOFVelocities([rsrdof])
-    
+
     st1=env.GetSimulationTime()
     t1=time.time()
     print "timestep = {}, Took {} real sec. for {} sim sec.".format(timestep,t1-t0,float(st1-st0)/1000000)
-    
+
     m=openhubo.find_mass(robot)
     skips=sum(abs(LFz[100:])/m/9.8<.07)+sum(abs(RFz[100:])<.1)
     jitter=std(rsr)
@@ -82,22 +79,3 @@ if __name__=='__main__':
     plt.title('Ratio of measured forces vs. body mass at each foot')
     plt.axis([t[0],t[-1],-500,0])
     plt.show()
-
-    RFT=robot.GetAttachedSensor('rightFootFT').GetSensor()
-    #show the history of measured forces
-    print RFT.SendCommand('gethist')
-    time.sleep(0.5)
-    #Try to set history longer
-    RFT.SendCommand('histlen 50')
-    time.sleep(0.5)
-    #It doesn't work because the sensor was running
-    print RFT.SendCommand('gethist')
-
-    #Proper way: power "down", change length, power "up"
-    RFT.Configure(Sensor.ConfigureCommand.PowerOff)
-    print RFT.SendCommand('histlen 50')
-    RFT.Configure(Sensor.ConfigureCommand.PowerOn)
-    time.sleep(0.25)
-    print RFT.SendCommand('gethist')
-
-

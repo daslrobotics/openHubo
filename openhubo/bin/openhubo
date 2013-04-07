@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+#
+#Set up ipdb for better exception handling and debugging
+import IPython
+from IPython.core import ultratb
+from openravepy import raveLogInfo
+from openhubo import setup
+
+from fnmatch import fnmatch
+import os as _os
+import sys as _sys
+import openhubo as _oh
+
+
+print "Using Ipython for exceptions..."
+_sys.excepthook = ultratb.FormattedTB(mode='Verbose',
+                                     color_scheme='Linux', call_pdb=1)
+(options,scriptname)=setup(None,False)
+
+if options.example or scriptname:
+
+    if scriptname:
+        execfile(scriptname)
+    else:
+        expath=_os.environ['OPENHUBO_DIR'] + '/examples/'
+        for f in _os.listdir(expath):
+            if fnmatch(f, options.example):
+                raveLogInfo("Found example {}".format(options.example))
+                break
+        execfile(expath+options.example)
+else:
+    #Enable interactive mode and load a simple environment
+    (env,options)=_oh.setup('qtcoin')
+    env.SetDebugLevel(3)
+
+    #Options structure is populated by command line as well as easily in code
+    options.stop=True
+    [robot,ctrl,ind,ref,recorder]=_oh.load_scene(env,options)
+
+    env.StartSimulation(_oh.TIMESTEP)
+
+if options.interact:
+    if options.noimports:
+        print "Skipping bulk imports for interactive prompt..."
+
+    else:
+        #boilerplate imports for easy interactive work
+        print "Importing openravepy, numpy, and openhubo for interactive session..."
+        from  openhubo import startup
+        from openravepy import *
+        from numpy import *
+        from openhubo import *
+    IPython.embed()
+    print "Cleaning up after inspection..."

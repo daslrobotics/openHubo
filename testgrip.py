@@ -15,7 +15,7 @@ def get_timestamp(lead='_'):
 
 
 
-def load(env,scenename=None,stop=False,physics=True):
+def load_scene(env,scenename=None,stop=False,physics=True):
     """ Load a robot model into the given environment, configuring a
     trajectorycontroller and a reference robot to show desired movements vs. actual
     pose. The returned tuple contains:
@@ -73,7 +73,7 @@ if __name__=='__main__':
     env=Environment()
     env.SetDebugLevel(3)
     (env,options)=openhubo.setup('qtcoin')
-    [robot,ctrl,ind,recorder]=load(env,None,'gripper.env.xml',True)
+    [robot,ctrl,ind,recorder]=load_scene(env,None,'gripper.env.xml',True)
     rod=env.GetKinBody('rod')
     trans=rod.GetTransform()
     pose=ones(robot.GetDOF())*.8

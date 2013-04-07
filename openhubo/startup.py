@@ -3,12 +3,8 @@
 # loading this as a module is a quick way to add interactive functionality to a script.
 # This method is a bit of a hack, and will be replaced with a more elegant solution in the future
 
-try:
-    import readline
-    print "Loaded tab completion enabled via readline.."
-except ImportError:
-    pass
-
+#TODO: proper exception handling here
+import readline
 import os
 import atexit
 import rlcompleter
@@ -24,7 +20,6 @@ class irlcompleter(rlcompleter.Completer):
 
 historyPath = os.path.expanduser("~/.pyhistory")
 def save_history(historyPath=historyPath):
-    import readline
     readline.write_history_file(historyPath)
 
 atexit.register(save_history)
