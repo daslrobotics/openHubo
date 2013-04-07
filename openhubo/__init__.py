@@ -449,22 +449,18 @@ def make_ghost_from_robot(robot,prefix="ref_",color=[.8,.8,.4]):
     """ Not yet implemented """
     pass
 
-def align_robot(robot,floorheight=0.002,floornormal=[0,0,1]):
+def align_robot(robot,setheight=0.000,floornormal=[0,0,1]):
     """ Align robot to floor, spaced slightly above"""
     env=robot.GetEnv()
-    #vertex2=zeros(3)
-    heights=[]
     with env:
         T=robot.GetTransform()
-        for l in robot.GetLinks():
-            bb=l.ComputeAABB()
-            heights.append((bb.pos()-bb.extents())[2])
+        bb=robot.ComputeAABB()
+        bottom_corner=bb.pos()-bb.extents()
 
-        T=robot.GetTransform()
-        dh=floorheight-min(heights)
+        dh=setheight-bottom_corner[2]
 
         # add height change to robot
-        T[2,3]=dh
+        T[2,3] += dh
         robot.SetTransform(T)
         #TODO: reset velocity?
 
@@ -565,25 +561,6 @@ def plot_masses(robot, color=None, com_color=None):
     return handles
 
 
-def align_robot(robot,floorheight=0.002,floornormal=[0,0,1]):
-    """ Align robot to floor, spaced slightly above"""
-    env=robot.GetEnv()
-    #vertex2=zeros(3)
-    heights=[]
-    with env:
-        for l in robot.GetLinks():
-            bb=l.ComputeAABB()
-            heights.append((bb.pos()-bb.extents())[2])
-
-        T=robot.GetTransform()
-        dh=floorheight-min(heights)
-
-        # add height change to robot
-        T[2,3]+=dh
-        robot.SetTransform(T)
-        #TODO: reset velocity?
-
-
 class ServoPlotter:
     """A simple class to import recorded servo data and plot a specific subset
     of joints. matplotlib.pyplot commands are embedded in the class so you can
@@ -622,7 +599,7 @@ class ServoPlotter:
             _plt.show()
 
 
-def safe_quit(env):
+def _safe_quit(env):
     """ Exit callback to ensure that openrave closes safely."""
     #Somewhat overkill, try to avoid annoying segfaults
     _rave.raveLogDebug("Safely exiting rave environment...")
@@ -675,7 +652,7 @@ def setup(viewername=None,create=True):
         options.scenefile=None
     if create:
         env=_rave.Environment()
-        _atexit.register(safe_quit,env)
+        _atexit.register(_safe_quit,env)
         _rave.misc.OpenRAVEGlobalArguments.parseEnvironment(options,env)
         return (env,options)
     elif len(leftargs)>0:

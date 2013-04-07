@@ -37,7 +37,7 @@ else:
     options.stop=True
     [robot,ctrl,ind,ref,recorder]=_oh.load_scene(env,options)
 
-    env.StartSimulation(openhubo.TIMESTEP)
+    env.StartSimulation(_oh.TIMESTEP)
 
 if options.interact:
     if options.noimports:
@@ -46,7 +46,7 @@ if options.interact:
     else:
         #boilerplate imports for easy interactive work
         print "Importing openravepy, numpy, and openhubo for interactive session..."
-        import openhubo.startup
+        from  openhubo import startup
         from openravepy import *
         from numpy import *
         from openhubo import *
