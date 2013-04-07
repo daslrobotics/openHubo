@@ -18,7 +18,12 @@ class Transform:
     """Equivalent to RaveTransform class in OpenRAVE"""
 
     def __init__(self,rot=None,trans=None,check=True):
-        self.tm=Transform.make_transform(rot,trans,check)
+        if _np.size(rot) == 16:
+            #TODO: additional checks
+            self.tm=_np.mat(rot)
+        #TODO: init from 3x4 matrix
+        else:
+            self.tm=Transform.make_transform(rot,trans,check)
 
     def rot(self):
         return self.tm[0:3,0:3]
@@ -36,14 +41,17 @@ class Transform:
         Tnew[0:3,3]=-self.trans()
 
     def __mul__(self,other):
-        """Overload multiplication to provide proper matrix multiplication of 2 Transforms, or a Transform and an equivalent matrix"""
+        #TODO: make this return a Transform?
+        """Overload multiplication to provide proper matrix multiplication of 2
+        Transforms, or a Transform and an equivalent matrix.
+        Note that this function returns a matrix, NOT a Transform."""
         if type(other) == type(self):
-            return self.tm*other.tm
+            return self.tm * other.tm
         #Hope that the user sets this up right...
         if type(other) == _np.matrixlib.defmatrix.matrix:
-            return self.tm*other
+            return self.tm * other
         if type(other) == _np.ndarray:
-            return self.tm*_np.mat(other)
+            return self.tm * _np.mat(other)
 
     @staticmethod
     def make_transform(rot=None,trans=None,check=False):
@@ -61,7 +69,7 @@ class Transform:
             if  _np.size(rot) == 9 :
                 #correct overall dimensions, check for shape and act accordingly
                 #Assume that a rotation matrix
-                R = rot.reshape(3,3)
+                R = _np.mat(rot).reshape(3,3)
                 if _np.size(rot,1)==9:
                     R=R.transpose()
 

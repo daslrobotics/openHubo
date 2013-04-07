@@ -91,7 +91,7 @@ def plotTransforms(env,transforms,color=None):
         color=_np.array([0,1,0])
 
     handle=[]
-    points = _np.array([T[0:3,3] for T in transforms])
+    points = _np.array([_np.squeeze(_np.array(T[0:3,3])) for T in transforms])
     handle=env.plot3(points,pointsize=10.0,colors=color)
     return handle
 
