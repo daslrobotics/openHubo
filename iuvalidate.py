@@ -1,26 +1,21 @@
 #!/usr/bin/env python
 
 #Basics
-from numpy import *
-from numpy.linalg import *
 import sys
 import openhubo
 import time
 import re
-import os
+from numpy import pi,zeros,ones,array,size,mat,eye,hstack
+from openravepy import RaveGetAffineDOFValuesFromTransform,DOFAffine,planningutils
+from openravepy.openravepy_int import Sensor
+from openhubo.comps import rodrigues
+from iu_ladder_generator import make_ladder,make_ladder_env
 
 #Data saving and handling
 import pickle
-import signal
-import matplotlib.pyplot as plt
 
 #OpenRAVE and OpenHubo stuff
-from openravepy import *
-from rodrigues import *
-from iu_ladder_generator import *
 import trajectory
-from recorder import viewerrecorder
-import curses
 import kbhit
 
 number_of_degrees=57
@@ -36,8 +31,8 @@ def load_mapping(robot,filename):
         line=f.readline() #Strip header
         for k in range(6):
             #Strip known 6 dof base
-            line=f.readline() 
-        while line: 
+            line=f.readline()
+        while line:
             datalist=re.split(',| |\t',line.rstrip())
             #print datalist
             j=robot.GetJoint(datalist[1])
@@ -109,7 +104,7 @@ def load_iu_traj(filename):
             data=[float(x) for x in configlist[1:]]
             #print data
             if not(len(data) == int(configlist[0])):
-                print "Incorrect data formatting on line P{}".format(c)
+                print "Incorrect data formatting on line P{}".format(count)
 
             dataset.append(data)
             line = f.readline()
@@ -130,7 +125,7 @@ def format_angles(data):
 def build_openrave_traj(robot,dataset,timestep,retime=True):
     #Assumes that ALL joints are specified for now
     [traj,config]=trajectory.create_trajectory(robot)
-    #print config.GetDOF() 
+    #print config.GetDOF()
     T0=robot.GetTransform()
     elbow_start=-pi/180.*170
     elbow_step=elbow_start/60.0
@@ -200,7 +195,7 @@ def make_robot_transform(robot):
     T=array(mat(T0)*mat(T1))
     robot.SetTransform(T)
     return T
-   
+
 def play_traj(robot,dataset,timestep):
     #Assume that robot is in initial position now
     T0=robot.GetTransform()
@@ -213,7 +208,6 @@ def play_traj(robot,dataset,timestep):
 
 def get_triggers(robot,dataset):
     #Assume that robot is in initial position now
-    T0=robot.GetTransform()
     ftriggers=zeros((size(dataset,0),2),bool)
     lr=[27,42]
     for k in range(size(dataset,0)):
@@ -260,7 +254,7 @@ class effector_log:
         self.data=zeros((loglen,self.width))
         self.com=zeros((loglen,3))
         #Data structure is 1 col of time, 6s columns of sensor data
-        
+
     def record(self,time=None):
         if not time:
             self.data[self.count,0]=self.env.GetSimulationTime()
@@ -304,26 +298,26 @@ class force_log:
         self.count=0
         self.env=sensors[0].GetAttachingLink().GetParent().GetEnv()
         for s in sensors:
-            if type(s.GetData()) is openravepy_int.Sensor.Force6DSensorData:
+            if type(s.GetData()) is Sensor.Force6DSensorData:
                 self.width+=6
                 self.sensors.append(s)
         self.data=zeros((loglen,self.width))
         #Data structure is 1 col of time, 6s columns of sensor data
-                       
+
     def setup(self,histlen):
         for s in self.sensors:
-            if type(s.GetData()) is openravepy_int.Sensor.Force6DSensorData:
+            if type(s.GetData()) is Sensor.Force6DSensorData:
                 FT=s.GetSensor()
                 FT.Configure(Sensor.ConfigureCommand.PowerOff)
                 time.sleep(0.1)
                 FT.SendCommand('histlen {}'.format(histlen))
                 time.sleep(0.1)
                 FT.Configure(Sensor.ConfigureCommand.PowerOn)
-        
+
     def record(self,time=None):
 
         #TODO: access violation safety
-        
+
         with env:
             if not time:
                 self.data[self.count,0]=self.env.GetSimulationTime()
@@ -355,10 +349,8 @@ class force_log:
             return self.data[:self.count,0]
         for k in range(len(self.sensors)):
             if self.sensors[k].GetName()==name:
-                c0=1+k*6
-                c1=1+6*(k+1)
-                return self.data[:self.count,array(components)+1+6*k]
-    
+                return self.data[self.count,array(components)+1+6*k]
+
 def add_torque(robot,joints,maxT,level=3):
     """ Add torque to joints, assuming that they are fingers by the indices."""
     if level>0:
@@ -378,7 +370,7 @@ def add_torque(robot,joints,maxT,level=3):
 def save(self,filename,struct):
     with open(filename,'w') as f:
         #TODO: save robot hash?
-        pickle.dump(stuct, f)
+        pickle.dump(struct, f)
 
 def set_finger_torque(robot,maxT):
     for f in fingers:
@@ -407,18 +399,18 @@ if __name__=='__main__':
         file_param = sys.argv[1]
     except IndexError:
         file_param = 'firstladder.iuparam'
-    
+
     try:
         file_traj = sys.argv[2]
     except IndexError:
         print "Trajectory argument not found!"
-        raise 
+        raise
 
     try:
         file_robot = sys.argv[3]
     except IndexError:
         print "Robot file not found!"
-        raise 
+        raise
 
     try:
         Tmax = float(sys.argv[4])
@@ -447,20 +439,19 @@ if __name__=='__main__':
     # Try to keep parameters specified here
     laddername=make_ladder(file_param,True)
     envname=make_ladder_env(file_param,True)
-    
+
     physicson=True
 
-    env = Environment()
-    env.SetViewer('qtcoin',showGUI)
+    (env,options)=openhubo.setup('qtcoin',True)
     env.SetDebugLevel(3)
-   
-    # rlhuboplus models don't work with the affine transformations (i.e. use huboplus.robot.xml for ideal sim   
+
+    # rlhuboplus models don't work with the affine transformations (i.e. use huboplus.robot.xml for ideal sim
     [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,file_robot,envname,True,physicson)
-    
+
     make_robot_transform(robot)
 
     #TODO: get rid of hand tweaks by processing initial location?
-    
+
     joint_offsets[ind('RSR')]=pi/12
     joint_offsets[ind('LSR')]=-pi/12
 
@@ -535,7 +526,7 @@ if __name__=='__main__':
                 rflag=triggers[count/100,1]
             except IndexError:
                 pass
-        
+
         if not (count % 20):
             forces.record()
             points.record()
@@ -548,11 +539,11 @@ if __name__=='__main__':
             #if kbhit.kbhit():
                 #k=kbhit.getch()
                 #if k=='r' or k=='b':
-                    #rflag=not rflag 
+                    #rflag=not rflag
                     #print "Switch rtorque to {}".format(rflag)
 
                 #if k=='l' or k=='b':
-                    #lflag=not lflag 
+                    #lflag=not lflag
                     #print "Switch ltorque to {}".format(lflag)
 
                 #elif k=='a':
@@ -561,7 +552,7 @@ if __name__=='__main__':
                 #elif k=='z':
                     #print "Lowering Tmax by .25"
                     #Tmax-=.25
-                
+
         if rflag:
             if rtorque<Tmax:
                 rtorque+=.001
