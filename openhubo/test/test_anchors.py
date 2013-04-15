@@ -16,11 +16,7 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-from openravepy import *
-from numpy import *
-import time
-import datetime
-import sys
+from numpy import pi,array,zeros
 import unittest
 import openhubo
 
@@ -88,7 +84,7 @@ def model_test_factory(filename=None):
 
         def test_anchors(self):
             ind=self.ind
-            raveLogWarn('Loaded {}'.format(filename))
+            print('Loaded {}'.format(filename))
 
             pose=zeros(self.robot.GetDOF())
             self.robot.SetDOFValues(pose)
@@ -115,7 +111,7 @@ def model_test_factory(filename=None):
             for j in self.robot.GetJoints():
                 anchor.setdefault(j.GetName(),j.GetAnchor())
             errsum3=sum(abs(check_all_constraints(anchor)))
-            
+
             print "Error sums for {}:".format(self.robot.GetName())
             print errsum1
             print errsum2
@@ -123,7 +119,7 @@ def model_test_factory(filename=None):
             self.assertLess(min([errsum1,errsum2,errsum3]),1e-10)
 
     return TestAnchors
-    
+
 
 test_anchor1=model_test_factory('huboplus.robot.xml')
 test_anchor2=model_test_factory('rlhuboplus.robot.xml')

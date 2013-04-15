@@ -1,11 +1,7 @@
-from openravepy import *
-from numpy import *
+from numpy import zeros,pi
 import openhubo
-import sys
 import time
 import unittest
-import servo
-import threading
 
 class TestServoCommands(unittest.TestCase):
     def setUp(self):
@@ -23,7 +19,7 @@ class TestServoCommands(unittest.TestCase):
 
     def tearDown(self):
         self.env.Destroy()
-    
+
     def test_pose(self):
         pose=self.pose
         pose[self.ind('RSR')]=-22.5*pi/180
@@ -31,7 +27,7 @@ class TestServoCommands(unittest.TestCase):
         self.assertTrue(self.controller.SetDesired(pose))
 
     def test_setgains(self):
-        self.assertTrue(self.controller.SendCommand('set gains 50 0 7'))
+        self.assertTrue(self.controller.SendCommand('set gains 10 0 .1'))
 
     def test_degrees(self):
         self.assertTrue(self.controller.SendCommand('set degrees '))
