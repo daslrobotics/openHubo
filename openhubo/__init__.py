@@ -401,7 +401,7 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
             controller=_rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
             #TODO: validate gains
-            controller.SendCommand('set gains 50 0 8')
+            controller.SendCommand('set gains 150 0 .9')
 
         else:
             #Just load ideal controller if physics engine is not present
@@ -571,6 +571,7 @@ class ServoPlotter:
 
     def __init__(self,filename=None,servolist=[]):
         self.jointdata={}
+        self.veldata={}
         self.import_servo_data(filename)
         if len(servolist)>0:
             self.plot(servolist)
@@ -590,13 +591,31 @@ class ServoPlotter:
             data=l.rstrip().split(' ')
             #Store a dictionary of lists?
             self.jointdata.setdefault(data[0],[float(x) for x in data[1:]])
+        self.calc_vel()
 
-    def plot(self,servolist=[]):
+    def plot(self,servolist=None):
+        if servolist is None:
+            servolist=self.jointdata.keys()
         for s in servolist:
             REF='{}_REF'.format(s)
             _plt.plot(self.jointdata[REF],'+',hold=True)
             _plt.plot(self.jointdata[s],hold=True)
             _plt.show()
+
+    def vel_plot(self,servolist=None):
+        if servolist is None:
+            servolist=self.veldata.keys()
+        for s in servolist:
+            REF='{}_REF'.format(s)
+            _plt.plot(self.veldata[REF],'+',hold=True)
+            _plt.plot(self.veldata[s],hold=True)
+            _plt.show()
+
+    def calc_vel(self,dt=TIMESTEP):
+        for k in self.jointdata.keys():
+            self.veldata.setdefault(k,_np.diff(self.jointdata[k])/dt)
+
+
 
 
 def _safe_quit(env):

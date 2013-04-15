@@ -292,8 +292,7 @@
         <anchor>0.013850358943 -0.000007806523 0.035461283862</anchor>
         <axis>0 0 -1</axis>
         <limitsdeg>-90 90</limitsdeg>
-		<maxvel>3.77</maxvel>
-		<maxaccel>7.20</maxaccel>
+		<maxvel>7.20</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -304,8 +303,7 @@
         <anchor>-0.034706500276 0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
-		<maxvel>3.77</maxvel>
-		<maxaccel>7.20</maxaccel>
+		<maxvel>7.20</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -344,8 +342,7 @@
         <anchor>-0.034706500276 -0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
-		<maxvel>3.77</maxvel>
-		<maxaccel>7.20</maxaccel>
+		<maxvel>7.20</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -356,8 +353,7 @@
         <anchor>0.049747912596 0.012531116599 0.015643664572</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-28 28</limitsdeg>
-		<maxvel>1.86</maxvel>
-		<maxaccel>3.56</maxaccel>
+		<maxvel>3.56</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -391,8 +387,7 @@
         <anchor>0.049747912596 -0.012531116599 0.015643664572</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-28 28</limitsdeg>
-		<maxvel>1.86</maxvel>
-		<maxaccel>3.56</maxaccel>
+		<maxvel>3.56</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -403,8 +398,7 @@
         <anchor>-0.019504891350 -0.059577480789 0.175201757627</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-85 92</limitsdeg>
-		<maxvel>4.71</maxvel>
-		<maxaccel>9.00</maxaccel>
+		<maxvel>9.00</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -443,8 +437,7 @@
         <anchor>-0.019504891350 0.059577480789 0.175201757627</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-85 92</limitsdeg>
-		<maxvel>4.71</maxvel>
-		<maxaccel>9.00</maxaccel>
+		<maxvel>9.00</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -455,8 +448,7 @@
         <anchor>-0.012825433376 -0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-4 149</limitsdeg>
-		<maxvel>4.71</maxvel>
-		<maxaccel>9.00</maxaccel>
+		<maxvel>9.00</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -495,8 +487,7 @@
         <anchor>-0.012825433376 0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-4 149</limitsdeg>
-		<maxvel>4.71</maxvel>
-		<maxaccel>9.00</maxaccel>
+		<maxvel>9.00</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -507,8 +498,7 @@
         <anchor>-0.019870246084 -0.045969255056 -0.011506941050</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-74 97</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -542,8 +532,7 @@
         <anchor>-0.019870246084 0.045969255056 -0.011506941050</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-74 97</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -554,8 +543,7 @@
         <anchor>0.051509407797 0.002163982128 0.069388069491</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-11 11</limitsdeg>
-		<maxvel>2.98</maxvel>
-		<maxaccel>5.70</maxaccel>
+		<maxvel>5.70</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -595,8 +583,7 @@
         <anchor>0.051509407797 -0.002163982128 0.069388069491</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-11 11</limitsdeg>
-		<maxvel>2.98</maxvel>
-		<maxaccel>5.70</maxaccel>
+		<maxvel>5.70</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -704,8 +691,7 @@
         <anchor>-0.016720721524 0.057040679167 -0.000009918731</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>6.48</maxvel>
-		<maxaccel>12.38</maxaccel>
+        <maxvel>12.38</maxvel>
 		<maxtorque>35</maxtorque>
     </Joint>
 
@@ -739,8 +725,7 @@
         <anchor>-0.016720721524 -0.057040679167 -0.000009918731</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>6.48</maxvel>
-		<maxaccel>12.38</maxaccel>
+		<maxvel>12.38</maxvel>
 		<maxtorque>35</maxtorque>
     </Joint>
 
@@ -775,8 +760,7 @@
         <axis>1 0 0</axis>
         <initial>0.2617993877991494</initial>
         <limitsdeg>-150 34</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>35</maxtorque>
     </Joint>
 
@@ -811,8 +795,7 @@
         <axis>1 0 0</axis>
         <initial>-0.2617993877991494</initial>
         <limitsdeg>-34 150</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>35</maxtorque>
     </Joint>
 
@@ -851,8 +834,7 @@
         <anchor>-0.004561211264 0.000031057603 0.090782377537</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>25</maxtorque>
     </Joint>
 
@@ -891,8 +873,7 @@
         <anchor>-0.004561211264 -0.000031057603 0.090782377537</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>25</maxtorque>
     </Joint>
 
@@ -928,8 +909,7 @@
         <axis>0 1 0</axis>
         <initial>0.17453292519943295</initial>
         <limitsdeg>-133 14</limitsdeg>
-		<maxvel>7.85</maxvel>
-		<maxaccel>15.00</maxaccel>
+		<maxvel>15.00</maxvel>
 		<maxtorque>25</maxtorque>
     </Joint>
 
@@ -964,8 +944,7 @@
         <axis>0 1 0</axis>
         <initial>0.17453292519943295</initial>
         <limitsdeg>-133 14</limitsdeg>
-		<maxvel>7.85</maxvel>
-		<maxaccel>15.00</maxaccel>
+		<maxvel>15.00</maxvel>
 		<maxtorque>25</maxtorque>
     </Joint>
 
@@ -1004,8 +983,7 @@
         <anchor>0.001220192079 0.000635233335 0.023804318643</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>9</maxtorque>
     </Joint>
 
@@ -1044,8 +1022,7 @@
         <anchor>0.001220192079 -0.000635233335 0.023804318643</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>9</maxtorque>
     </Joint>
 
@@ -1081,8 +1058,7 @@
         <anchor>0.000258199377 0.011441986656 0.046147242821</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-90 90</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>9</maxtorque>
     </Joint>
 
@@ -1144,8 +1120,7 @@
         <anchor>0.000258199377 -0.011441986656 0.046147242821</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-94 90</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>9</maxtorque>
     </Joint>
 
@@ -1195,8 +1170,7 @@
         <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-30 30</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>2.7</maxtorque>
     </Joint>
 
@@ -1230,8 +1204,7 @@
         <anchor>-0.010688581590 0.000030086449 -0.032122953618</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>2.7</maxtorque>
     </Joint>
 
