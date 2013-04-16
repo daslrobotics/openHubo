@@ -118,7 +118,7 @@ BASE_DIR=`git rev-parse --show-toplevel`
 
 check-submodules
 
-for p in openmr forceSensor
+for p in servocontroller forceSensor
 do
     echo ""
     echo "Building $p Plugin..."
