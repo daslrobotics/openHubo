@@ -7,7 +7,7 @@ BASE_DIR=`git rev-parse --show-toplevel`
 cd $BASE_DIR
 rm plugins/lib*.so
 
-for pkg in comps-plugins/generalik comps-plugins/cbirrt2 comps-plugins/manipulation2 openmr forceSensor
+for pkg in comps-plugins/generalik comps-plugins/cbirrt2 comps-plugins/manipulation2 servocontroller forceSensor
 do
     cd $BASE_DIR/$pkg
     echo "Removing build folder in "`pwd`

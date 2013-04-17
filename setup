@@ -107,6 +107,12 @@ check-if-gitrepo
 if [[ $1 == "clean" ]]
 then
     ./util/clean-all.sh
+else
+    read -p "Clean up previous plugins (do this if there are any major changes to openhubo, like pulling a new version) [y/N]?" CLEANUP_PLUGINS
+    if [[ $CLEANUP_PLUGINS == 'Y' || $CLEANUP_PLUGINS == 'y' ]]
+    then
+        ./util/clean-all.sh
+    fi
 fi
 
 #Check if python dependencies are installed (may not work for older Ubuntu versions)
