@@ -7,7 +7,7 @@ from numpy import pi
 from openravepy import planningutils
 
 #example-specific imports
-import openhubo.trajectory as trajectory
+import openhubo.trajectory as tr
 
 (env,options)=openhubo.setup()
 env.SetDebugLevel(3)
@@ -33,7 +33,7 @@ pose1['RKP']=pi/4
 pose1['LHP']=-pi/8
 pose1['RHP']=-pi/8
 
-[traj,config]=trajectory.create_trajectory(robot)
+[traj,config]=tr.create_trajectory(robot)
 
 #Note the new waypoint-building syntax
 traj.Insert(0,pose0.to_waypt(dt=0.0))
@@ -44,14 +44,22 @@ traj.Insert(2,pose0.to_waypt(dt=1.0))
 planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
 print 'Dump all DOFs to youngbum format'
-trajectory.write_youngbum_traj(traj,robot,0.005,'traj_example_youngbum.traj')
+tr.write_youngbum_traj(traj,robot,0.005,'traj_example_youngbum.traj')
 
 print 'Only use a selection of DOF\'s instead of everything'
-trajectory.write_youngbum_traj(traj,robot,0.005,'traj_example_youngbum2.traj',dofs=range(28))
+tr.write_youngbum_traj(traj,robot,0.005,'traj_example_youngbum2.traj',dofs=range(28))
 
 print 'Write to hubo-read-trajectory compatible format'
-trajectory.write_hubo_traj(traj,robot,0.025,'traj_example_hubo.traj')
+tr.write_hubo_traj(traj,robot,0.025,'traj_example_hubo.traj')
 
 print 'Test reading of trajectories'
-traj_in_yb=trajectory.read_youngbum_traj('traj_example_youngbum2.traj',robot,0.005)
-traj_in_text=trajectory.read_text_traj('traj_example_youngbum2.traj',robot,0.005)
+traj_in_yb=tr.read_youngbum_traj('traj_example_youngbum2.traj',robot,0.005)
+traj_in_text=tr.read_text_traj('traj_example_youngbum2.traj',robot,0.005)
+
+print 'Test IU trajectory import'
+iutraj = tr.IUTrajectory(robot)
+iutraj.load_from_file('70_0.20.iutraj','iumapping.txt',openhubo.get_root_dir())
+traj2=iutraj.to_openrave()
+
+
+tr.write_hubo_traj(traj2,robot,0.025,'traj_example_iu.traj')

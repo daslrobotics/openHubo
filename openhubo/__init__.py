@@ -13,6 +13,7 @@ import matplotlib.pyplot as _plt
 import re as _re
 import atexit as _atexit
 import optparse as _optparse
+import os as _os
 
 import openravepy as _rave
 from recorder import viewerrecorder as _recorder
@@ -26,6 +27,8 @@ from warnings import warn
 from openravepy.misc import InitOpenRAVELogging
 InitOpenRAVELogging()
 
+#physics_timestep=0.001
+#nonphysics_timestep=0.02
 TIMESTEP=0.001
 
 #KLUDGE: hard code the mapping (how often will it change, really?). Include openhubo synonyms here for fast lookup.
@@ -177,6 +180,9 @@ class Pose:
     def __abs__(self):
         #TODO: size checking
         return abs(self.values)
+
+    def __iter__(self):
+        return iter(self.values)
 
 def get_name_from_huboname(inname,robot=None):
     """ Map a name from the openhubo standard to the original hubo naming
@@ -404,12 +410,14 @@ def load_scene_from_options(env,options):
             _rave.raveLogInfo("Physics engine already configured, using current settings...")
 
         if check_physics(env):
+            TIMESTEP=0.001
             _rave.raveLogInfo('Creating controller for physics simulation')
             controller=_rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
             controller.SendCommand('set gains 150 0 .9 ')
             controller.SendCommand('set radians ')
         else:
+            TIMESTEP=0.05
             #Just load ideal controller if physics engine is not present
             _rave.raveLogInfo('Physics engine not loaded, using idealcontroller...')
             controller=_rave.RaveCreateController(env,'idealcontroller')
@@ -697,3 +705,13 @@ def get_options(viewername=None,parser=None):
         options.scenefile=None
 
     return (options,leftargs)
+
+def get_root_dir():
+    return _os.environ['OPENHUBO_DIR']
+
+def find(name, path=None):
+    if not path:
+        path=get_root_dir()
+    for root, dirs, files in _os.walk(path):
+        if name in files:
+            return _os.path.join(root, name)

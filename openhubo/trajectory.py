@@ -1,9 +1,10 @@
-#!/usr/bin/env python
-
 import openravepy as _rave
-from numpy import pi,arange,zeros,array
+import numpy as _np
+from numpy import pi,array
 import openhubo as _oh
 import openhubo.comps as _comps
+import re
+
 
 hubo_read_trajectory_map={
     'RHY':0,
@@ -120,7 +121,7 @@ def read_youngbum_traj(filename,robot,dt=.01,scale=1.0,retime=True):
         else:
             signs.append(-1)
 
-    #Read in offset row (fill with zeros if not used)
+    #Read in offset row (fill with _np.zeros if not used)
     offsetlist=f.readline().rstrip().split(' ')
     offsets=[float(x) for x in offsetlist]
 
@@ -176,7 +177,7 @@ def write_youngbum_traj(traj,robot,dt,filename='exported.traj',dofs=None,oldname
         f.write(' '.join(['{}'.format(x) for x in offsetlist])+'\n')
         f.write(' '.join(['{}'.format(x) for x in scalelist])+'\n')
 
-        for t in arange(0,T,dt):
+        for t in _np.arange(0,T,dt):
             waypt=traj.Sample(t)
             vals=config.ExtractJointValues(waypt,robot,dofs)
             f.write(' '.join(['{}'.format(x) for x in vals])+'\n')
@@ -194,12 +195,12 @@ def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
     #Get all the DOF's..
     dofs = range(robot.GetDOF())
     with open(filename,'w') as f:
-        for t in arange(0,T,dt):
+        for t in _np.arange(0,T,dt):
             waypt=traj.Sample(t)
             #Extract DOF values
             vals=config.ExtractJointValues(waypt,robot,dofs)
-            #start with array of zeros size of hubo-ach trajectory width
-            mapped_vals=zeros(max(_oh.hubo_map.values()))
+            #start with array of _np.zeros _np.size of hubo-ach trajectory width
+            mapped_vals=_np.zeros(max(_oh.hubo_map.values()))
             for d in dofs:
                 n = robot.GetJointFromDOFIndex(d).GetName()
                 if _oh.hubo_map.has_key(n):
@@ -251,10 +252,10 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
         else:
             signs.append(-1)
 
-    #Read in offset row (fill with zeros if not used)
+    #Read in offset row (fill with _np.zeros if not used)
     offsetlist=f.readline().rstrip().split(' ')
     offsets=[float(x) for x in offsetlist]
-    #Read in scale row (fill with ones if not used)
+    #Read in scale row (fill with _np.ones if not used)
     scalelist=f.readline().rstrip().split(' ')
     scales=[float(x) for x in scalelist]
 
@@ -264,7 +265,7 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
         if len(string)==0:
             break
         vals=[float(x) for x in string.split(' ')]
-        Tdata=zeros(6)
+        Tdata=_np.zeros(6)
         for i,v in enumerate(vals):
             if indices.has_key(i):
                 pose[indices[i]]=(vals[i]+offsets[i])*scales[i]*signs[i]*scale
@@ -291,3 +292,161 @@ def makeTransformExtractor(robot,traj,config):
         return _rave.matrixFromPose(traj.GetWaypoint(index)[-8:-1])
     return GetTransformFromWaypoint
 
+class IUTrajectory:
+
+    def __init__(self,robot,joint_offsets=None,joint_signs=None,joint_map=None):
+        #TODO: get defaults that make sense
+        if joint_offsets is None:
+            joint_offsets=_np.zeros(robot.GetDOF())
+        if joint_signs is None:
+            joint_signs=_np.ones(robot.GetDOF())
+        if joint_map is None:
+            joint_map=-_np.ones(robot.GetDOF(),dtype=_np.int)
+        self.robot=robot
+        self.joint_offsets=joint_offsets
+        self.joint_signs=joint_signs
+        self.joint_map=joint_map
+
+    def load_mapping(self,filename,path=None):
+        #Ugly use of globals
+
+        with open(_oh.find(filename,path),'r') as f:
+            line=f.readline() #Strip header
+            for k in range(6):
+                #Strip known 6 dof base
+                line=f.readline()
+            while line:
+                datalist=re.split(',| |\t',line.rstrip())
+                #print datalist
+                j=self.robot.GetJoint(datalist[1])
+                if j:
+                    dof=j.GetDOFIndex()
+                    self.joint_map[dof]=int(datalist[0])-6
+                    #Note that this corresponds to the IU index...
+                    self.joint_signs[dof]=int(datalist[4])
+                #Read in next
+                line=f.readline()
+
+    def load_from_file(self,filename,mapfile=None,path=None):
+
+        if mapfile:
+            self.load_mapping(mapfile,path)
+
+        with open(_oh.find(filename,path)) as f:
+            """ Format of q_path file:
+                version string
+                runtime
+                timestep
+                val0,val1...val57
+            """
+            line = f.readline()
+            datalist=re.split(',| |\t',line)[:-1]
+
+            if len(datalist)>1:
+                #Assume header is omitted
+                print "Hubo Version Missing"
+                version="HuboDefault"
+            else:
+                version=datalist[0]
+                #line 2 has the total time
+                print version
+                line = f.readline()
+                datalist=re.split(',| |\t',line)[:-1]
+
+            if len(datalist)>1:
+                #Assume header is omitted
+                print "Total Time Missing"
+                #total_time=0
+            else:
+                #total_time=float(datalist[0])
+                #line 3 has the step _np.size
+                line = f.readline()
+                datalist=re.split(',| |\t',line)[:-1]
+
+            if len(datalist)>1:
+                print "Time Step is Missing, assuming default..."
+                timestep=.05
+            else:
+                timestep=datalist[0]
+                line = f.readline()
+                datalist=re.split(',| |\t',line)[:-1]
+
+            #if (total_time>0) & (timestep>0):
+                #number_of_steps = (int)(total_time/timestep)
+            #else:
+                #number_of_steps = 0
+
+            dataset=[]
+            count=0
+            while len(line)>0:
+                if not line:
+                    print "Configuration is Missing"
+                    break
+
+                #Split configuration into a list, throwing out endline characters and strip length
+                configlist=re.split(',| |\t',line)[:-1]
+
+                #Convert to float values for the current pose
+                data=[float(x) for x in configlist[1:]]
+                if not(len(data) == int(configlist[0])):
+                    print "Incorrect data formatting on line P{}".format(count)
+
+                dataset.append(data)
+                line = f.readline()
+                count+=1
+
+        #Convert to neat numpy array
+        self.dataset=array(dataset)
+        self.timestep=timestep
+
+    def total_time(self):
+        return self.timestep*_np.size(self.dataset,1)
+
+    def steps(self):
+        return _np.size(self.dataset,1)
+
+    @staticmethod
+    def format_angles(data):
+        newdata=_np.zeros(_np.size(data))
+        for k in range(len(data)):
+            if data[k]>pi:
+                newdata[k]=2*pi-data[k]
+            else:
+                newdata[k]=data[k]
+        return newdata
+
+    @staticmethod
+    def get_transform(T0,xyzrpy):
+        Tc=_np.eye(4)
+        #use rodrigues function to build RPY rotation matrix
+        Tc[0:3,0:3]=_comps.rodrigues(IUTrajectory.format_angles(xyzrpy[3:6]))
+        Tc[0:3,3]=xyzrpy[0:3]
+        return array(_np.mat(T0)*_np.mat(Tc))
+
+
+    def to_openrave(self,retime=True,clip=True):
+        #Assumes that ALL joints are specified for now
+        [traj,config]=create_trajectory(self.robot)
+        #print config.GetDOF()
+        T0=self.robot.GetTransform()
+        pose=_oh.Pose(self.robot)
+        (lower,upper)=self.robot.GetDOFLimits()
+
+        for k in xrange(_np.size(self.dataset,0)):
+            T=IUTrajectory.get_transform(T0,self.dataset[k,0:6])
+            raw_pose=self.dataset[k,self.joint_map+6]
+            pose.values=raw_pose*self.joint_signs+self.joint_offsets
+
+            if clip:
+                pose.values=_np.maximum(pose.values,lower*.999)
+                pose.values=_np.minimum(pose.values,upper*.999)
+
+            #Note this method does not use a controller
+            aff = _rave.RaveGetAffineDOFValuesFromTransform(T,_rave.DOFAffine.Transform)
+            traj_append(traj,pose.to_waypt(self.timestep,aff))
+
+        if retime:
+            _rave.planningutils.RetimeActiveDOFTrajectory(traj,self.robot,True)
+        #Store locally because why not
+        self.traj=traj
+        return traj
