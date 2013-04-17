@@ -1,44 +1,39 @@
 #!/usr/bin/env python
-#
-#Set up ipdb for better exception handling and debugging
-import IPython
-from IPython.core import ultratb
-from openravepy import raveLogInfo
-
 from fnmatch import fnmatch
 import os as _os
-import sys as _sys
-import openhubo as _oh
-import runpy as _runpy
-import re as _re
-import subprocess
+from openhubo import get_options
+from  subprocess import call
 
-print "Using Ipython for exceptions..."
-_sys.excepthook = ultratb.FormattedTB(mode='Verbose',
-                                     color_scheme='Linux', call_pdb=1)
+def clear():
+    _os.system('clear')
 
-(options,scriptname)=_oh.get_options()
+clear()
+print "**************************************************************"
+print "* OpenHubo python launcher for examples and interactive work *"
+print "**************************************************************"
+(options,scriptname)=get_options()
 
-if options.example or scriptname:
+#Kludgy way to get ipython to launch with locals as interactive script
+cmd=[]
+cmd.append(options.interpreter)
+if options.interact:
+    cmd.append('-i')
 
-    if scriptname:
-        subprocess.call('python '+scriptname)
-    else:
-        expath=_os.environ['OPENHUBO_DIR'] + '/examples/'
-        for f in _os.listdir(expath):
-            if fnmatch(f, options.example):
-                raveLogInfo("Found example {}".format(options.example))
-                cmd=['python',expath + f]
-                print cmd
-                subprocess.call(cmd)
-                break
+if options.example:
+    expath=_os.environ['OPENHUBO_DIR'] + '/examples/'
+    for f in _os.listdir(expath):
+        if fnmatch(f, options.example):
+            print("Found example {}".format(f))
+            examplefile=expath + f
+            cmd.append(examplefile)
+            break
+elif scriptname:
+    cmd.append(scriptname)
 else:
-    #Enable interactive mode and load a simple environment
-    (env,options)=_oh.setup('qtcoin')
-    env.SetDebugLevel(3)
+    cmd.append(_os.environ['OPENHUBO_DIR'] + '/openhubo/_interactive.py')
 
-    #Options structure is populated by command line as well as easily in code
-    [robot,ctrl,ind,ghost,recorder]=_oh.load_scene(env,options)
-
-    env.StartSimulation(_oh.TIMESTEP)
-
+if options.interpreter == 'ipython':
+    cmd.append('--pylab')
+    cmd.append('--no-banner')
+    cmd.append('--no-confirm-exit')
+call(cmd)

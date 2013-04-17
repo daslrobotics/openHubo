@@ -645,6 +645,8 @@ def _create_parser():
                     help='User manually starts the simulation after loading')
     parser.add_option('--video-capture-file', action="store", dest='recordfile',default=None,
                     help='Specify a video file for the video recorder to capture to.')
+    parser.add_option('--interpreter', action="store", dest='interpreter',default='ipython',
+                    help='Choose the python shell to drop into for interactive mode')
     return parser
     #TODO: add callback to clean up "None"'s
 
@@ -662,9 +664,9 @@ def setup(viewername=None,create=True,parser=None):
     else:
         env=None
 
-    if options.interact:
-        import IPython
-        _atexit.register(IPython.embed)
+    #if options.interact:
+        #import IPython
+        #_atexit.register(IPython.embed)
     return (env,options)
 
 def get_options(viewername=None,parser=None):
