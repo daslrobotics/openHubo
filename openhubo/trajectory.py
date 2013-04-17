@@ -324,6 +324,7 @@ class IUTrajectory:
                     self.joint_map[dof]=int(datalist[0])-6
                     #Note that this corresponds to the IU index...
                     self.joint_signs[dof]=int(datalist[4])
+                    self.joint_offsets[dof]=float(datalist[5])
                 #Read in next
                 line=f.readline()
 
