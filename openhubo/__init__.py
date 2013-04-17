@@ -23,6 +23,8 @@ from time import sleep
 from datetime import datetime
 from warnings import warn
 
+from openravepy.misc import InitOpenRAVELogging
+InitOpenRAVELogging()
 
 TIMESTEP=0.001
 
@@ -351,6 +353,15 @@ def check_physics(env):
     return env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine'
 
 def load_scene_from_options(env,options):
+
+    if hasattr(options,'physics') and options.physics:
+        #Kludge since we won't be not using ODE for a while...
+        physics=True
+    elif options._physics=='ode':
+        physics=True
+    else:
+        physics=False
+
     if options.recordfile:
         # Set the robot controller and start the simulation
         vidrecorder=_recorder(env,filename=options.recordfile)
@@ -384,10 +395,10 @@ def load_scene_from_options(env,options):
         options.physicsfile='physics.xml'
 
     with env:
-        if options.physicsfile and not check_physics(env):
+        if physics and not check_physics(env):
             _rave.raveLogInfo('Loading physics parameters from "{}"'.format(options.physicsfile))
             env.Load(options.physicsfile)
-        elif not options.physicsfile:
+        elif not physics:
             env.SetPhysicsEngine(_rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
         else:
             _rave.raveLogInfo("Physics engine already configured, using current settings...")
@@ -664,9 +675,6 @@ def setup(viewername=None,create=True,parser=None):
     else:
         env=None
 
-    #if options.interact:
-        #import IPython
-        #_atexit.register(IPython.embed)
     return (env,options)
 
 def get_options(viewername=None,parser=None):

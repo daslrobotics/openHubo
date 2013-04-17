@@ -7,7 +7,7 @@ from numpy import pi
 [env,options]=oh.setup('qtcoin')
 env.SetDebugLevel(4)
 
-options.physicsfile='physics.xml'
+options.physics=True
 options.ghost=True
 
 [robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)

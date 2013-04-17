@@ -26,7 +26,7 @@ if __name__=='__main__':
     env.SetDebugLevel(4)
 
     options.scenefile='door.env.xml'
-    options.physicsfile='physics.xml'
+    options.physics=True
 
     [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,options)
     door=env.GetRobot('doorbot')

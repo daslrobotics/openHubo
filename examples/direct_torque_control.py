@@ -24,7 +24,7 @@ from openhubo import kbhit
 env.SetDebugLevel(4)
 sleep(.25)
 
-options.physicsfile=True
+options.physics=True
 [robot,ctrl,ind,ref,recorder]=load_scene(env,options)
 
 with env:

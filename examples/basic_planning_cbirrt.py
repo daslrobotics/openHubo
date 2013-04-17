@@ -15,7 +15,7 @@ from openravepy import RaveCreateProblem
 (env,options)=openhubo.setup('qtcoin')
 env.SetDebugLevel(3)
 
-options.physicsfile='physics.xml'
+options.physics=True
 
 [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,options)
 
