@@ -320,7 +320,7 @@ def make_name_to_index_converter(robot,autotranslate=True):
                 return None
     return convert
 
-def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,options=_optparse.Values()):
+def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,options=None):
     """ Load files and configure the simulation environment based on arguments and the options structure.
     The returned tuple contains:
         :robot: handle to the created robot
@@ -334,7 +334,24 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
         _rave.raveLogWarn("Assuming 2nd argument is options structure...")
         options=robotfile
 
-    if hasattr(options,'recordfile'):
+    else:
+        (options,__)=get_options()
+        options.robotfile=robotfile
+        options.scenefile=robotfile
+        options.stop=stop
+        if physics:
+            options._physics='ode'
+            options.physicsfile='physics.xml'
+        options.ghost=ghost
+
+    return load_scene_from_options(env,options)
+
+def check_physics(env):
+    """Helper function to see if physics is currently enabled"""
+    return env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine'
+
+def load_scene_from_options(env,options):
+    if options.recordfile:
         # Set the robot controller and start the simulation
         vidrecorder=_recorder(env,filename=options.recordfile)
         #Default to "sim-timed video" i.e. plays back much faster
@@ -343,30 +360,6 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
     else:
         vidrecorder=None
 
-    if not hasattr(options,'stop'):
-        options.stop=stop
-    if not hasattr(options,'scenefile'):
-        options.scenefile=scenefile
-    if not hasattr(options,'robotfile'):
-        options.robotfile=robotfile
-    if not hasattr(options,'physicsfile'):
-        if physics is True:
-            options.physicsfile='physics.xml'
-        elif hasattr(options,'physics'):
-            if options.physics=='ode' or options.physics==True:
-                options.physicsfile='physics.xml'
-        else:
-            #TODO: better logic here
-            options.physicsfile=physics
-
-    elif options.physicsfile==True:
-            options.physicsfile='physics.xml'
-    if not hasattr(options,'ghost'):
-        options.ghost=ghost
-    if not hasattr(options,'atheight'):
-        options.atheight=None
-
-    #TODO: sort through the spaghetti code...
     with env:
         if options.stop:
             env.StopSimulation()
@@ -378,44 +371,45 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
             env.Load(options.scenefile)
 
         #This method ensures that the URI is preserved in the robot
-        if options.robotfile!=None:
+        if options.robotfile is not None:
             robot=env.ReadRobotURI(options.robotfile)
             env.Add(robot)
         else:
             robot=env.GetRobots()[0]
+            _rave.raveLogWarn("Assuming robot is {} (id=0)...".format(robot.GetName()))
 
         robot.SetDOFValues(zeros(robot.GetDOF()))
 
-        ref_robot=None
-        if options.physicsfile and env.GetPhysicsEngine().GetXMLId()=='GenericPhysicsEngine':
+    if options.physicsfile==True:
+        options.physicsfile='physics.xml'
+
+    with env:
+        if options.physicsfile and not check_physics(env):
             _rave.raveLogInfo('Loading physics parameters from "{}"'.format(options.physicsfile))
             env.Load(options.physicsfile)
         elif not options.physicsfile:
             env.SetPhysicsEngine(_rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
         else:
-            _rave.raveLogWarn("Physics engine already configured, using current settings...")
+            _rave.raveLogInfo("Physics engine already configured, using current settings...")
 
-        #Force new controller since it's easier
-        if env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine':
+        if check_physics(env):
             _rave.raveLogInfo('Creating controller for physics simulation')
             controller=_rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
-            #TODO: validate gains
-            controller.SendCommand('set gains 150 0 .9')
-
+            controller.SendCommand('set gains 150 0 .9 ')
+            controller.SendCommand('set radians ')
         else:
             #Just load ideal controller if physics engine is not present
             _rave.raveLogInfo('Physics engine not loaded, using idealcontroller...')
             controller=_rave.RaveCreateController(env,'idealcontroller')
             robot.SetController(controller)
 
-        if options.ghost:
-            #Load ghost robot and colorize
-            if options.robotfile:
-                ref_robot=load_ghost(env,options.robotfile,prefix="ref_")
-                #If using physics, link robots together (assumes that proper controller is used)
-                if options.physicsfile:
-                    controller.SendCommand("set visrobot "+ref_robot.GetName())
+        if options.ghost and options.robotfile:
+            ghost_robot=load_ghost(env,options.robotfile,prefix="ghost_")
+            if check_physics(env):
+                controller.SendCommand("set visrobot " + ghost_robot.GetName())
+        else:
+            ghost_robot=None
 
         collisionChecker = _rave.RaveCreateCollisionChecker(env,'pqp')
         if collisionChecker==None:
@@ -424,12 +418,13 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
         env.SetCollisionChecker(collisionChecker)
 
     ind=make_name_to_index_converter(robot)
+
     if options.atheight is not None:
         align_robot(robot,options.atheight)
-        if ref_robot:
-            align_robot(ref_robot,options.atheight)
+        if ghost_robot:
+            align_robot(ghost_robot,options.atheight)
 
-    return (robot,controller,ind,ref_robot,vidrecorder)
+    return (robot,controller,ind,ghost_robot,vidrecorder)
 
 
 def load_ghost(env,robotname,prefix="ref_",color=[.8,.8,.4]):
@@ -442,7 +437,6 @@ def load_ghost(env,robotname,prefix="ref_",color=[.8,.8,.4]):
     ref_robot.SetController(_rave.RaveCreateController(env,'mimiccontroller'))
     set_robot_color(ref_robot,color,color,trans=.5)
     return ref_robot
-
 
 
 def make_ghost_from_robot(robot,prefix="ref_",color=[.8,.8,.4]):
@@ -463,6 +457,7 @@ def align_robot(robot,setheight=0.000,floornormal=[0,0,1]):
         T[2,3] += dh
         robot.SetTransform(T)
         #TODO: reset velocity?
+
 
 #####################################################################
 # Mass functions
@@ -616,16 +611,13 @@ class ServoPlotter:
             self.veldata.setdefault(k,_np.diff(self.jointdata[k])/dt)
 
 
-
-
-def _safe_quit(env):
+def _safe_quit():
     """ Exit callback to ensure that openrave closes safely."""
     #Somewhat overkill, try to avoid annoying segfaults
-    _rave.raveLogDebug("Safely exiting rave environment...")
-    if env:
+    _rave.raveLogDebug("Destroying Rave Environments...")
+    for env in _rave.RaveGetEnvironments():
         env.Destroy()
-    _rave.RaveDestroy()
-
+    #Removed redundant RaveDestroy
 
 def _create_parser():
     parser = _optparse.OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.',
@@ -641,27 +633,51 @@ def _create_parser():
                     help='Disable interactive prompt and exit after running')
     parser.add_option('--record', action="store",dest='recordfile',default=None,
                     help='Enable video recording to the given file name (requires script commands to start and stop)')
-    parser.add_option('--physicsfile', action="store",dest='physicsfile',default=None,
+    parser.add_option('--physicsfile', action="store",dest='physicsfile',default='physics.xml',
                     help='Load physics engine config from XML file')
-    parser.add_option('--ghost', action="store_true",dest='ghost',default=None,
+    parser.add_option('--ghost', action="store_true",dest='ghost',default=False,
                     help='Create a ghost robot to show desired vs. actual pose')
     parser.add_option('--atheight', action="store",type="float", dest='atheight',default=None,
                     help='Align the robot\'s feet at the given absolute Z height')
     parser.add_option('--no-interactive-imports', action="store_true", dest='noimports',default=False,
                     help='Disable bulk imports for interactive prompt (useful for debugging import errors)')
+    parser.add_option('--stop-simulation', action="store_false", dest='stop',default=True,
+                    help='User manually starts the simulation after loading')
+    parser.add_option('--video-capture-file', action="store", dest='recordfile',default=None,
+                    help='Specify a video file for the video recorder to capture to.')
     return parser
+    #TODO: add callback to clean up "None"'s
 
-def setup(viewername=None,create=True):
+def setup(viewername=None,create=True,parser=None):
     """ Setup openhubo environment and viewer when run from the command line.
     :param viewername: Name of viewer plugin to use (defaults to no viewer)
-    :param create: If true, set up and return environment. Otherwise, parse and return options.
+    :param create: If true, set up an environment.
     """
-    parser=_create_parser()
+    (options,leftargs)=get_options(viewername,parser)
+
+    if create:
+        env=_rave.Environment()
+        _atexit.register(_safe_quit)
+        _rave.misc.OpenRAVEGlobalArguments.parseEnvironment(options,env)
+    else:
+        env=None
+
+    if options.interact:
+        import IPython
+        _atexit.register(IPython.embed)
+    return (env,options)
+
+def get_options(viewername=None,parser=None):
+    """Setup script just to extract options from command line"""
+
+    if parser is None:
+        parser=_create_parser()
     (options, leftargs) = parser.parse_args()
 
     if viewername:
-        #Overwrite command line option with explicit argument?
+        #Overwrite command line option with explicit argument
         options._viewer=viewername
+
     if options.robotfile=="none" or options.robotfile=="None":
         #use command line fake for "none"
         options.robotfile=None
@@ -669,13 +685,5 @@ def setup(viewername=None,create=True):
     if options.scenefile=="none" or options.scenefile=="None":
         #use command line fake for "none"
         options.scenefile=None
-    if create:
-        env=_rave.Environment()
-        _atexit.register(_safe_quit,env)
-        _rave.misc.OpenRAVEGlobalArguments.parseEnvironment(options,env)
-        return (env,options)
-    elif len(leftargs)>0:
-        return (options,leftargs[0])
-    else:
-        return (options,None)
 
+    return (options,leftargs)
