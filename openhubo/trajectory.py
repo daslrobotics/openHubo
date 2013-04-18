@@ -1,4 +1,5 @@
 import openravepy as _rave
+import time as _time
 import numpy as _np
 from numpy import pi,array
 import openhubo as _oh
@@ -184,29 +185,29 @@ def write_youngbum_traj(traj,robot,dt,filename='exported.traj',dofs=None,oldname
 
 def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
     """ Create a text trajectory for reading into hubo-read-trajectory."""
-    config=robot.GetConfigurationSpecification()
-
-    f=open(filename,'w')
-
     #Find overall trajectory properties
     T=traj.GetDuration()
     #steps=int(T/dt)
-
-    #Get all the DOF's..
-    dofs = range(robot.GetDOF())
+    dofmap=dofmap_huboread_from_oh(robot)
+    val_sampler=make_joint_value_sampler(robot,traj)
+    #TODO: scale the fingers appropriately?
     with open(filename,'w') as f:
         for t in _np.arange(0,T,dt):
-            waypt=traj.Sample(t)
-            #Extract DOF values
-            vals=config.ExtractJointValues(waypt,robot,dofs)
-            #start with array of _np.zeros _np.size of hubo-ach trajectory width
-            mapped_vals=_np.zeros(max(_oh.hubo_map.values()))
-            for d in dofs:
-                n = robot.GetJointFromDOFIndex(d).GetName()
-                if _oh.hubo_map.has_key(n):
-                    hname=_oh.get_huboname_from_name(n)
-                    mapped_vals[hubo_read_trajectory_map[hname]]=vals[d]
-            f.write(' '.join(['{}'.format(x) for x in mapped_vals])+'\n')
+            vals=val_sampler(t)
+            mapped_vals=[vals[x] if x > 0 else 0 for x in dofmap]
+            f.write(' '.join([str(x) for x in mapped_vals])+'\n')
+
+def dofmap_huboread_from_oh(robot):
+    #Get all the DOF's..
+    dofmap=-_np.ones(len(hubo_read_trajectory_map))
+    for d in xrange(robot.GetDOF()):
+        n = robot.GetJointFromDOFIndex(d).GetName()
+        hname=_oh.get_huboname_from_name(n)
+        if hname:
+            dofmap[hubo_read_trajectory_map[hname]]=d
+        print d,n,hname
+    return dofmap
+
 
 def read_text_traj(filename,robot,dt=.01,scale=1.0):
     """ Read in trajectory data stored in Youngbum's format (100Hz data):
@@ -278,6 +279,14 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
 
     return traj
 
+def make_joint_value_sampler(robot,traj,config=None):
+    if config is None:
+        config=robot.GetConfigurationSpecification()
+    """Closure to pull a full body pose out of a trajectory waypoint"""
+    def GetJointValuesFromWaypoint(t):
+        return config.ExtractJointValues(traj.Sample(t),robot,xrange(robot.GetDOF()))
+    return GetJointValuesFromWaypoint
+
 def makeJointValueExtractor(robot,traj,config):
     """Closure to pull a full body pose out of a trajectory waypoint"""
     def GetJointValuesFromWaypoint(index):
@@ -293,6 +302,7 @@ def makeTransformExtractor(robot,traj,config):
     return GetTransformFromWaypoint
 
 class IUTrajectory:
+    """Import and use trajectories exported from RobotSim."""
 
     def __init__(self,robot,mapfile=None):
         #TODO: get defaults that make sense
@@ -301,10 +311,9 @@ class IUTrajectory:
         self.joint_map=-_np.ones(robot.GetDOF(),dtype=_np.int)
         self.robot=robot
         if mapfile:
-            self.load_mapping(_os.mapfile)
+            self.load_mapping(mapfile)
 
     def load_mapping(self,filename,path=None):
-        #Ugly use of globals
 
         with open(_oh.find(filename,path),'r') as f:
             line=f.readline() #Strip header
@@ -315,9 +324,11 @@ class IUTrajectory:
                 datalist=re.split(',| |\t',line.rstrip())
                 #print datalist
                 j=self.robot.GetJoint(datalist[1])
+
                 if j:
+                    #print j
                     dof=j.GetDOFIndex()
-                    self.joint_map[dof]=int(datalist[0])-6
+                    self.joint_map[dof]=int(datalist[0])
                     #Note that this corresponds to the IU index...
                     self.joint_signs[dof]=int(datalist[4])
                     self.joint_offsets[dof]=float(datalist[5])
@@ -368,7 +379,7 @@ class IUTrajectory:
                 line = f.readline()
                 datalist=re.split(',| |\t',line)[:-1]
 
-            dataset=[]
+            srcdata=[]
             count=0
             while len(line)>0:
                 if not line:
@@ -383,19 +394,20 @@ class IUTrajectory:
                 if not(len(data) == int(configlist[0])):
                     print "Incorrect data formatting on line P{}".format(count)
 
-                dataset.append(data)
+                srcdata.append(data)
                 line = f.readline()
                 count+=1
 
         #Convert to neat numpy array
-        self.dataset=array(dataset)
+        self.srcdata=array(srcdata)
         self.timestep=timestep
+        return self.to_openrave()
 
     def total_time(self):
-        return self.timestep*_np.size(self.dataset,1)
+        return self.timestep*_np.size(self.srcdata,1)
 
     def steps(self):
-        return _np.size(self.dataset,1)
+        return _np.size(self.srcdata,1)
 
     @staticmethod
     def format_angles(data):
@@ -424,15 +436,26 @@ class IUTrajectory:
         pose=_oh.Pose(self.robot)
         (lower,upper)=self.robot.GetDOFLimits()
 
-        for k in xrange(_np.size(self.dataset,0)):
-            T=IUTrajectory.get_transform(T0,self.dataset[k,0:6])
-            raw_pose=self.dataset[k,self.joint_map+6]
+        for k in xrange(_np.size(self.srcdata,0)):
+        #for k in xrange(3):
+            T=IUTrajectory.get_transform(T0,self.srcdata[k,0:6])
+            #print  self.srcdata[k,:]
+            raw_pose=self.srcdata[k,self.joint_map]
+            #print raw_pose
+
             pose.values=raw_pose*self.joint_signs+self.joint_offsets
+            #print pose.values
 
             if clip:
+                #oldvals=pose.values
                 pose.values=_np.maximum(pose.values,lower*.999)
                 pose.values=_np.minimum(pose.values,upper*.999)
 
+                #err = pose.values-oldvals
+                #if sum(abs(err))>0:
+                    #print k,err
+
+            #print pose.values
             #Note this method does not use a controller
             aff = _rave.RaveGetAffineDOFValuesFromTransform(T,_rave.DOFAffine.Transform)
             if dt<0 or dt is None:
@@ -445,15 +468,15 @@ class IUTrajectory:
         self.traj=traj
         return traj
 
-    def play_traj(self,resetafter=True):
+    def preview_traj(self,resetafter=True):
         #Assume that robot is in initial position now
         T0=self.robot.GetTransform()
-        for k in xrange(self.dataset.shape[0]):
-            T=self.get_transform(T0,dataset[k,0:6])
-            pose=dataset[k,self.jointmap+6]*self.joint_signs+self.joint_offsets
+        for k in xrange(self.srcdata.shape[0]):
+            T=self.get_transform(T0,self.srcdata[k,0:6])
+            pose=self.srcdata[k,self.jointmap]*self.joint_signs+self.joint_offsets
             self.robot.SetTransform(T)
             self.robot.SetDOFValues(pose.T)
-            time.sleep(timestep)
+            _time.sleep(self.timestep)
 
         if resetafter:
             self.robot.SetTransform(T0)
