@@ -16,8 +16,8 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-from openravepy import *
-from numpy import *
+import openravepy as _rave
+from numpy import pi,zeros,sqrt
 import time
 import unittest
 import os, fnmatch
@@ -32,16 +32,16 @@ def find_files(directory, pattern):
 def model_test_factory(filename=None):
     class TestLoading(unittest.TestCase):
         def setUp(self):
-            self.env=Environment()
+            self.env=_rave.Environment()
             env=self.env
-            env.SetDebugLevel(DebugLevel.Info)
+            env.SetDebugLevel(_rave.DebugLevel.Info)
             with env:
                 env.StopSimulation()
                 print('\nTesting model {}'.format(filename))
                 result=env.Load(filename)
                 self.assertTrue(result)
                 self.robot=env.GetRobots()[0]
-                physics = RaveCreatePhysicsEngine(env,'ode')
+                physics = _rave.RaveCreatePhysicsEngine(env,'ode')
                 physics.SetGravity([0,0,0])
                 env.SetPhysicsEngine(physics)
                 self.robot.SetDOFValues(zeros(self.robot.GetDOF()))

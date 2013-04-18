@@ -18,6 +18,10 @@ cmd=[]
 cmd.append(options.interpreter)
 if options.interact:
     cmd.append('-i')
+if options.interpreter == 'ipython':
+    cmd.append('--pylab')
+    cmd.append('--no-banner')
+    cmd.append('--no-confirm-exit')
 
 if options.example:
     expath=_os.environ['OPENHUBO_DIR'] + '/examples/'
@@ -26,14 +30,17 @@ if options.example:
             print("Found example {}".format(f))
             examplefile=expath + f
             cmd.append(examplefile)
+            call(cmd)
             break
+
 elif scriptname:
     cmd.append(scriptname)
+    call(cmd)
+
+elif options.testsuite:
+    #Exclusive with other stuff...
+    pass
+
 else:
     cmd.append(_os.environ['OPENHUBO_DIR'] + '/openhubo/_interactive.py')
-
-if options.interpreter == 'ipython':
-    cmd.append('--pylab')
-    cmd.append('--no-banner')
-    cmd.append('--no-confirm-exit')
-call(cmd)
+    call(cmd)

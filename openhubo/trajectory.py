@@ -294,18 +294,14 @@ def makeTransformExtractor(robot,traj,config):
 
 class IUTrajectory:
 
-    def __init__(self,robot,joint_offsets=None,joint_signs=None,joint_map=None):
+    def __init__(self,robot,mapfile=None):
         #TODO: get defaults that make sense
-        if joint_offsets is None:
-            joint_offsets=_np.zeros(robot.GetDOF())
-        if joint_signs is None:
-            joint_signs=_np.ones(robot.GetDOF())
-        if joint_map is None:
-            joint_map=-_np.ones(robot.GetDOF(),dtype=_np.int)
+        self.joint_offsets=_np.zeros(robot.GetDOF())
+        self.joint_signs=_np.ones(robot.GetDOF())
+        self.joint_map=-_np.ones(robot.GetDOF(),dtype=_np.int)
         self.robot=robot
-        self.joint_offsets=joint_offsets
-        self.joint_signs=joint_signs
-        self.joint_map=joint_map
+        if mapfile:
+            self.load_mapping(_os.mapfile)
 
     def load_mapping(self,filename,path=None):
         #Ugly use of globals
@@ -372,11 +368,6 @@ class IUTrajectory:
                 line = f.readline()
                 datalist=re.split(',| |\t',line)[:-1]
 
-            #if (total_time>0) & (timestep>0):
-                #number_of_steps = (int)(total_time/timestep)
-            #else:
-                #number_of_steps = 0
-
             dataset=[]
             count=0
             while len(line)>0:
@@ -425,7 +416,7 @@ class IUTrajectory:
         return array(_np.mat(T0)*_np.mat(Tc))
 
 
-    def to_openrave(self,retime=True,clip=True):
+    def to_openrave(self,dt=None,retime=True,clip=True):
         #Assumes that ALL joints are specified for now
         [traj,config]=create_trajectory(self.robot)
         #print config.GetDOF()
@@ -444,10 +435,28 @@ class IUTrajectory:
 
             #Note this method does not use a controller
             aff = _rave.RaveGetAffineDOFValuesFromTransform(T,_rave.DOFAffine.Transform)
-            traj_append(traj,pose.to_waypt(self.timestep,aff))
+            if dt<0 or dt is None:
+                dt=self.timestep
+            traj_append(traj,pose.to_waypt(dt,aff))
 
         if retime:
             _rave.planningutils.RetimeActiveDOFTrajectory(traj,self.robot,True)
         #Store locally because why not
         self.traj=traj
         return traj
+
+    def play_traj(self,resetafter=True):
+        #Assume that robot is in initial position now
+        T0=self.robot.GetTransform()
+        for k in xrange(self.dataset.shape[0]):
+            T=self.get_transform(T0,dataset[k,0:6])
+            pose=dataset[k,self.jointmap+6]*self.joint_signs+self.joint_offsets
+            self.robot.SetTransform(T)
+            self.robot.SetDOFValues(pose.T)
+            time.sleep(timestep)
+
+        if resetafter:
+            self.robot.SetTransform(T0)
+
+
+

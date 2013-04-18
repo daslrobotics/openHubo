@@ -666,6 +666,8 @@ def _create_parser():
                     help='Specify a video file for the video recorder to capture to.')
     parser.add_option('--interpreter', action="store", dest='interpreter',default='ipython',
                     help='Choose the python shell to drop into for interactive mode')
+    parser.add_option('--testsuite', action="store", dest='testsuite',default=None,
+                    help='(Not yet implemented) run the openhubo testsuite')
     return parser
     #TODO: add callback to clean up "None"'s
 
@@ -709,9 +711,10 @@ def get_options(viewername=None,parser=None):
 def get_root_dir():
     return _os.environ['OPENHUBO_DIR']
 
-def find(name, path=None):
+def find(rawname, path=None):
+    (fpath,fname)=_os.path.split(rawname)
     if not path:
         path=get_root_dir()
-    for root, dirs, files in _os.walk(path):
-        if name in files:
-            return _os.path.join(root, name)
+    for root, dirs, files in _os.walk(path+'/'+fpath):
+        if fname in files:
+            return _os.path.join(root, fname)
