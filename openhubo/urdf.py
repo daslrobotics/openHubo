@@ -2,8 +2,9 @@
 # Available at https://github.com/laas/robot_model_py
 
 import string
-import xml.dom.minidom
+#import xml.dom.minidom
 from xml.dom.minidom import Document
+from xml.dom import minidom
 import sys
 from numpy import array,eye,reshape,pi
 import re
@@ -23,7 +24,7 @@ def add(doc, base, element):
 def add_openrave(doc, base, element):
     """Add an XML element for OpenRAVE XML export"""
     if element is not None:
-        newelements=element.to_openrave_xml(doc) 
+        newelements=element.to_openrave_xml(doc)
         if type(newelements)==type([]):
             for e in newelements:
                 base.appendChild(e)
@@ -190,7 +191,7 @@ class Geometry(object):
             return Mesh.parse(shape)
         else:
             if verbose:
-                print("Unknown shape %s"%child.localName)
+                print("Unknown shape %s"%shape.localName)
 
     def __str__(self):
         return "Geometry abstract class"
@@ -458,7 +459,7 @@ class Joint(object):
         elif self.joint_type == Joint.FIXED:
             s = "hinge"
             set_attribute(xml, "enable", "false")
-        
+
         set_attribute(xml, "type", s)
         xml.appendChild( create_element(doc, "body", self.parent) )
         xml.appendChild( create_element(doc, "body" , self.child ) )
@@ -565,7 +566,7 @@ class JointLimit(object):
         return xml
 
     def to_openrave_xml(self,doc):
-        limit = create_element(doc,'limits',[self.lower,self.upper])
+        limit = create_element(doc,'limitsdeg',[round(self.lower*180/pi,1),round(self.upper*180/pi,1)])
         maxvel = create_element(doc,'maxvel',self.velocity)
         maxtrq = create_element(doc,'maxtorque',self.effort)
         return [limit,maxvel,maxtrq]
@@ -817,7 +818,7 @@ class URDF(object):
     def parse_xml_string(xml_string, verbose=True):
         """Parse a string to create a URDF robot structure."""
         urdf = URDF()
-        base = xml.dom.minidom.parseString(xml_string)
+        base = minidom.parseString(xml_string)
         robot = children(base)[0]
         urdf.name = robot.getAttribute('name')
 
@@ -907,14 +908,9 @@ class URDF(object):
 
         return doc.toprettyxml()
 
-    def to_openrave_xml(self):
-        doc = Document()
-        root = doc.createElement("robot")
-        doc.appendChild(root)
-        root.setAttribute("name", self.name)
-
+    def make_openrave_kinbody(self,doc):
         kinbody = doc.createElement("kinbody")
-        root.appendChild(kinbody)
+        doc.appendChild(kinbody)
         kinbody.setAttribute("name", self.name)
 
         for element in self.elements:
@@ -934,8 +930,47 @@ class URDF(object):
         for j in self.joints.values():
             kinbody.appendChild(create_element(doc,"adjacent",[j.parent, j.child]))
 
+        return kinbody
+
+    def to_openrave_xml(self):
+        doc = Document()
+        root = doc.createElement("robot")
+        doc.appendChild(root)
+        root.setAttribute("name", self.name)
+        root.appendChild(self.make_openrave_kinbody(doc))
 
         return doc.toprettyxml()
+
+    def write_reformatted(self,data,name):
+        if name is None:
+            name=self.name
+        outdata=re.sub(r'\t','    ',data)
+        with open(name,'w') as f:
+            f.write(outdata)
+
+    def write_openrave_files(self,outname=None,writerobot=False):
+        if outname is None:
+            outname=self.name
+
+        kinfile=outname+'.kinbody.xml'
+
+        if writerobot:
+            robotfile=outname+'.robot.xml'
+            doc = Document()
+            root = doc.createElement("robot")
+            doc.appendChild(root)
+            root.setAttribute("name", outname)
+            kinbody = doc.createElement("kinbody")
+            root.appendChild(kinbody)
+            kinbody.setAttribute("name", outname)
+            kinbody.setAttribute("file", kinfile)
+            self.write_reformatted(doc.toprettyxml(),robotfile)
+
+        doc2 = Document()
+        doc2.appendChild(self.make_openrave_kinbody(doc2))
+
+        self.write_reformatted(doc2.toprettyxml(),kinfile)
+
 
     def __str__(self):
         s = "Name: {0}\n".format(self.name)
@@ -963,15 +998,6 @@ class URDF(object):
 
         return s
 
-        self.name = name
-        self.elements = []
-        self.links = {}
-        self.joints = {}
-        self.materials = {}
-
-        self.parent_map = {}
-        self.child_map = {}
-
 if __name__ == '__main__':
     try:
         import startup
@@ -986,11 +1012,8 @@ if __name__ == '__main__':
     try:
         outname=sys.argv[2]
     except IndexError:
-        outname="default.robot.xml"
-
-    print "Using {} as output name for OpenRAVE XML robot".format(outname)
+        outname=None
 
     model=URDF.load_xml_file(filename)
 
-    with open(outname,'w') as f:
-        f.write(model.to_openrave_xml())
+    model.write_openrave_files(outname)
