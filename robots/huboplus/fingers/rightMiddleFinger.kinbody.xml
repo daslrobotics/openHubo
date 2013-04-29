@@ -4,8 +4,6 @@
 
     <Body name="rightMiddleProximal" type="dynamic">
 <offsetfrom>Body_RWP</offsetfrom>
-        <!-- RWP Center of Mass to Base -->
-        <translation>0.000258199377 0.011441986656 0.046147242821</translation>
         <Translation>0.028499 -0.020675 -0.083923</Translation>
         <RotationAxis>1 0 0 90</RotationAxis>
         <RotationAxis>0 0 -1 90</RotationAxis>

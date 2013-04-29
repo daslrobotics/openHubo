@@ -92,8 +92,8 @@
         <!-- TODO align anchor to physics FT sensor location-->
         <Body>Body_RAR</Body>
         <Body>rightFoot</Body>
-        <offsetfrom>rightFoot</offsetfrom>
-        <anchor>0 0 0</anchor>
+        <offsetfrom>Body_RAR</offsetfrom>
+        <anchor>-0.0705 0 -0.0645</anchor>
         <limits>0 0</limits>
     </joint>
 
@@ -656,8 +656,8 @@
         <!-- TODO align anchor to physics FT sensor location-->
         <Body>Body_LAR</Body>
         <Body>leftFoot</Body>
-        <offsetfrom>leftFoot</offsetfrom>
-        <anchor>0 0 0</anchor>
+        <offsetfrom>Body_LAR</offsetfrom>
+        <anchor>-0.0705 0 -0.0645</anchor>
         <limits>0 0</limits>
     </joint>
 
