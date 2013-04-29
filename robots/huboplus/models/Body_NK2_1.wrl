@@ -1,6 +1,6 @@
 #VRML V2.0 utf8
 
-DEF Body_HNP_1
+DEF Body_NK2_1
 Transform {
 	children [
 		 Shape {

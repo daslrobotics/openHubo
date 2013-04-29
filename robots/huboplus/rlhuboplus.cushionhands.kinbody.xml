@@ -285,7 +285,7 @@
         </mass>
     </body>
 
-    <Joint name="HPY" type="hinge">
+    <Joint name="TSY" type="hinge">
         <body>Body_Torso</body>
         <body>Body_Hip</body>
         <offsetfrom>Body_Hip</offsetfrom>
@@ -1035,42 +1035,42 @@
 		<maxtorque>9</maxtorque>
     </Joint>
 
-    <body name="Body_HNR" type="dynamic">
+    <body name="Body_NK1" type="dynamic">
         <offsetfrom>Body_Torso</offsetfrom>
-        <!--Body_HNR Parent Center of Mass to Base -->
+        <!--Body_NK1 Parent Center of Mass to Base -->
         <translation>0.012258116293 0.002473149928 0.048635606065</translation>
-        <!--Body_HNR Parent to Current -->
+        <!--Body_NK1 Parent to Current -->
         <translation>0.000000000000 -0.000020548820 0.148299146751</translation>
-        <!--Body_HNR Base to Center of Mass -->
+        <!--Body_NK1 Base to Center of Mass -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
         <mass type="custom">
             <total>.1</total>
         </mass>
     </body>
 
-    <Joint name="HNR" type="hinge">
+    <Joint name="NK1" type="hinge">
         <body>Body_Torso</body>
-        <body>Body_HNR</body>
-        <offsetfrom>Body_HNR</offsetfrom>
+        <body>Body_NK1</body>
+        <offsetfrom>Body_NK1</offsetfrom>
         <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
-        <axis>1 0 0</axis>
+        <axis>1 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
 		<maxvel>18.00</maxvel>
 		<maxtorque>2.7</maxtorque>
     </Joint>
 
-    <body name="Body_HNP" type="dynamic">
-        <offsetfrom>Body_HNR</offsetfrom>
-        <!--Body_HNP Parent Center of Mass to Base -->
+    <body name="Body_NK2" type="dynamic">
+        <offsetfrom>Body_NK1</offsetfrom>
+        <!--Body_NK2 Parent Center of Mass to Base -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
-        <!--Body_HNP Parent to Current -->
+        <!--Body_NK2 Parent to Current -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
-        <!--Body_HNP Base to Center of Mass -->
+        <!--Body_NK2 Base to Center of Mass -->
         <translation>0.010688581590 -0.000030086449 0.032122953618</translation>
         <geom type="trimesh">
             <translation>-0.010688581590 0.000030086449 -0.032122953618</translation>
-            <donotrender>Body_HNP_1.wrl 1 </donotrender>
-            <data>convhull_HNP_1.wrl 1 </data>
+            <donotrender>Body_NK2_1.wrl 1 </donotrender>
+            <data>convhull_NK2_1.wrl 1 </data>
         </geom>
         <mass type="custom">
             <total>0.274250901076</total>
@@ -1082,12 +1082,12 @@
         </mass>
     </body>
 
-    <Joint name="HNP" type="hinge">
-        <body>Body_HNR</body>
-        <body>Body_HNP</body>
-        <offsetfrom>Body_HNP</offsetfrom>
+    <Joint name="NK2" type="hinge">
+        <body>Body_NK1</body>
+        <body>Body_NK2</body>
+        <offsetfrom>Body_NK2</offsetfrom>
         <anchor>-0.010688581590 0.000030086449 -0.032122953618</anchor>
-        <axis>0 1 0</axis>
+        <axis>-1 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
 		<maxvel>18.00</maxvel>
 		<maxtorque>2.7</maxtorque>
@@ -1100,8 +1100,8 @@
     <adjacent>Body_Torso Body_Hip</adjacent>
     <adjacent>Body_Torso Body_RSP</adjacent>
     <adjacent>Body_Torso Body_LSP</adjacent>
-    <adjacent>Body_Torso Body_HNP</adjacent>
-    <adjacent>Body_Torso Body_HNR</adjacent>
+    <adjacent>Body_Torso Body_NK2</adjacent>
+    <adjacent>Body_Torso Body_NK1</adjacent>
 
     <!-- Body_Hip -->
     <adjacent>Body_Hip Body_RHY</adjacent>
@@ -1172,7 +1172,7 @@
     <adjacent>Body_LWY Body_LEP</adjacent>
 
     <!-- Head -->
-    <!-- Body_HNP -->
-    <adjacent>Body_HNP Body_HNR</adjacent>
+    <!-- Body_NK2 -->
+    <adjacent>Body_NK2 Body_NK1</adjacent>
 
 </kinbody>

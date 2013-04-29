@@ -224,10 +224,10 @@
         <offsetfrom>Body_Hip</offsetfrom>
         <translation>-0.000008061790 0.000013409641 0.201255614828</translation>
         <geom type="trimesh">
-            <data>convhull_TBD_NoShell_1.wrl 1 </data>
+            <data>convhull_Torso_NoShell_1.wrl 1 </data>
         </geom>
         <geom type="trimesh">
-            <data>convhull_TBD_NoShell_2.wrl 1 </data>
+            <data>convhull_Torso_NoShell_2.wrl 1 </data>
         </geom>
         <geom type="cylinder">
             <rotationaxis>1 0 0 90</rotationaxis>
@@ -246,7 +246,7 @@
         </mass>
     </body>
 
-    <Joint name="HPY" type="hinge">
+    <Joint name="TSY" type="hinge">
         <body>Body_Torso</body>
         <body>Body_Hip</body>
         <offsetfrom>Body_Hip</offsetfrom>
@@ -999,7 +999,7 @@
         <limitsdeg>0 0</limitsdeg>
     </Joint>
 
-    <body name="Body_HNR" type="dynamic">
+    <body name="Body_NK1" type="dynamic">
         <offsetfrom>Body_Torso</offsetfrom>
         <translation>0.000000000000 -0.000020548820 0.148299146751</translation>
         <mass type="custom">
@@ -1007,22 +1007,22 @@
         </mass>
     </body>
 
-    <Joint name="HNR" type="hinge">
+    <Joint name="NK1" type="hinge">
         <body>Body_Torso</body>
-        <body>Body_HNR</body>
-        <offsetfrom>Body_HNR</offsetfrom>
-        <axis>1 0 0</axis>
+        <body>Body_NK1</body>
+        <offsetfrom>Body_NK1</offsetfrom>
+        <axis>1 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
 		<maxvel>18.00</maxvel>
 		<maxtorque>2.7</maxtorque>
     </Joint>
 
-    <body name="Body_HNP" type="dynamic">
-        <offsetfrom>Body_HNR</offsetfrom>
+    <body name="Body_NK2" type="dynamic">
+        <offsetfrom>Body_NK1</offsetfrom>
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
         <geom type="trimesh">
-            <donotrender>Body_HNP_1.wrl 1 </donotrender>
-            <data>convhull_HNP_1.wrl 1 </data>
+            <donotrender>Body_NK2_1.wrl 1 </donotrender>
+            <data>convhull_NK2_1.wrl 1 </data>
         </geom>
         <mass type="custom">
         <com>0.010688581590 -0.000030086449 0.032122953618</com>
@@ -1035,11 +1035,11 @@
         </mass>
     </body>
 
-    <Joint name="HNP" type="hinge">
-        <body>Body_HNR</body>
-        <body>Body_HNP</body>
-        <offsetfrom>Body_HNP</offsetfrom>
-        <axis>0 1 0</axis>
+    <Joint name="NK2" type="hinge">
+        <body>Body_NK1</body>
+        <body>Body_NK2</body>
+        <offsetfrom>Body_NK2</offsetfrom>
+        <axis>-1 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
 		<maxvel>18.00</maxvel>
 		<maxtorque>2.7</maxtorque>
@@ -1052,8 +1052,8 @@
     <adjacent>Body_Torso Body_Hip</adjacent>
     <adjacent>Body_Torso Body_RSP</adjacent>
     <adjacent>Body_Torso Body_LSP</adjacent>
-    <adjacent>Body_Torso Body_HNP</adjacent>
-    <adjacent>Body_Torso Body_HNR</adjacent>
+    <adjacent>Body_Torso Body_NK2</adjacent>
+    <adjacent>Body_Torso Body_NK1</adjacent>
 
     <!-- Body_Hip -->
     <adjacent>Body_Hip Body_RHY</adjacent>
@@ -1132,8 +1132,8 @@
     <adjacent>Body_LWP Body_LWY</adjacent>
 
     <!-- Head -->
-    <!-- Body_HNP -->
-    <adjacent>Body_HNP Body_HNR</adjacent>
+    <!-- Body_NK2 -->
+    <adjacent>Body_NK2 Body_NK1</adjacent>
 
 
     <adjacent>leftPalm Body_LWP</adjacent>

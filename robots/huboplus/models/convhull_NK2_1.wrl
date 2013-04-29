@@ -1,6 +1,6 @@
 #VRML V2.0 utf8
 
-DEF convhull_HNP_1_2366_faces
+DEF convhull_NK2_1_2366_faces
 Transform {
 	children [
 		 Shape {

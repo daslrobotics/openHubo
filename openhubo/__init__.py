@@ -64,10 +64,13 @@ hubo_map={'RHY':26,
           'LWP':10,
           'NKY':1,
           'HNY':1,
+          'HDY':1,
           'NK1':2,
           'HNR':2,
+          'HDR':3,
           'NK2':3,
           'HNP':3,
+          'HDP':3,
           'WST':0,
           'HPY':0,
           'TSY':0,
@@ -219,6 +222,8 @@ def get_name_from_huboname(inname,robot=None):
         return name
     else:
         return None
+
+#TODO: get a direct dictionary map for joint lookups
 
 def get_huboname_from_name(inname):
     """Get a hubo-standard joint name from the openhubo name (mostly the same,

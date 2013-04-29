@@ -1,6 +1,6 @@
 #VRML V2.0 utf8
 
-DEF convhull_TBD_NoShell_2_240_faces
+DEF convhull_Torso_NoShell_2_240_faces
 Transform {
 	children [
 		 Shape {
