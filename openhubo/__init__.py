@@ -1,12 +1,14 @@
-""" openhubo python module and main executable. Most of openhubo's functionality
+""" openhubo python package. Most of openhubo's functionality
 is available through this module.
 
 Command line usage of openhubo and examples:
-    openhubo --example myexample.py --robot myrobot.xml
+    openhubo --example myexample.py
 
 The older python syntax is also usable for launching openhubo scripts:
     python [-i] examples/myexample.py
 """
+
+__version__='0.7.1-beta'
 
 import numpy as _np
 import matplotlib.pyplot as _plt
@@ -352,18 +354,6 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
 
     return load_scene_from_options(env,options)
 
-def check_physics(env):
-    """Helper function to see if physics is currently enabled"""
-    return env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine'
-
-def step_simulation(env,dt=None):
-    return env.StepSimulation(dt)
-
-def get_timestep(env):
-    if check_physics(env):
-        return 0.001
-    else:
-        return 0.005
 
 def load_scene_from_options(env,options):
 
@@ -474,6 +464,16 @@ def load_ghost(env,robotname,prefix="ref_",color=[.8,.8,.4]):
 def make_ghost_from_robot(robot,prefix="ref_",color=[.8,.8,.4]):
     """ Not yet implemented """
     pass
+
+def check_physics(env):
+    """Helper function to see if physics is currently enabled"""
+    return env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine'
+
+def get_timestep(env):
+    if check_physics(env):
+        return 0.001
+    else:
+        return 0.005
 
 def align_robot(robot,setheight=0.000,floornormal=[0,0,1]):
     """ Align robot to floor, spaced slightly above"""

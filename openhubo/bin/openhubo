@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 from fnmatch import fnmatch
 import os as _os
+import sys as _sys
 from openhubo import get_options
-from  subprocess import call
 
 def clear():
     _os.system('clear')
@@ -11,6 +11,8 @@ clear()
 print "**************************************************************"
 print "* OpenHubo python launcher for examples and interactive work *"
 print "**************************************************************"
+
+
 (options,scriptname)=get_options()
 
 #Kludgy way to get ipython to launch with locals as interactive script
@@ -30,17 +32,19 @@ if options.example:
             print("Found example {}".format(f))
             examplefile=expath + f
             cmd.append(examplefile)
-            call(cmd)
             break
 
 elif scriptname:
     cmd.append(scriptname)
-    call(cmd)
-
-elif options.testsuite:
-    #Exclusive with other stuff...
-    pass
+    #Recycle openhubo arguments here
 
 else:
     cmd.append(_os.environ['OPENHUBO_DIR'] + '/openhubo/_interactive.py')
-    call(cmd)
+
+#Recycle openhubo arguments here
+if len(_sys.argv)>1:
+    cmd.append('--')
+    cmd.extend(_sys.argv[1:])
+
+#Name is repeated, C args style
+_os.execvp(cmd[0],cmd)
