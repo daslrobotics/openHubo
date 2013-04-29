@@ -35,7 +35,7 @@ if options.example:
             break
 
 elif scriptname:
-    cmd.append(scriptname)
+    cmd.append(scriptname[0])
     #Recycle openhubo arguments here
 
 else:
