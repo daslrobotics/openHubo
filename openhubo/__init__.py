@@ -27,8 +27,6 @@ from warnings import warn
 from openravepy.misc import InitOpenRAVELogging
 InitOpenRAVELogging()
 
-#physics_timestep=0.001
-#nonphysics_timestep=0.02
 TIMESTEP=0.001
 
 #KLUDGE: hard code the mapping (how often will it change, really?). Include openhubo synonyms here for fast lookup.
@@ -358,10 +356,21 @@ def check_physics(env):
     """Helper function to see if physics is currently enabled"""
     return env.GetPhysicsEngine().GetXMLId()!='GenericPhysicsEngine'
 
+def step_simulation(env,dt=None):
+    return env.StepSimulation(dt)
+
+def get_timestep(env):
+    if check_physics(env):
+        return 0.001
+    else:
+        return 0.005
+
 def load_scene_from_options(env,options):
 
-    if hasattr(options,'physics') and options.physics:
+    if hasattr(options,'physics') and options.physics is False:
         #Kludge since we won't be not using ODE for a while...
+        physics=False
+    elif hasattr(options,'physics') and options.physics:
         physics=True
     elif options._physics=='ode':
         physics=True
@@ -397,6 +406,7 @@ def load_scene_from_options(env,options):
 
         robot.SetDOFValues(zeros(robot.GetDOF()))
 
+    #Legacy command mode
     if options.physicsfile==True:
         options.physicsfile='physics.xml'
 
@@ -407,17 +417,17 @@ def load_scene_from_options(env,options):
         elif not physics:
             env.SetPhysicsEngine(_rave.RaveCreatePhysicsEngine(env,'GenericPhysicsEngine'))
         else:
-            _rave.raveLogInfo("Physics engine already configured, using current settings...")
+            #TODO: find a more efficient way to avoid double creation?
+            _rave.raveLogInfo("Physics engine already configured, overwriting...")
+            env.Load(options.physicsfile)
 
         if check_physics(env):
-            TIMESTEP=0.001
             _rave.raveLogInfo('Creating controller for physics simulation')
             controller=_rave.RaveCreateController(env,'trajectorycontroller')
             robot.SetController(controller)
             controller.SendCommand('set gains 150 0 .9 ')
             controller.SendCommand('set radians ')
         else:
-            TIMESTEP=0.05
             #Just load ideal controller if physics engine is not present
             _rave.raveLogInfo('Physics engine not loaded, using idealcontroller...')
             controller=_rave.RaveCreateController(env,'idealcontroller')
@@ -442,6 +452,9 @@ def load_scene_from_options(env,options):
         align_robot(robot,options.atheight)
         if ghost_robot:
             align_robot(ghost_robot,options.atheight)
+    #FIXME: better way to do this?
+    global TIMESTEP
+    TIMESTEP=get_timestep(env)
 
     return (robot,controller,ind,ghost_robot,vidrecorder)
 
@@ -638,36 +651,65 @@ def _safe_quit():
         env.Destroy()
     #Removed redundant RaveDestroy
 
-def _create_parser():
-    parser = _optparse.OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.',
-                                    usage='usage: %prog [options] script')
+def _create_parser(parser=None):
+    """Create a new openhubo argument parser, or extend an existing parser
+    passed as an argument.  Note that there is currently no conflict checking,
+    so make sure your pre-configured parser doesn't conflict with openhubo
+    options."""
+    if parser is None:
+        parser = _optparse.OptionParser(description='OpenHubo: perform experiments with virtual hubo modules.',
+                                        usage='usage: %prog [options] script')
     _rave.misc.OpenRAVEGlobalArguments.addOptions(parser)
-    parser.add_option('--robot', action="store",type='string',dest='robotfile',default='rlhuboplus.robot.xml',
-                    help='Robot XML file to load (default=%default)')
-    parser.add_option('--scene', action="store",type='string',dest='scenefile',default='floor.env.xml',
-                    help='Scene file to load (default=%default)')
+
+    scene_options=_optparse.OptionGroup(parser,'Scene Setup',
+                                        'Use these options to specify how the simulated world is loaded.')
+    #Robot configuration
+    parser.set_defaults(robotfile='rlhuboplus.robot.xml')
+    scene_options.add_option('--robot', action="store",type='string',dest='robotfile',
+                             help='Robot XML file (default=%default)')
+    scene_options.add_option('--no-robot', action="store_false",dest='robotfile',
+                             help='Do not load a robot from a separate file ')
+
+    parser.set_defaults(scenefile='floor.env.xml')
+    scene_options.add_option('--scene', action="store",type='string',dest='scenefile',
+                             help='Scene file to load (default=%default)')
+    scene_options.add_option('--no-scene', action="store_false",dest='scenefile',
+                             help='Do not load an XML scene file')
+
+    scene_options.add_option('--physicsfile', action="store",dest='physicsfile',default='physics.xml',
+                             help='Specify a physics engine configuration from XML file (default=%default)')
+    scene_options.add_option('--no-physics', action="store_false",dest='physics',default=None,
+                             help='Force disable loading of physics engines in openhubo programs')
+    scene_options.add_option('--ghost', action="store_true",dest='ghost',default=False,
+                             help='Create a ghost robot to show desired vs. actual pose')
+    scene_options.add_option('--atheight', action="store",type="float", dest='atheight',default=None,
+                             help='Align the robot\'s feet at the given absolute Z height')
+
+    parser.add_option_group(scene_options)
+    #Interaction controls
+    code_options=_optparse.OptionGroup(parser,'Interaction and Testing','Diagnostic tools and settings for code')
+    code_options.add_option('-i','--interpreter', action="store", dest='interpreter',default='ipython',
+                            help='Choose the python shell to drop into for interactive mode (default=%default). NOTE: overrides default openrave behavior')
+    code_options.add_option('--no-interact', action="store_false",dest='interact',default=True,
+                            help='Disable interactive prompt and exit after running')
+    code_options.add_option('--no-interactive-imports', action="store_true", dest='noimports',default=False,
+                            help='Disable bulk imports for interactive prompt (useful for debugging import errors)')
+    code_options.add_option("-p","--profile", action="store_true",
+                            dest="profile", default=False,
+                            help="Use python profiler for analysis")
+    code_options.add_option('--testsuite', action="store", dest='testsuite',default=None,
+                            help='(Not yet implemented) run the openhubo testsuite')
+
+    parser.add_option_group(code_options)
+
     parser.add_option('--example', action="store",type='string',dest='example',default=None,
-                    help='Run an example')
-    parser.add_option('--nointeract', action="store_false",dest='interact',default=True,
-                    help='Disable interactive prompt and exit after running')
+                      help='Run a python example from the examples folder')
     parser.add_option('--record', action="store",dest='recordfile',default=None,
-                    help='Enable video recording to the given file name (requires script commands to start and stop)')
-    parser.add_option('--physicsfile', action="store",dest='physicsfile',default='physics.xml',
-                    help='Load physics engine config from XML file')
-    parser.add_option('--ghost', action="store_true",dest='ghost',default=False,
-                    help='Create a ghost robot to show desired vs. actual pose')
-    parser.add_option('--atheight', action="store",type="float", dest='atheight',default=None,
-                    help='Align the robot\'s feet at the given absolute Z height')
-    parser.add_option('--no-interactive-imports', action="store_true", dest='noimports',default=False,
-                    help='Disable bulk imports for interactive prompt (useful for debugging import errors)')
-    parser.add_option('--stop-simulation', action="store_false", dest='stop',default=True,
-                    help='User manually starts the simulation after loading')
+                      help='Enable video recording to the given file name (requires script commands to start and stop)')
+    parser.add_option('--no-stop-simulation', action="store_false", dest='stop',default=True,
+                      help='Do not stop the simulation during scene / robot loading')
     parser.add_option('--video-capture-file', action="store", dest='recordfile',default=None,
-                    help='Specify a video file for the video recorder to capture to.')
-    parser.add_option('--interpreter', action="store", dest='interpreter',default='ipython',
-                    help='Choose the python shell to drop into for interactive mode')
-    parser.add_option('--testsuite', action="store", dest='testsuite',default=None,
-                    help='(Not yet implemented) run the openhubo testsuite')
+                      help='Specify a video file for the video recorder to capture to.')
     return parser
     #TODO: add callback to clean up "None"'s
 
@@ -675,6 +717,7 @@ def setup(viewername=None,create=True,parser=None):
     """ Setup openhubo environment and viewer when run from the command line.
     :param viewername: Name of viewer plugin to use (defaults to no viewer)
     :param create: If true, set up an environment.
+    :param parser: Pass in a pre-defined option parser for custom flags and options.
     """
     (options,leftargs)=get_options(viewername,parser)
 
@@ -688,10 +731,10 @@ def setup(viewername=None,create=True,parser=None):
     return (env,options)
 
 def get_options(viewername=None,parser=None):
-    """Setup script just to extract options from command line"""
+    """Parse options from command line, extending an existing parser or
+    creating a new one if none is specified."""
 
-    if parser is None:
-        parser=_create_parser()
+    parser=_create_parser(parser)
     (options, leftargs) = parser.parse_args()
 
     if viewername:
@@ -699,11 +742,11 @@ def get_options(viewername=None,parser=None):
         options._viewer=viewername
 
     if options.robotfile=="none" or options.robotfile=="None":
-        #use command line fake for "none"
+        #possible command line fake for "none"
         options.robotfile=None
 
     if options.scenefile=="none" or options.scenefile=="None":
-        #use command line fake for "none"
+        #possible command line fake for "none"
         options.scenefile=None
 
     return (options,leftargs)
