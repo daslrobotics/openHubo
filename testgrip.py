@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 from numpy import pi,array,ones,zeros
 import openhubo
+from iuvalidate import add_torque
 import re
 
 (env,options)=openhubo.setup('qtcoin')
 env.SetDebugLevel(3)
 options.scenefile='gripper.env.xml'
+options.robotfile=None
 [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,options)
 rod=env.GetKinBody('rod')
 trans=rod.GetTransform()
@@ -19,8 +21,8 @@ fail=True
 strength=1.0
 openhubo.set_robot_color(robot,[.7,.7,.7],[.7,.7,.7],0.0)
 
-recorder.realtime=False
-recorder.filename='griptest.avi'
+#recorder.realtime=False
+#recorder.filename='griptest.avi'
 #recorder.start()
 steps=int(10*1/0.0005)
 fingerjoints=[x for x in robot.GetJoints() if re.search('Knuckle',x.GetName())]
@@ -33,7 +35,7 @@ while fail:
     rod.SetLinkVelocities((zeros(6),zeros(6)))
     rod.SetTransform(trans)
     T=0.5
-    openhubo.set_finger_torque(robot,T)
+    openhubo.set_finger_torque(robot,T,fingers)
 
     right_joints=[]
     for n in fingers:

@@ -2,9 +2,8 @@
 
 """ OpenHubo servo functions """
 from numpy import pi,array,zeros
-import sys
 import time
-import collections
+import openhubo
 
 class ServoTest:
 
@@ -36,9 +35,9 @@ def sendServoCommand(robot,raw=array(zeros(60))):
 
 def sendSparseServoCommand(robot,posDict):
     """ Update only joints that are specified in the dictionary."""
-    #TODO: check units and scale 
+    #TODO: check units and scale
     positions=robot.GetDOFValues()
-    
+
     #Translate from dictionary of names to DOF indices to make a full servo command
     for k in posDict.keys():
         positions[robot.GetJoint(k).GetDOFIndex()]=posDict[k]
@@ -69,7 +68,7 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
     for k in trajectory:
         #Wait for the simulation thread to complete its timestep (There must be
         # a better way...)
-        
+
         while env.GetSimulationTime()<(t+tstep):
             time.sleep(dt/10)
             pass
@@ -84,11 +83,8 @@ def sendSingleJointTrajectorySim(robot,trajectory,jointID,dt=.0005,rate=20):
 """ Examples to learn how to use the new servocontroller."""
 if __name__=='__main__':
     import matplotlib.pyplot as plt
-    from openravepy import *
-    from numpy import *
-    from numpy.linalg import *
+    from openravepy import Environment,RaveCreateCollisionChecker,RaveCreateController
 
-    env = Environment()
     (env,options)=openhubo.setup('qtcoin')
     time.sleep(.5)
     # 3 = fatal, error, and warnings, but not debug output
@@ -104,7 +100,7 @@ if __name__=='__main__':
     with env:
         env.StopSimulation()
         env.Load('simpleFloor.env.xml')
-        collisionChecker = RaveCreateCollisionChecker(env,'ode')
+        collisionChecker = RaveCreateCollisionChecker(env,'pqp')
         env.SetCollisionChecker(collisionChecker)
         robot = env.GetRobots()[0]
         #Create a "shortcut" function to translate joint names to indices
@@ -130,7 +126,7 @@ if __name__=='__main__':
     #Use the new SetDesired command to set a whole pose at once.
     #Manually align the goal pose and the initial pose so the thumbs clear
 
-    #The name-to-index closure makes it easy to index by name 
+    #The name-to-index closure makes it easy to index by name
     # (though a bit more expensive)
     pose[ind('LAP')]=-20*pi/180
     pose[ind('RAP')]=-20*pi/180
@@ -159,7 +155,7 @@ if __name__=='__main__':
     print "Testing single joint pose"
 
     controller.SendCommand('set radians')
-    
+
     controller.SendCommand('setpos1 {} {} '.format(ind('LEP'),-pi/4))
     time.sleep(2)
     print controller.SendCommand('getpos1 {} '.format(ind('LEP')))
@@ -167,6 +163,6 @@ if __name__=='__main__':
     controller.SendCommand('record_off {}'.format(filename))
     time.sleep(1)
     test=ServoTest(filename)
-    servos=['LEP','LWP'] 
+    servos=['LEP','LWP']
     test.plot(servos)
     plt.show()

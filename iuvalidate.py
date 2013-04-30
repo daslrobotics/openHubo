@@ -372,7 +372,7 @@ def save(self,filename,struct):
         #TODO: save robot hash?
         pickle.dump(struct, f)
 
-def set_finger_torque(robot,maxT):
+def set_finger_torque(robot,maxT,fingers):
     for f in fingers:
         if robot.GetJoint(f):
             robot.GetJoint(f).SetTorqueLimits([maxT])
