@@ -192,10 +192,9 @@ Recursively eliminates points that lie inside two neighbouring points until only
     return n.asarray(pts)
 
 
-
 if __name__=='__main__':
-    HipPitch=array([0,40,50,60,70,80,85,90,92,100,110])*pi/180
-    MinRoll=array([-32,-32,-30,-26.5,-23.4,-6,-6,-16,-4,-4,-16])*pi/180
+    HipPitch=array([ 0, 40, 50,   60,   70,80,85,90 ,92,100,110])*pi/180
+    MinRoll=array([-32,-32,-30,-26.5,-23.4,-6,-6,-16,-4, -4,-16])*pi/180
     MaxRoll=array([32,32,30,26.5,23.4,6,6,16,4,4,16])*pi/180
 
     #Hack to get mirror about 0
