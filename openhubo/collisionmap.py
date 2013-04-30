@@ -86,7 +86,8 @@ class JointCollisionPair:
         (j0_data,j1_data,j0,j1)=self.read_data(filename,degrees)
 
         #Assume raw pairs, preprocess
-        (j0_bins,j1_min,j1_max)=self.preprocess_data(j0_data,j1_data,res)
+        (j0_bins,j1_min,j1_max)=self.preprocess_data(j0_data,j1_data,.5*pi/180)
+
         self.create_from_bounds(j0_bins,j1_min,j1_max,res)
 
         self.j0=j0
@@ -112,8 +113,8 @@ class JointCollisionPair:
         dj1=j1_max-j1_min
 
         #Calculate exact resolution to get even steps:
-        res_0=dj0/n.ceil(dj0/res_approx)
-        res_1=dj1/n.ceil(dj1/res_approx)
+        res_0=dj0/n.floor(dj0/res_approx)
+        res_1=dj1/n.floor(dj1/res_approx)
 
         j0_values=n.arange(j0_min,j0_max,res_0)
         j1_values=n.arange(j1_min,j1_max,res_1)
@@ -122,16 +123,15 @@ class JointCollisionPair:
 
         minbound=interp(j0_values,points0,min1)
         maxbound=interp(j0_values,points0,max1)
+
         #Kludgy
         for (j,j0_val) in enumerate(j0_values):
             for (k,j1_val) in enumerate(j1_values):
+                #print j,k,j1_val,maxbound[j]
                 if j1_val<maxbound[j] and j1_val>minbound[j]:
                     self.table[j,k]=1
         self.j0_values=j0_values
         self.j1_values=j1_values
-
-    #def create_from_points(self,points,res):
-        #sort(points,
 
     def plot(self):
         fig = plt.figure()
@@ -163,39 +163,40 @@ class JointCollisionPair:
         #Assume approximate resolution ok
         if len(j0_raw) != len(j1_raw):
             raise IndexError('Input arrays must be the same size')
-        j0_min=n.min(j0_raw)
-        j0_max=n.max(j0_raw)
+        j0_mn=n.min(j0_raw)
+        j0_mx=n.max(j0_raw)
 
         #Find span of each joint table
-        dj0=j0_max-j0_min
+        dj0=j0_mx-j0_mn
 
         #Calculate exact resolution to get even steps:
-        res_0=dj0/n.ceil(dj0/res)
-        bins=n.arange(min(j0_raw),max(j0_raw)+res_0,res_0)
+        res_0=dj0/n.floor(dj0/res)
+        bins=n.arange(j0_mn,j0_mx,res_0)
         indices=n.digitize(j0_raw,bins)
+        print indices
         #build a dict because it's easy
         j1_min={}
         j1_max={}
         for (i,j) in zip(indices,j1_raw):
-            if j1_min.has_key(i) and j1_min[i]<j:
-                pass
-            else:
+            if not j1_min.has_key(i):
                 j1_min.setdefault(i,j)
+            elif j1_min[i]>j:
+                j1_min[i]=j
 
-            if j1_max.has_key(i) and j1_max[i]>j:
-                pass
-            else:
+            if not j1_max.has_key(i):
                 j1_max.setdefault(i,j)
+            elif j1_max[i]<j:
+                j1_max[i]=j
 
         j0_out=[]
         j1_min_out=[]
         j1_max_out=[]
-        for (k,v) in j1_min.iteritems():
-            j0_out.append(bins[k])
-            j1_min_out.append(v)
 
-        for (k,v) in j1_max.iteritems():
-            j1_max_out.append(v)
+        for i in indices:
+            j0_out.append(bins[min(i,len(bins)-1)])
+            j1_min_out.append(j1_min[i])
+            j1_max_out.append(j1_max[i])
+
         return (j0_out,j1_min_out,j1_max_out)
 
     @staticmethod
@@ -219,13 +220,4 @@ class JointCollisionPair:
                 j0_data.append(float(data[0])*scale)
                 j1_data.append(float(data[1])*scale)
         return (j0_data,j1_data,j0,j1)
-
-if __name__=='__main__':
-
-    #Create an empty collisionmap
-    example=CollisionMap()
-    example.insert_pair(JointCollisionPair('hip-pitch-roll.cmap.txt',2.*pi/180,True))
-    example.insert_pair(JointCollisionPair('hip-pitch-roll.cmap.txt',2.*pi/180,True),'LHP','LHR')
-
-    example.write('example-collisionmap.xml')
 

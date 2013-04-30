@@ -12,7 +12,6 @@ __version__='0.7.1-beta'
 
 import numpy as _np
 import matplotlib.pyplot as _plt
-import re as _re
 import atexit as _atexit
 import optparse as _optparse
 import os as _os
@@ -24,67 +23,12 @@ from recorder import viewerrecorder as _recorder
 from numpy import array,zeros
 from time import sleep
 from datetime import datetime
-from warnings import warn
+from .mappings import get_name_from_huboname, build_joint_index_map
 
 from openravepy.misc import InitOpenRAVELogging
 InitOpenRAVELogging()
 
 TIMESTEP=0.001
-
-#KLUDGE: hard code the mapping (how often will it change, really?). Include openhubo synonyms here for fast lookup.
-hubo_map={'RHY':26,
-          'RHR':27,
-          'RHP':28,
-          'RKN':29,
-          'RKP':29,
-          'RAP':30,
-          'RAR':31,
-          'LHY':19,
-          'LHR':20,
-          'LHP':21,
-          'LKN':22,
-          'LKP':22,
-          'LAP':23,
-          'LAR':24,
-          'RSP':11,
-          'RSR':12,
-          'RSY':13,
-          'REB':14,
-          'REP':14,
-          'RWY':15,
-          'RWR':16,
-          'RWP':17,
-          'LSP':4,
-          'LSR':5,
-          'LSY':6,
-          'LEB':7,
-          'LEP':7,
-          'LWY':8,
-          'LWR':9,
-          'LWP':10,
-          'NKY':1,
-          'HNY':1,
-          'HDY':1,
-          'NK1':2,
-          'HNR':2,
-          'HDR':3,
-          'NK2':3,
-          'HNP':3,
-          'HDP':3,
-          'WST':0,
-          'HPY':0,
-          'TSY':0,
-          'RF1':32,
-          'RF2':33,
-          'RF3':34,
-          'RF4':35,
-          'RF5':36,
-          'LF1':37,
-          'LF2':38,
-          'LF3':39,
-          'LF4':40,
-          'LF5':41}
-
 
 class Pose:
     """Easy-to-use wrapper for an array of DOF values for a robot. The Pose class
@@ -103,27 +47,9 @@ class Pose:
             pose.send()
     """
 
-    @staticmethod
-    def build_jointmap(robot):
-        jointmap={}
-        for j in robot.GetJoints():
-            name=j.GetName()
-            index=j.GetDOFIndex()
-            jointmap.setdefault(name,index)
-            #Add the index itself to replicate old behavior
-            # Might be slow, but the point of this is simplicity.
-            #jointmap.setdefault(index,index)
-
-            #Check if hubo-ach name is different and add synonym
-            huboname=get_huboname_from_name(name)
-            if huboname != name:
-                jointmap.setdefault(huboname,index)
-
-        return jointmap
-
     def __init__(self,robot=None,ctrl=None,values=None):
         self.robot=robot
-        self.jointmap=Pose.build_jointmap(robot)
+        self.jointmap=build_joint_index_map(robot)
         if values is not None:
             #Will throw size exception if values is too short
             self.values=values
@@ -187,97 +113,6 @@ class Pose:
     def __iter__(self):
         return iter(self.values)
 
-def get_name_from_huboname(inname,robot=None):
-    """ Map a name from the openhubo standard to the original hubo naming
-    scheme.
-    """
-    huboname=inname.encode('ASCII')
-    #Cheat a little since hubonames are roman characters
-    if (huboname == "LKN" or huboname == "RKN"):
-        name=huboname[0:2]+'P'
-
-    elif (huboname == "LEB" or huboname == "REB"):
-        name=huboname[0:2]+'P'
-
-    elif (huboname == "WST" ):
-        name = "HPY"
-
-    elif (huboname == "NKY"):
-        name="NKY"
-
-    elif (huboname == "NK1"):
-        name="HNR"
-
-    elif (huboname == "NK2"):
-        name="HNP"
-
-    else:
-        name=huboname
-    #TODO: Fingers
-
-    if robot is None:
-        warn("No robot provided, skipping name check")
-        return name
-    elif robot.GetJoint(name):
-        return name
-    else:
-        return None
-
-#TODO: get a direct dictionary map for joint lookups
-
-def get_huboname_from_name(inname):
-    """Get a hubo-standard joint name from the openhubo name (mostly the same,
-    but they differ slightly for some joints.
-    """
-    name=inname.encode('ASCII')
-    #Cheat a little since names are roman characters
-    if (name == "LKP" or name == "RKP"):
-        achname=name[0:2]+'N'
-
-    elif (name == "LEP" or name == "REP"):
-        achname=name[0:2]+'B'
-
-    elif (name == "HPY" or name == "TSY"):
-        achname = "WST"
-
-    elif (name == "HNY"):
-        achname="NKY"
-
-    elif (name == "HNR"):
-        achname="NK1"
-
-    elif (name == "HNP"):
-        achname="NK2"
-
-    elif _re.search('Knuckle',name) and not _re.search('[23]',name):
-        name=_re.sub('left','LF',name)
-        name=_re.sub('right','RF',name)
-        name=_re.sub('Knuckle','',name)
-        name=_re.sub('Thumb','1',name)
-        name=_re.sub('Index','2',name)
-        name=_re.sub('Middle','3',name)
-        name=_re.sub('Ring','4',name)
-        name=_re.sub('Pinky','4',name)
-        achname = name[:-1]
-    else:
-        achname=name
-
-    if hubo_map.has_key(achname):
-        return achname
-    else:
-        return None
-
-def build_joint_index_map(robot):
-    """ Low level function to build a map of joint names and indices"""
-    jointlist=zeros(robot.GetDOF())-1
-    for j in robot.GetJoints():
-        name=j.GetName()
-        print name
-        huboname=get_huboname_from_name(name)
-        print huboname
-        if huboname:
-            jointlist[j.GetDOFIndex()]=hubo_map[huboname]
-    return jointlist
 
 def set_robot_color(robot,dcolor=[.5,.5,.5],acolor=[.5,.5,.5],trans=0,links=[]):
     """Iterate over a robot's links and set color / transparency."""
