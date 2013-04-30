@@ -1,9 +1,16 @@
 import numpy as n
-import pylab as p
+import re
+#import pylab as p
 from numpy import array,pi,interp
 import matplotlib.pyplot as plt
-import IPython
+#import IPython
 from mpl_toolkits.mplot3d import Axes3D
+from xml.dom import minidom
+
+def write_reformatted(data,name):
+    outdata=re.sub(r'\t','    ',data)
+    with open(name,'w') as f:
+        f.write(outdata)
 
 class CollisionMap:
     """Collision Map class for OpenRAVE CollisionMapRobot.
@@ -20,7 +27,11 @@ class CollisionMap:
         elif pair is not None:
             self.insert_pair(JointCollisionPair(pair,*args))
 
-    def insert_pair(self,pair):
+    def insert_pair(self,pair,j0=None,j1=None):
+        if j0 is not None:
+            pair.j0=j0
+        if j1 is not None:
+            pair.j1=j1
         self.pairs.append(pair)
 
     def to_xml(self):
@@ -41,6 +52,28 @@ class CollisionMap:
         with open(filename,'w') as f:
             f.write(self.to_xml())
 
+    def load_in_robot_file(self,filename,overwrite=False):
+        print "Does not work yet..."
+        return None
+        doc=minidom.parse(filename)
+
+        nodes=doc.getElementsByTagName('robot')
+        if len(nodes)==0:
+            nodes=doc.getElementsByTagName('Robot')
+        robot=nodes[0]
+
+        self.write('temp.cmap.xml')
+        #cheat by writing, save trouble of XML wrangling
+        cmap=minidom.parse('temp.cmap.xml')
+        colmapnode=cmap.getElementsByTagName('collisionmap')[0]
+        print colmapnode.getElementsByTagName('pair')
+        robot.appendChild(colmapnode)
+
+        tempstring=doc.toprettyxml()
+        if overwrite:
+            write_reformatted(tempstring,filename)
+        else:
+            write_reformatted(tempstring,filename+'_colmap')
 
 
 class JointCollisionPair:
@@ -48,21 +81,25 @@ class JointCollisionPair:
         Define and analyze a lookup table for a joint map from a set of bounding values.
     """
 
-    def __init__(self,points0,min1,max1,res=None,j0=None,j1=None):
-        if res is None:
-            res=.5*pi/180
-        self.create_from_bounds(points0,min1,max1,res)
+    def __init__(self,filename,res,degrees=False):
+
+        (j0_data,j1_data,j0,j1)=self.read_data(filename,degrees)
+
+        #Assume raw pairs, preprocess
+        (j0_bins,j1_min,j1_max)=self.preprocess_data(j0_data,j1_data,res)
+        self.create_from_bounds(j0_bins,j1_min,j1_max,res)
+
         self.j0=j0
         self.j1=j1
 
-    def create_from_bounds(self,points0,min1,max1,res):
+    def create_from_bounds(self,points0,min1,max1,res_approx):
         """ Define a profile for a pair of joints and use it to convert to a lookup table.
         points0: A list of key values for joint 0, typically evenly spaced over the range of the joint, in RADIANS
         min1: A corresponding list of joint values for joint 1 for every position in points0, corresponding to the minimum joint angle.
         max1: Same as min1 but maximum values.
         res: Resolution of lookup table in radians
         """
-        if res<=0:
+        if res_approx<=0:
             raise ValueError('Resolution cannot be <= 0.0!')
         j0_min=n.min(points0)
         j0_max=n.max(points0)
@@ -70,8 +107,16 @@ class JointCollisionPair:
         j1_min=n.min(min1)
         j1_max=n.max(max1)
 
-        j0_values=n.arange(j0_min,j0_max,res)
-        j1_values=n.arange(j1_min,j1_max,res)
+        #Find span of each joint table
+        dj0=j0_max-j0_min
+        dj1=j1_max-j1_min
+
+        #Calculate exact resolution to get even steps:
+        res_0=dj0/n.ceil(dj0/res_approx)
+        res_1=dj1/n.ceil(dj1/res_approx)
+
+        j0_values=n.arange(j0_min,j0_max,res_0)
+        j1_values=n.arange(j1_min,j1_max,res_1)
         #TODO: better storage method? n arrays are better than lists, but still expensive
         self.table=n.zeros((len(j0_values),len(j1_values)),dtype=n.int)
 
@@ -111,101 +156,76 @@ class JointCollisionPair:
         outlist.append('    </pair>')
         return '\n'.join(outlist)
 
+    @staticmethod
+    def preprocess_data(j0_raw,j1_raw,res):
+        """Bin recorded data for joint pair by the provided resolution, and throw out interior points"""
 
-def _angle_to_point(point, centre):
-    '''calculate angle in 2-D between points and x axis'''
-    delta = point - centre
-    res = n.arctan(delta[1] / delta[0])
-    if delta[0] < 0:
-        res += n.pi
-    return res
+        #Assume approximate resolution ok
+        if len(j0_raw) != len(j1_raw):
+            raise IndexError('Input arrays must be the same size')
+        j0_min=n.min(j0_raw)
+        j0_max=n.max(j0_raw)
 
+        #Find span of each joint table
+        dj0=j0_max-j0_min
 
-def _draw_triangle(p1, p2, p3, **kwargs):
-    tmp = n.vstack((p1,p2,p3))
-    x,y = [x[0] for x in zip(tmp.transpose())]
-    p.fill(x,y, **kwargs)
+        #Calculate exact resolution to get even steps:
+        res_0=dj0/n.ceil(dj0/res)
+        bins=n.arange(min(j0_raw),max(j0_raw)+res_0,res_0)
+        indices=n.digitize(j0_raw,bins)
+        #build a dict because it's easy
+        j1_min={}
+        j1_max={}
+        for (i,j) in zip(indices,j1_raw):
+            if j1_min.has_key(i) and j1_min[i]<j:
+                pass
+            else:
+                j1_min.setdefault(i,j)
 
+            if j1_max.has_key(i) and j1_max[i]>j:
+                pass
+            else:
+                j1_max.setdefault(i,j)
 
-def area_of_triangle(p1, p2, p3):
-    '''calculate area of any triangle given co-ordinates of the corners'''
-    return n.linalg.norm(n.cross((p2 - p1), (p3 - p1)))/2.
+        j0_out=[]
+        j1_min_out=[]
+        j1_max_out=[]
+        for (k,v) in j1_min.iteritems():
+            j0_out.append(bins[k])
+            j1_min_out.append(v)
 
+        for (k,v) in j1_max.iteritems():
+            j1_max_out.append(v)
+        return (j0_out,j1_min_out,j1_max_out)
 
-def convex_hull(points, graphic=True, smidgen=0.0075):
-    '''Calculate subset of points that make a convex hull around points
+    @staticmethod
+    def write_source_data(j0_data,j1_data,name0,name1,filename):
+        with open(filename,'w') as f:
+            f.write(name0 + ',' + name1)
+            for data in zip(j0_data,j1_data):
+                f.write(','.join(data))
 
-Recursively eliminates points that lie inside two neighbouring points until only convex hull is remaining.
-
-:Parameters:
-    points : ndarray (2 x m)
-        array of points for which to find hull
-    graphic : bool
-        use pylab to show progress?
-    smidgen : float
-        offset for graphic number labels - useful values depend on your data range
-
-:Returns:
-    hull_points : ndarray (2 x n)
-        convex hull surrounding points
-'''
-    if graphic:
-        p.clf()
-        p.plot(points[0], points[1], 'ro')
-    n_pts = points.shape[1]
-    assert(n_pts > 5)
-    centre = points.mean(1)
-    if graphic: p.plot((centre[0],),(centre[1],),'bo')
-    angles = n.apply_along_axis(_angle_to_point, 0, points, centre)
-    pts_ord = points[:,angles.argsort()]
-    if graphic:
-        for i in xrange(n_pts):
-            p.text(pts_ord[0,i] + smidgen, pts_ord[1,i] + smidgen, \
-                   '%d' % i)
-    pts = [x[0] for x in zip(pts_ord.transpose())]
-    prev_pts = len(pts) + 1
-    k = 0
-    while prev_pts > n_pts:
-        prev_pts = n_pts
-        n_pts = len(pts)
-        if graphic: p.gca().patches = []
-        i = -2
-        while i < (n_pts - 2):
-            Aij = area_of_triangle(centre, pts[i],     pts[(i + 1) % n_pts])
-            Ajk = area_of_triangle(centre, pts[(i + 1) % n_pts], \
-                                   pts[(i + 2) % n_pts])
-            Aik = area_of_triangle(centre, pts[i],     pts[(i + 2) % n_pts])
-            if graphic:
-                _draw_triangle(centre, pts[i], pts[(i + 1) % n_pts], \
-                               facecolor='blue', alpha = 0.2)
-                _draw_triangle(centre, pts[(i + 1) % n_pts], \
-                               pts[(i + 2) % n_pts], \
-                               facecolor='green', alpha = 0.2)
-                _draw_triangle(centre, pts[i], pts[(i + 2) % n_pts], \
-                               facecolor='red', alpha = 0.2)
-            if Aij + Ajk < Aik:
-                if graphic: p.plot((pts[i + 1][0],),(pts[i + 1][1],),'go')
-                del pts[i+1]
-            i += 1
-            n_pts = len(pts)
-        k += 1
-    return n.asarray(pts)
-
+    @staticmethod
+    def read_data(filename,degrees):
+        with open(filename,'r') as f:
+            header=f.readline().rstrip().split(',')
+            j0=header[0]
+            j1=header[1]
+            j0_data=[]
+            j1_data=[]
+            scale=pi/180 if degrees else 1.
+            for line in f:
+                data=line.rstrip().split(',')
+                j0_data.append(float(data[0])*scale)
+                j1_data.append(float(data[1])*scale)
+        return (j0_data,j1_data,j0,j1)
 
 if __name__=='__main__':
-    HipPitch=array([ 0, 40, 50,   60,   70,80,85,90 ,92,100,110])*pi/180
-    MinRoll=array([-32,-32,-30,-26.5,-23.4,-6,-6,-16,-4, -4,-16])*pi/180
-    MaxRoll=array([32,32,30,26.5,23.4,6,6,16,4,4,16])*pi/180
 
-    #Hack to get mirror about 0
-    RHP=n.hstack((n.flipud(-HipPitch[1:]),HipPitch))
-    RHR_min=n.hstack((n.flipud(MinRoll[1:]),MinRoll))
-    RHR_max=n.hstack((n.flipud(MaxRoll[1:]),MaxRoll))
+    #Create an empty collisionmap
+    example=CollisionMap()
+    example.insert_pair(JointCollisionPair('hip-pitch-roll.cmap.txt',2.*pi/180,True))
+    example.insert_pair(JointCollisionPair('hip-pitch-roll.cmap.txt',2.*pi/180,True),'LHP','LHR')
 
-    rlhuboplus=CollisionMap()
-    rlhuboplus.insert_pair(JointCollisionPair(RHP,RHR_min,RHR_max,1.*pi/180,'RHP','RHR'))
-    rlhuboplus.insert_pair(JointCollisionPair(RHP,RHR_min,RHR_max,1.*pi/180,'LHP','LHR'))
-
-    rlhuboplus.write('collisionmap.xml')
-    #IPython.embed()
+    example.write('example-collisionmap.xml')
 

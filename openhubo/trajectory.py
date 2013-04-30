@@ -80,11 +80,8 @@ def read_swarthmore_traj(filename,robot,dt=.01,retime=True):
     #names=['WST','RSP','RSR','RSY','REP','RWY','RWP']
     pose=_oh.Pose(robot)
 
-    while True:
-        string=f.readline().rstrip()
-        if len(string)==0:
-            break
-        jointvals=[float(x) for x in string.split(' ')]
+    for line in f:
+        jointvals=[float(x) for x in line.rstrip().split(' ')]
 
         for (i,n) in enumerate(names):
             pose[n]=(jointvals[i]-offsets[i])*pi/180*signs[i]
@@ -127,11 +124,8 @@ def read_youngbum_traj(filename,robot,dt=.01,scale=1.0,retime=True):
     offsets=[float(x) for x in offsetlist]
 
     k=0
-    while True:
-        string=f.readline().rstrip()
-        if len(string)==0:
-            break
-        jointvals=[float(x) for x in string.split(' ')]
+    for line in f:
+        jointvals=[float(x) for x in line.rstrip().split(' ')]
 
         for (i,n) in enumerate(names):
             pose[n]=(jointvals[i]+offsets[i])*pi/180.0*signs[i]*scale
@@ -261,11 +255,8 @@ def read_text_traj(filename,robot,dt=.01,scale=1.0):
     scales=[float(x) for x in scalelist]
 
     pose=_oh.Pose(robot)
-    while True:
-        string=f.readline().rstrip()
-        if len(string)==0:
-            break
-        vals=[float(x) for x in string.split(' ')]
+    for line in f:
+        vals=[float(x) for x in line.rstrip().split(' ')]
         Tdata=_np.zeros(6)
         for i,v in enumerate(vals):
             if indices.has_key(i):
@@ -320,7 +311,7 @@ class IUTrajectory:
             for k in range(6):
                 #Strip known 6 dof base
                 line=f.readline()
-            while line:
+            for line in f:
                 datalist=re.split(',| |\t',line.rstrip())
                 #print datalist
                 j=self.robot.GetJoint(datalist[1])
@@ -332,8 +323,6 @@ class IUTrajectory:
                     #Note that this corresponds to the IU index...
                     self.joint_signs[dof]=int(datalist[4])
                     self.joint_offsets[dof]=float(datalist[5])
-                #Read in next
-                line=f.readline()
 
     def load_from_file(self,filename,mapfile=None,path=None):
 
@@ -381,11 +370,7 @@ class IUTrajectory:
 
             srcdata=[]
             count=0
-            while len(line)>0:
-                if not line:
-                    print "Configuration is Missing"
-                    break
-
+            for line in f:
                 #Split configuration into a list, throwing out endline characters and strip length
                 configlist=re.split(',| |\t',line)[:-1]
 
@@ -395,7 +380,6 @@ class IUTrajectory:
                     print "Incorrect data formatting on line P{}".format(count)
 
                 srcdata.append(data)
-                line = f.readline()
                 count+=1
 
         #Convert to neat numpy array
@@ -408,6 +392,11 @@ class IUTrajectory:
 
     def steps(self):
         return _np.size(self.srcdata,1)
+
+    @staticmethod
+    def split_line(f):
+        line=f.readline()
+        return re.split(',| |\t',line)[:-1]
 
     @staticmethod
     def format_angles(data):
