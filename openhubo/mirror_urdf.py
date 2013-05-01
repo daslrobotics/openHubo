@@ -1,10 +1,13 @@
 import xml.etree.ElementTree as ET
-from numpy import pi,array,zeros,ones
+from numpy import pi,array
 import re
 import itertools
 #import debug
 from copy import deepcopy
 import sys
+
+jointmask='L([SEWHKAF][PRY0-9])'
+linkmask='Body_L([SEWHKAF][PRY0-9])'
 
 def mirror_inertia(node):
     """ Mirror an inertia matrix about the Y axis"""
@@ -41,11 +44,11 @@ def fix_mesh_case(node):
             mesh.set('filename',re.sub(".STL",".stl",mesh.get('filename')))
             #print mesh.get('filename')
 
-def mirror_geometry(node,searchmask):
+def mirror_geometry(node):
     """Update any geometry tags to refer to mirrored geometry, based on naming convention"""
     for g in node.findall('geometry'):
         mesh=g.find('mesh')
-        mesh.set('filename',re.sub(searchmask,r"_R\1",mesh.get('filename'),1))
+        mesh.set('filename',get_right_from_left(mesh.get('filename')))
 
 def mirror_limits(node):
     """Update any geometry tags to refer to mirrored geometry, based on naming convention"""
@@ -55,33 +58,43 @@ def mirror_limits(node):
         g.set('lower',str(-upper))
         g.set('upper',str(-lower))
 
-def make_mirror_node(node,searchmask):
+
+def get_right_from_left(name):
+    #joint
+    name2=re.sub(jointmask,r"R\1",name,1)
+    #link
+    name3=re.sub(linkmask,r"Body_R\1",name2,1)
+    return re.sub('left','right',name3,1)
+
+def on_left_side(name):
+    if re.search(linkmask,name) or re.search('left',name):
+        return True
+    if re.search(jointmask,name):
+        return True
+    return False
+
+
+def make_mirror_node(node):
     """Make a new node if the name matches a left-to-right mirror.
         This depends entirely on all of the names being formatted correctly."""
     name=node.get('name')
+    if not on_left_side(name):
+        return None
+    print name
     if node.tag == 'joint':
-        print node.find('parent').get('link')
-        match=re.search(searchmask[1:],name)
-        if not match:
-            #Not a symmetrical body, ignore
-            return None
         #Copy link into mirrored list
         m=deepcopy(node)
-        m.set('name',re.sub(searchmask[1:],r"R\1",name,1))
+        m.set('name',get_right_from_left(name))
         #Replace link names
         parent=m.find('parent')
-        parent.set('link',re.sub(searchmask,r"_R\1",parent.get('link'),1))
+        parent.set('link',get_right_from_left(parent.get('link')))
         child=m.find('child')
-        child.set('link',re.sub(searchmask,r"_R\1",child.get('link'),1))
+        child.set('link',get_right_from_left(child.get('link')))
         print node.find('parent').get('link')
     if node.tag == 'link':
-        match=re.search(searchmask,name)
-        if not match:
-            #Not a symmetrical body, ignore
-            return None
         #Copy link into mirrored list
         m=deepcopy(node)
-        m.set('name',re.sub(searchmask,r"_R\1",name,1))
+        m.set('name',get_right_from_left(name))
         #Replace mesh name if it exists
 
     return m
@@ -92,10 +105,9 @@ def run(sourcename,destname):
     links=tree.findall('link')
 
     mirlinks=[]
-    searchmask='_L([SEWHKAF][PRY0-9])'
     for l in links:
         fix_mesh_case(l)
-        m=make_mirror_node(l,searchmask)
+        m=make_mirror_node(l)
         if m is None:
             #Not a symmetrical body, ignore
             continue
@@ -109,13 +121,13 @@ def run(sourcename,destname):
         for i in list(itertools.chain(*nodes)):
             mirror_origin(i)
             mirror_inertia(i)
-            mirror_geometry(i,searchmask)
+            mirror_geometry(i)
         mirlinks.append(m)
 
     mirjoints=[]
 
     for j in tree.findall('joint'):
-        m=make_mirror_node(j,searchmask)
+        m=make_mirror_node(j)
         if m is None:
             #Not a symmetrical body, ignore
             continue
