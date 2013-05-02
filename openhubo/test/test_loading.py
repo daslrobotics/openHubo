@@ -22,13 +22,6 @@ import time
 import unittest
 import os, fnmatch
 
-def find_files(directory, pattern):
-    for root, dirs, files in os.walk(directory):
-        for basename in files:
-            if fnmatch.fnmatch(basename, pattern):
-                filename = os.path.join(root, basename)
-                yield filename
-
 def model_test_factory(filename=None):
     class TestLoading(unittest.TestCase):
         def setUp(self):

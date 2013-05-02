@@ -1,5 +1,5 @@
 #KLUDGE: hard code the mapping (how often will it change, really?). Include openhubo synonyms here for fast lookup.
-ha_ind_from_names={'RHY':26,
+ha_ind_name_map={'RHY':26,
                    'RHR':27,
                    'RHP':28,
                    'RKN':29,
@@ -53,12 +53,12 @@ synonyms={'LKP':'LKN',
 
 for s in ['left','right']:
     for i,f in enumerate(['Index','Middle','Ring','Pinky','Thumb']):
-        synonyms.setdefault(s+f+'Knuckle1','LF{}'.format(i))
+        synonyms[s+f+'Knuckle1']='{}F{}'.format(s[0].upper(),str(i+1))
 
 
-inv_synonyms={(v,k) for k, v in synonyms.iteritems()}
+inv_synonyms={v:k for (k, v) in synonyms.iteritems()}
 
-oh_from_ha_names={(k,inv_synonyms[k] if k in inv_synonyms else k) for k in ha_ind_from_names.keys()}
+oh_from_ha_names={k:(inv_synonyms[k] if k in inv_synonyms.keys() else k) for k in ha_ind_name_map.keys()}
 
 deprecated_names={'HPY':'WST',
                   'HDY':'NKY',
@@ -86,15 +86,17 @@ def ha_from_oh(inname):
     synonym, return the matching hubo-ach name."""
     if synonyms.has_key(inname):
         return synonyms[inname]
-    elif ha_ind_from_names.has_key(inname):
+    elif ha_ind_name_map.has_key(inname):
         return inname
     else:
         return None
 
 def oh_from_ha(inname):
     """ If the input name is an openhubo joint name, return the matching hubo-ach name."""
-    if oh_from_ha_names.has_key(inname):
-        return synonyms[inname]
+    if ha_ind_name_map.has_key(inname):
+        if inv_synonyms.has_key(inname):
+            return inv_synonyms[inname]
+        return inname
     else:
         return None
 
@@ -104,8 +106,31 @@ def get_huboname_from_name(inname):
     """
     return ha_from_oh(inname)
 
-def build_joint_index_map(robot):
-    """ Low level function to build a map of joint names and indices as a
-    python dictionary. The dict is used for simplicity and flexibility."""
-    return {(j.GetDOFIndex(),ha_from_oh(j.GetName())) for j in robot.GetJoints()}
+def ha_ind_from_oh_ind(robot):
+    """Make a direct ind map between a robot and the hubo-ach interface"""
+    return {j.GetDOFIndex():(ha_ind_name_map[ha_from_oh(j.GetName())] if ha_from_oh(j.GetName()) else None) for j in robot.GetJoints()}
+
+if __name__=='__main__':
+    import openhubo as oh
+    import openhubo.startup
+    (env,options)=oh.setup()
+    options.stop=False
+    options.physics=False
+    options.ghost=False
+
+    [robot,ctrl,ind,__,__]=oh.load_scene(env,options)
+    print oh_from_ha_names
+    jointnames=[j.GetName() for j in robot.GetJoints()]
+
+    print "Mapping from openhubo to hubo-ach"
+    for n in jointnames:
+        print n,ha_from_oh(n),get_huboname_from_name(n)
+
+    print "Mapping from hubo-ach to openhubo"
+    for n in ha_ind_name_map.keys():
+        print n,oh_from_ha(n),get_name_from_huboname(n)
+
+    print "Make a direct Index map from openhubo to hubo-ach"
+    print ha_ind_from_oh_ind(robot)
+
 

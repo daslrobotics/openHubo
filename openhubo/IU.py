@@ -2,6 +2,9 @@ import fnmatch as _fnmatch
 import os as _os
 from numpy import pi,cos,sin
 
+#Include IU trajectory format here for convenience
+from .trajectory import IUTrajectory
+
 ## Ladder Format
 #0.05		#ladder-stringer-width
 #3			#ladder-stringer-height
