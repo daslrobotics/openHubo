@@ -2,6 +2,10 @@ import fnmatch as _fnmatch
 import os as _os
 from numpy import pi,cos,sin
 
+#Include IU trajectory format here for convenience
+from .trajectory import IUTrajectory
+import openhubo as oh
+
 ## Ladder Format
 #0.05		#ladder-stringer-width
 #3			#ladder-stringer-height
@@ -30,7 +34,8 @@ class IULadderGenerator:
             self.load_parameters(paramfile)
 
     def load_parameters(self,paramfile):
-        with open(paramfile,'r') as file_read:
+        filename=oh.find(paramfile)
+        with open(filename,'r') as file_read:
             #line 1
             stringer_width=0
             line = file_read.readline()

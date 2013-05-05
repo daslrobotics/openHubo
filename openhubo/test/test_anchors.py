@@ -19,6 +19,7 @@ __license__ = 'GPLv3 license'
 from numpy import pi,array,zeros
 import unittest
 import openhubo
+from openravepy import raveLogDebug
 
 #Get the global environment for simulation
 
@@ -41,8 +42,6 @@ def constraints_3dof(x=array([]),y=array([]),z=array([])):
 def check_all_constraints(anchor):
     LSerr=constraints_3dof(anchor['LSR'],anchor['LSP'],anchor['LSY'])
     RSerr=constraints_3dof(anchor['RSR'],anchor['RSP'],anchor['RSY'])
-    print     LSerr
-    print     RSerr
 
     if anchor.has_key('LWR'):
         LWerr=constraints_3dof(z=anchor['LWY'],y=anchor['LWP'],x=anchor['LWR'])
@@ -53,20 +52,15 @@ def check_all_constraints(anchor):
     else:
         LWerr=zeros(3)
         RWerr=zeros(3)
-    print     LWerr
-    print     RWerr
 
     LHerr=constraints_3dof(anchor['LHR'],anchor['LHP'],anchor['LHY'])
     RHerr=constraints_3dof(anchor['RHR'],anchor['RHP'],anchor['RHY'])
 
-    print     LHerr
-    print     RHerr
-
     LAerr=constraints_3dof(x=anchor['LAR'],y=anchor['LAP'])
     RAerr=constraints_3dof(x=anchor['RAR'],y=anchor['RAP'])
 
-    print     LAerr
-    print     RAerr
+    for e in (LSerr,RSerr,LWerr,RWerr,LHerr,RHerr,LAerr,RAerr):
+        raveLogDebug(str(e))
     return array([LSerr,RSerr,LWerr,RWerr,LHerr,RHerr,LAerr,RAerr])
 
 
@@ -74,7 +68,6 @@ def model_test_factory(filename=None):
     class TestAnchors(unittest.TestCase):
         def setUp(self):
             (self.env,options)=openhubo.setup()
-            self.env.SetDebugLevel(2)
             options.robotfile=filename
             options.physicsfile=None
             [self.robot,ctrl,self.ind,ref,recorder]=openhubo.load_scene(self.env,options)
@@ -84,7 +77,7 @@ def model_test_factory(filename=None):
 
         def test_anchors(self):
             ind=self.ind
-            print('Loaded {}'.format(filename))
+            raveLogDebug('Loaded {}'.format(filename))
 
             pose=zeros(self.robot.GetDOF())
             self.robot.SetDOFValues(pose)
@@ -112,11 +105,11 @@ def model_test_factory(filename=None):
                 anchor.setdefault(j.GetName(),j.GetAnchor())
             errsum3=sum(abs(check_all_constraints(anchor)))
 
-            print "Error sums for {}:".format(self.robot.GetName())
-            print errsum1
-            print errsum2
-            print errsum3
-            self.assertLess(min([errsum1,errsum2,errsum3]),1e-10)
+            raveLogDebug( "Error sums for {}:".format(self.robot.GetName()))
+            raveLogDebug( str(errsum1))
+            raveLogDebug( str(errsum2))
+            raveLogDebug( str(errsum3))
+            self.assertLess(min([max(errsum1),max(errsum2),max(errsum3)]),1e-10)
 
     return TestAnchors
 

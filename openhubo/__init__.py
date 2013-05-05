@@ -15,6 +15,7 @@ import matplotlib.pyplot as _plt
 import atexit as _atexit
 import optparse as _optparse
 import os as _os
+import fnmatch as _fnmatch
 
 import openravepy as _rave
 from recorder import viewerrecorder as _recorder
@@ -23,7 +24,8 @@ from recorder import viewerrecorder as _recorder
 from numpy import array,zeros
 from time import sleep
 from datetime import datetime
-from .mappings import get_name_from_huboname, build_joint_index_map
+import mapping
+from types import ModuleType
 
 from openravepy.misc import InitOpenRAVELogging
 InitOpenRAVELogging()
@@ -47,9 +49,12 @@ class Pose:
             pose.send()
     """
 
+    def build_joint_index_map(self,robot):
+        return {j.GetName():j.GetDOFIndex() for j in robot.GetJoints()}
+
     def __init__(self,robot=None,ctrl=None,values=None):
         self.robot=robot
-        self.jointmap=build_joint_index_map(robot)
+        self.jointmap=self.build_joint_index_map(robot)
         if values is not None:
             #Will throw size exception if values is too short
             self.values=values
@@ -57,7 +62,11 @@ class Pose:
             self.update()
         else:
             self.values=zeros(robot.GetDOF())
-        self.ctrl=ctrl
+
+        if ctrl:
+            self.ctrl=ctrl
+        else:
+            self.ctrl=robot.GetController()
 
     def update(self,newvalues=None):
         """manually assign new values, or poll for new values from robot"""
@@ -154,7 +163,7 @@ def make_name_to_index_converter(robot,autotranslate=True):
             if j is not None:
                 return j.GetDOFIndex()
 
-            j=robot.GetJoint(get_name_from_huboname(name,robot))
+            j=robot.GetJoint(mapping.get_name_from_huboname(name,robot))
             if j is not None:
                 return j.GetDOFIndex()
 
@@ -564,7 +573,14 @@ def setup(viewername=None,create=True,parser=None):
     if create:
         env=_rave.Environment()
         _atexit.register(_safe_quit)
-        _rave.misc.OpenRAVEGlobalArguments.parseEnvironment(options,env)
+        try:
+            _rave.misc.OpenRAVEGlobalArguments.parseEnvironment(options,env)
+        except TypeError as e:
+            if isinstance(viewername,ModuleType):
+                print "Running nosetests?"
+            else:
+                raise e
+
     else:
         env=None
 
@@ -594,8 +610,16 @@ def get_options(viewername=None,parser=None):
 def get_root_dir():
     return _os.environ['OPENHUBO_DIR']
 
+def find_files(directory, pattern):
+    for root, dirs, files in _os.walk(directory):
+        for basename in files:
+            if _fnmatch.fnmatch(basename, pattern):
+                filename = _os.path.join(root, basename)
+                yield filename
+
 def find(rawname, path=None):
     (fpath,fname)=_os.path.split(rawname)
+    #TODO: make better assumptions about name
     if not path:
         path=get_root_dir()
     for root, dirs, files in _os.walk(path+'/'+fpath):

@@ -20,21 +20,12 @@ import openravepy as _rave
 from numpy import pi,zeros,sqrt
 import time
 import unittest
-import os, fnmatch
-
-def find_files(directory, pattern):
-    for root, dirs, files in os.walk(directory):
-        for basename in files:
-            if fnmatch.fnmatch(basename, pattern):
-                filename = os.path.join(root, basename)
-                yield filename
 
 def model_test_factory(filename=None):
     class TestLoading(unittest.TestCase):
         def setUp(self):
             self.env=_rave.Environment()
             env=self.env
-            env.SetDebugLevel(_rave.DebugLevel.Info)
             with env:
                 env.StopSimulation()
                 print('\nTesting model {}'.format(filename))
@@ -42,6 +33,7 @@ def model_test_factory(filename=None):
                 self.assertTrue(result)
                 self.robot=env.GetRobots()[0]
                 physics = _rave.RaveCreatePhysicsEngine(env,'ode')
+                env.SetCollisionChecker(_rave.RaveCreateCollisionChecker(env,'pqp'))
                 physics.SetGravity([0,0,0])
                 env.SetPhysicsEngine(physics)
                 self.robot.SetDOFValues(zeros(self.robot.GetDOF()))

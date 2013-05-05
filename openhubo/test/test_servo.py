@@ -9,7 +9,7 @@ class TestServoCommands(unittest.TestCase):
         (env,options)=openhubo.setup()
         env.SetDebugLevel(2)
         #NOTE: Loads trajectory controller, which passes servo commands down
-        options.physicsfile='physics.xml'
+        options.physics=True
         options.scenefile=None
         [self.robot,self.controller,self.ind,__,__]=openhubo.load_scene(env,options)
         env.GetPhysicsEngine().SetGravity([0,0,0])

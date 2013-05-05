@@ -4,6 +4,7 @@ import numpy as _np
 from numpy import pi,array
 import openhubo as _oh
 import openhubo.comps as _comps
+from openhubo import mapping
 import re
 
 
@@ -50,15 +51,26 @@ hubo_read_trajectory_map={
     'LF5':39}
 
 def traj_append(traj,waypt):
+    """quickly append a waypoint to a trajectory"""
     n=traj.GetNumWaypoints()
     traj.Insert(n,waypt)
 
-def create_trajectory(robot):
-    """ Create a trajectory based on a robot's config spec"""
+def create_trajectory(robot,waypts=None):
+    """ Create a trajectory based on a robot's config spec. Optionally added a list of waypoints """
     traj=_rave.RaveCreateTrajectory(robot.GetEnv(),'')
     config=robot.GetConfigurationSpecification()
     config.AddDeltaTimeGroup()
     traj.Init(config)
+
+    if waypts is not None:
+        _rave.raveLogInfo("Appending waypoint(s)")
+        try:
+            for w in waypts:
+                traj_append(traj,w)
+        except TypeError:
+            #fallthrough if single waypoint
+            traj_append(traj,waypts)
+
     return [traj,config]
 
 def read_swarthmore_traj(filename,robot,dt=.01,retime=True):
@@ -155,7 +167,7 @@ def write_youngbum_traj(traj,robot,dt,filename='exported.traj',dofs=None,oldname
     for d in dofs:
         name=robot.GetJointFromDOFIndex(d).GetName()
         if oldnames:
-            namelist.append(_oh.get_huboname_from_name(name))
+            namelist.append(mapping.ha_from_oh(name))
         else:
             namelist.append(name)
         #TODO make this an argument?
@@ -193,13 +205,13 @@ def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
 
 def dofmap_huboread_from_oh(robot):
     #Get all the DOF's..
-    dofmap=-_np.ones(len(hubo_read_trajectory_map))
+    dofmap={}
     for d in xrange(robot.GetDOF()):
         n = robot.GetJointFromDOFIndex(d).GetName()
-        hname=_oh.get_huboname_from_name(n)
+        hname=mapping.ha_from_oh(n)
         if hname:
             dofmap[hubo_read_trajectory_map[hname]]=d
-        print d,n,hname
+        #print d,n,hname
     return dofmap
 
 
@@ -299,7 +311,7 @@ class IUTrajectory:
         #TODO: get defaults that make sense
         self.joint_offsets=_np.zeros(robot.GetDOF())
         self.joint_signs=_np.ones(robot.GetDOF())
-        self.joint_map=-_np.ones(robot.GetDOF(),dtype=_np.int)
+        self.joint_map={}
         self.robot=robot
         if mapfile:
             self.load_mapping(mapfile)
@@ -428,12 +440,10 @@ class IUTrajectory:
         for k in xrange(_np.size(self.srcdata,0)):
         #for k in xrange(3):
             T=IUTrajectory.get_transform(T0,self.srcdata[k,0:6])
-            #print  self.srcdata[k,:]
-            raw_pose=self.srcdata[k,self.joint_map]
-            #print raw_pose
+            pose_map={key:self.srcdata[k,v] for (key,v) in self.joint_map.items()}
+            pose_array=array([pose_map[dof] if pose_map.has_key(dof) else 0.0 for dof in xrange(self.robot.GetDOF())])
 
-            pose.values=raw_pose*self.joint_signs+self.joint_offsets
-            #print pose.values
+            pose.values=pose_array*self.joint_signs+self.joint_offsets
 
             if clip:
                 #oldvals=pose.values
@@ -469,6 +479,5 @@ class IUTrajectory:
 
         if resetafter:
             self.robot.SetTransform(T0)
-
 
 
