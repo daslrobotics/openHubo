@@ -116,7 +116,7 @@ else
 fi
 
 #Check if python dependencies are installed (may not work for older Ubuntu versions)
-for dep in ipython python-matplotlib python-scipy
+for dep in ipython python-matplotlib python-scipy python-pip
 do
     verify-dep $dep
 done

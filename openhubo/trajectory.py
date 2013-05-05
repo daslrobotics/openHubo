@@ -51,15 +51,26 @@ hubo_read_trajectory_map={
     'LF5':39}
 
 def traj_append(traj,waypt):
+    """quickly append a waypoint to a trajectory"""
     n=traj.GetNumWaypoints()
     traj.Insert(n,waypt)
 
-def create_trajectory(robot):
-    """ Create a trajectory based on a robot's config spec"""
+def create_trajectory(robot,waypts=None):
+    """ Create a trajectory based on a robot's config spec. Optionally added a list of waypoints """
     traj=_rave.RaveCreateTrajectory(robot.GetEnv(),'')
     config=robot.GetConfigurationSpecification()
     config.AddDeltaTimeGroup()
     traj.Init(config)
+
+    if waypts is not None:
+        _rave.raveLogInfo("Appending waypoint(s)")
+        try:
+            for w in waypts:
+                traj_append(traj,w)
+        except TypeError:
+            #fallthrough if single waypoint
+            traj_append(traj,waypts)
+
     return [traj,config]
 
 def read_swarthmore_traj(filename,robot,dt=.01,retime=True):
@@ -468,4 +479,5 @@ class IUTrajectory:
 
         if resetafter:
             self.robot.SetTransform(T0)
+
 

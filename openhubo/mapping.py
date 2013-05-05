@@ -1,3 +1,5 @@
+import numpy as np
+from numpy.random import rand
 #KLUDGE: hard code the mapping (how often will it change, really?). Include openhubo synonyms here for fast lookup.
 ha_ind_name_map={'RHY':26,
                    'RHR':27,
@@ -110,9 +112,20 @@ def ha_ind_from_oh_ind(robot):
     """Make a direct ind map between a robot and the hubo-ach interface"""
     return {j.GetDOFIndex():(ha_ind_name_map[ha_from_oh(j.GetName())] if ha_from_oh(j.GetName()) else None) for j in robot.GetJoints()}
 
+def create_random_bounded_pose(robot):
+    """Create a random valid pose for the robot (i.e. within joint limits).
+    This is NOT gauranteed to be stable, so avoid using this on a live
+    robot!!!"""
+    (lower,upper)=robot.GetDOFLimits()
+    motion=upper-lower
+    center=(upper+lower)/2.0
+    vals=center+motion*(rand(robot.GetDOF())-.5)
+    return vals
+
+
 if __name__=='__main__':
     import openhubo as oh
-    import openhubo.startup
+    from  openhubo import startup
     (env,options)=oh.setup()
     options.stop=False
     options.physics=False

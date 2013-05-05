@@ -25,6 +25,7 @@ from numpy import array,zeros
 from time import sleep
 from datetime import datetime
 import mapping
+from types import ModuleType
 
 from openravepy.misc import InitOpenRAVELogging
 InitOpenRAVELogging()
@@ -61,7 +62,11 @@ class Pose:
             self.update()
         else:
             self.values=zeros(robot.GetDOF())
-        self.ctrl=ctrl
+
+        if ctrl:
+            self.ctrl=ctrl
+        else:
+            self.ctrl=robot.GetController()
 
     def update(self,newvalues=None):
         """manually assign new values, or poll for new values from robot"""
@@ -568,7 +573,14 @@ def setup(viewername=None,create=True,parser=None):
     if create:
         env=_rave.Environment()
         _atexit.register(_safe_quit)
-        _rave.misc.OpenRAVEGlobalArguments.parseEnvironment(options,env)
+        try:
+            _rave.misc.OpenRAVEGlobalArguments.parseEnvironment(options,env)
+        except TypeError as e:
+            if isinstance(viewername,ModuleType):
+                print "Running nosetests?"
+            else:
+                raise e
+
     else:
         env=None
 
@@ -607,6 +619,7 @@ def find_files(directory, pattern):
 
 def find(rawname, path=None):
     (fpath,fname)=_os.path.split(rawname)
+    #TODO: make better assumptions about name
     if not path:
         path=get_root_dir()
     for root, dirs, files in _os.walk(path+'/'+fpath):

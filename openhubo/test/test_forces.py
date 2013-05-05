@@ -9,7 +9,7 @@ from numpy import mean, std,array,pi
 class TestContactForces(unittest.TestCase):
 
     def setUp(self):
-        (options,self.env)=openhubo.setup()
+        (self.env,options)=openhubo.setup()
         self.env.SetDebugLevel(3)
         options.scenefile = 'forcetest.env.xml'
         options.robotfile = None
