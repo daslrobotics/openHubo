@@ -159,11 +159,15 @@ def make_name_to_index_converter(robot,autotranslate=True):
     """
     if autotranslate:
         def convert(name):
-            j=robot.GetJoint(name)
-            if j is not None:
-                return j.GetDOFIndex()
+            if name is None:
+                return None
 
-            j=robot.GetJoint(mapping.get_name_from_huboname(name,robot))
+            j=robot.GetJoint(name)
+            if j is None:
+                hname=mapping.get_name_from_huboname(name,robot)
+                if hname is not None:
+                    j=robot.GetJoint(hname)
+
             if j is not None:
                 return j.GetDOFIndex()
 
@@ -216,14 +220,14 @@ def load_scene_from_options(env,options):
     else:
         physics=False
 
-    if options.recordfile:
+    #if options.recordfile:
         # Set the robot controller and start the simulation
         vidrecorder=_recorder(env,filename=options.recordfile)
         #Default to "sim-timed video" i.e. plays back much faster
         vidrecorder.videoparams[0:2]=[1024,768]
         vidrecorder.realtime=False
-    else:
-        vidrecorder=None
+    #else:
+        #vidrecorder=None
 
     with env:
         if options.stop:
@@ -548,6 +552,9 @@ def _create_parser(parser=None):
                             help="Use python profiler for analysis")
     code_options.add_option('--testsuite', action="store", dest='testsuite',default=None,
                             help='(Not yet implemented) run the openhubo testsuite')
+    code_options.add_option("--pdb", action="store_true",
+                            dest="pdb", default=False,
+                            help="Use python debugger")
 
     parser.add_option_group(code_options)
 

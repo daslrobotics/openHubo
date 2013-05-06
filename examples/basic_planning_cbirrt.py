@@ -9,7 +9,7 @@ import openhubo.comps as comps
 
 from numpy import pi
 from openhubo import pause
-from openhubo.comps.TSR import TSR,TSRChain
+from openhubo.comps import TSR,TSRChain
 from openravepy import RaveCreateProblem
 
 (env,options)=openhubo.setup('qtcoin')

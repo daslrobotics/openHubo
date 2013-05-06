@@ -6,7 +6,6 @@ __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
 import openravepy as _rave
-import openhubo.comps.TSR as _tsr
 import numpy as _np
 import comps as _comps
 
@@ -29,9 +28,9 @@ def MakeInPlaceConstraint(robot,manipname):
             break
     print manipindex
 
-    tsr=_tsr.TSR(T0_w,Tw_e,_np.mat(_np.zeros(12)),manipindex)
+    tsr=_comps.TSR(T0_w,Tw_e,_np.mat(_np.zeros(12)),manipindex)
     print tsr.manipindex
-    chain=_tsr.TSRChain(0,1,1)
+    chain=_comps.TSRChain(0,1,1)
     chain.insertTSR(tsr)
     return chain
 

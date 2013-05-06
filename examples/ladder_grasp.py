@@ -5,7 +5,7 @@ __license__ = 'GPLv3 license'
 
 import openhubo as oh
 from openhubo import comps
-from openhubo.comps.TSR import TSR,TSRChain
+from openhubo.comps import TSR,TSRChain
 from openhubo import planning
 import re
 from openravepy import RaveCreateProblem

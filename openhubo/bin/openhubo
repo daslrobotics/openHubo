@@ -24,6 +24,8 @@ if options.interpreter == 'ipython':
     cmd.append('--pylab')
     cmd.append('--no-banner')
     cmd.append('--no-confirm-exit')
+    if options.pdb:
+        cmd.append('--pdb')
 
 if options.example:
     expath=_os.environ['OPENHUBO_DIR'] + '/examples/'
