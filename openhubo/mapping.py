@@ -122,10 +122,16 @@ def create_random_bounded_pose(robot):
     vals=center+motion*(rand(robot.GetDOF())-.5)
     return vals
 
+def is_ha_joint(name):
+    return ha_ind_name_map.has_key(name)
+
+def is_ha_sensor(name):
+    #TODO detect sensors from names
+   return False
 
 if __name__=='__main__':
     import openhubo as oh
-    from  openhubo import startup
+    from openhubo import startup
     (env,options)=oh.setup()
     options.stop=False
     options.physics=False

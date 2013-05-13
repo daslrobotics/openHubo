@@ -220,14 +220,9 @@ def load_scene_from_options(env,options):
     else:
         physics=False
 
-    #if options.recordfile:
-        # Set the robot controller and start the simulation
-        vidrecorder=_recorder(env,filename=options.recordfile)
-        #Default to "sim-timed video" i.e. plays back much faster
-        vidrecorder.videoparams[0:2]=[1024,768]
-        vidrecorder.realtime=False
-    #else:
-        #vidrecorder=None
+    vidrecorder=_recorder(env,filename=options.recordfile)
+    vidrecorder.videoparams[0:2]=[1024,768]
+    vidrecorder.realtime=False
 
     with env:
         if options.stop:

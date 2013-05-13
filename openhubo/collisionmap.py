@@ -1,7 +1,7 @@
 import numpy as n
 import re
 #import pylab as p
-from numpy import array,pi,interp
+from numpy import array,pi,interp,arange
 import matplotlib.pyplot as plt
 #import IPython
 from mpl_toolkits.mplot3d import Axes3D
@@ -172,20 +172,28 @@ class JointCollisionPair:
         #Calculate exact resolution to get even steps:
         res_0=dj0/n.floor(dj0/res)
         bins=n.arange(j0_mn,j0_mx,res_0)
-        indices=n.digitize(j0_raw,bins)
-        print indices
+
+        #Arc length
+        ds=n.sqrt(pow(n.diff(j0_raw),2.)+pow(n.diff(j1_raw),2.))
+        ind=[i for (i,s) in enumerate(ds) if abs(s) > 0.00001 ]
+        asum=n.cumsum(ds)
+
+        #sample for bins
+        arclen=[asum[i] for i in ind]
+        steps=arange(min(arclen),max(arclen),res/5.)
+        j0_proc=n.interp(steps,arclen,[j0_raw[i] for i in ind])
+        j1_proc=n.interp(steps,arclen,[j1_raw[i] for i in ind])
+        plt.plot(j0_proc,j1_proc)
+        plt.plot(j0_raw,j1_raw)
+        indices=n.digitize(j0_proc,bins)
         #build a dict because it's easy
         j1_min={}
         j1_max={}
-        for (i,j) in zip(indices,j1_raw):
-            if not j1_min.has_key(i):
-                j1_min.setdefault(i,j)
-            elif j1_min[i]>j:
+        for (i,j) in zip(indices,j1_proc):
+            if not j1_min.has_key(i) or j1_min[i]>j:
                 j1_min[i]=j
 
-            if not j1_max.has_key(i):
-                j1_max.setdefault(i,j)
-            elif j1_max[i]<j:
+            if not j1_max.has_key(i) or j1_max[i]<j:
                 j1_max[i]=j
 
         j0_out=[]
