@@ -16,6 +16,7 @@ import atexit as _atexit
 import optparse as _optparse
 import os as _os
 import fnmatch as _fnmatch
+import re as _re
 
 import openravepy as _rave
 from recorder import viewerrecorder as _recorder
@@ -489,6 +490,45 @@ class ServoPlotter:
     def calc_vel(self,dt=TIMESTEP):
         for k in self.jointdata.keys():
             self.veldata.setdefault(k,_np.diff(self.jointdata[k])/dt)
+
+#####################################################################
+# Robot utility functions
+#####################################################################
+
+def get_finger_names(robot):
+    """General function to extract finger joint names from a Hubo-type robot.
+    Current implementation is simple, but this function may be expanded to
+    handle different arrangements."""
+    return ['rightIndexKnuckle1', 'rightIndexKnuckle2', 'rightIndexKnuckle3', 'rightMiddleKnuckle1', 'rightMiddleKnuckle2', 'rightMiddleKnuckle3', 'rightRingKnuckle1', 'rightRingKnuckle2', 'rightRingKnuckle3', 'rightPinkyKnuckle1', 'rightPinkyKnuckle2', 'rightPinkyKnuckle3', 'rightThumbKnuckle1', 'rightThumbKnuckle2', 'rightThumbKnuckle3','leftIndexKnuckle1', 'leftIndexKnuckle2', 'leftIndexKnuckle3', 'leftMiddleKnuckle1', 'leftMiddleKnuckle2', 'leftMiddleKnuckle3', 'leftRingKnuckle1', 'leftRingKnuckle2', 'leftRingKnuckle3', 'leftPinkyKnuckle1', 'leftPinkyKnuckle2', 'leftPinkyKnuckle3', 'leftThumbKnuckle1', 'leftThumbKnuckle2', 'leftThumbKnuckle3']
+
+def get_finger_joints(robot,left_right=False):
+    """General function to extract finger joint names from a Hubo-type robot.
+    Current implementation is simple, but this function may be expanded to
+    handle different arrangements. This is not a fast function..."""
+    finger_names=('rightIndexKnuckle1', 'rightIndexKnuckle2',
+                  'rightIndexKnuckle3', 'rightMiddleKnuckle1',
+                  'rightMiddleKnuckle2', 'rightMiddleKnuckle3',
+                  'rightRingKnuckle1', 'rightRingKnuckle2',
+                  'rightRingKnuckle3', 'rightPinkyKnuckle1',
+                  'rightPinkyKnuckle2', 'rightPinkyKnuckle3',
+                  'rightThumbKnuckle1', 'rightThumbKnuckle2',
+                  'rightThumbKnuckle3','leftIndexKnuckle1',
+                  'leftIndexKnuckle2', 'leftIndexKnuckle3',
+                  'leftMiddleKnuckle1', 'leftMiddleKnuckle2',
+                  'leftMiddleKnuckle3', 'leftRingKnuckle1', 'leftRingKnuckle2',
+                  'leftRingKnuckle3', 'leftPinkyKnuckle1', 'leftPinkyKnuckle2',
+                  'leftPinkyKnuckle3', 'leftThumbKnuckle1',
+                  'leftThumbKnuckle2', 'leftThumbKnuckle3',
+                  'LF1','LF2','LF3','LF4','LF5',
+                  'RF1','RF2','RF3','RF4','RF5')
+
+    #Only return valid finger joints:
+    if not left_right:
+        return [robot.GetJoint(n) for n in finger_names if robot.GetJoint(n) is not None]
+    else:
+        ljoints=[robot.GetJoint(n) for n in finger_names if _re.search(r'left|^L',n) and robot.GetJoint(n) is not None]
+        rjoints=[robot.GetJoint(n) for n in finger_names if _re.search(r'right|^R',n) and robot.GetJoint(n) is not None]
+        return (ljoints,rjoints)
 
 
 def _safe_quit():

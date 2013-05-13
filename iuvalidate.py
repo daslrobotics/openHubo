@@ -4,7 +4,6 @@
 import sys
 import openhubo
 import time
-import re
 from numpy import pi,zeros,ones,array,size,mat,eye,hstack
 from openravepy.openravepy_int import Sensor
 from openhubo.comps import rodrigues
@@ -15,14 +14,7 @@ import openhubo.trajectory as tr
 import pickle
 
 #OpenRAVE and OpenHubo stuff
-import kbhit
-
-number_of_degrees=57
-joint_offsets=zeros(number_of_degrees)
-joint_signs=ones(number_of_degrees)
-#Default the map to -1 for a missing index
-jointmap=-ones(number_of_degrees,dtype=int)
-fingers=[u'rightIndexKnuckle1', u'rightIndexKnuckle2', u'rightIndexKnuckle3', u'rightMiddleKnuckle1', u'rightMiddleKnuckle2', u'rightMiddleKnuckle3', u'rightRingKnuckle1', u'rightRingKnuckle2', u'rightRingKnuckle3', u'rightPinkyKnuckle1', u'rightPinkyKnuckle2', u'rightPinkyKnuckle3', u'rightThumbKnuckle1', u'rightThumbKnuckle2', u'rightThumbKnuckle3',u'leftIndexKnuckle1', u'leftIndexKnuckle2', u'leftIndexKnuckle3', u'leftMiddleKnuckle1', u'leftMiddleKnuckle2', u'leftMiddleKnuckle3', u'leftRingKnuckle1', u'leftRingKnuckle2', u'leftRingKnuckle3', u'leftPinkyKnuckle1', u'leftPinkyKnuckle2', u'leftPinkyKnuckle3', u'leftThumbKnuckle1', u'leftThumbKnuckle2', u'leftThumbKnuckle3']
+from openhubo import kbhit
 
 def format_angles(data):
     newdata=zeros(size(data))
@@ -32,13 +24,6 @@ def format_angles(data):
         else:
             newdata[k]=data[k]
     return newdata
-
-def get_transform(robot,T0,xyzrpy):
-    Tc=eye(4)
-    #use rodrigues function to build RPY rotation matrix
-    Tc[0:3,0:3]=rodrigues(format_angles(xyzrpy[3:6]))
-    Tc[0:3,3]=xyzrpy[0:3]
-    return array(mat(T0)*mat(Tc))
 
 def make_robot_transform(robot):
     env=robot.GetEnv()
@@ -58,16 +43,6 @@ def make_robot_transform(robot):
     T=array(mat(T0)*mat(T1))
     robot.SetTransform(T)
     return T
-
-
-def get_triggers(robot,dataset):
-    #Assume that robot is in initial position now
-    ftriggers=zeros((size(dataset,0),2),bool)
-    lr=[27,42]
-    for k in range(size(dataset,0)):
-        #left = 27, right = 42
-        ftriggers[k,:]=dataset[k,jointmap[lr]]*joint_signs[lr]+joint_offsets[lr]>.85
-    return ftriggers
 
 def set_default_limits(robot):
     """ Hack to enforce the stock limits on a version of the Hubo+ robot. Hard
@@ -226,13 +201,6 @@ def save(self,filename,struct):
         #TODO: save robot hash?
         pickle.dump(struct, f)
 
-def set_finger_torque(robot,maxT):
-    for f in fingers:
-        if robot.GetJoint(f):
-            robot.GetJoint(f).SetTorqueLimits([maxT])
-            robot.GetJoint(f).SetVelocityLimits([3])
-            robot.GetJoint(f).SetAccelerationLimits([30])
-
 def wait_start():
     print "Press Enter to abort, starting simulation in ... "
     for x in range(5,0,-1):
@@ -250,35 +218,12 @@ def wait_start():
 if __name__=='__main__':
     #TODO" option parser
 
-    try:
-        file_param = sys.argv[1]
-    except IndexError:
-        file_param = 'firstladder.iuparam'
+    file_param = 'parameters/70_0.20.iuparam'
+    file_traj = 'trajectories/70_0.20.iutraj'
 
-    try:
-        file_traj = sys.argv[2]
-    except IndexError:
-        print "Trajectory argument not found!"
-        raise
+    Tmax=1.6
 
-    try:
-        robotfile = sys.argv[3]
-    except IndexError:
-        print "Robot file not found!"
-        raise
-
-    try:
-        Tmax = float(sys.argv[4])
-    except IndexError:
-        Tmax=1.6
-        pass
-
-    try:
-        ##Hack to get limits optionally overridden for shell robot
-        expand_limits = float(sys.argv[5])
-    except IndexError:
-        expand_limits = -1
-        pass
+    expand_limits = -1
 
     #TODO: GUI control?
 
@@ -300,11 +245,6 @@ if __name__=='__main__':
     #joint_offsets[ind('RSR')]+=pi/12
     #joint_offsets[ind('LSR')]+=-pi/12
 
-    for n in fingers:
-        if n.find('Thumb')<0:
-            joint_signs[ind(n)]*=2
-    print joint_signs
-
     # Use simulation to settle robot on the ground
     env.StartSimulation(openhubo.TIMESTEP,False)
     time.sleep(1)
@@ -325,16 +265,9 @@ if __name__=='__main__':
     forces=force_log(steps,[robot.GetAttachedSensor(x) for x in ['rightFootFT','leftFootFT']])
     points=effector_log(steps,[robot.GetLink(x) for x in ['leftFoot','rightFoot','leftPalm','rightPalm']])
     forces.setup(50)
-    set_finger_torque(robot,.2)
+    #set_finger_torque(robot,.2)
 
-    right_joints=[]
-    left_joints=[]
-    for n in fingers:
-        if n.find('left')>-1:
-            left_joints.append(robot.GetJoint(n))
-        if n.find('right')>-1:
-            right_joints.append(robot.GetJoint(n))
-    #print 'Type a letter and enter to toggle hand torque (b = both, l / r = left / right, a in, z dec):'
+    (left_joints,right_joints)=openhubo.get_finger_joints(robot,True)
 
     ctrl.SendCommand('start')
     rflag=False
@@ -351,7 +284,7 @@ if __name__=='__main__':
 
 
     #openhubo.set_robot_color(robot,[.5,.5,.5],[.5,.5,.5],.4)
-    triggers=get_triggers(robot,iutraj.dataset)
+    #triggers=get_triggers(robot,iutraj.dataset)
     count=0
     #env.Load('kinbody/backrest.kinbody.xml')
     start=wait_start()
@@ -360,14 +293,6 @@ if __name__=='__main__':
     while not ctrl.IsDone() and start:
         env.StepSimulation(openhubo.TIMESTEP)
         handle=openhubo.plotProjectedCOG(robot)
-        #TODO: make this depend on input timestep!!!
-        #hackjob...
-        if not (count % 100):
-            try:
-                lflag=triggers[count/100,0]
-                rflag=triggers[count/100,1]
-            except IndexError:
-                pass
 
         if not (count % 20):
             forces.record()
@@ -377,36 +302,6 @@ if __name__=='__main__':
                 #Robot fell over
                 ctrl.Reset()
                 break
-            #handles=openhubo.plot_masses(robot)
-            #if kbhit.kbhit():
-                #k=kbhit.getch()
-                #if k=='r' or k=='b':
-                    #rflag=not rflag
-                    #print "Switch rtorque to {}".format(rflag)
-
-                #if k=='l' or k=='b':
-                    #lflag=not lflag
-                    #print "Switch ltorque to {}".format(lflag)
-
-                #elif k=='a':
-                    #print "Raising Tmax by .25"
-                    #Tmax+=.25
-                #elif k=='z':
-                    #print "Lowering Tmax by .25"
-                    #Tmax-=.25
-
-        if rflag:
-            if rtorque<Tmax:
-                rtorque+=.001
-            add_torque(robot,right_joints,rtorque)
-        else:
-            rtorque=0.0
-        if lflag:
-            if ltorque<Tmax:
-                ltorque+=.001
-            add_torque(robot,left_joints,ltorque)
-        else:
-            ltorque=0.0
         count+=1
 
     recorder.stop()
@@ -420,15 +315,15 @@ if __name__=='__main__':
     forces.save(outname + '_forces.pickle')
     points.save(outname + '_points.pickle')
     with open(outname + '_misc.pickle','w') as f:
-        pickle.dump([triggers,count,Tmax],f)
+        pickle.dump([count,Tmax],f)
 
     #Log misc data
     logname= outname + '.log'
 
-    tableentries=[outname,robotfile,'Expanded' if expand_limits>0 else 'Original',prefix,'{} {}'.format(count,int(number_of_steps*timestep/0.0005)),'success' if ctrl.IsDone() else 'failure']
+    tableentries=[outname,options.robotfile,'Expanded' if expand_limits>0 else 'Original',prefix,'{} {}'.format(count,int(iutraj.number_of_steps*iutraj.timestep/0.0005)),'success' if ctrl.IsDone() else 'failure']
     with open(logname,'w') as f:
         f.write(' '.join(tableentries) + '\n')
-        f.write('Robot: ' + robotfile + '\n')
+        f.write('Robot: ' + options.robotfile + '\n')
         f.write('Limits expanded: {}\n'.format(expand_limits))
         bases=['HP','KP','AP']
         for p in ['R','L']:
