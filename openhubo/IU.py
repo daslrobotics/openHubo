@@ -1,10 +1,14 @@
 import fnmatch as _fnmatch
 import os as _os
-from numpy import pi,cos,sin
+import pickle
+import time
 
+from numpy import pi,cos,sin,zeros,ones,array
+import numpy as _np
 #Include IU trajectory format here for convenience
 from .trajectory import IUTrajectory
-import openhubo as oh
+from openravepy.openravepy_int import Sensor
+import openhubo as _oh
 
 ## Ladder Format
 #0.05		#ladder-stringer-width
@@ -28,13 +32,16 @@ class IULadderGenerator:
         for k,v in self.parameters.iteritems():
             print '{}={}'.format(k,v)
 
-    def __init__(self,paramfile=None):
+    def __init__(self,paramfile=None,write=False):
         self.parameters={}
         if paramfile is not None:
             self.load_parameters(paramfile)
+            if write:
+                self.make_ladder()
+                self.make_ladder_env()
 
     def load_parameters(self,paramfile):
-        filename=oh.find(paramfile)
+        filename=_oh.find(paramfile)
         with open(filename,'r') as file_read:
             #line 1
             stringer_width=0
@@ -259,15 +266,15 @@ class IULadderGenerator:
         else:
             outname=name_tokens[-1]
 
-        self.envname=outname+'.env.xml'
-        self.kinbodyname=outname+'.kinbody.xml'
+        self.scenefile=outname+'.env.xml'
+        self.name=outname+'.kinbody.xml'
 
     def make_ladder(self,paramfile=None,usecached=False):
         # Read the file to obtain time steps and the total time
-        if test_filename_exist(self.envname) and test_filename_exist(self.kinbodyname) and usecached:
+        if test_filename_exist(self.scenefile) and test_filename_exist(self.name) and usecached:
             #early abort if file exists
-            print  self.kinbodyname + " found! Using cached..."
-            return self.kinbodyname
+            print  self.name + " found! Using cached..."
+            return self.name
         elif paramfile:
             self.load_parameters(paramfile)
 
@@ -350,9 +357,9 @@ class IULadderGenerator:
         outstrings.append('		</Body>')
         outstrings.append('</KinBody>')
 
-        with open(self.kinbodyname, 'w') as f:
+        with open(self.name, 'w') as f:
             f.write('\n'.join(outstrings))
-        return self.kinbodyname
+        return self.name
 
     @staticmethod
     def process_paramname(paramfile):
@@ -363,24 +370,24 @@ class IULadderGenerator:
         else:
             outname=name_tokens[-1]
 
-        envname=outname+'.env.xml'
-        kinbodyname=outname+'.kinbody.xml'
-        return (envname,kinbodyname)
+        scenefile=outname+'.env.xml'
+        name=outname+'.kinbody.xml'
+        return (scenefile,name)
 
     def make_ladder_env(self,paramfile=None,usecached=False):
         if paramfile:
-            (envname,kinbodyname)=self.process_paramname(paramfile)
-            self.envname=envname
-            self.kinbodyname=kinbodyname
+            (scenefile,name)=self.process_paramname(paramfile)
+            self.scenefile=scenefile
+            self.name=name
         else:
-            envname=self.envname
-            kinbodyname=self.kinbodyname
+            scenefile=self.scenefile
+            name=self.name
 
         #Kludgy interpretation of posix path here, may choke on special chars
-        if usecached and test_filename_exist(envname) and test_filename_exist(kinbodyname):
+        if usecached and test_filename_exist(scenefile) and test_filename_exist(name):
             #early abort if file exists
-            print envname + " found! Using cached"
-            return envname
+            print scenefile + " found! Using cached"
+            return scenefile
 
         outstrings=[]
         outstrings.append('<Environment>')
@@ -389,7 +396,7 @@ class IULadderGenerator:
         outstrings.append('  <camfocal>1.913651</camfocal>')
         outstrings.append('  <bkgndcolor>0.0 0.0 0.</bkgndcolor>')
         outstrings.append('')
-        outstrings.append('  <KinBody file="{}">'.format(kinbodyname))
+        outstrings.append('  <KinBody file="{}">'.format(name))
         t_y=2.*cos(self.parameters['ladder_angle']*pi/180)*self.parameters['stringer_height']
         outstrings.append('    <Translation>0 {} 0</Translation>'.format(t_y))
         outstrings.append('    <RotationAxis>1 0 0 '+str(90-self.parameters['ladder_angle'])+'</RotationAxis>')
@@ -418,7 +425,7 @@ class IULadderGenerator:
         outstrings.append('  </KinBody>')
         outstrings.append('')
         outstrings.append('</Environment>')
-        with open(envname,'w') as f:
+        with open(scenefile,'w') as f:
             f.write('\n'.join(outstrings))
 
 def test_filename_exist(filename,spath='.'):
@@ -427,3 +434,117 @@ def test_filename_exist(filename,spath='.'):
             return True
     return False
 
+class EffectorLog:
+    """A simple logger for a manually-stepped simulation to store End Effector pose data
+    data efficiently."""
+    def __init__(self,loglen=10,bodies=[]):
+        self.width=1
+        self.loglen=loglen
+        self.bodies=[]
+        self.count=0
+        self.env=bodies[0].GetParent().GetEnv()
+        for b in bodies:
+            self.width+=3
+            self.bodies.append(b)
+        self.robot=self.bodies[0].GetParent()
+        self.data=zeros((loglen,self.width))
+        self.com=zeros((loglen,3))
+        #Data structure is 1 col of time, 6s columns of sensor data
+
+    def record(self,time=None):
+        if not time:
+            self.data[self.count,0]=self.env.GetSimulationTime()
+        else:
+            self.data[self.count,0]=time
+        for k in range(len(self.bodies)):
+            #COM is coincident with body frame due to ODE restrictions
+            com=self.bodies[k].GetGlobalCOM()
+            c0=1+k*3
+            c1=1+3*(k+1)
+            self.data[self.count,c0:c1]=(com)
+            self.com[self.count,:]=_oh.find(self.robot)
+        self.count+=1
+
+    def save(self,filename):
+        names=[]
+        for b in self.bodies:
+            names.append(b.GetName())
+        robotname=self.bodies[0].GetParent().GetName()
+        with open(filename,'w') as f:
+            #TODO: save robot hash?
+            pickle.dump([self.data[:self.count,:],self.com[:self.count,:],names,robotname],f)
+
+    def load_scene(self,filename):
+        with open(filename,'r') as f:
+            self.data=pickle.load(f)
+            self.count=self.data.shape[0]
+    def lookup(self,name,components):
+        if name=='time':
+            return self.data[:self.count,0]
+        for k in range(len(self.sensors)):
+            if self.sensors[k].GetName()==name:
+                c0=1+k*3
+                return self.data[:self.count,array(components)+c0]
+
+class ForceLog:
+    """A simple logger for a manually-stepped simulation to store Force/Torque
+    data efficiently."""
+    def __init__(self,env,loglen=10,sensors=[]):
+        """Initialize a force logger. Note that you need an openrave environment here."""
+        self.width=1
+        self.loglen=loglen
+        self.sensors=[]
+        self.count=0
+        self.env=env
+        self.env=sensors[0].GetAttachingLink().GetParent().GetEnv()
+        for s in sensors:
+            if type(s.GetData()) is Sensor.Force6DSensorData:
+                self.width+=6
+                self.sensors.append(s)
+        self.data=zeros((loglen,self.width))
+        #Data structure is 1 col of time, 6s columns of sensor data
+
+    def setup(self,histlen):
+        for s in self.sensors:
+            if type(s.GetData()) is Sensor.Force6DSensorData:
+                FT=s.GetSensor()
+                FT.Configure(Sensor.ConfigureCommand.PowerOff)
+                time.sleep(0.1)
+                FT.SendCommand('histlen {}'.format(histlen))
+                time.sleep(0.1)
+                FT.Configure(Sensor.ConfigureCommand.PowerOn)
+
+    def record(self,time=None):
+        """Log a force sensor state."""
+        with self.env:
+            if not time:
+                self.data[self.count,0]=self.env.GetSimulationTime()
+            else:
+                self.data[self.count,0]=time.time()
+            for k in range(len(self.sensors)):
+                force=self.sensors[k].GetData().force
+                torque=self.sensors[k].GetData().torque
+                c0=1+k*6
+                c1=1+6*(k+1)
+                self.data[self.count,c0:c1]=_np.hstack((force,torque))
+        self.count+=1
+
+    def save(self,filename):
+        names=[]
+        for s in self.sensors:
+            names.append(s.GetName())
+        robotname=self.sensors[0].GetAttachingLink().GetParent().GetName()
+        with open(filename,'w') as f:
+            #TODO: save robot hash?
+            pickle.dump([self.data[:self.count,:],names,robotname],f)
+
+    def load(self,filename):
+        with open(filename,'r') as f:
+            self.data=pickle.load(f)
+            self.count=self.data.shape[0]
+    def lookup(self,name,components):
+        if name=='time':
+            return self.data[:self.count,0]
+        for k in range(len(self.sensors)):
+            if self.sensors[k].GetName()==name:
+                return self.data[self.count,array(components)+1+6*k]

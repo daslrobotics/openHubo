@@ -28,8 +28,6 @@ from datetime import datetime
 import mapping
 from types import ModuleType
 
-from openravepy.misc import InitOpenRAVELogging
-InitOpenRAVELogging()
 
 TIMESTEP=0.001
 
@@ -85,13 +83,30 @@ class Pose:
         waypt.append(dt)
         return waypt
 
-    def send(self):
-        self.ctrl.SetDesired(self.values)
+    def send(self,direct=False):
+        if direct:
+            self.robot.SetDOFValues(self.values)
+        else:
+            self.ctrl.SetDesired(self.values)
 
     def pretty(self):
         for d, v in enumerate(self.values):
             print '{0} = {1}'.format(
                 self.robot.GetJointFromDOFIndex(d).GetName(),v)
+
+    def apply_transform(self,scale=None,offset=None):
+        """Apply a shift / scale transformation to the set of joint values. Note the order of operations:
+            1) multiply scale factor (also signs using -1), to match a pose to a given sign convention
+            2) add offset wrt the SCALED joint values.
+
+        Keep this order in mind as a lot of trouble with trajectories can be traced to messing this up.
+        """
+        #TODO: Proper exceptions
+        if scale is not None:
+            self.values*=scale
+
+        if offset is not None:
+            self.values+=self.joint_offsets
 
     #TODO: Test if type checking slows down these functions
     def __getitem__(self,key):

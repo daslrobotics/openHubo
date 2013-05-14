@@ -4,7 +4,6 @@
     <modelsdir>models</modelsdir>
     <body name="Body_Torso" type="dynamic">
 
-        <!--Body_Torso Base to Center of Mass -->
         <geom type="trimesh">
             <donotrender>Body_Torso_1.wrl 1 </donotrender>
             <data>convhull_Torso_1.wrl 1 </data>
@@ -34,7 +33,6 @@
         <!--Body_Hip Parent to Current -->
         <translation>0.000008061790 -0.000013409641 -0.201255614828</translation>
         <geom type="trimesh">
-            <translation>0.013850358943 -0.000007806523 0.035461283862</translation>
             <donotrender>Body_Hip_1.wrl 1 </donotrender>
             <data>convhull_Hip_1.wrl 1 </data>
         </geom>
@@ -53,7 +51,6 @@
         <body>Body_Torso</body>
         <body>Body_Hip</body>
         <offsetfrom>Body_Hip</offsetfrom>
-        <anchor>0.013850358943 -0.000007806523 0.035461283862</anchor>
         <axis>0 0 -1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
 		<maxvel>7.20</maxvel>
@@ -87,7 +84,6 @@
         <body>Body_Hip</body>
         <body>Body_RHY</body>
         <offsetfrom>Body_RHY</offsetfrom>
-        <anchor>-0.034706500276 0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
 		<maxvel>7.20</maxvel>
@@ -122,7 +118,6 @@
         <body>Body_Hip</body>
         <body>Body_LHY</body>
         <offsetfrom>Body_LHY</offsetfrom>
-        <anchor>-0.034706500276 -0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
 		<maxvel>7.20</maxvel>
@@ -152,7 +147,6 @@
         <body>Body_RHY</body>
         <body>Body_RHR</body>
         <offsetfrom>Body_RHR</offsetfrom>
-        <anchor>0.049747912596 0.012531116599 0.015643664572</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-28 28</limitsdeg>
 		<maxvel>3.56</maxvel>
