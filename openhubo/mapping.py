@@ -62,12 +62,13 @@ inv_synonyms={v:k for (k, v) in synonyms.iteritems()}
 
 oh_from_ha_names={k:(inv_synonyms[k] if k in inv_synonyms.keys() else k) for k in ha_ind_name_map.keys()}
 
-deprecated_names={'HPY':'WST',
+deprecated_names={'HPY':'TSY',
                   'HDY':'NKY',
                   'HDP':'NK2',
                   'HNR':'NK2',
                   'HDR':'NK1',
-                  'HNR':'NK1'}
+                  'HNR':'NK1',
+                  'HNP':'NK2'}
 
 
 def get_name_from_huboname(inname,robot=None):

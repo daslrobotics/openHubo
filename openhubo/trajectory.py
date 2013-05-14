@@ -1,11 +1,13 @@
 import openravepy as _rave
 import time as _time
 import numpy as _np
-from numpy import pi,array
+from numpy import pi,array,mat
+from numpy.linalg import inv
 import openhubo as _oh
 import openhubo.comps as _comps
 from openhubo import mapping
 import re
+from openhubo import kbhit
 
 
 hubo_read_trajectory_map={
@@ -307,29 +309,38 @@ def makeTransformExtractor(robot,traj,config):
 class IUTrajectory:
     """Import and use trajectories exported from RobotSim."""
 
-    def __init__(self,robot,mapfile=None):
+    def __init__(self,robot,mapfile=None,trajfile=None):
         #TODO: get defaults that make sense
         self.joint_offsets=_np.zeros(robot.GetDOF())
         self.joint_signs=_np.ones(robot.GetDOF())
         self.joint_map={}
         self.robot=robot
-        if mapfile:
+        #TODO: read in the base body from transform?
+        self.base=self.robot.GetLink('Body_Torso')
+        print self.base
+        if trajfile:
+            self.load_from_file(trajfile,mapfile)
+        elif mapfile:
             self.load_mapping(mapfile)
 
     def load_mapping(self,filename,path=None):
 
         with open(_oh.find(filename,path),'r') as f:
             line=f.readline() #Strip header
+            self.affine_signs=[]
+            self.affine_offsets=[]
             for k in range(6):
-                #Strip known 6 dof base
                 line=f.readline()
+                datalist=re.split(',| |\t',line.rstrip())
+                self.affine_signs.append(int(datalist[4]))
+                self.affine_offsets.append(int(datalist[5]))
             for line in f:
                 datalist=re.split(',| |\t',line.rstrip())
                 #print datalist
                 j=self.robot.GetJoint(datalist[1])
 
                 if j:
-                    #print j
+                    print j
                     dof=j.GetDOFIndex()
                     self.joint_map[dof]=int(datalist[0])
                     #Note that this corresponds to the IU index...
@@ -397,7 +408,10 @@ class IUTrajectory:
         #Convert to neat numpy array
         self.srcdata=array(srcdata)
         self.timestep=timestep
-        return self.to_openrave()
+        #FIXME: Ugly hack to get env without knowing which one is really what we want
+        #retime = True if _oh.check_physics(_rave.RaveGetEnvironments()[0]) else False
+        #print retime
+        return self.to_openrave(retime=False)
 
     def total_time(self):
         return self.timestep*_np.size(self.srcdata,1)
@@ -411,73 +425,100 @@ class IUTrajectory:
         return re.split(',| |\t',line)[:-1]
 
     @staticmethod
-    def format_angles(data):
-        newdata=_np.zeros(_np.size(data))
-        for k in range(len(data)):
-            if data[k]>pi:
-                newdata[k]=2*pi-data[k]
-            else:
-                newdata[k]=data[k]
-        return newdata
+    def format_angles(raw_angles):
+        primary_angles=_np.mod(raw_angles,2*pi)
+        return (primary_angles>pi)*(-2.*pi)+primary_angles
 
-    @staticmethod
-    def get_transform(T0,xyzrpy):
-        Tc=_np.eye(4)
-        #use rodrigues function to build RPY rotation matrix
-        Tc[0:3,0:3]=_comps.rodrigues(IUTrajectory.format_angles(xyzrpy[3:6]))
-        Tc[0:3,3]=xyzrpy[0:3]
-        return array(_np.mat(T0)*_np.mat(Tc))
+    def get_transform(self,T_ref,iu_pose):
+        """Get trajectory transform that would be applied to base link from
+        traj, and return the equivalent transform from the given starting pose
+        and the robot's actual base link."""
+        T0=mat(T_ref)
+        with self.robot:
+            #1) Copy in IU trajectory transform and format
+            Tc=mat(_np.eye(4))
+            xyzrpy=iu_pose*self.affine_signs+self.affine_offsets
+            #FLip yaw and roll (seems to be the best)
+            roll=xyzrpy[3]
+            pitch=xyzrpy[4]
+            yaw=xyzrpy[5]
+            xyzrpy[3]=yaw
+            xyzrpy[4]=pitch
+            xyzrpy[5]=roll
+            #use rodrigues function to build RPY rotation matrix
+            Tc[0:3,0:3]=_comps.rodrigues(self.format_angles(xyzrpy[3:6]))
+            Tc[0:3,3]=mat(xyzrpy[0:3]).T
 
+            #2) Set robot's 0-link at origin
+            self.robot.SetTransform(_np.eye(4))
+
+            #3) Find offset in current pose to desired base link (spec'd in trajectory)
+            T_B0=mat(self.base.GetTransform())
+
+            #4) Find relative transform to desired position
+            T_CB=Tc * T_B0.I
+
+            return array(T0*T_CB)
 
     def to_openrave(self,dt=None,retime=True,clip=True):
         #Assumes that ALL joints are specified for now
         [traj,config]=create_trajectory(self.robot)
         #print config.GetDOF()
-        T0=self.robot.GetTransform()
-        pose=_oh.Pose(self.robot)
-        (lower,upper)=self.robot.GetDOFLimits()
+        with self.robot:
+            T0=self.base.GetTransform()
+            print T0
+            pose=_oh.Pose(self.robot)
+            (lower,upper)=self.robot.GetDOFLimits()
 
-        for k in xrange(_np.size(self.srcdata,0)):
-        #for k in xrange(3):
-            T=IUTrajectory.get_transform(T0,self.srcdata[k,0:6])
-            pose_map={key:self.srcdata[k,v] for (key,v) in self.joint_map.items()}
-            pose_array=array([pose_map[dof] if pose_map.has_key(dof) else 0.0 for dof in xrange(self.robot.GetDOF())])
+            for k in xrange(_np.size(self.srcdata,0)):
+            #for k in xrange(3):
+                #print T[0:3,3]
+                pose_map={key:self.srcdata[k,v] for (key,v) in self.joint_map.items()}
+                pose_array=array([pose_map[dof] if pose_map.has_key(dof) else 0.0 for dof in xrange(self.robot.GetDOF())])
 
-            pose.values=pose_array*self.joint_signs+self.joint_offsets
+                pose.values=pose_array*self.joint_signs+self.joint_offsets
+                pose.send(True)
+                T=self.get_transform(T0,self.srcdata[k,0:6])
 
-            if clip:
-                #oldvals=pose.values
-                pose.values=_np.maximum(pose.values,lower*.999)
-                pose.values=_np.minimum(pose.values,upper*.999)
+                if clip:
+                    #oldvals=pose.values
+                    pose.values=_np.maximum(pose.values,lower*.999)
+                    pose.values=_np.minimum(pose.values,upper*.999)
 
-                #err = pose.values-oldvals
-                #if sum(abs(err))>0:
-                    #print k,err
+                    #err = pose.values-oldvals
+                    #if sum(abs(err))>0:
+                        #print k,err
 
-            #print pose.values
-            #Note this method does not use a controller
-            aff = _rave.RaveGetAffineDOFValuesFromTransform(T,_rave.DOFAffine.Transform)
-            if dt<0 or dt is None:
-                dt=self.timestep
-            traj_append(traj,pose.to_waypt(dt,aff))
+                #print pose.values
+                #Note this method does not use a controller
+                aff = _rave.RaveGetAffineDOFValuesFromTransform(T,_rave.DOFAffine.Transform)
+                if dt<0 or dt is None:
+                    dt=self.timestep
+                traj_append(traj,pose.to_waypt(dt,aff))
 
+        print "retiming? {}".format(retime)
         if retime:
-            _rave.planningutils.RetimeActiveDOFTrajectory(traj,self.robot,True)
+            dummy_limits=_np.ones(self.robot.GetDOF()+7)*100
+            _rave.planningutils.RetimeAffineTrajectory(traj,dummy_limits,dummy_limits,hastimestamps=True)
+            #_rave.planningutils.RetimeActiveDOFTrajectory(traj,self.robot,True)
         #Store locally because why not
         self.traj=traj
         return traj
 
-    def preview_traj(self,resetafter=True):
+    def preview_traj(self):
         #Assume that robot is in initial position now
-        T0=self.robot.GetTransform()
+        T0=self.base.GetTransform()
+        s=self.robot.CreateRobotStateSaver()
         for k in xrange(self.srcdata.shape[0]):
+            pose_map={key:self.srcdata[k,v] for (key,v) in self.joint_map.items()}
+            pose_array=array([pose_map[dof] if pose_map.has_key(dof) else 0.0 for dof in xrange(self.robot.GetDOF())])
+            values=pose_array*self.joint_signs+self.joint_offsets
+            self.robot.SetDOFValues(values)
             T=self.get_transform(T0,self.srcdata[k,0:6])
-            pose=self.srcdata[k,self.jointmap]*self.joint_signs+self.joint_offsets
             self.robot.SetTransform(T)
-            self.robot.SetDOFValues(pose.T)
-            _time.sleep(self.timestep)
-
-        if resetafter:
-            self.robot.SetTransform(T0)
-
+            _time.sleep(self.timestep/2.)
+            if kbhit.kbhit():
+                kbhit.getch()
+                _oh.pause()
+        s.Restore()
 

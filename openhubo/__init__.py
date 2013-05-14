@@ -16,6 +16,7 @@ import atexit as _atexit
 import optparse as _optparse
 import os as _os
 import fnmatch as _fnmatch
+import re as _re
 
 import openravepy as _rave
 from recorder import viewerrecorder as _recorder
@@ -24,11 +25,9 @@ from recorder import viewerrecorder as _recorder
 from numpy import array,zeros
 from time import sleep
 from datetime import datetime
-import mapping
+from . import mapping
 from types import ModuleType
 
-from openravepy.misc import InitOpenRAVELogging
-InitOpenRAVELogging()
 
 TIMESTEP=0.001
 
@@ -50,7 +49,12 @@ class Pose:
     """
 
     def build_joint_index_map(self,robot):
-        return {j.GetName():j.GetDOFIndex() for j in robot.GetJoints()}
+        jmap= {j.GetName():j.GetDOFIndex() for j in robot.GetJoints()}
+        for (k,v) in mapping.deprecated_names.iteritems():
+            print k,v
+            if jmap.has_key(v):
+                jmap[k]=jmap[v]
+        return jmap
 
     def __init__(self,robot=None,ctrl=None,values=None):
         self.robot=robot
@@ -84,13 +88,30 @@ class Pose:
         waypt.append(dt)
         return waypt
 
-    def send(self):
-        self.ctrl.SetDesired(self.values)
+    def send(self,direct=False):
+        if direct:
+            self.robot.SetDOFValues(self.values)
+        else:
+            self.ctrl.SetDesired(self.values)
 
     def pretty(self):
         for d, v in enumerate(self.values):
             print '{0} = {1}'.format(
                 self.robot.GetJointFromDOFIndex(d).GetName(),v)
+
+    def apply_transform(self,scale=None,offset=None):
+        """Apply a shift / scale transformation to the set of joint values. Note the order of operations:
+            1) multiply scale factor (also signs using -1), to match a pose to a given sign convention
+            2) add offset wrt the SCALED joint values.
+
+        Keep this order in mind as a lot of trouble with trajectories can be traced to messing this up.
+        """
+        #TODO: Proper exceptions
+        if scale is not None:
+            self.values*=scale
+
+        if offset is not None:
+            self.values+=self.joint_offsets
 
     #TODO: Test if type checking slows down these functions
     def __getitem__(self,key):
@@ -489,6 +510,45 @@ class ServoPlotter:
     def calc_vel(self,dt=TIMESTEP):
         for k in self.jointdata.keys():
             self.veldata.setdefault(k,_np.diff(self.jointdata[k])/dt)
+
+#####################################################################
+# Robot utility functions
+#####################################################################
+
+def get_finger_names(robot):
+    """General function to extract finger joint names from a Hubo-type robot.
+    Current implementation is simple, but this function may be expanded to
+    handle different arrangements."""
+    return ['rightIndexKnuckle1', 'rightIndexKnuckle2', 'rightIndexKnuckle3', 'rightMiddleKnuckle1', 'rightMiddleKnuckle2', 'rightMiddleKnuckle3', 'rightRingKnuckle1', 'rightRingKnuckle2', 'rightRingKnuckle3', 'rightPinkyKnuckle1', 'rightPinkyKnuckle2', 'rightPinkyKnuckle3', 'rightThumbKnuckle1', 'rightThumbKnuckle2', 'rightThumbKnuckle3','leftIndexKnuckle1', 'leftIndexKnuckle2', 'leftIndexKnuckle3', 'leftMiddleKnuckle1', 'leftMiddleKnuckle2', 'leftMiddleKnuckle3', 'leftRingKnuckle1', 'leftRingKnuckle2', 'leftRingKnuckle3', 'leftPinkyKnuckle1', 'leftPinkyKnuckle2', 'leftPinkyKnuckle3', 'leftThumbKnuckle1', 'leftThumbKnuckle2', 'leftThumbKnuckle3']
+
+def get_finger_joints(robot,left_right=False):
+    """General function to extract finger joint names from a Hubo-type robot.
+    Current implementation is simple, but this function may be expanded to
+    handle different arrangements. This is not a fast function..."""
+    finger_names=('rightIndexKnuckle1', 'rightIndexKnuckle2',
+                  'rightIndexKnuckle3', 'rightMiddleKnuckle1',
+                  'rightMiddleKnuckle2', 'rightMiddleKnuckle3',
+                  'rightRingKnuckle1', 'rightRingKnuckle2',
+                  'rightRingKnuckle3', 'rightPinkyKnuckle1',
+                  'rightPinkyKnuckle2', 'rightPinkyKnuckle3',
+                  'rightThumbKnuckle1', 'rightThumbKnuckle2',
+                  'rightThumbKnuckle3','leftIndexKnuckle1',
+                  'leftIndexKnuckle2', 'leftIndexKnuckle3',
+                  'leftMiddleKnuckle1', 'leftMiddleKnuckle2',
+                  'leftMiddleKnuckle3', 'leftRingKnuckle1', 'leftRingKnuckle2',
+                  'leftRingKnuckle3', 'leftPinkyKnuckle1', 'leftPinkyKnuckle2',
+                  'leftPinkyKnuckle3', 'leftThumbKnuckle1',
+                  'leftThumbKnuckle2', 'leftThumbKnuckle3',
+                  'LF1','LF2','LF3','LF4','LF5',
+                  'RF1','RF2','RF3','RF4','RF5')
+
+    #Only return valid finger joints:
+    if not left_right:
+        return [robot.GetJoint(n) for n in finger_names if robot.GetJoint(n) is not None]
+    else:
+        ljoints=[robot.GetJoint(n) for n in finger_names if _re.search(r'left|^L',n) and robot.GetJoint(n) is not None]
+        rjoints=[robot.GetJoint(n) for n in finger_names if _re.search(r'right|^R',n) and robot.GetJoint(n) is not None]
+        return (ljoints,rjoints)
 
 
 def _safe_quit():
