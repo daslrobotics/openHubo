@@ -51,7 +51,6 @@ class Pose:
     def build_joint_index_map(self,robot):
         jmap= {j.GetName():j.GetDOFIndex() for j in robot.GetJoints()}
         for (k,v) in mapping.deprecated_names.iteritems():
-            print k,v
             if jmap.has_key(v):
                 jmap[k]=jmap[v]
         return jmap

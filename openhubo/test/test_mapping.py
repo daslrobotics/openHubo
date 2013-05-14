@@ -18,12 +18,9 @@ __license__ = 'GPLv3 license'
 
 import openravepy as rave
 from numpy import pi,zeros,sqrt
-import time
 import unittest
-from openhubo import mapping
 import openhubo as oh
 import numpy as np
-import random
 from openhubo import trajectory,mapping
 
 
@@ -42,7 +39,8 @@ class TestMapping(unittest.TestCase):
         robot=self.robot
         pose=oh.Pose(robot)
         pose.update(mapping.create_random_bounded_pose(robot))
-        traj=trajectory.create_trajectory(robot,pose.to_waypt())
+        traj,config=trajectory.create_trajectory(robot,pose.to_waypt())
+        print traj
         trajectory.write_hubo_traj(traj,robot,.04)
         #TODO: run trajectory with hubo-ach and check that current pose is ok
 

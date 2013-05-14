@@ -13,7 +13,8 @@ class TestContactForces(unittest.TestCase):
         self.env.SetDebugLevel(3)
         options.scenefile = 'forcetest.env.xml'
         options.robotfile = None
-        openhubo.load(options)
+        options.physics='ode'
+        self.robot,self.ctrl,self.ind,self.ghost,self.recorder=openhubo.load_scene(self.env,options)
 
     def tearDown(self):
         self.env.StopSimulation()
