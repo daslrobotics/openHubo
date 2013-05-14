@@ -25,7 +25,7 @@ from recorder import viewerrecorder as _recorder
 from numpy import array,zeros
 from time import sleep
 from datetime import datetime
-import mapping
+from . import mapping
 from types import ModuleType
 
 
@@ -49,7 +49,12 @@ class Pose:
     """
 
     def build_joint_index_map(self,robot):
-        return {j.GetName():j.GetDOFIndex() for j in robot.GetJoints()}
+        jmap= {j.GetName():j.GetDOFIndex() for j in robot.GetJoints()}
+        for (k,v) in mapping.deprecated_names.iteritems():
+            print k,v
+            if jmap.has_key(v):
+                jmap[k]=jmap[v]
+        return jmap
 
     def __init__(self,robot=None,ctrl=None,values=None):
         self.robot=robot
