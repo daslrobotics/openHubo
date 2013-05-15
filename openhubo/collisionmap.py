@@ -32,45 +32,30 @@ class CollisionMap:
         self.pairs.append(pair)
 
     def to_xml(self):
-        outstrings=['<collisionmap>']
+        outstrings=['    <collisionmap>']
         for r in self.pairs:
             outstrings.append(r.to_xml())
 
-        outstrings.append('</collisionmap>')
+        outstrings.append('    </collisionmap>')
         return '\n'.join(outstrings)
 
-    def write(self,filename=None,robot=None):
-        if filename is None:
-            if robot is not None:
-                filename=robot.GetName()+'.collisionmap.xml'
-            else:
-                raise ValueError('No filename or robot provided!')
+    def write(self,robot):
+        try:
+            filename=robot.GetURI()
+            name=robot.GetName()
+        except AttributeError:
+            print "robot {} is not loaded, assuming file name...".format(robot)
+            filename=robot
+            name=robot.split('.')[0]
 
-        with open(filename,'w') as f:
+        line1='<robot type="collisionmaprobot" name="{}">\n'.format(name)
+        line2='    <robot file="{}"/>\n'.format(filename)
+        lineN='\n</robot>\n'
+        with open('cmap.'+filename,'w') as f:
+            f.write(line1)
+            f.write(line2)
             f.write(self.to_xml())
-
-    def load_in_robot_file(self,filename,overwrite=False):
-        print "Does not work yet..."
-        return None
-        doc=minidom.parse(filename)
-
-        nodes=doc.getElementsByTagName('robot')
-        if len(nodes)==0:
-            nodes=doc.getElementsByTagName('Robot')
-        robot=nodes[0]
-
-        self.write('temp.cmap.xml')
-        #cheat by writing, save trouble of XML wrangling
-        cmap=minidom.parse('temp.cmap.xml')
-        colmapnode=cmap.getElementsByTagName('collisionmap')[0]
-        print colmapnode.getElementsByTagName('pair')
-        robot.appendChild(colmapnode)
-
-        tempstring=doc.toprettyxml()
-        if overwrite:
-            write_reformatted(tempstring,filename)
-        else:
-            write_reformatted(tempstring,filename+'_colmap')
+            f.write(lineN)
 
 
 class JointCollisionPair:
@@ -134,21 +119,20 @@ class JointCollisionPair:
         self.j0_values=j0_values
         self.j1_values=j1_values
 
-    def to_xml(self,j0=None,j1=None):
+    def to_xml(self,j0=None,j1=None,indent='    '):
         if j0 is None:
             j0=self.j0
         if j1 is None:
             j1=self.j1
 
         pairdata=(n.shape(self.table),n.min(self.j0_values),n.min(self.j1_values),n.max(self.j0_values),n.max(self.j1_values),j0,j1)
-        outlist=['    <pair dims="{0[0]} {0[1]}" min="{1} {2}" max="{3} {4}" joints="{5} {6}">'.format(*pairdata)]
+        outlist=['{0}<pair dims="{1[0]} {1[1]}" min="{2} {3}" max="{4} {5}" joints="{6} {7}">'.format(indent*2,*pairdata)]
         for (j,j0_val) in enumerate(self.j0_values):
-            dataline=['{:d}'.format(self.table[j,k]) for k in xrange(n.size(self.table,1))]
-            #Kludge tab insert
-            dataline.insert(0,'     ')
+            dataline=[indent*3]
+            dataline.extend(['{:d}'.format(self.table[j,k]) for k in xrange(n.size(self.table,1))])
             outlist.append(' '.join(dataline))
 
-        outlist.append('    </pair>')
+        outlist.append('{}</pair>'.format(indent*2))
         return '\n'.join(outlist)
 
     @staticmethod
