@@ -155,8 +155,7 @@
 
     <body name="Body_LHR" type="dynamic">
         <offsetfrom>Body_LHY</offsetfrom>
-        <!--Body_LHR Parent to Current -->
-        <translation>0.052 0.000000000000 -0.091004024142</translation>
+        <translation>0.052900000000 0.000000000000 -0.091004024142</translation>
         <geom type="trimesh">
             <donotrender>Body_LHR_1.wrl 1 </donotrender>
             <data>convhull_LHR_1.wrl 1 </data>

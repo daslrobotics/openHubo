@@ -10,7 +10,7 @@ class TestContactForces(unittest.TestCase):
 
     def setUp(self):
         (self.env,options)=openhubo.setup()
-        self.env.SetDebugLevel(3)
+        self.env.SetDebugLevel(1)
         options.scenefile = 'forcetest.env.xml'
         options.robotfile = None
         options.physics='ode'

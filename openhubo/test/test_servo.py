@@ -7,7 +7,7 @@ class TestServoCommands(unittest.TestCase):
     def setUp(self):
 
         (env,options)=openhubo.setup()
-        env.SetDebugLevel(2)
+        env.SetDebugLevel(1)
         #NOTE: Loads trajectory controller, which passes servo commands down
         options.physics=True
         options.scenefile=None
@@ -46,6 +46,15 @@ class TestServoCommands(unittest.TestCase):
         time.sleep(5)
         theta=self.controller.SendCommand('get pos1 {} '.format(self.ind('LSP')))
         self.assertLess(abs(float(theta)+pi/4),.1)
+
+    def test_mode(self):
+        self.assertTrue(self.controller.SendCommand('directtorque 0 '))
+        time.sleep(.1)
+        self.assertTrue(self.controller.SendCommand('springdamper 0 '))
+        time.sleep(.1)
+        self.assertTrue(self.controller.SendCommand('directpid 0 '))
+        time.sleep(.1)
+        self.assertTrue(self.controller.SendCommand('closedloop 0 '))
 
 if __name__=='__main__':
     unittest.main(verbosity=2,testRunner=unittest.TextTestRunner())

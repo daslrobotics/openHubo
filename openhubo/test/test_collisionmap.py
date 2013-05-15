@@ -14,6 +14,7 @@ class TestCollisionMap(unittest.TestCase):
 
         self.pose=Pose(robot)
         self.env=env
+        self.env.SetDebugLevel(1)
         self.robot=robot
 
     def test_ode_self_collision(self):
@@ -25,7 +26,7 @@ class TestCollisionMap(unittest.TestCase):
         self._iterate_over_joint()
 
     def _iterate_over_joint(self):
-        self.pose['LHR']=10*pi/180
+        self.pose['LHR']=20*pi/180
         cols=[]
         for k in range(100):
             self.pose['LHP']=k*pi/180

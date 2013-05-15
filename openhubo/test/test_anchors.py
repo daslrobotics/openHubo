@@ -17,52 +17,67 @@ __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
 from numpy import pi,array,zeros
+import numpy as np
 import unittest
 import openhubo
-from openravepy import raveLogDebug
+from openravepy import raveLogDebug,raveLogInfo
 
 #Get the global environment for simulation
 
-def constraints_3dof(x=array([]),y=array([]),z=array([])):
+def constraints_3dof(anchors,x=None,y=None,z=None):
+    """Pick from a set of joint anchors and check if constraints are met."""
 
-    if x.any() and y.any():
-        diff0=x[2]-y[2]
+    if x:
+        anchor_x=anchors[x]
+    if y:
+        anchor_y=anchors[y]
+    if z:
+        anchor_z=anchors[z]
+
+    #Calculate distances between each pair of orthogonal planes
+    if x and y:
+        diff0=anchor_x[2]-anchor_y[2]
     else:
         diff0=0.0
-    if x.any() and z.any():
-        diff1=x[1]-z[1]
+    if x and z:
+        diff1=anchor_x[1]-anchor_z[1]
     else:
         diff1=0.0
-    if y.any() and z.any():
-        diff2=z[0]-y[0]
+    if y and z:
+        diff2=anchor_z[0]-anchor_y[0]
     else:
         diff2=0.0
+    print '{} errors are {}'.format((x,y,z),(diff2,diff1,diff0))
     return [diff2,diff1,diff0]
 
-def check_all_constraints(anchor):
-    LSerr=constraints_3dof(anchor['LSR'],anchor['LSP'],anchor['LSY'])
-    RSerr=constraints_3dof(anchor['RSR'],anchor['RSP'],anchor['RSY'])
+def check_all_constraints(pose):
+    """For a given robot pose, check anchors and report errors (only works for hubo-like robots)."""
+    pose.send()
+    anchors={j.GetName():j.GetAnchor() for j in pose.robot.GetJoints()}
+    LSerr=constraints_3dof(anchors,'LSR','LSP','LSY')
+    RSerr=constraints_3dof(anchors,'RSR','RSP','RSY')
 
-    if anchor.has_key('LWR'):
-        LWerr=constraints_3dof(z=anchor['LWY'],y=anchor['LWP'],x=anchor['LWR'])
-        RWerr=constraints_3dof(z=anchor['RWY'],y=anchor['RWP'],x=anchor['RWR'])
-    elif anchor.has_key('LWP'):
-        LWerr=constraints_3dof(z=anchor['LWY'],y=anchor['LWP'])
-        RWerr=constraints_3dof(z=anchor['RWY'],y=anchor['RWP'])
+    if anchors.has_key('LWR'):
+        LWerr=constraints_3dof(anchors,z='LWY',y='LWP',x='LWR')
+        RWerr=constraints_3dof(anchors,z='RWY',y='RWP',x='RWR')
+    elif anchors.has_key('LWP'):
+        LWerr=constraints_3dof(anchors,z='LWY',y='LWP')
+        RWerr=constraints_3dof(anchors,z='RWY',y='RWP')
     else:
         LWerr=zeros(3)
         RWerr=zeros(3)
 
-    LHerr=constraints_3dof(anchor['LHR'],anchor['LHP'],anchor['LHY'])
-    RHerr=constraints_3dof(anchor['RHR'],anchor['RHP'],anchor['RHY'])
+    LHerr=constraints_3dof(anchors,'LHR','LHP','LHY')
+    RHerr=constraints_3dof(anchors,'RHR','RHP','RHY')
 
-    LAerr=constraints_3dof(x=anchor['LAR'],y=anchor['LAP'])
-    RAerr=constraints_3dof(x=anchor['RAR'],y=anchor['RAP'])
+    LAerr=constraints_3dof(anchors,x='LAR',y='LAP')
+    RAerr=constraints_3dof(anchors,x='RAR',y='RAP')
 
-    for e in (LSerr,RSerr,LWerr,RWerr,LHerr,RHerr,LAerr,RAerr):
-        raveLogDebug(str(e))
     return array([LSerr,RSerr,LWerr,RWerr,LHerr,RHerr,LAerr,RAerr])
 
+def errmax(values):
+    """Find the infinity norm of the values passed in."""
+    return np.max(array(abs(values)))
 
 def model_test_factory(filename=None):
     class TestAnchors(unittest.TestCase):
@@ -70,49 +85,34 @@ def model_test_factory(filename=None):
             (self.env,options)=openhubo.setup()
             options.robotfile=filename
             options.physicsfile=None
+            self.env.SetDebugLevel(1)
             [self.robot,ctrl,self.ind,ref,recorder]=openhubo.load_scene(self.env,options)
 
         def tearDown(self):
             self.env.Destroy()
 
         def test_anchors(self):
-            ind=self.ind
-            raveLogDebug('Loaded {}'.format(filename))
+            raveLogInfo('Loaded {}'.format(filename))
 
-            pose=zeros(self.robot.GetDOF())
-            self.robot.SetDOFValues(pose)
+            pose=openhubo.Pose(self.robot)
 
-            anchor={}
-            for j in self.robot.GetJoints():
-                anchor.setdefault(j.GetName(),j.GetAnchor())
-            errsum1=sum(abs(check_all_constraints(anchor)))
+            errors_home=check_all_constraints(pose)
 
-            pose[ind('RSR')]=15.*pi/180
-            pose[ind('LSR')]=-15.*pi/180
-            self.robot.SetDOFValues(pose)
+            pose['RSR']=15.*pi/180
+            pose['LSR']=-15.*pi/180
 
-            anchor={}
-            for j in self.robot.GetJoints():
-                anchor.setdefault(j.GetName(),j.GetAnchor())
-            errsum2=sum(abs(check_all_constraints(anchor)))
+            errors_bent_SR=check_all_constraints(pose)
 
-            pose[ind('REP')]=10.*pi/180
-            pose[ind('LEP')]=10.*pi/180
-            self.robot.SetDOFValues(pose)
+            pose['REP']=10.*pi/180
+            pose['LEP']=10.*pi/180
 
-            anchor={}
-            for j in self.robot.GetJoints():
-                anchor.setdefault(j.GetName(),j.GetAnchor())
-            errsum3=sum(abs(check_all_constraints(anchor)))
+            errors_bent_EP=check_all_constraints(pose)
 
-            raveLogDebug( "Error sums for {}:".format(self.robot.GetName()))
-            raveLogDebug( str(errsum1))
-            raveLogDebug( str(errsum2))
-            raveLogDebug( str(errsum3))
-            self.assertLess(min([max(errsum1),max(errsum2),max(errsum3)]),1e-10)
+            #raveLogDebug( "Error sums for {}:".format(self.robot.GetName()))
+
+            self.assertLess(min([errmax(errors_home),errmax(errors_bent_SR),errmax(errors_bent_EP)]),1e-10)
 
     return TestAnchors
-
 
 test_anchor1=model_test_factory('huboplus.robot.xml')
 test_anchor2=model_test_factory('rlhuboplus.robot.xml')

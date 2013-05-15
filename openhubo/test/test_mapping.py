@@ -32,7 +32,7 @@ class TestMapping(unittest.TestCase):
         options.physics=False
         options.stop=False
         (self.robot,self.ctrl,ind,ghost,recorder)=oh.load_scene(env,options)
-        env.SetDebugLevel(3)
+        env.SetDebugLevel(1)
         self.env=env
 
     def test_hubo_read_trajectory(self):

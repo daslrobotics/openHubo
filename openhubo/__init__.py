@@ -686,3 +686,12 @@ def find(rawname, path=None):
     for root, dirs, files in _os.walk(path+'/'+fpath):
         if fname in files:
             return _os.path.join(root, fname)
+
+def list_robots(pattern='*.robot.xml',directory='robots'):
+    filenames=[]
+    for root, dirs, files in _os.walk(directory):
+        for basename in files:
+            if _fnmatch.fnmatch(basename, pattern):
+                filenames.append( _os.path.join(root, basename))
+    return filenames
+

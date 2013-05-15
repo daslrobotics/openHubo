@@ -34,6 +34,7 @@ def model_test_factory(filename=None):
                 self.robot=env.GetRobots()[0]
                 physics = _rave.RaveCreatePhysicsEngine(env,'ode')
                 env.SetCollisionChecker(_rave.RaveCreateCollisionChecker(env,'pqp'))
+                self.env.SetDebugLevel(1)
                 physics.SetGravity([0,0,0])
                 env.SetPhysicsEngine(physics)
                 self.robot.SetDOFValues(zeros(self.robot.GetDOF()))
