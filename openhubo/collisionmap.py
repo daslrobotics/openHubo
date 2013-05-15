@@ -1,11 +1,8 @@
 import numpy as n
 import re
-#import pylab as p
 from numpy import array,pi,interp,arange
-import matplotlib.pyplot as plt
-#import IPython
-from mpl_toolkits.mplot3d import Axes3D
 from xml.dom import minidom
+#from pylab import *
 
 def write_reformatted(data,name):
     outdata=re.sub(r'\t','    ',data)
@@ -107,23 +104,27 @@ class JointCollisionPair:
 
         j1_min=n.min(min1)
         j1_max=n.max(max1)
+        #print j1_min,j1_max
 
         #Find span of each joint table
         dj0=j0_max-j0_min
         dj1=j1_max-j1_min
 
         #Calculate exact resolution to get even steps:
-        res_0=dj0/n.floor(dj0/res_approx)
-        res_1=dj1/n.floor(dj1/res_approx)
+        steps0=n.ceil(dj0/res_approx)
+        steps1=n.ceil(dj1/res_approx)
 
-        j0_values=n.arange(j0_min,j0_max,res_0)
-        j1_values=n.arange(j1_min,j1_max,res_1)
+        j0_values=n.linspace(j0_min,j0_max,steps0)
+        j1_values=n.linspace(j1_min,j1_max,steps1)
+        #print j1_values
         #TODO: better storage method? n arrays are better than lists, but still expensive
         self.table=n.zeros((len(j0_values),len(j1_values)),dtype=n.int)
 
         minbound=interp(j0_values,points0,min1)
         maxbound=interp(j0_values,points0,max1)
-
+        #plot(points0,min1)
+        #plot(points0,max1)
+        #plot(min1)
         #Kludgy
         for (j,j0_val) in enumerate(j0_values):
             for (k,j1_val) in enumerate(j1_values):
@@ -132,12 +133,6 @@ class JointCollisionPair:
                     self.table[j,k]=1
         self.j0_values=j0_values
         self.j1_values=j1_values
-
-    def plot(self):
-        fig = plt.figure()
-        ax = Axes3D(fig)
-        Y,X=n.meshgrid(self.j1_values,self.j0_values)
-        ax.plot_surface(X,Y, self.table)
 
     def to_xml(self,j0=None,j1=None):
         if j0 is None:
@@ -160,6 +155,8 @@ class JointCollisionPair:
     def preprocess_data(j0_raw,j1_raw,res):
         """Bin recorded data for joint pair by the provided resolution, and throw out interior points"""
 
+        #plot(j0_raw,j1_raw)
+        #figure()
         #Assume approximate resolution ok
         if len(j0_raw) != len(j1_raw):
             raise IndexError('Input arrays must be the same size')
@@ -175,36 +172,41 @@ class JointCollisionPair:
 
         #Arc length
         ds=n.sqrt(pow(n.diff(j0_raw),2.)+pow(n.diff(j1_raw),2.))
-        ind=[i for (i,s) in enumerate(ds) if abs(s) > 0.00001 ]
-        asum=n.cumsum(ds)
+        ind=n.hstack((0,[i+1 for (i,s) in enumerate(ds) if abs(s) > 0.0000001 ]))
+        asum=n.hstack((0,n.cumsum(ds)))
 
         #sample for bins
         arclen=[asum[i] for i in ind]
-        steps=arange(min(arclen),max(arclen),res/5.)
+        S=max(arclen)-min(arclen)
+        res_s=S/n.floor(4*S/res)
+        steps=arange(min(arclen),max(arclen),res_s)
         j0_proc=n.interp(steps,arclen,[j0_raw[i] for i in ind])
         j1_proc=n.interp(steps,arclen,[j1_raw[i] for i in ind])
-        plt.plot(j0_proc,j1_proc)
-        plt.plot(j0_raw,j1_raw)
+        #plot(j0_proc,j1_proc)
         indices=n.digitize(j0_proc,bins)
+        #print indices.shape
+        #plot(indices,j1_proc,'ro')
         #build a dict because it's easy
         j1_min={}
         j1_max={}
         for (i,j) in zip(indices,j1_proc):
-            if not j1_min.has_key(i) or j1_min[i]>j:
+            if (not j1_min.has_key(i)) or j1_min[i]>j:
                 j1_min[i]=j
 
-            if not j1_max.has_key(i) or j1_max[i]<j:
+            if (not j1_max.has_key(i)) or j1_max[i]<j:
                 j1_max[i]=j
 
         j0_out=[]
         j1_min_out=[]
         j1_max_out=[]
 
-        for i in indices:
+        for i in n.unique(indices):
             j0_out.append(bins[min(i,len(bins)-1)])
             j1_min_out.append(j1_min[i])
             j1_max_out.append(j1_max[i])
 
+        #plot(j0_out,j1_min_out)
+        #plot(j0_out,j1_max_out)
         return (j0_out,j1_min_out,j1_max_out)
 
     @staticmethod

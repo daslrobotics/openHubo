@@ -12,7 +12,7 @@ if __name__=='__main__':
     #Override names to create left side (this is ok since the values are symmetrical in this case)
     example.insert_pair(JointCollisionPair(sourcefile,2.*pi/180,True),'LHP','LHR')
 
-    destfile='example-collisionmap.xml'
+    destfile='sample-collisionmap.xml'
     print "Write completed collisionmap to {}".format(destfile)
     example.write(destfile)
 
