@@ -1,65 +1,67 @@
 #!/usr/bin/env python
 from numpy import pi,array,ones,zeros
-import openhubo
-from iuvalidate import add_torque
-import re
+import openhubo as oh
+import time
 
-(env,options)=openhubo.setup('qtcoin')
+(env,options)=oh.setup('qtcoin')
 env.SetDebugLevel(3)
 options.scenefile='gripper.env.xml'
 options.robotfile=None
-[robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,options)
+[robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
 rod=env.GetKinBody('rod')
 trans=rod.GetTransform()
-pose=ones(robot.GetDOF())*.8
+pose=oh.Pose(robot)
 #pose[ind('rightIndexKnuckle1')]=.6
 #pose[ind('rightMiddleKnuckle1')]=.6
 #pose[ind('rightRingKnuckle1')]=.6
 #pose[ind('rightPinkyKnuckle1')]=.6
 #pose[ind('rightThumbKnuckle1')]=.6
-fail=True
+success=False
 strength=1.0
-openhubo.set_robot_color(robot,[.7,.7,.7],[.7,.7,.7],0.0)
+oh.set_robot_color(robot,[.7,.7,.7],[.7,.7,.7],0.0)
+oh.set_finger_torquemode(robot)
 
 #recorder.realtime=False
 #recorder.filename='griptest.avi'
 #recorder.start()
-steps=int(10*1/0.0005)
-fingerjoints=[x for x in robot.GetJoints() if re.search('Knuckle',x.GetName())]
-fingers=[x.GetName() for x in fingerjoints]
-while fail:
-    level=3
+
+def apply_torque(pose,mask,T):
+    """Use Pose class regex function to easily (but slowly) assign torques to a slice of joints"""
+    pose.useregex=True
+    pose[mask]=T
+
+while not success:
     strength+=.2
     print "Added torque {}".format(strength)
-    robot.SetDOFValues(pose)
-    rod.SetLinkVelocities((zeros(6),zeros(6)))
+    rod.SetVelocity(zeros(3),zeros(3))
     rod.SetTransform(trans)
-    T=0.5
-    openhubo.set_finger_torque(robot,T,fingers)
 
-    right_joints=[]
-    for n in fingers:
-        if n.find('right')>-1:
-            right_joints.append(robot.GetJoint(n))
-
-    print "Finger torque is {}".format(T)
     print "Mass is {}".format(rod.GetLinks()[0].GetMass())
     env.GetPhysicsEngine().SetGravity([0, 0, 0])
     ctrl.SetDesired(pose)
     print "starting..."
+    #Hack to run simulation for a set amount of time
     for x in range(3000):
         with env:
-            env.StepSimulation(0.0005)
-        openhubo.add_torque(robot,right_joints,strength,level)
+            env.StepSimulation(oh.TIMESTEP)
     print "gravity on"
     env.GetPhysicsEngine().SetGravity([0, 0, -9.8])
-    for x in range(steps):
-        env.StepSimulation(0.0005)
-        openhubo.add_torque(robot,right_joints,strength,level)
+    #Hack to get grasp torques
+    apply_torque(pose,'right.*1',.5*strength)
+    apply_torque(pose,'right.*2',.25*strength)
+    apply_torque(pose,'right.*3',.125*strength)
+    pose['rightThumbKnuckle1']*=2
+    pose['rightThumbKnuckle2']*=2
+    pose['rightThumbKnuckle3']*=2
+    pose.send()
+
+    env.StartSimulation(oh.TIMESTEP)
+    t=env.GetSimulationTime()
+    success=True
+    while env.GetSimulationTime()<(t+1000000):
         if env.GetKinBody('rod').GetTransform()[2,3]<-.5:
-            print "Rod fell"
+            print "Failed, rod fell"
+            success=False
             break
-    if (steps-x)<10:
-        print "Success!"
-        fail=False
+        time.sleep(.5)
 #recorder.stop()

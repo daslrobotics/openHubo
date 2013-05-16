@@ -6,6 +6,21 @@ Command line usage of openhubo and examples:
 
 The older python syntax is also usable for launching openhubo scripts:
     python [-i] examples/myexample.py
+
+Make sure to consult the command line options for the openhubo command to see a
+complete list of settings:
+    openhubo --help
+
+General coding style / glossary:
+
+OpenHubo python functions follow (mostly) the PEP recommended python coding styles:
+    functions are named with lowercase and underscores, typically starting with a verb:
+        get_timestep(...) or set_robot_color(...) are examples.
+    Common "verbs" perform similar actions, within reason:
+        get: retrieve and format information from an object (such as an openrave environment or robot)
+        set: the opposite of get, set a property/parameter to a value, often with some convenience steps thrown in to simplify where possible.
+        apply: Similar to set, but used for properties that might be considered "states", and will change often.
+        form: Build a data structure or command using smaller input pieces.
 """
 
 __version__='0.7.1-beta'
@@ -31,6 +46,22 @@ from types import ModuleType
 
 TIMESTEP=0.001
 
+FINGER_NAMES=('rightIndexKnuckle1', 'rightIndexKnuckle2',
+                'rightIndexKnuckle3', 'rightMiddleKnuckle1',
+                'rightMiddleKnuckle2', 'rightMiddleKnuckle3',
+                'rightRingKnuckle1', 'rightRingKnuckle2',
+                'rightRingKnuckle3', 'rightPinkyKnuckle1',
+                'rightPinkyKnuckle2', 'rightPinkyKnuckle3',
+                'rightThumbKnuckle1', 'rightThumbKnuckle2',
+                'rightThumbKnuckle3','leftIndexKnuckle1',
+                'leftIndexKnuckle2', 'leftIndexKnuckle3',
+                'leftMiddleKnuckle1', 'leftMiddleKnuckle2',
+                'leftMiddleKnuckle3', 'leftRingKnuckle1', 'leftRingKnuckle2',
+                'leftRingKnuckle3', 'leftPinkyKnuckle1', 'leftPinkyKnuckle2',
+                'leftPinkyKnuckle3', 'leftThumbKnuckle1',
+                'leftThumbKnuckle2', 'leftThumbKnuckle3',
+                'LF1','LF2','LF3','LF4','LF5',
+                'RF1','RF2','RF3','RF4','RF5')
 class Pose:
     """Easy-to-use wrapper for an array of DOF values for a robot. The Pose class
         behaves like a combination of a dictionary and an array. You can look
@@ -55,7 +86,7 @@ class Pose:
                 jmap[k]=jmap[v]
         return jmap
 
-    def __init__(self,robot=None,ctrl=None,values=None):
+    def __init__(self,robot=None,ctrl=None,values=None,useregex=False):
         self.robot=robot
         self.jointmap=self.build_joint_index_map(robot)
         if values is not None:
@@ -71,6 +102,8 @@ class Pose:
         else:
             self.ctrl=robot.GetController()
 
+        self.useregex=useregex
+
     def update(self,newvalues=None):
         """manually assign new values, or poll for new values from robot"""
         if newvalues is None:
@@ -78,6 +111,20 @@ class Pose:
         elif len(newvalues)==len(self.values):
             self.values=array(newvalues)
             #TODO: exception throw here?
+
+    def reset(self,send=True,vel=False):
+        """Quick reset pose back to zero:
+            :param send: Additionally set the robot to the reset pose.
+            :param vel: Also reset the robot's DOF velocities (WARNING: this
+                will cause "hard" update that is non-physical"""
+        self.values=zeros(self.robot.GetDOF())
+        with self.robot.GetEnv():
+            if send:
+                self.send()
+            if vel:
+                self.robot.SetVelocity([0,0,0],[0,0,0])
+                self.robot.SetDOFVelocities(self.values)
+
 
     def to_waypt(self,dt=1,affine=zeros(7)):
         #list constructor does shallow copy here
@@ -122,10 +169,17 @@ class Pose:
 
     def __setitem__(self,key,value):
         """ Lookup the joint name and assign the specified value """
-        if type(key)==str:
-            self.values[self.jointmap[key]]=value
         if type(key)==slice or type(key)==int:
             self.values[key]=value
+        elif type(key)==str:
+            if self.useregex:
+                #Apply a value to multiple joints by regex, slow!
+                for k in self.jointmap.keys():
+                    if _re.search(key,k):
+                        self.values[k]=value
+            else:
+                self.values[self.jointmap[key]]=value
+
 
     def __add__(self,other):
         #TODO: size checking
@@ -514,40 +568,45 @@ class ServoPlotter:
 # Robot utility functions
 #####################################################################
 
-def get_finger_names(robot):
+def set_servo_torquemode(robot,joints,mode='directtorque'):
+    """Shortcut function to set a given set of servo joints to the desired control mode"""
+    cmd=[mode]
+    for j in joints:
+        cmd.append(str(j.GetDOFIndex()))
+
+    return robot.GetController().SendCommand(' '.join(cmd))
+
+def get_finger_names(robot,left_right=False):
     """General function to extract finger joint names from a Hubo-type robot.
     Current implementation is simple, but this function may be expanded to
     handle different arrangements."""
-    return ['rightIndexKnuckle1', 'rightIndexKnuckle2', 'rightIndexKnuckle3', 'rightMiddleKnuckle1', 'rightMiddleKnuckle2', 'rightMiddleKnuckle3', 'rightRingKnuckle1', 'rightRingKnuckle2', 'rightRingKnuckle3', 'rightPinkyKnuckle1', 'rightPinkyKnuckle2', 'rightPinkyKnuckle3', 'rightThumbKnuckle1', 'rightThumbKnuckle2', 'rightThumbKnuckle3','leftIndexKnuckle1', 'leftIndexKnuckle2', 'leftIndexKnuckle3', 'leftMiddleKnuckle1', 'leftMiddleKnuckle2', 'leftMiddleKnuckle3', 'leftRingKnuckle1', 'leftRingKnuckle2', 'leftRingKnuckle3', 'leftPinkyKnuckle1', 'leftPinkyKnuckle2', 'leftPinkyKnuckle3', 'leftThumbKnuckle1', 'leftThumbKnuckle2', 'leftThumbKnuckle3']
+    if not left_right:
+        return [n for n in FINGER_NAMES if robot.GetJoint(n) is not None]
+    else:
+        ljoints=[n for n in FINGER_NAMES if _re.search(r'left|^L',n) and robot.GetJoint(n) is not None]
+        rjoints=[n for n in FINGER_NAMES if _re.search(r'right|^R',n) and robot.GetJoint(n) is not None]
+        return (ljoints,rjoints)
 
 def get_finger_joints(robot,left_right=False):
     """General function to extract finger joint names from a Hubo-type robot.
     Current implementation is simple, but this function may be expanded to
-    handle different arrangements. This is not a fast function..."""
-    finger_names=('rightIndexKnuckle1', 'rightIndexKnuckle2',
-                  'rightIndexKnuckle3', 'rightMiddleKnuckle1',
-                  'rightMiddleKnuckle2', 'rightMiddleKnuckle3',
-                  'rightRingKnuckle1', 'rightRingKnuckle2',
-                  'rightRingKnuckle3', 'rightPinkyKnuckle1',
-                  'rightPinkyKnuckle2', 'rightPinkyKnuckle3',
-                  'rightThumbKnuckle1', 'rightThumbKnuckle2',
-                  'rightThumbKnuckle3','leftIndexKnuckle1',
-                  'leftIndexKnuckle2', 'leftIndexKnuckle3',
-                  'leftMiddleKnuckle1', 'leftMiddleKnuckle2',
-                  'leftMiddleKnuckle3', 'leftRingKnuckle1', 'leftRingKnuckle2',
-                  'leftRingKnuckle3', 'leftPinkyKnuckle1', 'leftPinkyKnuckle2',
-                  'leftPinkyKnuckle3', 'leftThumbKnuckle1',
-                  'leftThumbKnuckle2', 'leftThumbKnuckle3',
-                  'LF1','LF2','LF3','LF4','LF5',
-                  'RF1','RF2','RF3','RF4','RF5')
+    handle different arrangements. This is implemented the dumb way now, but may be swapped for a regex search in the future."""
 
     #Only return valid finger joints:
     if not left_right:
-        return [robot.GetJoint(n) for n in finger_names if robot.GetJoint(n) is not None]
+        return [robot.GetJoint(n) for n in FINGER_NAMES if robot.GetJoint(n) is not None]
     else:
-        ljoints=[robot.GetJoint(n) for n in finger_names if _re.search(r'left|^L',n) and robot.GetJoint(n) is not None]
-        rjoints=[robot.GetJoint(n) for n in finger_names if _re.search(r'right|^R',n) and robot.GetJoint(n) is not None]
+        ljoints=[robot.GetJoint(n) for n in FINGER_NAMES if _re.search(r'left|^L',n) and robot.GetJoint(n) is not None]
+        rjoints=[robot.GetJoint(n) for n in FINGER_NAMES if _re.search(r'right|^R',n) and robot.GetJoint(n) is not None]
         return (ljoints,rjoints)
+
+def get_fingers_mask(joints,mask):
+    return [j for j in joints if _re.search(mask,j.GetName())]
+
+def set_finger_torquemode(robot,mode='directtorque'):
+    """ Shortcut function to set fingers to open-loop torque mode, for heavy-duty grasping"""
+    joints=get_finger_joints(robot)
+    return set_servo_torquemode(robot,joints,mode)
 
 
 def _safe_quit():
