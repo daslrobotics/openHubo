@@ -5,12 +5,8 @@
             
         </body>
         <body name="Body_RWP" type="dynamic">
-            <!--Body_RWP Parent Center of Mass to Base -->
-            <translation>0.001220192079 0.000635233335 0.023804318643</translation>
-            <!--Body_RWP Parent to Current -->
             <translation>0.000001729730 0.010000000000 -0.052549999972</translation>
             <!--Body_RWP Base to Center of Mass -->
-            <translation>-0.000258199377 -0.011441986656 -0.046147242821</translation>
             <!--<geom type="trimesh">-->
                 <!--<translation>0.000258199377 0.011441986656 0.046147242821</translation>-->
                 <!--<translation>0.001 0 0</translation>-->
@@ -19,6 +15,7 @@
             <!--</geom>-->
 
             <mass type="custom">
+                <com>-0.000258199377 -0.011441986656 -0.046147242821</com>
                 <total>0.104392998329</total>
                 <inertia>
                     0.000097432742 0.000000522155 -0.000001173170
@@ -35,7 +32,6 @@
 
         <body name="rightPalm" type="dynamic">
             <offsetfrom>Body_RWP</offsetfrom>
-            <translation>0.000258199377 0.011441986656 0.046147242821</translation>
             <translation>-0.000001 0.000361 -0.07703</translation>
             <translation>0 0.0007071 -0.0007071</translation>
             <rotationaxis>0 1 0 90</rotationaxis>

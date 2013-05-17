@@ -176,7 +176,7 @@ class Pose:
                 #Apply a value to multiple joints by regex, slow!
                 for k in self.jointmap.keys():
                     if _re.search(key,k):
-                        self.values[k]=value
+                        self.values[self.jointmap[k]]=value
             else:
                 self.values[self.jointmap[key]]=value
 
