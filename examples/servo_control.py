@@ -21,7 +21,8 @@ from numpy import pi
 env.SetDebugLevel(4)
 
 #Note that the load function now directly parses the option structure
-options.physics=True
+if options.physics is None:
+    options.physics=True
 [robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
 env.StartSimulation(oh.TIMESTEP)
 

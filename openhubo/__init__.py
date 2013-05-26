@@ -37,7 +37,7 @@ import openravepy as _rave
 from recorder import viewerrecorder as _recorder
 
 #Specific useful functions
-from numpy import array,zeros
+from numpy import array,zeros,mat
 from time import sleep
 from datetime import datetime
 from . import mapping
@@ -283,7 +283,7 @@ def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=Fa
 
 
 def load_scene_from_options(env,options):
-
+    """Load a scene for openhubo based on the options structure (see setup function for detailed options)."""
     if hasattr(options,'physics') and options.physics is False:
         #Kludge since we won't be not using ODE for a while...
         physics=False
@@ -439,7 +439,7 @@ def find_mass(robot):
     return mass
 
 
-def plot_contacts(robot):
+def plot_contacts(robot,scale=.1):
     env = robot.GetEnv()
     with env:
         # setup the collision checker to return contacts
@@ -449,16 +449,36 @@ def plot_contacts(robot):
         # get first collision
         report = _rave.CollisionReport()
         env.CheckCollision(robot, report=report)
-        _rave.raveLogInfo('{} contacts'.format(len(report.contacts)))
-        positions = [c.pos for c in report.contacts]
+        #_rave.raveLogInfo('{} contacts'.format(len(report.contacts)))
+        positions = _np.array([c.pos for c in report.contacts])
+        normals = _np.array([c.norm for c in report.contacts])
+        print report.vLinkColliding
 
     if len(positions):
-        handles = env.plot3(_np.array(positions), 10, [.7, .3, .3])
+        p_handles = env.plot3(positions, 5, [.7, .3, .3])
+        plist=_np.hstack((positions,positions+normals*scale))
+        n_handles = env.drawlinelist(_np.reshape(plist,(1,-1)),.5)
+        handles=(p_handles,n_handles)
     else:
         handles = None
 
     return handles
 
+def plot_dirs(robot,scale=.1):
+    env = robot.GetEnv()
+    manips=robot.GetManipulators()
+    trans = _np.array([m.GetEndEffectorTransform()[0:3,3] for m in manips])
+    dirs = _np.array([apply_transform(m.GetTransform(),m.GetDirection()) for m in manips])
+    if len(dirs):
+        p_handles = env.plot3(trans, 5, [.7, .3, .3])
+        plist=_np.hstack((trans,trans+dirs*scale))
+        n_handles = env.drawlinelist(_np.reshape(plist,(1,-1)),.5)
+        handles=(p_handles,n_handles)
+    return handles
+
+def apply_transform(T,v):
+    newv=mat(T)*mat(_np.hstack((v,0))).T
+    return array(newv[0:3]).squeeze()
 
 def plot_body_com(link, handle=None, color=None):
     """ efficiently plot the center of mass of a given link"""
