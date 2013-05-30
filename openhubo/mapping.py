@@ -1,6 +1,25 @@
 import numpy as np
+import re as _re
 from numpy.random import rand
 #KLUDGE: hard code the mapping (how often will it change, really?). Include openhubo synonyms here for fast lookup.
+
+FINGER_NAMES=('rightIndexKnuckle1', 'rightIndexKnuckle2',
+                'rightIndexKnuckle3', 'rightMiddleKnuckle1',
+                'rightMiddleKnuckle2', 'rightMiddleKnuckle3',
+                'rightRingKnuckle1', 'rightRingKnuckle2',
+                'rightRingKnuckle3', 'rightPinkyKnuckle1',
+                'rightPinkyKnuckle2', 'rightPinkyKnuckle3',
+                'rightThumbKnuckle1', 'rightThumbKnuckle2',
+                'rightThumbKnuckle3','leftIndexKnuckle1',
+                'leftIndexKnuckle2', 'leftIndexKnuckle3',
+                'leftMiddleKnuckle1', 'leftMiddleKnuckle2',
+                'leftMiddleKnuckle3', 'leftRingKnuckle1', 'leftRingKnuckle2',
+                'leftRingKnuckle3', 'leftPinkyKnuckle1', 'leftPinkyKnuckle2',
+                'leftPinkyKnuckle3', 'leftThumbKnuckle1',
+                'leftThumbKnuckle2', 'leftThumbKnuckle3',
+                'LF1','LF2','LF3','LF4','LF5',
+                'RF1','RF2','RF3','RF4','RF5')
+
 ha_ind_name_map={'RHY':26,
                    'RHR':27,
                    'RHP':28,
@@ -130,6 +149,33 @@ def is_ha_sensor(name):
     #TODO detect sensors from names
    return False
 
+def get_finger_names(robot,left_right=False):
+    """General function to extract finger joint names from a Hubo-type robot.
+    Current implementation is simple, but this function may be expanded to
+    handle different arrangements."""
+    if not left_right:
+        return [n for n in FINGER_NAMES if robot.GetJoint(n) is not None]
+    else:
+        ljoints=[n for n in FINGER_NAMES if _re.search(r'left|^L',n) and robot.GetJoint(n) is not None]
+        rjoints=[n for n in FINGER_NAMES if _re.search(r'right|^R',n) and robot.GetJoint(n) is not None]
+        return (ljoints,rjoints)
+
+def get_finger_joints(robot,left_right=False):
+    """General function to extract finger joint names from a Hubo-type robot.
+    Current implementation is simple, but this function may be expanded to
+    handle different arrangements. This is implemented the dumb way now, but may be swapped for a regex search in the future."""
+
+    #Only return valid finger joints:
+    if not left_right:
+        return [robot.GetJoint(n) for n in FINGER_NAMES if robot.GetJoint(n) is not None]
+    else:
+        ljoints=[robot.GetJoint(n) for n in FINGER_NAMES if _re.search(r'left|^L',n) and robot.GetJoint(n) is not None]
+        rjoints=[robot.GetJoint(n) for n in FINGER_NAMES if _re.search(r'right|^R',n) and robot.GetJoint(n) is not None]
+        return (ljoints,rjoints)
+
+def get_fingers_mask(joints,mask):
+    return [j for j in joints if _re.search(mask,j.GetName())]
+
 if __name__=='__main__':
     import openhubo as oh
     from openhubo import startup
@@ -152,5 +198,3 @@ if __name__=='__main__':
 
     print "Make a direct Index map from openhubo to hubo-ach"
     print ha_ind_from_oh_ind(robot)
-
-

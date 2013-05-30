@@ -32,6 +32,7 @@ import optparse as _optparse
 import os as _os
 import fnmatch as _fnmatch
 import re as _re
+import collections
 
 import openravepy as _rave
 from recorder import viewerrecorder as _recorder
@@ -43,25 +44,8 @@ from datetime import datetime
 from . import mapping
 from types import ModuleType
 
-
 TIMESTEP=0.001
 
-FINGER_NAMES=('rightIndexKnuckle1', 'rightIndexKnuckle2',
-                'rightIndexKnuckle3', 'rightMiddleKnuckle1',
-                'rightMiddleKnuckle2', 'rightMiddleKnuckle3',
-                'rightRingKnuckle1', 'rightRingKnuckle2',
-                'rightRingKnuckle3', 'rightPinkyKnuckle1',
-                'rightPinkyKnuckle2', 'rightPinkyKnuckle3',
-                'rightThumbKnuckle1', 'rightThumbKnuckle2',
-                'rightThumbKnuckle3','leftIndexKnuckle1',
-                'leftIndexKnuckle2', 'leftIndexKnuckle3',
-                'leftMiddleKnuckle1', 'leftMiddleKnuckle2',
-                'leftMiddleKnuckle3', 'leftRingKnuckle1', 'leftRingKnuckle2',
-                'leftRingKnuckle3', 'leftPinkyKnuckle1', 'leftPinkyKnuckle2',
-                'leftPinkyKnuckle3', 'leftThumbKnuckle1',
-                'leftThumbKnuckle2', 'leftThumbKnuckle3',
-                'LF1','LF2','LF3','LF4','LF5',
-                'RF1','RF2','RF3','RF4','RF5')
 class Pose:
     """Easy-to-use wrapper for an array of DOF values for a robot. The Pose class
         behaves like a combination of a dictionary and an array. You can look
@@ -112,19 +96,25 @@ class Pose:
             self.values=array(newvalues)
             #TODO: exception throw here?
 
-    def reset(self,send=True,vel=False):
+    def reset(self,values=None,send=True,vel=False):
         """Quick reset pose back to zero:
             :param send: Additionally set the robot to the reset pose.
             :param vel: Also reset the robot's DOF velocities (WARNING: this
-                will cause "hard" update that is non-physical"""
-        self.values=zeros(self.robot.GetDOF())
-        with self.robot.GetEnv():
-            if send:
-                self.send()
-            if vel:
-                self.robot.SetVelocity([0,0,0],[0,0,0])
-                self.robot.SetDOFVelocities(self.values)
+                will cause "hard" update that is non-physical.
 
+        This is a convenience function, consider using "with robot:" as a more robust alternative.
+        """
+
+        if values is None:
+            values=zeros(self.robot.GetDOF())
+        self.values=values
+
+        if send:
+            with self.robot.GetEnv():
+                self.send()
+                if vel:
+                    self.robot.SetVelocity([0,0,0],[0,0,0])
+                    self.robot.SetDOFVelocities(self.values)
 
     def to_waypt(self,dt=1,affine=zeros(7)):
         #list constructor does shallow copy here
@@ -172,28 +162,45 @@ class Pose:
         if type(key)==slice or type(key)==int:
             self.values[key]=value
         elif type(key)==str:
-            if self.useregex:
+            #TODO: warning for failure
+            if self.values.has_key(key):
+                self.values[self.jointmap[key]]=value
+            elif self.useregex:
                 #Apply a value to multiple joints by regex, slow!
                 for k in self.jointmap.keys():
                     if _re.search(key,k):
                         self.values[self.jointmap[k]]=value
-            else:
-                self.values[self.jointmap[key]]=value
 
+
+    def __iadd__(self,other):
+        """Add and assign joint values from a pose or array-like object"""
+        self.values+=other[:]
+
+    def __isub__(self,other):
+        """Subtract and assign joint values from a pose or array-like object"""
+        self.values-=other[:]
+
+    def __imul__(self,other):
+        """Multiply and assign joint values from a pose or array-like object"""
+        if isinstance(other,collections.Iterable):
+            self.values*=other[:]
+        else:
+            self.values*=other
 
     def __add__(self,other):
-        #TODO: size checking
+        """Add and return joint values from a pose or array-like object"""
         return self.values+other[:]
 
     def __sub__(self,other):
-        #TODO: size checking
+        """Subtract and return joint values from a pose or array-like object"""
         return self.values-other[:]
 
     def __abs__(self):
-        #TODO: size checking
+        """Return absolute joint values"""
         return abs(self.values)
 
     def __iter__(self):
+        """Iterate over joint values"""
         return iter(self.values)
 
 
@@ -596,36 +603,9 @@ def set_servo_torquemode(robot,joints,mode='directtorque'):
 
     return robot.GetController().SendCommand(' '.join(cmd))
 
-def get_finger_names(robot,left_right=False):
-    """General function to extract finger joint names from a Hubo-type robot.
-    Current implementation is simple, but this function may be expanded to
-    handle different arrangements."""
-    if not left_right:
-        return [n for n in FINGER_NAMES if robot.GetJoint(n) is not None]
-    else:
-        ljoints=[n for n in FINGER_NAMES if _re.search(r'left|^L',n) and robot.GetJoint(n) is not None]
-        rjoints=[n for n in FINGER_NAMES if _re.search(r'right|^R',n) and robot.GetJoint(n) is not None]
-        return (ljoints,rjoints)
-
-def get_finger_joints(robot,left_right=False):
-    """General function to extract finger joint names from a Hubo-type robot.
-    Current implementation is simple, but this function may be expanded to
-    handle different arrangements. This is implemented the dumb way now, but may be swapped for a regex search in the future."""
-
-    #Only return valid finger joints:
-    if not left_right:
-        return [robot.GetJoint(n) for n in FINGER_NAMES if robot.GetJoint(n) is not None]
-    else:
-        ljoints=[robot.GetJoint(n) for n in FINGER_NAMES if _re.search(r'left|^L',n) and robot.GetJoint(n) is not None]
-        rjoints=[robot.GetJoint(n) for n in FINGER_NAMES if _re.search(r'right|^R',n) and robot.GetJoint(n) is not None]
-        return (ljoints,rjoints)
-
-def get_fingers_mask(joints,mask):
-    return [j for j in joints if _re.search(mask,j.GetName())]
-
 def set_finger_torquemode(robot,mode='directtorque'):
     """ Shortcut function to set fingers to open-loop torque mode, for heavy-duty grasping"""
-    joints=get_finger_joints(robot)
+    joints=mapping.get_finger_joints(robot)
     return set_servo_torquemode(robot,joints,mode)
 
 
