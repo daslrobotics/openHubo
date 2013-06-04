@@ -10,7 +10,6 @@ from str2num import *
 from rodrigues import *
 from TransformMatrix import *
 from TSR import *
-from openhubo import plotProjectedCOG
 
 import time
 import datetime
@@ -60,7 +59,7 @@ def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False
     #Lock the environment, halt simulation in preparation
     #import pdb
     #pdb.set_trace()
-    
+
     env=robot.GetEnv()
     #May be a better way to do this without causing so much interruption
     env.StopSimulation()
@@ -83,7 +82,7 @@ def PlayTrajWithPhysics(robot,traj,autoinit=False,waitdone=True,resetafter=False
     #ctrl.SetDesired(robot.GetDOFValues())
     time.sleep(1)
     ctrl.SendCommand('start')
-   
+
     if waitdone:
         t=0
         while not(ctrl.IsDone()):
@@ -158,8 +157,8 @@ def plotTransforms(env,transforms,color=array([0,1,0])):
     for t in transforms:
         handles.append(env.plot3(points=t[:-1,3].T,pointsize=10.0,colors=color))
     return handles
- 
-def showGoal(env,T):     
+
+def showGoal(env,T):
     #TODO: Potential memory leak here?
     with env:
         dummy=RaveCreateKinBody(env,'')
@@ -170,7 +169,7 @@ def showGoal(env,T):
     time.sleep(5)
     env.Remove(dummy)
     return 0
-    
+
 def supportTorsoPose(supports):
     #Calculate torso pose based on grip manips (i.e. best guess based on some parameters
     # Update the passed in reference with the Torso Manip
@@ -185,11 +184,11 @@ def supportTorsoPose(supports):
         #TODO: use centroid calculation instead of mean?
         if s == 'affineManip':
             continue
-        T=supports[s].endPose()       
+        T=supports[s].endPose()
         #print T[:3,-1]
         t=t+(T[:3,-1]+mat([-.1,0,L[s]]).T)*w[s]
         wsum+=w[s]
-        
+
     affineTSR=TSR(MakeTransform(mat(eye(3)),t/wsum))
     affineTSR.Bw=mat([-.05,.05,-.05,.05,-.1,.15,0,0,0,0,-pi/16,pi/16])
     affineTSR.manipindex=4
@@ -232,7 +231,7 @@ def setInitialPose(robot):
     robot.SetActiveDOFValues([0,pi/4,0,-.5,0,0,0])
     robot.SetActiveDOFs(robot.GetManipulator('rightArm').GetArmIndices())
     robot.SetActiveDOFValues([0,-pi/4,0,-.5,0,0,0])
-    #hack to close the fingers enough to avoid other body parts. 
+    #hack to close the fingers enough to avoid other body parts.
     #TODO: grasping routine?
     robot.SetDOFValues([pi/8,pi/8,pi/8],[robot.GetJointIndex('rightThumbKnuckle1'),robot.GetJointIndex('rightThumbKnuckle2'),robot.GetJointIndex('rightThumbKnuckle3')])
     robot.SetDOFValues([pi/8,pi/8,pi/8],[robot.GetJointIndex('leftThumbKnuckle1'),robot.GetJointIndex('leftThumbKnuckle2'),robot.GetJointIndex('leftThumbKnuckle3')])
@@ -245,7 +244,7 @@ def findPoseIntersection(robot,problem,init,final):
                 # Identical manipulator name and goal means overlap
                 trans.setdefault(k,init[k])
     return trans
-    
+
 def solveWholeBodyPose(robot,problem,tsrs):
     """Useful GeneralIK wrapper to check if a goal combination is reasonable"""
     supportlinks=[]
@@ -257,7 +256,7 @@ def solveWholeBodyPose(robot,problem,tsrs):
 
     #TODO: make this run even if solution is found?
     ik.continousSolve(1000,True,[3])
-    
+
     if ik.solved():
         ik.goto()
         print "Found first transition solution"
@@ -268,7 +267,7 @@ def solveWholeBodyPose(robot,problem,tsrs):
                 return True
         else:
             return True
-    
+
     return False
 
 def planSequence(robot,problem,init,final=[],trans=[]):
@@ -278,20 +277,20 @@ def planSequence(robot,problem,init,final=[],trans=[]):
         #find all supporting end effectors from manips
         for k in trans.keys():
             supportlinks.append(robot.GetManipulator(k).GetEndEffector().GetName())
-            
+
         #init.setdefault('affineManip',supportTorsoPose(trans))
-        #final.setdefault('affineManip',supportTorsoPose(trans))       
+        #final.setdefault('affineManip',supportTorsoPose(trans))
 
     init_ik=GeneralIK(robot,problem,init.values())
     planner=Cbirrt(problem)
     #Eliminate support links since CoG projection doesn't work on a ladder
     #init_ik.supportlinks=supportlinks
     #init_ik.cogtarget=(0.0,0,0)
-    
+
     print init_ik.Serialize()
     init_ik.activate()
     init_ik.findSolution(50)
-    
+
     if init_ik.solved():
         init_ik.goto()
         print "Found first transition solution"
@@ -310,9 +309,9 @@ def planSequence(robot,problem,init,final=[],trans=[]):
         if final_ik.solved() and init_ik.solved():
             print "Found second transition solution"
             final_ik.goto()
-        else: 
+        else:
             return False
-    
+
     return True
 
 
