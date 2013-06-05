@@ -4,9 +4,10 @@
 
 import numpy as _np
 import openravepy as _rave
-from openravepy import matrixSerialization
+from openravepy import matrixSerialization,KinBody
 import copy as _copy
 import time as _time
+from openhubo import Pose
 
 def Serialize1DMatrix(arr):
     return ' '.join([str(x) for x in arr])
@@ -39,10 +40,11 @@ class Transform:
         return matrixSerialization(_np.array(self.tm))
 
     def inv(self):
-        #TODO: speed check?
-        Tnew=self.tm
-        Tnew[0:3,0:3]=self.rot().T
-        Tnew[0:3,3]=-self.trans()
+        """Slow hack way to get Transform inverse"""
+        Tnew=Transform()
+        Tnew.tm[0:3,0:3]=self.rot().T
+        Tnew.tm[0:3,3]=-self.trans()
+        return Tnew
 
     def __mul__(self,other):
         #TODO: make this return a Transform?
@@ -98,8 +100,8 @@ class Transform:
                 #assume we want rodrigues
                 T[0:3,0:3] = rodrigues(rot)
             else:
-                #TODO: raise exception
-                raise('No rotation matrix specified, assuming eye(3)')
+                print rot
+                print('No rotation matrix specified, assuming eye(3)')
 
         if trans is not None and _np.size(trans)==3:
             T[0:3,3] = _np.mat(trans).reshape(3,1)
@@ -222,7 +224,7 @@ class GeneralIK:
     """ Wrapper class to hold solution settings for an IK problem. This class
     can use TSR's to define IK problems, and sample IK solutions from the
     TSR's."""
-    def __init__(self,robot,problem,tsrlist=[],sample_bw=False):
+    def __init__(self,robot,problem,tsrlist=[],sample_bw=True,bcollisions=True):
         self.robot=robot
         self.problem=problem
         self.sample_bw=sample_bw
@@ -233,27 +235,25 @@ class GeneralIK:
         self.supportlinks=[]
         self.cogtarget=()
         self.appendTSR(tsrlist)
+        self.bcollisions=bcollisions
 
     def Serialize(self):
         #TODO: reformat as list then join at end
         L=len(self.tsrlist)
-        cmd='DoGeneralIK exec nummanips {}'.format(L)
+        cmd=['DoGeneralIK exec nummanips',str(format(L))]
         for k in self.tsrlist:
-            cmd=cmd+' '
             #Assumes that Bw encloses T0_e
             if self.sample_bw:
-                #TODO: save the sampled goal for future use
-                cmd=cmd+'maniptm {} {}'.format(k.manipindex,SerializeTransform(k.sample()))
+                T0_e=k.sample()
             else:
-                T0_e=k.T0_w*k.Tw_e
-                cmd=cmd+'maniptm {} {}'.format(k.manipindex,SerializeTransform(T0_e))
-            #NOTE: "planning" robot treats torso pose as a manipulator, which
-            #clashes a bit with the idea that the torso should be specified by torsotm
+                T0_e=k.endPose()
+            cmd.extend(['maniptm',str(k.manipindex),SerializeTransform(T0_e)])
+
         if len(self.supportlinks)>0:
-            cmd=cmd+' supportlinks {} {}'.format(len(self.supportlinks),' '.join(self.supportlinks))
+            cmd.extend(['supportlinks',str(len(self.supportlinks)),' '.join(self.supportlinks)])
         if len(self.cogtarget)>0:
-            cmd=cmd+' movecog {} {} {}'.format(self.cogtarget[0],self.cogtarget[1],self.cogtarget[2])
-        return cmd
+            cmd.append('movecog {} {} {}'.format(self.cogtarget[0],self.cogtarget[1],self.cogtarget[2]))
+        return ' '.join(cmd)
 
     def appendTSR(self,tsr):
         """Add a TSR (not a TSR Chain!) to the GeneralIK instance. Choose
@@ -308,36 +308,28 @@ class GeneralIK:
         return len(self.soln)>0
 
     def findSolution(self,itrs=10,auto=False,extra=[]):
-        #Enable TSR sampling
-        self.sample_bw=True
-        for k in range(itrs):
-            if self.solved():
-                break
-            #rezero to prevent getting stuck...at major speed penalty
-            self.robot.SetDOFValues(self.zero)
-            self.run(auto,extra)
-            _time.sleep(.1)
-        return self.solved()
+        return self.continuousSolve(itrs,auto,extra,False,True)
 
-    def continuousSolve(self,itrs=1000,auto=False,extra=[]):
+    def continuousSolve(self,itrs=1000,auto=False,extra=[],show=True,quitonsolve=False):
         """ Continously solve in realtime, allowing a user to reposition
          the robot, to quickly get an intuitive idea of what works
         and doesn't. Note that TSR's based on object poses are not recalculated
         if an object is moved."""
-        #Enable TSR sampling
-        self.sample_bw=True
         report=_rave.CollisionReport()
         env=self.robot.GetEnv()
-        print self.robot
+        pose=Pose(self.robot)
         for k in xrange(itrs):
-            if not(env.CheckCollision(self.robot,report=report)) and not(self.robot.CheckSelfCollision()) and self.solved():
-                print "Valid solution found!"
-                #TODO: log solutuon + affine DOF
+            pose.send()
+            with self.robot:
+                self.run(auto,extra)
+                colcheck = env.CheckCollision(self.robot,report=report) and self.robot.CheckSelfCollision() if self.bcollisions else False
 
-            #rezero to prevent getting stuck...at major speed penalty
-            self.robot.SetDOFValues(self.zero)
-            self.run(auto,extra)
-            _time.sleep(.1)
+            if show:
+                self.goto()
+                _time.sleep(.1)
+            if self.solved and not colcheck and quitonsolve:
+                break
+
         return self.solved()
 
     def resetZero(self):
@@ -424,31 +416,43 @@ class TSR:
         print w
         return Transform(w[3:],w[0:3])
 
-    def __init__(self, T0_w_in = None, Tw_e_in = None, Bw_in = zeros(12), manipindex_in = -1, bodyandlink_in = 'NULL'):
+    def __init__(self, T0_w_in = None, Tw_e_in = None, Bw_in = zeros(12), manipindex_in = None, link_in = None):
         self.T0_w = Transform(T0_w_in)
         self.Tw_e = Transform(Tw_e_in)
         self.Bw = copy.deepcopy(array(Bw_in))
         self.manipindex = manipindex_in
-        self.bodyandlink = bodyandlink_in
+        self.link = link_in
         self.Bw.reshape((12,))
 
     def __eq__(self,other):
-        return self.T0_w==other.T0_w and self.Tw_e==other.Tw_e and self.Bw == other.Bw
+        tests=[self.T0_w==other.T0_w,self.Tw_e==other.Tw_e,self.Bw == other.Bw,self.link == other.link]
+        #all must be true, ignore manipindex
+        return bool(_np.prod(tests))
 
     def Serialize(self):
-        return '%d %s %s %s %s'%(self.manipindex, self.bodyandlink, self.T0_w.serialize(), self.Tw_e.serialize(), Serialize1DMatrix(self.Bw))
+        #hack to serialize link
+        if self.link is None:
+            bodyandlink="NULL"
+        elif isinstance(self.link,KinBody.Link):
+            bodyandlink=self.link.GetParent().GetName()+' '+self.link.GetName()
+        elif isinstance(self.link,KinBody):
+            bodyandlink=self.link.GetName()+' '+self.link.GetLinks()[0].GetName()
+        else:
+            raise TypeError('Need a kinbody or link definition')
+
+        manipindex= self.manipindex if self.manipindex else -1
+
+        cmd=[str(manipindex), str(bodyandlink), self.T0_w.serialize(), self.Tw_e.serialize(), Serialize1DMatrix(self.Bw)]
+        return ' '.join(cmd)
 
     def endPose(self):
-        return self.T0_w*self.Tw_e
+        T0=Transform(self.link.GetTransform())
+        return T0*self.T0_w*self.Tw_e
 
     def sample(self):
-        #print self.Bw
         b_range=self.Bw[1::2]-self.Bw[0::2]
         b_center=(self.Bw[1::2]+self.Bw[0::2])/2
-        #print b_range
-        #print b_center
         w=array(random.rand(6))*asarray(b_range)+asarray(b_center)
-        #print w
         return self.endPose()*TSR.buildT(w)
 
 class TSRChain:

@@ -1,5 +1,6 @@
 from openhubo import *
 from openravepy import *
+from openhubo import comps
 
 #Enable interactive mode and load a simple environment
 (env,options)=setup('qtcoin')
