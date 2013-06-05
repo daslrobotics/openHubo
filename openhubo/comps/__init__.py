@@ -133,7 +133,7 @@ class Cbirrt:
     stores properties of a problem such as the filename, time limits, TSR's,
     and has methods to run and return results, while allowing the user to avoid
     dealing directly with string commands."""
-    def __init__(self, problem=None,tsr_chains=[],filename='cmovetraj.txt',timelimit=30,smoothing=10):
+    def __init__(self, problem=None,tsr_chains=[],filename='cmovetraj.txt',timelimit=30,smoothing=10,psample=.1):
         self.problem=problem
         self.tsr_chains=[]
         try:
@@ -144,7 +144,7 @@ class Cbirrt:
         self.filename=filename
         self.timelimit=timelimit
         self.smoothing=smoothing
-        self.psample=.1
+        self.psample=psample
         self.supportlinks=[]
         self.jointgoals=[]
         self.jointstarts=[]
@@ -188,7 +188,7 @@ class Cbirrt:
 
         #TODO: IK guess
 
-        return ' '.join(cmd)
+        return ' '.join(cmd).replace('  ',' ')
 
     def run(self):
         """Execute a problem and store the solution status internally."""
@@ -201,10 +201,10 @@ class Cbirrt:
     def playback(self,force=False):
         """Re-run a solved trajectory, optionally forcing playback of a failed trajectory."""
         if self.solved==True:
-            return self.problem.SendCommand('Traj {}'.format(self.filename))
+            return self.problem.SendCommand('Traj {} '.format(self.filename))
         elif force:
-            print 'Forcing playback of trajectory {}'.format(self.filename)
-            return self.problem.SendCommand('Traj {}'.format(self.filename))
+            print 'Forcing playback of trajectory {} '.format(self.filename)
+            return self.problem.SendCommand('Traj {} '.format(self.filename))
         else:
             print 'Current solution not ready, use run() to generate'
 

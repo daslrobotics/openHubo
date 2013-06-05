@@ -280,7 +280,7 @@ def make_name_to_index_converter(robot,autotranslate=True):
                 return None
     return convert
 
-def load_scene(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,options=None):
+def load_scene(env,robotfile=None,scenefile=None,stop=None,physics=True,ghost=False,options=None):
     """ Load files and configure the simulation environment based on arguments and the options structure.
     The returned tuple contains:
         :robot: handle to the created robot
@@ -324,7 +324,9 @@ def load_scene_from_options(env,options):
     vidrecorder.realtime=False
 
     with env:
-        if options.stop:
+        if options.stop or physics:
+            #KLUDGE: need to do this for stability reasons, not sure why, probably can be fixed another way
+            print "Stopping OpenRAVE simulation to load models and configure..."
             env.StopSimulation()
 
         if type(options.scenefile) is list:
@@ -688,7 +690,9 @@ def _create_parser(parser=None):
                       help='Run a python example from the examples folder')
     parser.add_option('--record', action="store",dest='recordfile',default=None,
                       help='Enable video recording to the given file name (requires script commands to start and stop)')
-    parser.add_option('--no-stop-simulation', action="store_false", dest='stop',default=True,
+    parser.add_option('--stop-simulation', action="store_true", dest='stop',default=None,
+                      help='Stop the simulation during scene / robot loading')
+    parser.add_option('--no-stop-simulation', action="store_false", dest='stop',
                       help='Do not stop the simulation during scene / robot loading')
     parser.add_option('--video-capture-file', action="store", dest='recordfile',default=None,
                       help='Specify a video file for the video recorder to capture to.')

@@ -75,6 +75,11 @@ def create_trajectory(robot,waypts=None):
 
     return [traj,config]
 
+def read_trajectory_from_file(traj,filename):
+    with open(filename) as f:
+        s=f.read()
+        traj.deserialize(s)
+
 def read_swarthmore_traj(filename,robot,dt=.01,retime=True):
     """ Read in trajectory data stored in Swarthmore's format
         (data by row, single space separated)
