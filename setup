@@ -150,7 +150,7 @@ done
 
 for pkg in generalik cbirrt2 manipulation2
 do
-    cd $BASE_DIR/comps-plugins/$pkg
+    cd $BASE_DIR/comps-code/$pkg
     [ -d build ] || mkdir build
     cd build
     cmake ../

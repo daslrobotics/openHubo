@@ -10,6 +10,9 @@ do
     rm $l
 done
 
+git submodule deinit comps-plugins
+git submodule deinit openmr
+
 if [ -f openhubo ]
 then
     echo -e "\nRemoving local openhubo symlink from master\n"
