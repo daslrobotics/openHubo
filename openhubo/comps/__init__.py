@@ -12,13 +12,17 @@ def Serialize1DMatrix(arr):
     return ' '.join([str(x) for x in arr])
 
 def SerializeTransform(tm):
+    if isinstance(tm,Transform):
+        return tm.serialize()
     return matrixSerialization(_np.array(tm))
 
 class Transform:
     """Equivalent to RaveTransform class in OpenRAVE"""
 
     def __init__(self,rot=None,trans=None,check=True):
-        if _np.size(rot) == 16:
+        if isinstance(rot,Transform):
+            self.tm=rot.tm
+        elif _np.size(rot) == 16:
             #TODO: additional checks
             self.tm=_np.mat(rot)
         #TODO: init from 3x4 matrix
@@ -53,6 +57,19 @@ class Transform:
         if type(other) == _np.ndarray:
             return self.tm * _np.mat(other)
 
+    def __rmul__(self,other):
+        #TODO: make this return a Transform?
+        """Overload multiplication to provide proper matrix multiplication of 2
+        Transforms, or a Transform and an equivalent matrix.
+        Note that this function returns a matrix, NOT a Transform."""
+        if type(other) == type(self):
+            return other.tm * self.tm
+        #Hope that the user sets this up right...
+        if type(other) == _np.matrixlib.defmatrix.matrix:
+            return other * self.tm
+        if type(other) == _np.ndarray:
+            return _np.mat(other) * self.tm
+
     @staticmethod
     def make_transform(rot=None,trans=None,check=False):
         """Build a transformation matrix out of a rotation and translation of multiple possible shapes.
@@ -82,7 +99,7 @@ class Transform:
                 T[0:3,0:3] = rodrigues(rot)
             else:
                 #TODO: raise exception
-                print('No rotation matrix specified, assuming eye(3)')
+                raise('No rotation matrix specified, assuming eye(3)')
 
         if trans is not None and _np.size(trans)==3:
             T[0:3,3] = _np.mat(trans).reshape(3,1)
@@ -110,8 +127,10 @@ def rodrigues(r):
 
 
 class Cbirrt:
-    #TODO: Define copy constructor
-    #TODO: figure out if this makes sense to pack the problem in this way
+    """ Convenient class to work with CBiRRT problems in python. This class
+    stores properties of a problem such as the filename, time limits, TSR's,
+    and has methods to run and return results, while allowing the user to avoid
+    dealing directly with string commands."""
     def __init__(self, problem,tsr_chains=[],filename='cmovetraj.txt',timelimit=30,smoothing=10):
         self.problem=problem
         self.tsr_chains=[]
@@ -131,10 +150,11 @@ class Cbirrt:
         self.exactsupport=False
 
     def insertTSRChain(self,chain):
-        #TODO: Is it better to pass in by reference to make it easy to change?
+        """Insert a defined tsr chain into the list of tsr chains. Simply appends to the internal list ."""
         self.tsr_chains.append(_copy.deepcopy(chain))
 
     def Serialize(self):
+        """ Convert CBiRRT instance to a command string ready to send to the OpenRAVE Problem."""
         cmd=['RunCBiRRT']
         cmd.append('filename {}'.format(self.filename))
         cmd.append('timelimit {}'.format(self.timelimit))
@@ -161,6 +181,7 @@ class Cbirrt:
         return ' '.join(cmd)
 
     def run(self):
+        """Execute a problem and store the solution status internally."""
         stat = self.problem.SendCommand(self.Serialize())
         if stat == '1':
             self.solved=True
@@ -168,6 +189,7 @@ class Cbirrt:
         return False
 
     def playback(self,force=False):
+        """Re-run a solved trajectory, optionally forcing playback of a failed trajectory."""
         if self.solved==True:
             return self.problem.SendCommand('traj {}'.format(self.filename))
         elif force:
@@ -186,19 +208,31 @@ class Cbirrt:
         robot.SetActiveDOFs(activedof)
         return activedof
 
+    def quicksetup(self,T0_w, Tw_e, Bw, manipIndex):
+        """A simple 1-manipulator setup method that bypasses explicit creation
+        of TSR's and chains. Not meant to be a general method, just a quick
+        shortcut."""
+        tsr = TSR(T0_w,Tw_e,Bw,manipIndex)
+        chain = TSRChain(0,1,0)
+        chain.insertTSR(tsr)
+        self.insertTSRChain(chain)
 
 
 class GeneralIK:
+    """ Wrapper class to hold solution settings for an IK problem. This class
+    can use TSR's to define IK problems, and sample IK solutions from the
+    TSR's."""
     def __init__(self,robot,problem,tsrlist=[],sample_bw=False):
         self.robot=robot
         self.problem=problem
-        self.tsrlist=tsrlist
         self.sample_bw=sample_bw
         self.soln=[]
         self.activedofs=[]
+        self.tsrlist=[]
         self.zero=robot.GetDOFValues()
         self.supportlinks=[]
         self.cogtarget=()
+        self.appendTSR(tsrlist)
 
     def Serialize(self):
         #TODO: reformat as list then join at end
@@ -220,10 +254,20 @@ class GeneralIK:
         if len(self.cogtarget)>0:
             cmd=cmd+' movecog {} {} {}'.format(self.cogtarget[0],self.cogtarget[1],self.cogtarget[2])
         return cmd
+
     def appendTSR(self,tsr):
-        self.tsrlist.append(tsr)
+        """Add a TSR (not a TSR Chain!) to the GeneralIK instance. Choose
+        non-overlapping combinations of TSR's to avoid over-constrained
+        problems."""
+        try:
+            self.tsrlist.extend(tsr)
+        except TypeError:
+            self.tsrlist.append(tsr)
 
     def activate(self,extra=[]):
+        """Activate necessary DOF on the robot to allow the IK problem to run.
+        Optionally include extra DOF's to activate that are not part of the
+        manipulator."""
         if len(self.activedofs)==0:
             manips=self.robot.GetManipulators()
             #print manips
@@ -239,7 +283,6 @@ class GeneralIK:
         self.robot.SetActiveDOFs(self.activedofs)
 
     def run(self,auto=False,extra=[]):
-
         if auto:
             self.activate(extra)
         response=self.problem.SendCommand(self.Serialize())
@@ -256,6 +299,7 @@ class GeneralIK:
             return True
 
     def goto(self):
+        """Move the robot to the current solved position (direct move, not controller command!)"""
         self.activate()
         self.robot.SetDOFValues(self.soln,self.activedofs)
         self.robot.WaitForController(.2)
@@ -276,10 +320,17 @@ class GeneralIK:
         return self.solved()
 
     def continuousSolve(self,itrs=1000,auto=False,extra=[]):
+        """ Continously solve in realtime, allowing a user to reposition
+         the robot, to quickly get an intuitive idea of what works
+        and doesn't. Note that TSR's based on object poses are not recalculated
+        if an object is moved."""
         #Enable TSR sampling
         self.sample_bw=True
-        for k in range(itrs):
-            if not(self.robot.GetEnv().CheckCollision(self.robot)) and not(self.robot.CheckSelfCollision()) and self.solved():
+        report=_rave.CollisionReport()
+        env=self.robot.GetEnv()
+        print self.robot
+        for k in xrange(itrs):
+            if not(env.CheckCollision(self.robot,report=report)) and not(self.robot.CheckSelfCollision()) and self.solved():
                 print "Valid solution found!"
                 #TODO: log solutuon + affine DOF
 
@@ -367,23 +418,24 @@ Output:
 
     return outstring
 
-class TSR():
+class TSR:
     @staticmethod
     def buildT(w):
-        return Transform(w[:,3:],w[:,0:3])
+        print w
+        return Transform(w[3:],w[0:3])
 
-    def __init__(self, T0_w_in = None, Tw_e_in = None, Bw_in = mat(zeros([1,12])), manipindex_in = -1, bodyandlink_in = 'NULL'):
+    def __init__(self, T0_w_in = None, Tw_e_in = None, Bw_in = zeros(12), manipindex_in = -1, bodyandlink_in = 'NULL'):
         self.T0_w = Transform(T0_w_in)
         self.Tw_e = Transform(Tw_e_in)
-        self.Bw = copy.deepcopy(Bw_in)
+        self.Bw = copy.deepcopy(array(Bw_in))
         self.manipindex = manipindex_in
         self.bodyandlink = bodyandlink_in
+        self.Bw.reshape((12,))
 
     def __eq__(self,other):
         return self.T0_w==other.T0_w and self.Tw_e==other.Tw_e and self.Bw == other.Bw
 
     def Serialize(self):
-        print self.Bw
         return '%d %s %s %s %s'%(self.manipindex, self.bodyandlink, self.T0_w.serialize(), self.Tw_e.serialize(), Serialize1DMatrix(self.Bw))
 
     def endPose(self):
@@ -391,14 +443,15 @@ class TSR():
 
     def sample(self):
         #print self.Bw
-        b_range=self.Bw[:,1::2]-self.Bw[:,0::2]
-        b_center=(self.Bw[:,1::2]+self.Bw[:,0::2])/2
+        b_range=self.Bw[1::2]-self.Bw[0::2]
+        b_center=(self.Bw[1::2]+self.Bw[0::2])/2
         #print b_range
         #print b_center
-        w=array(random.rand(1,6))*asarray(b_range)+asarray(b_center)
+        w=array(random.rand(6))*asarray(b_range)+asarray(b_center)
+        #print w
         return self.endPose()*TSR.buildT(w)
 
-class TSRChain():
+class TSRChain:
     def __init__(self, bSampleStartFromChain_in=0, bSampleGoalFromChain_in=0, bConstrainToChain_in=0, mimicbodyname_in="NULL", mimicbodyjoints_in = []):
         self.bSampleStartFromChain = bSampleStartFromChain_in
         self.bSampleGoalFromChain = bSampleGoalFromChain_in
@@ -411,7 +464,7 @@ class TSRChain():
         self.TSRs.append(copy.deepcopy(tsr_in))
 
     def Serialize(self):
-        print  self.TSRs[0]
+        print self.TSRs[0]
         allTSRstring = ' '.join([tsr.Serialize() for tsr in self.TSRs])
         numTSRs = len(self.TSRs)
         outstring = ' TSRChain %d %d %d %d %s %s'%(self.bSampleStartFromChain, self.bSampleGoalFromChain, self.bConstrainToChain, numTSRs, allTSRstring, self.mimicbodyname)

@@ -155,7 +155,6 @@ class Pose:
         if offset is not None:
             self.values+=self.joint_offsets
 
-    #TODO: Understand joints as a type
     def __getitem__(self,key):
         """ Lookup the joint name and return the value"""
         if type(key)==str:
