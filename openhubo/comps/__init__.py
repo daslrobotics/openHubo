@@ -133,7 +133,7 @@ class Cbirrt:
     stores properties of a problem such as the filename, time limits, TSR's,
     and has methods to run and return results, while allowing the user to avoid
     dealing directly with string commands."""
-    def __init__(self, problem,tsr_chains=[],filename='cmovetraj.txt',timelimit=30,smoothing=10):
+    def __init__(self, problem=None,tsr_chains=[],filename='cmovetraj.txt',timelimit=30,smoothing=10):
         self.problem=problem
         self.tsr_chains=[]
         try:
@@ -150,6 +150,13 @@ class Cbirrt:
         self.jointstarts=[]
         self.solved=False
         self.exactsupport=False
+
+    @staticmethod
+    def createProblem(robot):
+        env=robot.GetEnv()
+        problem = _rave.RaveCreateProblem(env,'CBiRRT')
+        env.LoadProblem(problem,robot.GetName())
+        return problem
 
     def insertTSRChain(self,chain):
         """Insert a defined tsr chain into the list of tsr chains. Simply appends to the internal list ."""
@@ -179,7 +186,8 @@ class Cbirrt:
             cmd.append('supportlinks {} {}'.format(len(self.supportlinks),' '.join(self.supportlinks)))
             cmd.append('exactsupport {}'.format(int(self.exactsupport)))
 
-        #print ' '.join(cmd)
+        #TODO: IK guess
+
         return ' '.join(cmd)
 
     def run(self):
@@ -193,20 +201,34 @@ class Cbirrt:
     def playback(self,force=False):
         """Re-run a solved trajectory, optionally forcing playback of a failed trajectory."""
         if self.solved==True:
-            return self.problem.SendCommand('traj {}'.format(self.filename))
+            return self.problem.SendCommand('Traj {}'.format(self.filename))
         elif force:
             print 'Forcing playback of trajectory {}'.format(self.filename)
-            return self.problem.SendCommand('traj {}'.format(self.filename))
+            return self.problem.SendCommand('Traj {}'.format(self.filename))
         else:
             print 'Current solution not ready, use run() to generate'
 
-    def ActivateManipsByIndex(self,robot,maniplist,extramanips=[]):
-        manips=robot.GetManipulators()
+    def activate(self,robot,extra=[]):
+        """Activate necessary DOF on the robot to allow the problem to run.
+        Optionally include extra DOF's to activate that are not part of the
+        manipulator."""
+        activedofs=[]
+        for c in self.tsr_chains:
+            for t in c.TSRs:
+                m=robot.GetManipulators()[t.manipindex]
+                activedofs.extend(m.GetArmIndices())
+        for i in extra:
+            m=robot.GetManipulators()[i]
+            activedofs.extend(m.GetArmIndices())
+        robot.SetActiveDOFs(activedofs)
+
+    @staticmethod
+    def activateManipsByIndex(robot,maniplist,extramanips=[]):
         activedof=[]
         for i in maniplist:
-            activedof.extend(manips[i].GetArmJoints().tolist())
+            activedof.extend(robot.GetManipulator(i).GetArmJoints().tolist())
         for i in extramanips:
-            activedof.extend(manips[i].GetArmJoints().tolist())
+            activedof.extend(robot.GetManipulator(i).GetArmJoints().tolist())
         robot.SetActiveDOFs(activedof)
         return activedof
 
@@ -272,10 +294,6 @@ class GeneralIK:
             manips=self.robot.GetManipulators()
             #print manips
             for m in self.tsrlist:
-                #print m
-                #print robot
-                #print manips[m.manipindex].GetArmIndices()
-                #print activedofs
                 self.activedofs.extend(manips[m.manipindex].GetArmIndices())
             for m in extra:
                 self.activedofs.extend(manips[m].GetArmIndices())
@@ -440,7 +458,7 @@ class TSR:
         else:
             raise TypeError('Need a kinbody or link definition')
 
-        manipindex= self.manipindex if self.manipindex else -1
+        manipindex = self.manipindex if self.manipindex is not None else -1
 
         cmd=[str(manipindex), str(bodyandlink), self.T0_w.serialize(), self.Tw_e.serialize(), Serialize1DMatrix(self.Bw)]
         return ' '.join(cmd)
@@ -456,13 +474,15 @@ class TSR:
         return self.endPose()*TSR.buildT(w)
 
 class TSRChain:
-    def __init__(self, bSampleStartFromChain_in=0, bSampleGoalFromChain_in=0, bConstrainToChain_in=0, mimicbodyname_in="NULL", mimicbodyjoints_in = []):
-        self.bSampleStartFromChain = bSampleStartFromChain_in
-        self.bSampleGoalFromChain = bSampleGoalFromChain_in
-        self.bConstrainToChain = bConstrainToChain_in
+    def __init__(self, bSampleStart=0, bSampleGoal=0, bConstrain=0, mimicbodyname_in="NULL", mimicbodyjoints_in = [],tsr = None):
+        self.bSampleStartFromChain = bSampleStart
+        self.bSampleGoalFromChain = bSampleGoal
+        self.bConstrainToChain = bConstrain
         self.mimicbodyname = mimicbodyname_in
         self.mimicbodyjoints = mimicbodyjoints_in
         self.TSRs = []
+        if tsr:
+            self.TSRs.append(tsr)
 
     def insertTSR(self, tsr_in):
         self.TSRs.append(copy.deepcopy(tsr_in))
