@@ -43,6 +43,7 @@ from time import sleep
 from datetime import datetime
 from . import mapping
 from types import ModuleType
+from openravepy import KinBody
 
 TIMESTEP=0.001
 
@@ -84,7 +85,12 @@ class Pose:
         if ctrl:
             self.ctrl=ctrl
         else:
-            self.ctrl=robot.GetController()
+            try:
+                self.ctrl=robot.GetController()
+            except AttributeError:
+                #If using a kinbody, need this hack to get the right robot and ctrl
+                self.robot=robot.GetEnv().GetRobot(robot.GetName())
+                self.ctrl=self.robot.GetController()
 
         self.useregex=useregex
 
@@ -149,13 +155,15 @@ class Pose:
         if offset is not None:
             self.values+=self.joint_offsets
 
-    #TODO: Test if type checking slows down these functions
+    #TODO: Understand joints as a type
     def __getitem__(self,key):
         """ Lookup the joint name and return the value"""
         if type(key)==str:
             return self.values[self.jointmap[key]]
         if type(key)==slice or type(key)==int:
             return self.values[key]
+        if type(key)==KinBody.Joint:
+            return self.values[key.GetDOFIndex()]
 
     def __setitem__(self,key,value):
         """ Lookup the joint name and assign the specified value """
@@ -170,6 +178,10 @@ class Pose:
                 for k in self.jointmap.keys():
                     if _re.search(key,k):
                         self.values[self.jointmap[k]]=value
+            else:
+                self.values[self.jointmap[key]]=value
+        elif type(key)==KinBody.Joint:
+            self.values[key.GetDOFIndex()]=value
 
 
     def __iadd__(self,other):
@@ -186,6 +198,13 @@ class Pose:
             self.values*=other[:]
         else:
             self.values*=other
+
+    def __idiv__(self,other):
+        """Divide and assign joint values from a pose or array-like object"""
+        if isinstance(other,collections.Iterable):
+            self.values/=other[:]
+        else:
+            self.values/=other
 
     def __add__(self,other):
         """Add and return joint values from a pose or array-like object"""
@@ -602,11 +621,6 @@ def set_servo_torquemode(robot,joints,mode='directtorque'):
         cmd.append(str(j.GetDOFIndex()))
 
     return robot.GetController().SendCommand(' '.join(cmd))
-
-def set_finger_torquemode(robot,mode='directtorque'):
-    """ Shortcut function to set fingers to open-loop torque mode, for heavy-duty grasping"""
-    joints=mapping.get_finger_joints(robot)
-    return set_servo_torquemode(robot,joints,mode)
 
 
 def _safe_quit():

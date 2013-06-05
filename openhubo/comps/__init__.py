@@ -275,7 +275,7 @@ class GeneralIK:
             _time.sleep(.1)
         return self.solved()
 
-    def continousSolve(self,itrs=1000,auto=False,extra=[]):
+    def continuousSolve(self,itrs=1000,auto=False,extra=[]):
         #Enable TSR sampling
         self.sample_bw=True
         for k in range(itrs):

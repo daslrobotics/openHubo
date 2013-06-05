@@ -191,7 +191,7 @@ def solveWholeBodyPose(robot,problem,tsrs):
     ik=_comps.GeneralIK(robot,problem,tsrs.values())
 
     #TODO: make this run even if solution is found?
-    ik.continousSolve(1000,True,[3])
+    ik.continuousSolve(1000,True,[3])
 
     if ik.solved():
         ik.goto()
