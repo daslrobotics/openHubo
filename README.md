@@ -13,10 +13,12 @@ Kiwon Sohn: Usage and testing with MATLAB and python for vehicle ingress / egres
 
 Youngbum Jun: Testing and usage with pump / hose insertion, text trajectory definitions
 
+KAIST Hubo Lab and Rainbow: Creating the excellent Hubo humanoid series, and teaching many DASL members about humanoid robotics.
+
 Quick Setup Instructions
 ========================
 
-To set up 0.7.x, clone the repository:
+To set up openHubo 0.7+, clone the repository:
 
     git clone git://github.com/daslrobotics/openHubo.git
     cd openHubo
@@ -64,3 +66,13 @@ https://github.com/hubo/hubo-ach
 
 If you have any issues with the models or OpenHubo, please submit an issue to
 the github issue tracker. Happy Simulating!
+
+Using Older Versions
+==================
+
+To use older versions of OpenHubo, simple checkout the appropriate branch or
+tag, and run the setup script as above. Note that 0.8.x represents significant
+structural changes and deprecates some old functions. Due to the new openhubo
+python package, this may break existing code. The release/0.7.0 branch is
+provided for compatibility, if your code breaks using 0.8+.
+
