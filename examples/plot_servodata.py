@@ -16,13 +16,10 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-from openravepy import *
-from numpy import *
-import time
-import openhubo 
+import openhubo
 
 test=openhubo.ServoPlotter('examples/servodata_2012_09_19_20_52_19.txt')
-servos=['LEP'] 
+servos=['LEP']
 test.plot(servos)
 test.plt.title('Left Elbow Pitch command vs. position')
 test.show()

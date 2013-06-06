@@ -16,19 +16,21 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-from openravepy import *
-from numpy import *
+from numpy import sign,mat,array,pi
 from numpy.linalg import norm
+from openravepy import Sensor
+import openhubo
+import openhubo.kbhit as kbhit
 import time
-import sys
-from servo import *
-import openhubo 
 
-def swing_and_measure(robot,pose):
-    env=robot.GetEnv()
-    robot.GetController().SetDesired(pose)
+def swing_and_measure(pose):
+    #break out pointers...
+    env=pose.robot.GetEnv()
+    robot=pose.robot
+
+    pose.send()
     maxF=300
-    for k in range(5000):
+    while not kbhit.kbhit(True):
         env.StepSimulation(openhubo.TIMESTEP)
         h=[]
         for s in robot.GetAttachedSensors():
@@ -54,16 +56,15 @@ def swing_and_measure(robot,pose):
 
             cop=s.GetAttachingLink().GetTransform()*mat(array(localCoP)).T
             r=norm(force)/maxF
-            h.append(env.plot3(cop[:-1].T,10,[r,.5,0]))
-            #h=openhubo.plot_masses(robot)
-        
+            h.append(env.plot3(cop[:-1].T,.01,[r,r,r/2.],True))
+
 if __name__=='__main__':
 
-    env = Environment()
-    env.SetDebugLevel(3)
     (env,options)=openhubo.setup('qtcoin')
+    env.SetDebugLevel(3)
+    options.physics=True
 
-    [robot,controller,ind,ref,recorder]=openhubo.load(env,options.robotfile,options.scenefile,True)
+    [robot,controller,ind,ref,recorder]=openhubo.load_scene(env,options)
 
     with env:
         for s in robot.GetAttachedSensors():
@@ -77,19 +78,19 @@ if __name__=='__main__':
     time.sleep(1)
     env.StopSimulation()
 
-    pose=zeros(robot.GetDOF())
-    pose[ind('REP')]=-pi/4
-    pose[ind('LEP')]=-pi/4
-    pose[ind('RSP')]=-pi/4
-    pose[ind('LSP')]=-pi/4
+    pose=openhubo.Pose(robot,controller)
+    pose['REP']=-pi/4
+    pose['LEP']=-pi/4
+    pose['RSP']=-pi/4
+    pose['LSP']=-pi/4
 
-    swing_and_measure(robot,pose)
+    swing_and_measure(pose)
 
-    pose[ind('REP')]=0
-    pose[ind('LEP')]=0
-    pose[ind('RSP')]=0
-    pose[ind('LSP')]=0
+    pose['REP']=0
+    pose['LEP']=0
+    pose['RSP']=0
+    pose['LSP']=0
 
-    swing_and_measure(robot,pose)
+    swing_and_measure(pose)
 
     env.StartSimulation(openhubo.TIMESTEP)

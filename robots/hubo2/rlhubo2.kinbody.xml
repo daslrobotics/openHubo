@@ -299,13 +299,13 @@
         </mass>
     </body>
 
-    <body name="Body_HDY" type="dynamic">
+    <body name="Body_NKY" type="dynamic">
         <offsetfrom>Body_Torso</offsetfrom>
-        <!--Body_HDY Parent Center of Mass to Base -->
+        <!--Body_NKY Parent Center of Mass to Base -->
         <translation>-0.022817253784 -0.005993625269 0.050206919105</translation>
-        <!--Body_HDY Parent to Current -->
+        <!--Body_NKY Parent to Current -->
         <translation>0.000000000000 0.000000016254 0.051000000000</translation>
-        <!--Body_HDY Base to Center of Mass -->
+        <!--Body_NKY Base to Center of Mass -->
         <translation>-0.000001381680 0.000002908363 0.052749591985</translation>
 
         <Geom type="cylinder">
@@ -325,48 +325,48 @@
         </mass>
     </body>
 
-    <Joint name="HDY" type="hinge">
+    <Joint name="NKY" type="hinge">
         <body>Body_Torso</body>
-        <body>Body_HDY</body>
-        <offsetfrom>Body_HDY</offsetfrom>
+        <body>Body_NKY</body>
+        <offsetfrom>Body_NKY</offsetfrom>
         <anchor>0.000001381680 -0.000002908363 -0.052749591985</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
     </Joint>
-    <adjacent>Body_HDY Body_Torso</adjacent>
+    <adjacent>Body_NKY Body_Torso</adjacent>
 
-    <body name="Body_HDR" type="dynamic">
-        <offsetfrom>Body_HDY</offsetfrom>
-        <!--Body_HDR Parent Center of Mass to Base -->
+    <body name="Body_NK1" type="dynamic">
+        <offsetfrom>Body_NKY</offsetfrom>
+        <!--Body_NK1 Parent Center of Mass to Base -->
         <translation>0.000001381680 -0.000002908363 -0.052749591985</translation>
-        <!--Body_HDR Parent to Current -->
+        <!--Body_NK1 Parent to Current -->
         <translation>-0.000000983954 0.000000000000 0.100803404580</translation>
-        <!--Body_HDR Base to Center of Mass -->
+        <!--Body_NK1 Base to Center of Mass -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
     </body>
 
-    <Joint name="HDR" type="hinge">
-        <body>Body_HDY</body>
-        <body>Body_HDR</body>
-        <offsetfrom>Body_HDR</offsetfrom>
+    <Joint name="NK1" type="hinge">
+        <body>Body_NKY</body>
+        <body>Body_NK1</body>
+        <offsetfrom>Body_NK1</offsetfrom>
         <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
-        <axis>1 0 0</axis>
+        <axis>1 1 0</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
     </Joint>
-    <adjacent>Body_HDR Body_HDY</adjacent>
+    <adjacent>Body_NK1 Body_NKY</adjacent>
 
-    <body name="Body_HDP" type="dynamic">
-        <offsetfrom>Body_HDR</offsetfrom>
-        <!--Body_HDP Parent Center of Mass to Base -->
+    <body name="Body_NK2" type="dynamic">
+        <offsetfrom>Body_NK1</offsetfrom>
+        <!--Body_NK2 Parent Center of Mass to Base -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
-        <!--Body_HDP Parent to Current -->
+        <!--Body_NK2 Parent to Current -->
         <translation>-0.006500000000 0.000000000000 0.000000000000</translation>
-        <!--Body_HDP Base to Center of Mass -->
+        <!--Body_NK2 Base to Center of Mass -->
         <translation>0.011161499785 0.000235808076 0.028812183074</translation>
         <geom type="trimesh">
             <translation>-0.011161499785 -0.000235808076 -0.028812183074</translation>
-            <render>Body_HDP_1.wrl 1 </render>
-            <data>convhull_HDP_1.wrl 1 </data>
+            <render>Body_NK2_1.wrl 1 </render>
+            <data>convhull_NK2_1.wrl 1 </data>
         </geom>
         <mass type="custom">
             <total>0.333673668346</total>
@@ -378,18 +378,18 @@
         </mass>
     </body>
 
-    <Joint name="HDP" type="hinge">
-        <body>Body_HDR</body>
-        <body>Body_HDP</body>
-        <offsetfrom>Body_HDP</offsetfrom>
+    <Joint name="NK2" type="hinge">
+        <body>Body_NK1</body>
+        <body>Body_NK2</body>
+        <offsetfrom>Body_NK2</offsetfrom>
         <anchor>-0.011161499785 -0.000235808076 -0.028812183074</anchor>
-        <axis>0 1 0</axis>
+        <axis>1 -1 0</axis>
         <limitsdeg>-179.999 179.999</limitsdeg>
     </Joint>
-    <adjacent>Body_HDP Body_HDR</adjacent>
-    <adjacent>Body_HDY Body_HDP</adjacent>
+    <adjacent>Body_NK2 Body_NK1</adjacent>
+    <adjacent>Body_NKY Body_NK2</adjacent>
 
-    <Joint name="HPY" type="hinge">
+    <Joint name="TSY" type="hinge">
         <body>Body_Torso</body>
         <body>Body_Hip</body>
         <offsetfrom>Body_Hip</offsetfrom>

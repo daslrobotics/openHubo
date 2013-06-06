@@ -1,87 +1,50 @@
-#!/usr/bin/env python
+"""Trajectory Control example for hubo+ model."""
+import openhubo as oh
+from openravepy import planningutils
+from openhubo import trajectory
+from numpy import pi
 
-import openhubo
-from openravepy import *
-from numpy import *
-from numpy.linalg import *
-import sys
-import time
-from copy import copy
-from trajectory import *
-#TODO: Work with the concept of activeDOF?
+[env,options]=oh.setup('qtcoin')
+env.SetDebugLevel(4)
 
-def createTrajectory(robot):
-    """ Create a trajectory based on a robot's config spec"""
-    traj=RaveCreateTrajectory(robot.GetEnvironment,'')
-    config=robot.GetConfigurationSpecification()
-    config.AddDeltaTimeGroup()
-    traj.Init(config)
-    return traj
+options.physics=True
+options.ghost=True
 
-""" Simple test script to run some of the functions above. """
-if __name__=='__main__':
+[robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
+env.StartSimulation(oh.TIMESTEP)
 
-    (env,options)=openhubo.setup('qtcoin')
-    env.SetDebugLevel(4)
+#Initialize pose object and trajectory for robot
+pose=oh.Pose(robot,ctrl)
+[traj,config]=trajectory.create_trajectory(robot)
 
-    [robot,controller,ind,ref,recorder]=openhubo.load(env,'rlhuboplus.robot.xml','floor.env.xml',True)
+trajectory.traj_append(traj,pose.to_waypt(0.01))
 
-    pose0=array(zeros(robot.GetDOF()))
+pose['LAP']=-pi/8
+pose['RAP']=-pi/8
 
-    controller.SetDesired(pose0)
-    robot.SetDOFValues(pose0)
+pose['LKP']=pi/4
+pose['RKP']=pi/4
 
-    env.StartSimulation(openhubo.TIMESTEP)
+pose['LHP']=-pi/8
+pose['RHP']=-pi/8
 
-    pose1=pose0.copy()
-    print pose1
+pose['LSP']=-pi/8
+pose['LEP']=-pi/4
 
-    pose1[ind('LAP')]=-pi/8
-    pose1[ind('RAP')]=-pi/8
+trajectory.traj_append(traj,pose.to_waypt(1.0))
 
-    pose1[ind('LKP')]=pi/4
-    pose1[ind('RKP')]=pi/4
+pose[:]=0.0
 
-    pose1[ind('LHP')]=-pi/8
-    pose1[ind('RHP')]=-pi/8
+trajectory.traj_append(traj,pose.to_waypt(1.0))
 
-    pose1[ind('LSP')]=-pi/8
-    pose1[ind('LEP')]=-pi/4
+planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
 
-    traj=RaveCreateTrajectory(env,'')
+print "Showing samples of knee pose at given times:"
+for k in range(40):
+    data=traj.Sample(float(k)/10)
+    print data[ind('LKP')]
 
-    #Set up basic parameters
-    config=robot.GetConfigurationSpecification()
-    config.AddDeltaTimeGroup()
-
-    traj.Init(config)
-
-    t0=0
-    t1=2
-
-    waypt0=list(pose0)
-    waypt1=list(pose1)
-
-    waypt0.extend(zeros(7))
-    waypt1.extend(zeros(7))
-
-    waypt0.append(t0)
-    waypt1.append(t1)
-    waypt2=copy(waypt0)
-    waypt2[-1]=t1;
-
-    traj.Insert(0,waypt0)
-    traj.Insert(1,waypt1)
-    traj.Insert(2,waypt2)
-
-    planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
-
-    #Prove that the retiming actually works
-    for k in range(40):
-        data=traj.Sample(float(k)/10)
-        print data[ind('LKP')]
-    
-    controller.SetPath(traj)
-    controller.SendCommand('start')
-    while not(controller.IsDone()):
-        time.sleep(.1)
+ctrl.SetPath(traj)
+ctrl.SendCommand('start')
+while not(ctrl.IsDone()):
+    oh.sleep(.1)

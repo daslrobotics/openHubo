@@ -1,13 +1,9 @@
 #!/usr/bin/env python
 
-from openravepy import *
-from numpy import *
-from numpy.linalg import *
-import sys
-import time
-from copy import copy
 import openhubo
+from openravepy import RaveCreateController
 import matplotlib.pyplot as plt
+from numpy import diff
 
 def analyzeTime(filename):
     with open(filename,'r') as f:
@@ -26,7 +22,7 @@ if __name__=='__main__':
 
     timestep=0.01
 
-    [robot,ctrl,ind,__,recorder]=openhubo.load(env,options)
+    [robot,ctrl,ind,__,recorder]=openhubo.load_scene(env,options)
 
     #Override default controller with ach-read controller
     ctrl=RaveCreateController(env,'achreadcontroller')

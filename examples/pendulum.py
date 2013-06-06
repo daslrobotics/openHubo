@@ -16,21 +16,17 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-from openravepy import *
-from numpy import *
 import time
-import datetime
-import sys
 import openhubo
+from openravepy import RaveCreateController
 
 #Get the global environment for simulation
 
 if __name__=='__main__':
-    
     (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,None,'pendulum.env.xml',True)
+    [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,None,'pendulum.env.xml',True)
     robot.SetController(RaveCreateController(env,'servocontroller'))
     spring=robot.GetController()
     with env:
@@ -50,4 +46,4 @@ if __name__=='__main__':
 
     spring.SendCommand('record_off pendulum.txt ')
     p=openhubo.ServoPlotter('pendulum.txt',['j0'])
-    
+

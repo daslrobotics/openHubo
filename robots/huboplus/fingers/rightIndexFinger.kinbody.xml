@@ -7,8 +7,6 @@
         <RotationAxis>1 0 0 90</RotationAxis>
         <RotationAxis>0 0 -1 90</RotationAxis>
         <RotationAxis>1 0 0 45</RotationAxis>
-        <!-- RWP Center of Mass to Base -->
-        <translation>0.000258199377 0.011441986656 0.046147242821</translation>
         <Translation>0.028499 -0.020675 -0.083923</Translation>
         <Translation> 0   -0.0113   -0.0113</Translation>
         <Geom type="box">

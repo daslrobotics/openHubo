@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+from fnmatch import fnmatch
+import os as _os
+import sys as _sys
+from openhubo import get_options
+
+def clear():
+    _os.system('clear')
+
+clear()
+print "**************************************************************"
+print "* OpenHubo python launcher for examples and interactive work *"
+print "**************************************************************"
+
+
+(options,scriptname)=get_options()
+
+#Kludgy way to get ipython to launch with locals as interactive script
+cmd=[]
+cmd.append(options.interpreter)
+if options.interact:
+    cmd.append('-i')
+if options.interpreter == 'ipython':
+    cmd.append('--pylab')
+    cmd.append('--no-banner')
+    cmd.append('--no-confirm-exit')
+    if options.pdb:
+        cmd.append('--pdb')
+
+if options.example:
+    expath=_os.environ['OPENHUBO_DIR'] + '/examples/'
+    for f in _os.listdir(expath):
+        if fnmatch(f, options.example):
+            print("Found example {}".format(f))
+            examplefile=expath + f
+            cmd.append(examplefile)
+            break
+
+elif scriptname:
+    cmd.append(scriptname[0])
+    #Recycle openhubo arguments here
+
+else:
+    cmd.append(_os.environ['OPENHUBO_DIR'] + '/openhubo/_interactive.py')
+
+#Recycle openhubo arguments here
+if len(_sys.argv)>1:
+    cmd.append('--')
+    cmd.extend(_sys.argv[1:])
+
+#Name is repeated, C args style
+_os.execvp(cmd[0],cmd)

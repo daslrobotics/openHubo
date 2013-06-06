@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<Robot name="rlhuboplus_ref" >
-    <KinBody file="huboplus/rlhuboplus.kinbody.xml" makejoinedlinksadjacent="true">
-        <Translation>0 0 .005</Translation>
-    </KinBody>
-</Robot>

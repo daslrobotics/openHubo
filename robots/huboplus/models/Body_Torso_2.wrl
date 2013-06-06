@@ -1,6 +1,6 @@
 #VRML V2.0 utf8
 
-DEF Body_TBD_Shrinkwrap_2
+DEF Body_Torso_Shrinkwrap_2
 Transform {
 	children [
 		 Shape {

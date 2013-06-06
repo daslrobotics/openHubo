@@ -92,8 +92,8 @@
         <!-- TODO align anchor to physics FT sensor location-->
         <Body>Body_RAR</Body>
         <Body>rightFoot</Body>
-        <offsetfrom>rightFoot</offsetfrom>
-        <anchor>0 0 0</anchor>
+        <offsetfrom>Body_RAR</offsetfrom>
+        <anchor>-0.0705 0 -0.0645</anchor>
         <limits>0 0</limits>
     </joint>
 
@@ -285,15 +285,14 @@
         </mass>
     </body>
 
-    <Joint name="HPY" type="hinge">
+    <Joint name="TSY" type="hinge">
         <body>Body_Torso</body>
         <body>Body_Hip</body>
         <offsetfrom>Body_Hip</offsetfrom>
         <anchor>0.013850358943 -0.000007806523 0.035461283862</anchor>
         <axis>0 0 -1</axis>
         <limitsdeg>-90 90</limitsdeg>
-		<maxvel>3.77</maxvel>
-		<maxaccel>7.20</maxaccel>
+		<maxvel>7.20</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -304,8 +303,7 @@
         <anchor>-0.034706500276 0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
-		<maxvel>3.77</maxvel>
-		<maxaccel>7.20</maxaccel>
+		<maxvel>7.20</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -344,8 +342,7 @@
         <anchor>-0.034706500276 -0.000037480007 0.072615273181</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-90 90</limitsdeg>
-		<maxvel>3.77</maxvel>
-		<maxaccel>7.20</maxaccel>
+		<maxvel>7.20</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -355,9 +352,8 @@
         <offsetfrom>Body_RHR</offsetfrom>
         <anchor>0.049747912596 0.012531116599 0.015643664572</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-28 28</limitsdeg>
-		<maxvel>1.86</maxvel>
-		<maxaccel>3.56</maxaccel>
+        <limits>-0.541052068118 0.541052068118</limits>
+		<maxvel>3.56</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -390,9 +386,8 @@
         <offsetfrom>Body_LHR</offsetfrom>
         <anchor>0.049747912596 -0.012531116599 0.015643664572</anchor>
         <axis>1 0 0</axis>
-        <limitsdeg>-28 28</limitsdeg>
-		<maxvel>1.86</maxvel>
-		<maxaccel>3.56</maxaccel>
+        <limits>-0.541052068118 0.541052068118</limits>
+		<maxvel>3.56</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -402,9 +397,8 @@
         <offsetfrom>Body_RHP</offsetfrom>
         <anchor>-0.019504891350 -0.059577480789 0.175201757627</anchor>
         <axis>0 1 0</axis>
-        <limitsdeg>-85 92</limitsdeg>
-		<maxvel>4.71</maxvel>
-		<maxaccel>9.00</maxaccel>
+        <limits>-1.91986217719 1.91986217719</limits>
+		<maxvel>9.00</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -442,9 +436,8 @@
         <offsetfrom>Body_LHP</offsetfrom>
         <anchor>-0.019504891350 0.059577480789 0.175201757627</anchor>
         <axis>0 1 0</axis>
-        <!--<limitsdeg>-85 92</limitsdeg>-->
-		<maxvel>4.71</maxvel>
-		<maxaccel>9.00</maxaccel>
+        <limits>-1.91986217719 1.91986217719</limits>
+		<maxvel>9.00</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -455,8 +448,7 @@
         <anchor>-0.012825433376 -0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-4 149</limitsdeg>
-		<maxvel>4.71</maxvel>
-		<maxaccel>9.00</maxaccel>
+		<maxvel>9.00</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -495,8 +487,7 @@
         <anchor>-0.012825433376 0.007275670525 0.171431348038</anchor>
         <axis>0 1 0</axis>
         <!--<limitsdeg>-4 149</limitsdeg>-->
-		<maxvel>4.71</maxvel>
-		<maxaccel>9.00</maxaccel>
+		<maxvel>9.00</maxvel>
 		<maxtorque>95</maxtorque>
     </Joint>
 
@@ -507,8 +498,7 @@
         <anchor>-0.019870246084 -0.045969255056 -0.011506941050</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-74 97</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -542,8 +532,7 @@
         <anchor>-0.019870246084 0.045969255056 -0.011506941050</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-74 97</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -554,8 +543,7 @@
         <anchor>0.051509407797 0.002163982128 0.069388069491</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-11 11</limitsdeg>
-		<maxvel>2.98</maxvel>
-		<maxaccel>5.70</maxaccel>
+		<maxvel>5.70</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -595,8 +583,7 @@
         <anchor>0.051509407797 -0.002163982128 0.069388069491</anchor>
         <axis>1 0 0</axis>
         <limitsdeg>-11 11</limitsdeg>
-		<maxvel>2.98</maxvel>
-		<maxaccel>5.70</maxaccel>
+		<maxvel>5.70</maxvel>
 		<maxtorque>71</maxtorque>
     </Joint>
 
@@ -669,8 +656,8 @@
         <!-- TODO align anchor to physics FT sensor location-->
         <Body>Body_LAR</Body>
         <Body>leftFoot</Body>
-        <offsetfrom>leftFoot</offsetfrom>
-        <anchor>0 0 0</anchor>
+        <offsetfrom>Body_LAR</offsetfrom>
+        <anchor>-0.0705 0 -0.0645</anchor>
         <limits>0 0</limits>
     </joint>
 
@@ -704,8 +691,7 @@
         <anchor>-0.016720721524 0.057040679167 -0.000009918731</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>6.48</maxvel>
-		<maxaccel>12.38</maxaccel>
+        <maxvel>12.38</maxvel>
 		<maxtorque>35</maxtorque>
     </Joint>
 
@@ -739,8 +725,7 @@
         <anchor>-0.016720721524 -0.057040679167 -0.000009918731</anchor>
         <axis>0 1 0</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>6.48</maxvel>
-		<maxaccel>12.38</maxaccel>
+		<maxvel>12.38</maxvel>
 		<maxtorque>35</maxtorque>
     </Joint>
 
@@ -753,7 +738,6 @@
         <!--Body_RSR Base to Center of Mass -->
         <translation>-0.036207973807 0.000083124345 -0.001266848323</translation>
         <geom type="trimesh">
-
             <translation>0.036207973807 -0.000083124345 0.001266848323</translation>
             <donotrender>Body_RSR_1.wrl 1 </donotrender>
             <data>convhull_RSR_1.wrl 1 </data>
@@ -774,10 +758,9 @@
         <offsetfrom>Body_RSR</offsetfrom>
         <anchor>0.036207973807 -0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <initial>0.26179938779</initial>
+        <initial>0.2617993877991494</initial>
         <limitsdeg>-150 34</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>35</maxtorque>
     </Joint>
 
@@ -810,10 +793,9 @@
         <offsetfrom>Body_LSR</offsetfrom>
         <anchor>0.036207973807 0.000083124345 0.001266848323</anchor>
         <axis>1 0 0</axis>
-        <initial>-0.26179938779</initial>
+        <initial>-0.2617993877991494</initial>
         <limitsdeg>-34 150</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>35</maxtorque>
     </Joint>
 
@@ -852,8 +834,7 @@
         <anchor>-0.004561211264 0.000031057603 0.090782377537</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>25</maxtorque>
     </Joint>
 
@@ -892,8 +873,7 @@
         <anchor>-0.004561211264 -0.000031057603 0.090782377537</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>25</maxtorque>
     </Joint>
 
@@ -929,8 +909,7 @@
         <axis>0 1 0</axis>
         <initial>0.17453292519943295</initial>
         <limitsdeg>-133 14</limitsdeg>
-		<maxvel>7.85</maxvel>
-		<maxaccel>15.00</maxaccel>
+		<maxvel>15.00</maxvel>
 		<maxtorque>25</maxtorque>
     </Joint>
 
@@ -965,8 +944,7 @@
         <axis>0 1 0</axis>
         <initial>0.17453292519943295</initial>
         <limitsdeg>-133 14</limitsdeg>
-		<maxvel>7.85</maxvel>
-		<maxaccel>15.00</maxaccel>
+		<maxvel>15.00</maxvel>
 		<maxtorque>25</maxtorque>
     </Joint>
 
@@ -1009,8 +987,7 @@
         <anchor>0.001220192079 0.000635233335 0.023804318643</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>9</maxtorque>
     </Joint>
 
@@ -1053,48 +1030,46 @@
         <anchor>0.001220192079 -0.000635233335 0.023804318643</anchor>
         <axis>0 0 1</axis>
         <limitsdeg>-169.999 169.999</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>9</maxtorque>
     </Joint>
 
-    <body name="Body_HNR" type="dynamic">
+    <body name="Body_NK1" type="dynamic">
         <offsetfrom>Body_Torso</offsetfrom>
-        <!--Body_HNR Parent Center of Mass to Base -->
+        <!--Body_NK1 Parent Center of Mass to Base -->
         <translation>0.012258116293 0.002473149928 0.048635606065</translation>
-        <!--Body_HNR Parent to Current -->
+        <!--Body_NK1 Parent to Current -->
         <translation>0.000000000000 -0.000020548820 0.148299146751</translation>
-        <!--Body_HNR Base to Center of Mass -->
+        <!--Body_NK1 Base to Center of Mass -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
         <mass type="custom">
             <total>.1</total>
         </mass>
     </body>
 
-    <Joint name="HNR" type="hinge">
+    <Joint name="NK1" type="hinge">
         <body>Body_Torso</body>
-        <body>Body_HNR</body>
-        <offsetfrom>Body_HNR</offsetfrom>
+        <body>Body_NK1</body>
+        <offsetfrom>Body_NK1</offsetfrom>
         <anchor>0.000000000000 0.000000000000 0.000000000000</anchor>
-        <axis>1 0 0</axis>
+        <axis>1 1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>2.7</maxtorque>
     </Joint>
 
-    <body name="Body_HNP" type="dynamic">
-        <offsetfrom>Body_HNR</offsetfrom>
-        <!--Body_HNP Parent Center of Mass to Base -->
+    <body name="Body_NK2" type="dynamic">
+        <offsetfrom>Body_NK1</offsetfrom>
+        <!--Body_NK2 Parent Center of Mass to Base -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
-        <!--Body_HNP Parent to Current -->
+        <!--Body_NK2 Parent to Current -->
         <translation>0.000000000000 0.000000000000 0.000000000000</translation>
-        <!--Body_HNP Base to Center of Mass -->
+        <!--Body_NK2 Base to Center of Mass -->
         <translation>0.010688581590 -0.000030086449 0.032122953618</translation>
         <geom type="trimesh">
             <translation>-0.010688581590 0.000030086449 -0.032122953618</translation>
-            <donotrender>Body_HNP_1.wrl 1 </donotrender>
-            <data>convhull_HNP_1.wrl 1 </data>
+            <donotrender>Body_NK2_1.wrl 1 </donotrender>
+            <data>convhull_NK2_1.wrl 1 </data>
         </geom>
         <mass type="custom">
             <total>0.274250901076</total>
@@ -1106,15 +1081,14 @@
         </mass>
     </body>
 
-    <Joint name="HNP" type="hinge">
-        <body>Body_HNR</body>
-        <body>Body_HNP</body>
-        <offsetfrom>Body_HNP</offsetfrom>
+    <Joint name="NK2" type="hinge">
+        <body>Body_NK1</body>
+        <body>Body_NK2</body>
+        <offsetfrom>Body_NK2</offsetfrom>
         <anchor>-0.010688581590 0.000030086449 -0.032122953618</anchor>
-        <axis>0 1 0</axis>
+        <axis>1 -1 0</axis>
         <limitsdeg>-30 30</limitsdeg>
-		<maxvel>9.42</maxvel>
-		<maxaccel>18.00</maxaccel>
+		<maxvel>18.00</maxvel>
 		<maxtorque>2.7</maxtorque>
     </Joint>
 
@@ -1125,8 +1099,8 @@
     <adjacent>Body_Torso Body_Hip</adjacent>
     <adjacent>Body_Torso Body_RSP</adjacent>
     <adjacent>Body_Torso Body_LSP</adjacent>
-    <adjacent>Body_Torso Body_HNP</adjacent>
-    <adjacent>Body_Torso Body_HNR</adjacent>
+    <adjacent>Body_Torso Body_NK2</adjacent>
+    <adjacent>Body_Torso Body_NK1</adjacent>
 
     <!-- Body_Hip -->
     <adjacent>Body_Hip Body_RHY</adjacent>
@@ -1197,7 +1171,10 @@
     <adjacent>Body_LWY Body_LEP</adjacent>
 
     <!-- Head -->
-    <!-- Body_HNP -->
-    <adjacent>Body_HNP Body_HNR</adjacent>
+    <!-- Body_NK2 -->
+    <adjacent>Body_NK2 Body_NK1</adjacent>
+
+    <adjacent>leftFoot Body_LAR</adjacent>
+    <adjacent>rightFoot Body_RAR</adjacent>
 
 </kinbody>

@@ -5,9 +5,27 @@
 BASE_DIR=`git rev-parse --show-toplevel`
 
 cd $BASE_DIR
-rm plugins/lib*.so
+for l in `find plugins -name lib*.so`
+do
+    rm $l
+done
 
-for pkg in comps-plugins/generalik comps-plugins/cbirrt2 comps-plugins/manipulation2 openmr forceSensor
+git submodule deinit comps-plugins
+git submodule deinit openmr
+
+if [ -f openhubo ]
+then
+    echo -e "\nRemoving local openhubo symlink from master\n"
+    unlink openhubo
+fi
+
+if [ -d python ]
+then
+    echo -e "\nUPGRADE WARNING: Renaming old python folder to python.bak, please move any custom python code out of this folder!\n"
+    mv python python.bak
+fi
+
+for pkg in comps-plugins/generalik comps-plugins/cbirrt2 comps-plugins/manipulation2 servocontroller forceSensor
 do
     cd $BASE_DIR/$pkg
     echo "Removing build folder in "`pwd`

@@ -16,28 +16,23 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-from openravepy import *
-from numpy import *
-import time
-import datetime
-import sys
+from openravepy import RaveCreateController
 import openhubo
 
 #Get the global environment for simulation
 
 if __name__=='__main__':
-    
     (env,options)=openhubo.setup('qtcoin')
     env.SetDebugLevel(4)
 
-    [robot,ctrl,ind,ref,recorder]=openhubo.load(env,options.robotfile,['door.env.xml'],True)
+    options.scenefile='door.env.xml'
+    options.physics=True
+
+    [robot,ctrl,ind,ref,recorder]=openhubo.load_scene(env,options)
     door=env.GetRobot('doorbot')
     door.SetController(RaveCreateController(env,'servocontroller'))
     spring=door.GetController()
     with env:
         spring.SendCommand('springdamper 0 1')
         spring.SendCommand('set gainvec   0 10 0 1   1 10 0 0 ')
-    time.sleep(0.1)
     env.StartSimulation(openhubo.TIMESTEP)
-
-
