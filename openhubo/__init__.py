@@ -23,7 +23,7 @@ OpenHubo python functions follow (mostly) the PEP recommended python coding styl
         form: Build a data structure or command using smaller input pieces.
 """
 
-__version__='0.7.1-beta'
+__version__='0.7.1'
 
 import numpy as _np
 import matplotlib.pyplot as _plt
