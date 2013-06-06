@@ -158,7 +158,14 @@ class Pose:
     def __getitem__(self,key):
         """ Lookup the joint name and return the value"""
         if type(key)==str:
-            return self.values[self.jointmap[key]]
+            if self.useregex:
+                #Apply a value to multiple joints by regex, slow!
+                for k in self.jointmap.keys():
+                    if _re.search(key,k):
+                        return self.values[self.jointmap[k]]
+            else:
+                return self.values[self.jointmap[key]]
+
         if type(key)==slice or type(key)==int:
             return self.values[key]
         if type(key)==KinBody.Joint:

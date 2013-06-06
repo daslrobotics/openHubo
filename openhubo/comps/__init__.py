@@ -133,7 +133,7 @@ class Cbirrt:
     stores properties of a problem such as the filename, time limits, TSR's,
     and has methods to run and return results, while allowing the user to avoid
     dealing directly with string commands."""
-    def __init__(self, problem=None,tsr_chains=[],filename='cmovetraj.txt',timelimit=30,smoothing=10,psample=.1):
+    def __init__(self, problem=None,tsr_chains=[],filename='cmovetraj.txt',timelimit=30,smoothing=10,psample=.1,robot=None):
         self.problem=problem
         self.tsr_chains=[]
         try:
@@ -150,6 +150,8 @@ class Cbirrt:
         self.jointstarts=[]
         self.solved=False
         self.exactsupport=False
+        self.ikpose=None
+        self.robot=robot
 
     @staticmethod
     def createProblem(robot):
@@ -186,7 +188,8 @@ class Cbirrt:
             cmd.append('supportlinks {} {}'.format(len(self.supportlinks),' '.join(self.supportlinks)))
             cmd.append('exactsupport {}'.format(int(self.exactsupport)))
 
-        #TODO: IK guess
+        if self.ikpose is not None:
+            cmd.append(self.ikguess_serialize())
 
         return ' '.join(cmd).replace('  ',' ')
 
@@ -208,10 +211,16 @@ class Cbirrt:
         else:
             print 'Current solution not ready, use run() to generate'
 
-    def activate(self,robot,extra=[]):
+    def activate(self,robot=None,extra=[],onlyreturn=False):
         """Activate necessary DOF on the robot to allow the problem to run.
         Optionally include extra DOF's to activate that are not part of the
         manipulator."""
+
+        if robot is None:
+            robot=self.robot
+        if robot is None:
+            raise ValueError('Robot not specified')
+
         activedofs=[]
         for c in self.tsr_chains:
             for t in c.TSRs:
@@ -220,7 +229,9 @@ class Cbirrt:
         for i in extra:
             m=robot.GetManipulators()[i]
             activedofs.extend(m.GetArmIndices())
-        robot.SetActiveDOFs(activedofs)
+        if not onlyreturn:
+            robot.SetActiveDOFs(activedofs)
+        return activedofs
 
     @staticmethod
     def activateManipsByIndex(robot,maniplist,extramanips=[]):
@@ -240,6 +251,40 @@ class Cbirrt:
         chain = TSRChain(0,1,0)
         chain.insertTSR(tsr)
         self.insertTSRChain(chain)
+
+    def set_ikguess_pose(self,robot=None,pose=None):
+        """Use the current pose of the robot as a source for the IK guess.
+        Stores the whole pose, and trims it internally to what is needed for
+        the problem. Use it like this:
+
+            with robot:
+                #Set robot pose to Ik guess position
+                ...
+                mycbirrt.set_ikguess_pose(robot)
+                or
+                mycbirrt.set_ikguess_pose(pose)
+
+        """
+        if self.robot is None and robot is not None:
+            self.ikpose=Pose(robot)
+            self.robot=robot
+        elif pose is not None:
+            self.ikpose=pose
+        else:
+            raise ValueError('Robot is not provided internally or in arguments')
+
+
+    def ikguess_serialize(self,robot=None):
+        if self.ikpose is not None:
+            if robot is None:
+                #KLUDGE
+                robot = self.ikpose.robot
+            activedofs=self.activate(robot,onlyreturn=True)
+            #FIXME: list comprehension breaks Pose __getitem__ overloading?
+            elems=['ikguess',str(len(activedofs))]
+            elems.extend([str(self.ikpose.values[x]) for x in activedofs])
+            return  ' '.join(elems)
+
 
 
 class GeneralIK:

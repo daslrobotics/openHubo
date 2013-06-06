@@ -459,6 +459,7 @@ class Joint(object):
         elif self.joint_type == Joint.FIXED:
             s = "hinge"
             set_attribute(xml, "enable", "false")
+            xml.appendChild( create_element(doc, "limits", "0 0") )
 
         set_attribute(xml, "type", s)
         xml.appendChild( create_element(doc, "body", self.parent) )
