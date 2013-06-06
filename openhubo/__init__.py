@@ -479,7 +479,6 @@ def plot_contacts(robot,scale=.1):
         #_rave.raveLogInfo('{} contacts'.format(len(report.contacts)))
         positions = _np.array([c.pos for c in report.contacts])
         normals = _np.array([c.norm for c in report.contacts])
-        print report.vLinkColliding
 
     if len(positions):
         p_handles = env.plot3(positions, 5, [.7, .3, .3])

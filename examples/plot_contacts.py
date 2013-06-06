@@ -41,8 +41,8 @@ if __name__ == "__main__":
             openhubo.set_robot_color(b,trans=.3)
 
     while not stop:
-        #handles=openhubo.plot_contacts(robot)
-        handles=openhubo.plot_dirs(robot)
+        handles=openhubo.plot_contacts(robot)
+        #handles=openhubo.plot_dirs(robot)
         openhubo.sleep(.05)
         if kbhit.kbhit(True):
             stop=True
