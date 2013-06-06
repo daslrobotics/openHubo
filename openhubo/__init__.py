@@ -170,7 +170,7 @@ class Pose:
             self.values[key]=value
         elif type(key)==str:
             #TODO: warning for failure
-            if self.values.has_key(key):
+            if self.jointmap.has_key(key):
                 self.values[self.jointmap[key]]=value
             elif self.useregex:
                 #Apply a value to multiple joints by regex, slow!
