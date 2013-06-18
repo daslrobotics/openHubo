@@ -9,4 +9,4 @@
 	url = git://github.com/daslrobotics/servocontroller.git
 [submodule "comps-code"]
 	path = comps-code
-	url = mygithub:comps-code.git
+	url = git://github.com/robEllenberg/comps-code.git
