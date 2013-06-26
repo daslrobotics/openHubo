@@ -1,17 +1,15 @@
 #!/usr/bin/env python
-from numpy import pi,array,deprecate
+from numpy import pi,array,zeros,mat,eye,deprecate
 import openravepy as rave
-from TransformMatrix import *
+from TransformMatrix import MakeTransform
 from recorder import viewerrecorder
 import time
 import datetime
 import warnings
 import sys
 import matplotlib.pyplot as plt
-import logging
 from optparse import OptionParser,Values
 import re
-import signal
 import IPython
 
 """ openhubo python module and main executable. Most of openhubo's functionality
@@ -25,6 +23,11 @@ The older python syntax is also usable for launching openhubo scripts:
 """
 
 # If run using interactive prompt:
+#from openravepy import openrave_exception
+
+__version__='0.7.0'
+
+# Interactive script
 if hasattr(sys,'ps1') or sys.flags.interactive:
     print "Loading OpenHubo interactive session..."
     import startup
@@ -57,29 +60,29 @@ hubo_map={'RHY':26,
           'LSP':4,
           'LSR':5,
           'LSY':6,
-          'LEB':7, 
-          'LEP':7, 
+          'LEB':7,
+          'LEP':7,
           'LWY':8,
-          'LWR':9, 
+          'LWR':9,
           'LWP':10,
           'NKY':1,
           'HNY':1,
           'NK1':2,
           'HNR':2,
-          'NK2':3, 
-          'HNP':3, 
+          'NK2':3,
+          'HNP':3,
           'WST':0,
           'HPY':0,
           'TSY':0,
           'RF1':32,
           'RF2':33,
-          'RF3':34, 
+          'RF3':34,
           'RF4':35,
           'RF5':36,
           'LF1':37,
-          'LF2':38, 
-          'LF3':39, 
-          'LF4':40, 
+          'LF2':38,
+          'LF3':39,
+          'LF4':40,
           'LF5':41}
 
 class Pose:
@@ -106,7 +109,7 @@ class Pose:
             index=j.GetDOFIndex()
             jointmap.setdefault(name,index)
             #Add the index itself to replicate old behavior
-            # Might be slow, but the point of this is simplicity. 
+            # Might be slow, but the point of this is simplicity.
             #jointmap.setdefault(index,index)
 
             #Check if hubo-ach name is different and add synonym
@@ -146,12 +149,12 @@ class Pose:
 
     def send(self):
         self.ctrl.SetDesired(self.values)
-    
+
     def pretty(self):
         for d, v in enumerate(self.values):
             print '{0} = {1}'.format(
                 self.robot.GetJointFromDOFIndex(d).GetName(),v)
-                
+
     #TODO: Test if type checking slows down these functions
     def __getitem__(self,key):
         """ Lookup the joint name and return the value"""
@@ -174,24 +177,24 @@ def get_name_from_huboname(inname,robot=None):
     """
     huboname=inname.encode('ASCII')
     #Cheat a little since hubonames are roman characters
-    if (huboname == "LKN" or huboname == "RKN"): 
+    if (huboname == "LKN" or huboname == "RKN"):
         name=huboname[0:2]+'P'
-    
-    elif (huboname == "LEB" or huboname == "REB"): 
+
+    elif (huboname == "LEB" or huboname == "REB"):
         name=huboname[0:2]+'P'
-    
-    elif (huboname == "WST" ): 
+
+    elif (huboname == "WST" ):
         name = "HPY"
-    
-    elif (huboname == "NKY"): 
+
+    elif (huboname == "NKY"):
         name="NKY"
-    
-    elif (huboname == "NK1"): 
+
+    elif (huboname == "NK1"):
         name="HNR"
-    
-    elif (huboname == "NK2"): 
+
+    elif (huboname == "NK2"):
         name="HNP"
-    
+
     else:
         name=huboname
     #TODO: Fingers
@@ -210,24 +213,24 @@ def get_huboname_from_name(inname):
     """
     name=inname.encode('ASCII')
     #Cheat a little since names are roman characters
-    if (name == "LKP" or name == "RKP"): 
+    if (name == "LKP" or name == "RKP"):
         achname=name[0:2]+'N'
-    
-    elif (name == "LEP" or name == "REP"): 
+
+    elif (name == "LEP" or name == "REP"):
         achname=name[0:2]+'B'
-    
-    elif (name == "HPY" or name == "TSY"): 
+
+    elif (name == "HPY" or name == "TSY"):
         achname = "WST"
-    
-    elif (name == "HNY"): 
+
+    elif (name == "HNY"):
         achname="NKY"
-    
-    elif (name == "HNR"): 
+
+    elif (name == "HNR"):
         achname="NK1"
-    
-    elif (name == "HNP"): 
+
+    elif (name == "HNP"):
         achname="NK2"
-    
+
     elif re.search('Knuckle',name) and not re.search('[23]',name):
         name=re.sub('left','LF',name)
         name=re.sub('right','RF',name)
@@ -246,17 +249,17 @@ def get_huboname_from_name(inname):
     else:
         return None
 
-def build_joint_index_map(robot):
-    """ Low level function to build a map of joint names and indices"""
-    jointlist=zeros(robot.GetDOF())-1
-    for j in robot.GetJoints():
-        name=j.GetName()
-        print name
-        huboname=get_huboname_from_name(name)
-        print huboname
-        if huboname:
-            jointlist[j.GetDOFIndex()]=jointmap[huboname]
-    return jointlist
+#def build_joint_index_map(robot):
+    #""" Low level function to build a map of joint names and indices"""
+    #jointlist=zeros(robot.GetDOF())-1
+    #for j in robot.GetJoints():
+        #name=j.GetName()
+        #print name
+        #huboname=get_huboname_from_name(name)
+        #print huboname
+        #if huboname:
+            #jointlist[j.GetDOFIndex()]=jointmap[huboname]
+    #return jointlist
 
 def set_robot_color(robot,dcolor=[.5,.5,.5],acolor=[.5,.5,.5],trans=0,links=[]):
     """Iterate over a robot's links and set color / transparency."""
@@ -273,18 +276,18 @@ def get_timestamp(lead='_'):
     return lead+datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 
 def pause(t=-1):
-    """ A simple pause function to emulate matlab's pause(t). 
+    """ A simple pause function to emulate matlab's pause(t).
     Useful for debugging and program stepping"""
     if t==-1:
         raw_input('Press any key to continue...')
     elif t>=0:
         time.sleep(t)
 
-@deprecate        
+@deprecate
 def makeNameToIndexConverter(robot,autotranslate=True):
     """ A closure to easily convert from a string joint name to the robot's
-    actual DOF index. 
-    
+    actual DOF index.
+
     Example usage:
         #create function for a robot
         pose=robot.GetDOFValues()
@@ -299,8 +302,8 @@ def makeNameToIndexConverter(robot,autotranslate=True):
 
 def make_name_to_index_converter(robot,autotranslate=True):
     """ A closure to easily convert from a string joint name to the robot's
-    actual DOF index. 
-    
+    actual DOF index.
+
     Example usage:
         #create function for a robot
         pose=robot.GetDOFValues()
@@ -318,7 +321,7 @@ def make_name_to_index_converter(robot,autotranslate=True):
             j=robot.GetJoint(get_name_from_huboname(name,robot))
             if j is not None:
                 return j.GetDOFIndex()
-            
+
             return None
     else:
         def convert(name):
@@ -335,9 +338,11 @@ def make_dof_value_map(robot):
     indices = [j.GetDOFIndex() for j in robot.GetJoints()]
 
     def get_dofs():
+        pmap={}
         values=robot.GetDOFValues()
         for (i,n) in zip(indices,names):
-            pose.setdefault(n,values[i])
+            pmap.setdefault(n,values[i])
+        return pmap
 
     return get_dofs
 
@@ -348,16 +353,24 @@ def load_simplefloor(env):
     """
     return load(env,None,'simpleFloor.env.xml',True)
 
-def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,options=Values()):
-    """ Load files and configure the simulation environment based on arguments and the options structure.    
-    The returned tuple contains:
+
+def load(env,robotname,scenename=None,stop=False,physics=None,ghost=None,options=None):
+    return load_scene(env,robotname,scenename,stop,physics,ghost,options)
+
+def load_scene(env,robotfile,scenefile=None,stop=False,physics=None,ghost=None,options=None):
+    """ Load a robot model into the given environment, configuring a
+    trajectorycontroller and a reference robot to show desired movements vs. actual
+    pose. The returned tuple contains:
         :robot: handle to the created robot
-        :ctrl: either trajectorycontroller or idealcontroller depending on physics
-        :ind: name-to-joint-index converter
-        :ref: handle to visualization "ghost" robot
+        :controller: either trajectorycontroller or idealcontroller depending on physics
+        name-to-joint-index converter
+        :ref_robot: handle to visiualization "ghost" robot
         :recorder: video recorder python class for quick video dumps
     """
-    
+
+    if options is None:
+        options = Values()
+
     if not (type(robotfile) is list or type(robotfile) is str):
         rave.raveLogWarn("Assuming 2nd argument is options structure...")
         options=robotfile
@@ -370,7 +383,7 @@ def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,op
         recorder.realtime=False
     else:
         recorder=None
-    
+
     if not hasattr(options,'stop'):
         options.stop=stop
     if not hasattr(options,'scenefile'):
@@ -393,8 +406,8 @@ def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,op
         options.ghost=ghost
     if not hasattr(options,'atheight'):
         options.atheight=None
-    
-    #TODO: sort through the spaghetti code... 
+
+    #TODO: sort through the spaghetti code...
     with env:
         if options.stop:
             env.StopSimulation()
@@ -450,7 +463,7 @@ def load(env,robotfile=None,scenefile=None,stop=True,physics=True,ghost=False,op
             collisionChecker = rave.RaveCreateCollisionChecker(env,'ode')
             rave.raveLogWarn('Using ODE collision checker since PQP is not available...')
         env.SetCollisionChecker(collisionChecker)
-   
+
     ind=makeNameToIndexConverter(robot)
     if options.atheight is not None:
         align_robot(robot,options.atheight)
@@ -589,7 +602,7 @@ def plot_body_com(link,handle=None,color=array([0,1,0])):
     else:
         neworigin=[1,0,0,0]
         neworigin.extend(origin.tolist())
-        handle.SetTransform(matrixFromPose(neworigin))
+        handle.SetTransform(rave.matrixFromPose(neworigin))
     return handle
 
 def plot_projected_com(robot):
@@ -643,7 +656,7 @@ def CloseLeftHand(robot,angle=pi/2):
 def CloseRightHand(robot,angle=pi/2):
     #assumes the robot is still, uses direct control
     #TODO: make this general, for now only works on rlhuboplus
-    
+
     ctrl=robot.GetController()
     ctrl.SendCommand('set radians')
     fingers=['Index','Middle','Ring','Pinky','Thumb']
@@ -770,8 +783,6 @@ def setup(viewername=None,create=True):
     else:
         return (options,None)
 
-
-
 if __name__ == '__main__':
 
     #Set up ipdb for better exception handling and debugging
@@ -780,6 +791,9 @@ if __name__ == '__main__':
     sys.excepthook = ultratb.FormattedTB(mode='Verbose',
          color_scheme='Linux', call_pdb=1)
     (options,scriptname)=setup(None,False)
+
+    if options.pydebug:
+        import debug
 
     if options.example or scriptname:
 
@@ -799,7 +813,7 @@ if __name__ == '__main__':
         #Enable interactive mode and load a simple environment
         options.interact=True
         execfile('interactive_sandbox.py')
-            
+
     if options.interact:
-        IPython.embed() 
+        IPython.embed()
         print "Cleaning up after inspection..."
