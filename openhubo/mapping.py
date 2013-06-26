@@ -81,7 +81,7 @@ inv_synonyms={v:k for (k, v) in synonyms.iteritems()}
 
 oh_from_ha_names={k:(inv_synonyms[k] if k in inv_synonyms.keys() else k) for k in ha_ind_name_map.keys()}
 
-deprecated_names={'HPY':'TSY',
+deprecated_names={'HPY':'WST',
                   'HDY':'NKY',
                   'HDP':'NK2',
                   'HNR':'NK2',
@@ -89,38 +89,35 @@ deprecated_names={'HPY':'TSY',
                   'HNR':'NK1',
                   'HNP':'NK2'}
 
-
-def get_name_from_huboname(inname,robot=None):
-    """ Map a name from the openhubo standard to the original hubo naming
-    scheme.
-    """
-    name=oh_from_ha(inname)
-    if robot and name:
-        j=robot.GetJoint(name)
-        if j:
-            return name
-
-    else:
-        return name
-
 def ha_from_oh(inname):
-    """ If the input name is either a hubo-ach standard name or an openhubo
-    synonym, return the matching hubo-ach name."""
-    if synonyms.has_key(inname):
-        return synonyms[inname]
-    elif ha_ind_name_map.has_key(inname):
+    """ Get the hubo-ach name of a joint from the openhubo name"""
+    if ha_ind_name_map.has_key(inname):
         return inname
+    elif synonyms.has_key(inname):
+        return synonyms[inname]
+    elif deprecated_names.has_key(inname):
+        return deprecated_names[inname]
     else:
         return None
 
 def oh_from_ha(inname):
-    """ If the input name is an openhubo joint name, return the matching hubo-ach name."""
+    """ Get the openhubo name of a joint from the hubo-ach name"""
     if ha_ind_name_map.has_key(inname):
         if inv_synonyms.has_key(inname):
             return inv_synonyms[inname]
         return inname
     else:
         return None
+
+def slow_lookup_joint(inname):
+    """Pass a name through all the mapping functions to brute force a match"""
+    return oh_from_ha(ha_from_oh(inname))
+
+def get_name_from_huboname(inname,robot=None):
+    """ Map a name from the openhubo standard to the original hubo naming
+    scheme.
+    """
+    return oh_from_ha(inname)
 
 def get_huboname_from_name(inname):
     """Get a hubo-standard joint name from the openhubo name (mostly the same,

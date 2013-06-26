@@ -122,6 +122,9 @@ do
 done
 BASE_DIR=`git rev-parse --show-toplevel`
 
+#Remove known old plugins that cause conflicts
+rm $BASE_DIR/plugins/libopenmr.so
+
 check-submodules
 
 for p in servocontroller forceSensor
