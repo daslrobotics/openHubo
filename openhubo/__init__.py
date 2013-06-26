@@ -270,7 +270,7 @@ def make_name_to_index_converter(robot,autotranslate=True):
 
             j=robot.GetJoint(name)
             if j is None:
-                hname=mapping.get_name_from_huboname(name,robot)
+                hname=mapping.slow_lookup_joint(name)
                 if hname is not None:
                     j=robot.GetJoint(hname)
 
