@@ -24,21 +24,18 @@ ha_ind_name_map={'RHY':26,
                    'RHR':27,
                    'RHP':28,
                    'RKN':29,
-                   'RKP':29,
                    'RAP':30,
                    'RAR':31,
                    'LHY':19,
                    'LHR':20,
                    'LHP':21,
                    'LKN':22,
-                   'LKP':22,
                    'LAP':23,
                    'LAR':24,
                    'RSP':11,
                    'RSR':12,
                    'RSY':13,
                    'REB':14,
-                   'REP':14,
                    'RWY':15,
                    'RWR':16,
                    'RWP':17,
@@ -46,7 +43,6 @@ ha_ind_name_map={'RHY':26,
                    'LSR':5,
                    'LSY':6,
                    'LEB':7,
-                   'LEP':7,
                    'LWY':8,
                    'LWR':9,
                    'LWP':10,
@@ -103,9 +99,9 @@ def ha_from_oh(inname):
 def oh_from_ha(inname):
     """ Get the openhubo name of a joint from the hubo-ach name"""
     if ha_ind_name_map.has_key(inname):
-        if inv_synonyms.has_key(inname):
-            return inv_synonyms[inname]
         return inname
+    elif inv_synonyms.has_key(inname):
+        return inv_synonyms[inname]
     else:
         return None
 

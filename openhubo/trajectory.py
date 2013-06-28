@@ -57,7 +57,7 @@ def traj_append(traj,waypt):
     n=traj.GetNumWaypoints()
     traj.Insert(n,waypt)
 
-def create_trajectory(robot,waypts=None):
+def create_trajectory(robot,waypts=None,filename=None):
     """ Create a trajectory based on a robot's config spec. Optionally added a list of waypoints """
     traj=_rave.RaveCreateTrajectory(robot.GetEnv(),'')
     config=robot.GetConfigurationSpecification()
@@ -72,6 +72,9 @@ def create_trajectory(robot,waypts=None):
         except TypeError:
             #fallthrough if single waypoint
             traj_append(traj,waypts)
+
+    if filename is not None:
+        read_trajectory_from_file(traj,filename)
 
     return [traj,config]
 
@@ -196,31 +199,41 @@ def write_youngbum_traj(traj,robot,dt,filename='exported.traj',dofs=None,oldname
             vals=config.ExtractJointValues(waypt,robot,dofs)
             f.write(' '.join(['{}'.format(x) for x in vals])+'\n')
 
+def convert_openrave_to_hubo_traj(robot,source,dest,dt):
+    """Convert an openrave-formatted trajectory text file to a hubo-read text file."""
+    traj,__=create_trajectory(robot)
+    read_trajectory_from_file(traj,source)
+    write_hubo_traj(traj,robot,dt,dest)
+
 def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
     """ Create a text trajectory for reading into hubo-read-trajectory."""
     #Find overall trajectory properties
     T=traj.GetDuration()
     #steps=int(T/dt)
-    dofmap=dofmap_huboread_from_oh(robot)
+    hr_from_oh_map=dofmap_huboread_from_oh(robot)
     val_sampler=make_joint_value_sampler(robot,traj)
     #TODO: scale the fingers appropriately?
     with open(filename,'w') as f:
         for t in _np.arange(0,T,dt):
             vals=val_sampler(t)
-            mapped_vals=[vals[x] if x > 0 else 0 for x in dofmap]
-            f.write(' '.join([str(x) for x in mapped_vals])+'\n')
+            outdata=_np.zeros(max(hr_from_oh_map.values())+1)
+            mapped_vals={v:vals[k] for k,v in hr_from_oh_map.items()}
+
+            for k,v in mapped_vals.items():
+                outdata[k]=v
+
+            f.write(' '.join([str(x) for x in outdata])+'\n')
 
 def dofmap_huboread_from_oh(robot):
     #Get all the DOF's..
-    dofmap={}
+    hr_from_oh_map={}
     for d in xrange(robot.GetDOF()):
         n = robot.GetJointFromDOFIndex(d).GetName()
         hname=mapping.ha_from_oh(n)
         if hname:
-            dofmap[hubo_read_trajectory_map[hname]]=d
+            hr_from_oh_map[d]=hubo_read_trajectory_map[hname]
         #print d,n,hname
-    return dofmap
-
+    return hr_from_oh_map
 
 def read_text_traj(filename,robot,dt=.01,scale=1.0):
     """ Read in trajectory data stored in Youngbum's format (100Hz data):
