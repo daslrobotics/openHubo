@@ -305,7 +305,10 @@ class Mesh(Geometry):
     def to_openrave_xml(self, doc):
         xml = short(doc, "geometry","type","trimesh")
         f=re.sub(r"package:\/\/","../../",self.filename)
+        fbody=re.sub(r"convhull","Body",f)
+        xml.appendChild(create_element(doc, "render", [fbody, self.scale]))
         xml.appendChild(create_element(doc, "data", [f, self.scale]))
+        set_attribute(xml, "render","true")
         return xml
 
     def __str__(self):
@@ -930,6 +933,20 @@ class URDF(object):
         #Add adjacencies
         for j in self.joints.values():
             kinbody.appendChild(create_element(doc,"adjacent",[j.parent, j.child]))
+
+        #Add known extra adjacencies
+        badjoints={'LWR':'LWY','LSY':'LSP','LHY':'LHP','RWR':'RWY','RSY':'RSP','RHY':'RHP',  'NK1':'Torso'}
+        for k,v in badjoints.items():
+            #TODO: search all bodies for above pairs and add extra adjacency tags
+            b1=None
+            b2=None
+            for b in kinbody.getElementsByTagName('body'):
+                if re.search(k,b.getAttribute('name')):
+                    b1=b
+                if re.search(v,b.getAttribute('name')):
+                    b2=b
+            if b1 and b2:
+                kinbody.appendChild(create_element(doc,"adjacent",[b1, b2]))
 
         return kinbody
 

@@ -702,6 +702,11 @@ def _create_parser(parser=None):
                       help='Do not stop the simulation during scene / robot loading')
     parser.add_option('--video-capture-file', action="store", dest='recordfile',default=None,
                       help='Specify a video file for the video recorder to capture to.')
+
+    urdf_options=_optparse.OptionGroup(parser,'URDF export')
+    urdf_options.add_option('--export-urdf', action="store", dest='export-urdf',default=None,
+                            help='Specify a file name to export to openrave kinbody format')
+    parser.add_option_group(urdf_options)
     return parser
     #TODO: add callback to clean up "None"'s
 
