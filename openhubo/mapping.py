@@ -169,6 +169,12 @@ def get_finger_joints(robot,left_right=False):
 def get_fingers_mask(joints,mask):
     return [j for j in joints if _re.search(mask,j.GetName())]
 
+def is_finger(name):
+    if _re.search(r'^rightKnuckle|^[LR]F[0-5][0-3]?$|^leftKnuckle',name):
+        return True
+    else:
+        return False
+
 if __name__=='__main__':
     import openhubo as oh
     from openhubo import startup

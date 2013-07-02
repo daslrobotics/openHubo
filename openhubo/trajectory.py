@@ -213,11 +213,11 @@ def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
     hr_from_oh_map=dofmap_huboread_from_oh(robot)
     val_sampler=make_joint_value_sampler(robot,traj)
     #TODO: scale the fingers appropriately?
-    with open(filename,'w') as f:
+    with open(filename) as f:
         for t in _np.arange(0,T,dt):
             vals=val_sampler(t)
             outdata=_np.zeros(max(hr_from_oh_map.values())+1)
-            mapped_vals={v:vals[k] for k,v in hr_from_oh_map.items()}
+            mapped_vals={v:vals[k] if not mapping.is_finger(k) else 0.0 for k,v in hr_from_oh_map.items()}
 
             for k,v in mapped_vals.items():
                 outdata[k]=v
