@@ -52,6 +52,8 @@ hubo_read_trajectory_map={
     'LF4':38,
     'LF5':39}
 
+hubo_read_trajectory_map_inv={v: k for k, v in hubo_read_trajectory_map.items()}
+
 def traj_append(traj,waypt):
     """quickly append a waypoint to a trajectory"""
     n=traj.GetNumWaypoints()
@@ -217,7 +219,7 @@ def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
         for t in _np.arange(0,T,dt):
             vals=val_sampler(t)
             outdata=_np.zeros(max(hr_from_oh_map.values())+1)
-            mapped_vals={v:vals[k] if not mapping.is_finger(k) else 0.0 for k,v in hr_from_oh_map.items()}
+            mapped_vals={v:vals[k] if not mapping.is_finger(hubo_read_trajectory_map_inv[v]) else 0.0 for k,v in hr_from_oh_map.items()}
 
             for k,v in mapped_vals.items():
                 outdata[k]=v
