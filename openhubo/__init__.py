@@ -304,7 +304,7 @@ def load_scene(env,robotfile=None,scenefile=None,stop=None,physics=True,ghost=Fa
     else:
         (options,__)=get_options()
         options.robotfile=robotfile
-        options.scenefile=robotfile
+        options.scenefile=scenefile
         options.stop=stop
         if physics:
             options._physics='ode'
