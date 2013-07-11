@@ -1,4 +1,4 @@
-import re
+import re, copy
 import sys
 from numpy import pi,array
 #import matplotlib.pyplot s plt
@@ -64,7 +64,7 @@ class JointTable:
     def parse(self,raw_line):
         dataorder=['name','motNo','refEnc','drive','driven','harm','enc','dir','jmc','active','can','numMot','zeroed']
         datalist=re.split('[\t =]+',raw_line.rstrip())
-        print datalist
+        #print datalist
         name=datalist[0]
         if mapping.is_ha_joint(name):
             joint = {x:int(y) if not re.search('[JE]',y[0]) else y for x,y in zip(dataorder[1:],datalist[1:])}
@@ -110,14 +110,19 @@ class LimitTable:
 
     def read_from_file(self,filename):
         f=open(filename,'r')
+        print "Reading from file {}...".format(filename)
 
         for line in f:
             self.parse(line)
+        print "Done reading from file {}...".format(filename)
 
     def shift_home(self,joint,ticks):
+        oldhome=self.joints[joint]['HomeOffset']
         self.joints[joint]['HomeOffset']+=ticks
         self.joints[joint]['LowerLimit']+=ticks
         self.joints[joint]['UpperLimit']+=ticks
+        print "{} home changed from {} to {} ticks".format(joint,oldhome,self.joints[joint]['HomeOffset'])
+        return self.joints[joint]['HomeOffset']
 
     def write_to_file(self,filename):
         with open(filename,'w') as f:
@@ -138,17 +143,19 @@ class LimitProcessor:
     def __init__(self,joint_table_file,limit_table_file,log_file):
         self.joint_table=JointTable(joint_table_file)
         self.limit_table=LimitTable(limit_table_file)
+        self.old_limit_table=copy.deepcopy(self.limit_table)
         self.hubo_log=StateLog(log_file)
 
     def adjust_limit_from_rad(self,joint,rads):
-        ticks=self.joint_table.ticks_from_rad(joint,rads)
-        self.limit_table.shift_home(joint,ticks)
+        ticks=int(self.joint_table.ticks_from_rad(joint,rads))
+        return self.limit_table.shift_home(joint,ticks)
 
     def adjust_limits_from_log(self,jointnames):
         """Based on the log file read and the specified joint names, offset the home positions and limits"""
         for n in jointnames:
             if self.limit_table.joints.has_key(n):
                 self.adjust_limit_from_rad(n,self.hubo_log.states[-1].joints[n]['enc'])
+
 
 if __name__=='__main__':
     import openhubo.startup

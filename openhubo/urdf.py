@@ -7,7 +7,7 @@ from xml.dom.minidom import Document
 from xml.dom import minidom
 import sys
 from numpy import array,eye,reshape,pi
-import re
+import re, copy
 
 def reindent(s, numSpaces):
     """Reindent a string for tree structure pretty printing."""
@@ -912,6 +912,12 @@ class URDF(object):
 
         return doc.toprettyxml()
 
+    def write_xml(self,outfile=None):
+        if outfile is None:
+            outfile=self.name+'.urdf'
+
+        self.write_reformatted(self.to_xml(),outfile)
+
     def make_openrave_kinbody(self,doc):
         kinbody = doc.createElement("kinbody")
         doc.appendChild(kinbody)
@@ -1017,6 +1023,47 @@ class URDF(object):
                 s += "- Material '{0}':\n{1}\n".format(k, reindent(str(v), 1))
 
         return s
+
+    def walk_chain(self,link):
+        """Walk along the first branch of urdf tree to find last link"""
+        child=link
+        while self.child_map.has_key(child):
+            children=self.child_map[link]
+            child=children[0][1]
+
+        return child
+
+    def copy_joint(self,joint,f,r):
+        """Copy and rename a joint and it's parent/child by the f / r strings. Assumes links exist."""
+        newjoint=copy.deepcopy(joint)
+
+        newjoint.name=re.sub(f,r,joint.name)
+        newjoint.parent=self.links[re.sub(f,r,self.links[newjoint.parent.name])]
+        newjoint.child=self.links[re.sub(f,r,self.links[newjoint.child.name])]
+
+        self.add_joint(newjoint)
+
+    def copy_chain_with_rottrans(self,root,tip,rpy,xyz,f,r):
+        """Fork the kinematic tree by copying a subchain and applying the desired rpy and xyz"""
+        #Copy all links in chain
+
+        linkchain=self.get_chain(root,tip,links=True,joints=False)
+        jointchain=self.get_chain(root,tip,joints=True,links=False)
+        for l in linkchain:
+            newlink=copy.deepcopy(l)
+            newlink.name=re.sub(f,r,newlink.name)
+            self.add_link(newlink)
+        for j in jointchain:
+            self.copy_joint(j,f,r)
+
+        #TODO:add new connecting joint? or copy 1 joint up from specified link and update parent
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     try:
