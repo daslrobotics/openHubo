@@ -64,7 +64,7 @@ class JointTable:
     def parse(self,raw_line):
         dataorder=['name','motNo','refEnc','drive','driven','harm','enc','dir','jmc','active','can','numMot','zeroed']
         datalist=re.split('[\t =]+',raw_line.rstrip())
-        #print datalist
+        print datalist
         name=datalist[0]
         if mapping.is_ha_joint(name):
             joint = {x:int(y) if not re.search('[JE]',y[0]) else y for x,y in zip(dataorder[1:],datalist[1:])}
@@ -80,7 +80,8 @@ class JointTable:
         drive=self.joints[joint]['drive']
         driven=self.joints[joint]['driven']
         harm=self.joints[joint]['harm']
-        return float(harm)*driven/drive
+        #NOTE: drive/driven seems backwards, but the output is wrong otherwise
+        return float(harm)*drive/driven
 
     def rad_from_ticks(self,joint,value):
         ratio=self.get_ratio(joint)
@@ -139,12 +140,16 @@ class LimitTable:
                 datalist.append('\n')
                 f.write(' '.join(datalist))
 
+
 class LimitProcessor:
-    def __init__(self,joint_table_file,limit_table_file,log_file):
+    def __init__(self,joint_table_file,limit_table_file,log_file=None):
         self.joint_table=JointTable(joint_table_file)
         self.limit_table=LimitTable(limit_table_file)
         self.old_limit_table=copy.deepcopy(self.limit_table)
-        self.hubo_log=StateLog(log_file)
+        if log_file is not None:
+            self.hubo_log=StateLog(log_file)
+        else:
+            self.hubo_log=None
 
     def adjust_limit_from_rad(self,joint,rads):
         ticks=int(self.joint_table.ticks_from_rad(joint,rads))
@@ -156,10 +161,25 @@ class LimitProcessor:
             if self.limit_table.joints.has_key(n):
                 self.adjust_limit_from_rad(n,self.hubo_log.states[-1].joints[n]['enc'])
 
+    def get_rad_limits(self):
+        """Return maps of lower and upper limits with respect to home position"""
+        lower={}
+        upper={}
+        for name,data in self.limit_table.joints.items():
+            lower[name]=self.joint_table.rad_from_ticks(name,data['LowerLimit'])
+            upper[name]=self.joint_table.rad_from_ticks(name,data['UpperLimit'])
+        return (lower,upper)
 
 if __name__=='__main__':
     import openhubo.startup
-    adjuster=LimitProcessor(sys.argv[1],sys.argv[2],sys.argv[3])
+    joint_table_file=sys.argv[1]
+    limit_table_file=sys.argv[2]
+    if len(sys.argv)>3:
+        log_file=sys.argv[3]
+    else:
+        log_file=None
+
+    adjuster=LimitProcessor(joint_table_file,limit_table_file,log_file)
 
 
 
