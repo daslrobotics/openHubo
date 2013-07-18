@@ -8,6 +8,8 @@ from xml.dom import minidom
 import sys
 from numpy import array,eye,reshape,pi
 import re, copy
+from openhubo import mapping
+from hubo_util import LimitTable
 
 def reindent(s, numSpaces):
     """Reindent a string for tree structure pretty printing."""
@@ -561,6 +563,15 @@ class JointLimit(object):
             jl.upper = float( node.getAttribute('upper') )
         return jl
 
+    def get_from_table(self,:
+        jl = JointLimit( float( node.getAttribute('effort') ) ,
+                         float( node.getAttribute('velocity')))
+        if node.hasAttribute('lower'):
+            jl.lower = float( node.getAttribute('lower') )
+        if node.hasAttribute('upper'):
+            jl.upper = float( node.getAttribute('upper') )
+        return jl
+
     def to_xml(self, doc):
         xml = doc.createElement('limit')
         set_attribute(xml, 'effort', self.effort)
@@ -1033,41 +1044,102 @@ class URDF(object):
 
         return child
 
+    def rename_link(self,link,newlink):
+        self.links[link].name=newlink
+        self.links[newlink]=self.links[link]
+        self.links.pop(link)
+        for k,v in self.parent_map.items():
+            if k==link:
+                self.parent_map[newlink]=v
+                self.parent_map.pop(k)
+                k=newlink
+            if v[0]==link:
+                new0=newlink
+                v=(new0,v[1])
+            if v[1]==link:
+                new1=newlink
+                v=(v[0],new1)
+            self.parent_map[k]=v
+        for k,v in self.child_map.items():
+            if k==link:
+                self.child_map[newlink]=v
+                self.child_map.pop(k)
+                k=newlink
+            vnew=[]
+            for el in v:
+                if el[1]==link:
+                    el=(el[0],newlink)
+                vnew.append(el)
+            print vnew
+            self.child_map[k]=vnew
+        for n,j in self.joints.items():
+            if j.parent==link:
+                j.parent=newlink
+            if j.child==link:
+                j.child=newlink
+        print self.child_map
+
+    def rename_joint(self,joint,newjoint):
+        self.joints[joint].name=newjoint
+        self.joints[newjoint]=self.joints[joint]
+        self.joints.pop(joint)
+        for k,v in self.child_map.items():
+            vnew=[]
+            for el in v:
+                if el[0]==joint:
+                    el=(newjoint,el[1])
+                print el
+                vnew.append(el)
+            self.child_map[k]=vnew
+
     def copy_joint(self,joint,f,r):
         """Copy and rename a joint and it's parent/child by the f / r strings. Assumes links exist."""
-        newjoint=copy.deepcopy(joint)
-
-        newjoint.name=re.sub(f,r,joint.name)
-        newjoint.parent=self.links[re.sub(f,r,self.links[newjoint.parent.name])]
-        newjoint.child=self.links[re.sub(f,r,self.links[newjoint.child.name])]
+        newjoint=copy.deepcopy(self.joints[joint])
+        newjoint.name=re.sub(f,r,newjoint.name)
+        newjoint.parent=re.sub(f,r,newjoint.parent)
+        newjoint.child=re.sub(f,r,newjoint.child)
 
         self.add_joint(newjoint)
+        return newjoint
+
+    def move_chain_with_rottrans(self,root,tip,rpy,xyz,f,r):
+        linkchain=self.get_chain(root,tip,links=True,joints=False)
+        jointchain=self.get_chain(root,tip,joints=True,links=False)
+        print linkchain
+        print jointchain
+
+        for l in linkchain[1:]:
+            newlink=re.sub(f,r,l)
+            self.rename_link(l,newlink)
+        for j in jointchain:
+            newname=re.sub(f,r,j)
+            self.rename_joint(j,newname)
+            self.joints[newname].origin.position+=array(xyz)
+            self.joints[newname].origin.rotation+=array(rpy)
 
     def copy_chain_with_rottrans(self,root,tip,rpy,xyz,f,r):
-        """Fork the kinematic tree by copying a subchain and applying the desired rpy and xyz"""
+        """Fork the kinematic tree by copying a subchain and applying the desired rpy and xyz
+        NOTE: this does NOT copy the root link, to allow branching"""
         #Copy all links in chain
 
         linkchain=self.get_chain(root,tip,links=True,joints=False)
         jointchain=self.get_chain(root,tip,joints=True,links=False)
-        for l in linkchain:
-            newlink=copy.deepcopy(l)
+        print linkchain
+        print jointchain
+        newjoints=[]
+        for l in linkchain[1:]:
+            newlink=copy.deepcopy(self.links[l])
             newlink.name=re.sub(f,r,newlink.name)
             self.add_link(newlink)
         for j in jointchain:
-            self.copy_joint(j,f,r)
+            newjoints.append(self.copy_joint(j,f,r))
 
-        #TODO:add new connecting joint? or copy 1 joint up from specified link and update parent
-
-
-
-
-
-
-
+        newjoints[0].origin.position+=array(xyz)
+        newjoints[0].origin.rotation+=array(rpy)
 
 if __name__ == '__main__':
     try:
-        import startup
+        from openhubo import startup
     except ImportError:
         pass
 

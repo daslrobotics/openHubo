@@ -81,17 +81,17 @@ class JointTable:
         driven=self.joints[joint]['driven']
         harm=self.joints[joint]['harm']
         #NOTE: drive/driven seems backwards, but the output is wrong otherwise
-        return float(harm)*drive/driven
+        return float(harm)*driven/drive
 
     def rad_from_ticks(self,joint,value):
         ratio=self.get_ratio(joint)
         enc=self.joints[joint]['enc']
-        return value/ratio/enc
+        return value/ratio/enc*2*pi
 
     def ticks_from_rad(self,joint,value):
         ratio=self.get_ratio(joint)
         enc=self.joints[joint]['enc']
-        return value*ratio*enc
+        return value*ratio*enc/2/pi
 
 
 class LimitTable:
