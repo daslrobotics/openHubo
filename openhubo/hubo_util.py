@@ -4,6 +4,8 @@ from numpy import pi,array
 #import matplotlib.pyplot s plt
 #import scipy.spatial as spatial
 from openhubo import mapping
+import openhubo as oh
+import optparse as _optparse
 
 class StateEntry:
 
@@ -155,11 +157,18 @@ class LimitProcessor:
         ticks=int(self.joint_table.ticks_from_rad(joint,rads))
         return self.limit_table.shift_home(joint,ticks)
 
-    def adjust_limits_from_log(self,jointnames):
+    def adjust_limits_from_log(self,jointnames=None):
         """Based on the log file read and the specified joint names, offset the home positions and limits"""
+        if jointnames is None:
+            #Assume any changed refs are new home position settings
+            for n in self.limit_table.joints.keys():
+                if abs(self.hubo_log.states[-1].joints[n]['ref'])>0:
+                    self.adjust_limit_from_rad(n,self.hubo_log.states[-1].joints[n]['ref'])
+
         for n in jointnames:
             if self.limit_table.joints.has_key(n):
-                self.adjust_limit_from_rad(n,self.hubo_log.states[-1].joints[n]['enc'])
+                #Using REF position here instead of encoder, since the joints sag under body weight
+                self.adjust_limit_from_rad(n,self.hubo_log.states[-1].joints[n]['ref'])
 
     def get_rad_limits(self):
         """Return maps of lower and upper limits with respect to home position"""
@@ -170,8 +179,37 @@ class LimitProcessor:
             upper[name]=self.joint_table.rad_from_ticks(name,data['UpperLimit'])
         return (lower,upper)
 
+    def apply_limits_to_model(self,robot):
+        (lower,upper)=self.get_rad_limits()
+
+        for name in self.limit_table.joints.keys():
+            n=mapping.oh_from_ha(name)
+            j=robot.GetJoint(n)
+            if j is not None:
+                j.SetLimits([lower[name]],[upper[name]])
+
+def _setup():
+    parser = _optparse.OptionParser(description='Hubo Home Position utility. Uses a hubo-read log file as the new reference pose, and stores updated offsets to the robot',
+                                    usage='usage: %prog [options] script')
+
+    parser.add_option('--logfile', action="store",type='string',dest='logfile',default=None,
+                             help='Hubo Log file')
+
+    adjuster=LimitProcessor(joint_table_file,limit_table_file,log_file)
+
+    parser.add_option('--limit-table', action="store",type='string',dest='limit_table',default=None,
+                             help='Limit table (*.table)')
+
+    return parser.parse_args()
+
+
+def run():
+    (options,leftargs)=_setup()
+    updater=LimitProcessor(options.joint_table,options.limit_table,options.logfile)
+    return updater
+
 if __name__=='__main__':
-    import openhubo.startup
+    from openhubo import startup
     joint_table_file=sys.argv[1]
     limit_table_file=sys.argv[2]
     if len(sys.argv)>3:
@@ -179,9 +217,4 @@ if __name__=='__main__':
     else:
         log_file=None
 
-    adjuster=LimitProcessor(joint_table_file,limit_table_file,log_file)
-
-
-
-
-
+    updater=LimitProcessor(joint_table_file,limit_table_file,log_file)
