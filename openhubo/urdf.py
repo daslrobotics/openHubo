@@ -563,7 +563,7 @@ class JointLimit(object):
             jl.upper = float( node.getAttribute('upper') )
         return jl
 
-    def get_from_table(self,:
+    def get_from_table(self,node):
         jl = JointLimit( float( node.getAttribute('effort') ) ,
                          float( node.getAttribute('velocity')))
         if node.hasAttribute('lower'):
@@ -1091,6 +1091,11 @@ class URDF(object):
                 print el
                 vnew.append(el)
             self.child_map[k]=vnew
+        for k,v in self.parent_map.items():
+            if v[0]==joint:
+                v=(newjoint,v[1])
+            print el
+            self.parent_map[k]=v
 
     def copy_joint(self,joint,f,r):
         """Copy and rename a joint and it's parent/child by the f / r strings. Assumes links exist."""
@@ -1117,7 +1122,7 @@ class URDF(object):
             self.joints[newname].origin.position+=array(xyz)
             self.joints[newname].origin.rotation+=array(rpy)
 
-    def copy_chain_with_rottrans(self,root,tip,rpy,xyz,f,r):
+    def copy_chain_with_rottrans(self,root,tip,rpy,xyz,f,r,flipy=None):
         """Fork the kinematic tree by copying a subchain and applying the desired rpy and xyz
         NOTE: this does NOT copy the root link, to allow branching"""
         #Copy all links in chain
@@ -1131,11 +1136,22 @@ class URDF(object):
             newlink=copy.deepcopy(self.links[l])
             newlink.name=re.sub(f,r,newlink.name)
             self.add_link(newlink)
+            if flipy:
+                newlink.inertia.matrix['ixy']*=-1.
+                newlink.inertia.matrix['ixz']*=-1.
         for j in jointchain:
             newjoints.append(self.copy_joint(j,f,r))
+            if flipy:
+                newjoints[-1].origin.position[1]*=-1.0
+                newjoints[-1].rpy.rotation[0:3:2]*=-1.0
 
         newjoints[0].origin.position+=array(xyz)
         newjoints[0].origin.rotation+=array(rpy)
+
+    def fix_mesh_case(self):
+        for l in self.links:
+            fname=l.collision.geometry.filename
+            l.collision.geometry.filename=re.sub(r'\.[Ss][Tt][Ll]','.stl',fname)
 
 if __name__ == '__main__':
     try:
