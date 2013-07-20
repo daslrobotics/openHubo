@@ -1132,18 +1132,21 @@ class URDF(object):
         print linkchain
         print jointchain
         newjoints=[]
+        newlinks=[]
         for l in linkchain[1:]:
             newlink=copy.deepcopy(self.links[l])
             newlink.name=re.sub(f,r,newlink.name)
             self.add_link(newlink)
+            newlinks.append(newlink)
             if flipy:
-                newlink.inertia.matrix['ixy']*=-1.
-                newlink.inertia.matrix['ixz']*=-1.
+                newlink.inertial.matrix['ixy']*=-1.
+                newlink.inertial.matrix['ixz']*=-1.
         for j in jointchain:
             newjoints.append(self.copy_joint(j,f,r))
             if flipy:
                 newjoints[-1].origin.position[1]*=-1.0
-                newjoints[-1].rpy.rotation[0:3:2]*=-1.0
+                newjoints[-1].origin.rotation[0]*=-1.0
+                newjoints[-1].origin.rotation[2]*=-1.0
 
         newjoints[0].origin.position+=array(xyz)
         newjoints[0].origin.rotation+=array(rpy)
@@ -1152,6 +1155,7 @@ class URDF(object):
         for l in self.links:
             fname=l.collision.geometry.filename
             l.collision.geometry.filename=re.sub(r'\.[Ss][Tt][Ll]','.stl',fname)
+    #TODO: merge function to tie two chains together from disparate models
 
 if __name__ == '__main__':
     try:

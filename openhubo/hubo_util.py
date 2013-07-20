@@ -179,7 +179,7 @@ class LimitProcessor:
             upper[name]=self.joint_table.rad_from_ticks(name,data['UpperLimit'])
         return (lower,upper)
 
-    def apply_limits_to_model(self,robot):
+    def apply_limits(self,robot):
         (lower,upper)=self.get_rad_limits()
 
         for name in self.limit_table.joints.keys():
@@ -187,6 +187,14 @@ class LimitProcessor:
             j=robot.GetJoint(n)
             if j is not None:
                 j.SetLimits([lower[name]],[upper[name]])
+
+    def apply_limits_to_urdf(self,model):
+        (lower,upper)=self.get_rad_limits()
+        for name in self.limit_table.joints.keys():
+            n=mapping.oh_from_ha(name)
+            if j is not None:
+                model.joints[n].lower=lower[name]
+                model.joints[n].upper=upper[name]
 
 def _setup():
     parser = _optparse.OptionParser(description='Hubo Home Position utility. Uses a hubo-read log file as the new reference pose, and stores updated offsets to the robot',
