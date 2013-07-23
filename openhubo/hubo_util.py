@@ -6,6 +6,7 @@ from numpy import pi,array
 from openhubo import mapping
 import openhubo as oh
 import optparse as _optparse
+from openhubo.urdf import JointLimit
 
 class StateEntry:
 
@@ -191,10 +192,18 @@ class LimitProcessor:
     def apply_limits_to_urdf(self,model):
         (lower,upper)=self.get_rad_limits()
         for name in self.limit_table.joints.keys():
+            print name
             n=mapping.oh_from_ha(name)
-            if j is not None:
-                model.joints[n].lower=lower[name]
-                model.joints[n].upper=upper[name]
+            if n is not None and model.joints.has_key(n):
+                j=model.joints[n]
+                if j.limits is not None:
+                    model.joints[n].limits.lower=lower[name]
+                    model.joints[n].limits.upper=upper[name]
+                else:
+                    j.limits=JointLimit(25,2*pi,lower[name],upper[name])
+
+            else:
+                print "Match not found for name {}".format(name)
 
 def _setup():
     parser = _optparse.OptionParser(description='Hubo Home Position utility. Uses a hubo-read log file as the new reference pose, and stores updated offsets to the robot',

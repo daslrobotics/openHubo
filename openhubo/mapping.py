@@ -98,10 +98,10 @@ def ha_from_oh(inname):
 
 def oh_from_ha(inname):
     """ Get the openhubo name of a joint from the hubo-ach name"""
-    if ha_ind_name_map.has_key(inname):
-        return inname
-    elif inv_synonyms.has_key(inname):
+    if inv_synonyms.has_key(inname):
         return inv_synonyms[inname]
+    elif ha_ind_name_map.has_key(inname):
+        return inname
     else:
         return None
 

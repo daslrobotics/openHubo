@@ -6,10 +6,8 @@ import string
 from xml.dom.minidom import Document
 from xml.dom import minidom
 import sys
-from numpy import array,eye,reshape,pi
+from numpy import array,pi
 import re, copy
-from openhubo import mapping
-from hubo_util import LimitTable
 
 def reindent(s, numSpaces):
     """Reindent a string for tree structure pretty printing."""
@@ -293,7 +291,7 @@ class Mesh(Geometry):
             s = 1
         else:
             xyz = node.getAttribute('scale').split()
-            scale = map(float, xyz)
+            s = map(float, xyz)
         return Mesh(fn, s)
 
     def to_xml(self, doc):
@@ -306,10 +304,10 @@ class Mesh(Geometry):
 
     def to_openrave_xml(self, doc):
         xml = short(doc, "geometry","type","trimesh")
-        f=re.sub(r"package:\/\/","../../",self.filename)
-        fbody=re.sub(r"convhull","Body",f)
-        #xml.appendChild(create_element(doc, "render", [fbody, self.scale]))
-        xml.appendChild(create_element(doc, "data", [f, self.scale]))
+        f='../meshes/'+self.filename.split('/')[-1]
+        fhull=re.sub(r"Body","convhull",f)
+        #xml.appendChild(create_element(doc, "render", [f, self.scale]))
+        xml.appendChild(create_element(doc, "data", [fhull, self.scale]))
         #set_attribute(xml, "render","true")
         return xml
 
@@ -1157,11 +1155,22 @@ class URDF(object):
             l.collision.geometry.filename=re.sub(r'\.[Ss][Tt][Ll]','.stl',fname)
     #TODO: merge function to tie two chains together from disparate models
 
+    def update_mesh_paths(self,package_name):
+        for n,l in self.links.items():
+            #TODO: check if mesh
+            for g in [l.collision.geometry,l.visual.geometry]:
+                #save STL file name only
+                meshfile=g.filename.split('/')[-1]
+                newpath=[package_name,'meshes',meshfile]
+                cleanpath=re.sub('/+','/','/'.join(newpath))
+                g.filename='package://'+cleanpath
+            l.collision.geometry.filename=re.sub('Body','convhull',l.collision.geometry.filename)
+
 if __name__ == '__main__':
-    try:
-        from openhubo import startup
-    except ImportError:
-        pass
+    #try:
+        #from openhubo import startup
+    #except ImportError:
+        #pass
 
     try:
         filename=sys.argv[1]
