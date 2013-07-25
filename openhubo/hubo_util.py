@@ -192,7 +192,6 @@ class LimitProcessor:
     def apply_limits_to_urdf(self,model):
         (lower,upper)=self.get_rad_limits()
         for name in self.limit_table.joints.keys():
-            print name
             n=mapping.oh_from_ha(name)
             if n is not None and model.joints.has_key(n):
                 j=model.joints[n]

@@ -12,8 +12,8 @@ except IndexError:
 
 model=URDF.load_xml_file(filename)
 #Mirror arm and leg chains
-model.copy_chain_with_rottrans('Body_TSY','Body_RAR',[0,0,0],[0,0,0],r'R\([HKASEWF][RPY123]\)',r'L\1',True)
-model.copy_chain_with_rottrans('Body_Torso','Body_RWR',[0,0,0],[0,0,0],r'R\([HKASEWF][RPY123]\)',r'L\1',True)
+model.copy_chain_with_rottrans('Body_TSY','Body_RAR',[0,0,0],[0,0,0],r'R([HKASEWF][RPY123])',r'L\1',True)
+model.copy_chain_with_rottrans('Body_Torso','Body_RWR',[0,0,0],[0,0,0],r'R([HKASEWF][RPY123])',r'L\1',True)
 
 #Copy right finger to make new fingers and thumbs
 model.move_chain_with_rottrans('Body_RWR','Body_RF3',[0,0,0],[0,0,0],r'F([0-9])',r'F1\1')

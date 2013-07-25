@@ -24,8 +24,9 @@ def add(doc, base, element):
 def add_openrave(doc, base, element):
     """Add an XML element for OpenRAVE XML export"""
     if element is not None:
+        #TODO: copy this iterable test elsewhere
         newelements=element.to_openrave_xml(doc)
-        if type(newelements)==type([]):
+        if hasattr(newelements, '__iter__'):
             for e in newelements:
                 base.appendChild(e)
         else:
@@ -34,28 +35,25 @@ def add_openrave(doc, base, element):
 def pfloat(x):
     return "{0}".format(x).rstrip('.')
 
+def to_string(data=None):
+    if data is None:
+        return None
+    if hasattr(data, '__iter__'):
+        return  " ".join( [pfloat(a) for a in data] )
+    elif type(data) == type(0.0):
+        return pfloat(data)
+    elif type(data) != type(''):
+        return str(data)
+    return data
+
 def set_attribute(node, name, value):
-    if value is None:
-        return
-    if type([]) == type(value) or type(()) == type(value):
-        value = " ".join( [pfloat(a) for a in value] )
-    elif type(value) == type(0.0):
-        value = pfloat(value)
-    elif type(value) != type(''):
-        value = str(value)
-    node.setAttribute(name, value)
+    node.setAttribute(name, to_string(value))
 
 def set_content(doc,node,data):
     """Create a text node and add it to the current element"""
     if data is None:
         return
-    if type([]) == type(data) or type(()) == type(data):
-        data = " ".join( [pfloat(a) for a in data] )
-    elif type(data) == type(0.0):
-        data = pfloat(data)
-    elif type(data) != type(''):
-        data = str(data)
-    node.appendChild(doc.createTextNode(data))
+    node.appendChild(doc.createTextNode(to_string(data)))
 
 def short(doc, name, key, value):
     element = doc.createElement(name)
@@ -65,14 +63,7 @@ def short(doc, name, key, value):
 def create_element(doc, name, contents=None, key=None, value=None):
     element = doc.createElement(name)
     if contents:
-        if type([]) == type(contents) or type(()) == type(contents):
-            contents = " ".join( [pfloat(a) for a in contents] )
-        elif type(contents) == type(0.0):
-            contents = pfloat(contents)
-        elif type(contents) != type(''):
-            contents = str(contents)
-        element.appendChild(doc.createTextNode(contents))
-
+        set_content(doc,element,contents)
     if key is not None:
         set_attribute(element, key, value)
 
@@ -702,18 +693,18 @@ class Material(object):
 
 class Pose(object):
     def __init__(self, position=None, rotation=None):
-        self.position = position
-        self.rotation = rotation
+        self.position = array(position)
+        self.rotation = array(rotation)
 
     @staticmethod
     def parse(node):
         pose = Pose()
         if node.hasAttribute("xyz"):
             xyz = node.getAttribute('xyz').split()
-            pose.position = map(float, xyz)
+            pose.position = array(map(float, xyz))
         if node.hasAttribute("rpy"):
             rpy = node.getAttribute('rpy').split()
-            pose.rotation = map(float, rpy)
+            pose.rotation = array(map(float, rpy))
         return pose
 
     def to_xml(self, doc):
@@ -1134,6 +1125,8 @@ class URDF(object):
         for l in linkchain[1:]:
             newlink=copy.deepcopy(self.links[l])
             newlink.name=re.sub(f,r,newlink.name)
+            newlink.collision.geometry.filename=re.sub(f,r,newlink.collision.geometry.filename)
+            newlink.visual.geometry.filename=re.sub(f,r,newlink.visual.geometry.filename)
             self.add_link(newlink)
             newlinks.append(newlink)
             if flipy:
@@ -1165,6 +1158,11 @@ class URDF(object):
                 cleanpath=re.sub('/+','/','/'.join(newpath))
                 g.filename='package://'+cleanpath
             l.collision.geometry.filename=re.sub('Body','convhull',l.collision.geometry.filename)
+
+    def apply_default_limits(self,effort,vel,lower,upper):
+        for n,j in self.joints.items():
+            j.limits=JointLimit(effort,vel,lower,upper)
+            j.joint_type=Joint.REVOLUTE
 
 if __name__ == '__main__':
     #try:
