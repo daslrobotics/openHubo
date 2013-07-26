@@ -9,6 +9,8 @@ import sys
 from numpy import array,pi
 import re, copy
 
+HUBO_JOINT_SUFFIX_MASK=r'([HKASEWF][RPY12345])'
+
 def reindent(s, numSpaces):
     """Reindent a string for tree structure pretty printing."""
     s = string.split(s, '\n')
@@ -62,7 +64,7 @@ def short(doc, name, key, value):
 
 def create_element(doc, name, contents=None, key=None, value=None):
     element = doc.createElement(name)
-    if contents:
+    if contents is not None:
         set_content(doc,element,contents)
     if key is not None:
         set_attribute(element, key, value)
@@ -403,7 +405,7 @@ class Joint(object):
             elif child.localName == 'child':
                 joint.child = child.getAttribute('link')
             elif child.localName == 'axis':
-                joint.axis = child.getAttribute('xyz')
+                joint.axis = array([float(x) for x in child.getAttribute('xyz').split(' ')])
             elif child.localName == 'origin':
                 joint.origin = Pose.parse(child)
             elif child.localName == 'limit':
@@ -429,7 +431,7 @@ class Joint(object):
         xml.appendChild( short(doc, "child" , "link", self.child ) )
         add(doc, xml, self.origin)
         if self.axis is not None:
-            xml.appendChild( short(doc, "axis", "xyz", self.axis) )
+            xml.appendChild( short(doc, "axis", "xyz", to_string(self.axis) ) )
         add(doc, xml, self.limits)
         add(doc, xml, self.dynamics)
         add(doc, xml, self.safety)
@@ -456,6 +458,15 @@ class Joint(object):
             xml.appendChild( create_element(doc, "limits", "0 0") )
 
         set_attribute(xml, "type", s)
+        if self.mimic is not None:
+            multiplier=self.mimic.multiplier if self.mimic.multiplier is not None else 1.0
+            offset=self.mimic.offset if self.mimic.offset is not None else 0.0
+            #1) Follow openrave mimic joint format, disable joint:
+            set_attribute(xml,"enable","false")
+            #2) Create the position equation
+            set_attribute(xml,"mimic_pos","{0} * {1} + {2}".format(self.mimic.joint_name,multiplier,offset))
+            set_attribute(xml,"mimic_vel","|{0} {1}".format(self.mimic.joint_name,multiplier))
+
         xml.appendChild( create_element(doc, "body", self.parent) )
         xml.appendChild( create_element(doc, "body" , self.child ) )
         xml.appendChild( create_element(doc, "offsetfrom" , self.parent) )
@@ -1085,9 +1096,13 @@ class URDF(object):
                 v=(newjoint,v[1])
             print el
             self.parent_map[k]=v
+        for n,j in self.joints.items():
+            if j.mimic is not None:
+                j.mimic.joint_name=newjoint if j.mimic.joint_name==joint else j.mimic.joint_name
 
     def copy_joint(self,joint,f,r):
-        """Copy and rename a joint and it's parent/child by the f / r strings. Assumes links exist."""
+        """Copy and rename a joint and it's parent/child by the f / r strings. Assumes links exist.
+        Note that it renames the parent and child, so use this with copy_link"""
         newjoint=copy.deepcopy(self.joints[joint])
         newjoint.name=re.sub(f,r,newjoint.name)
         newjoint.parent=re.sub(f,r,newjoint.parent)
@@ -1110,8 +1125,10 @@ class URDF(object):
             self.rename_joint(j,newname)
             self.joints[newname].origin.position+=array(xyz)
             self.joints[newname].origin.rotation+=array(rpy)
+            if self.joints[newname].mimic is not None:
+                self.joints[newname].mimic.joint_name=re.sub(f,r,self.joints[newname].mimic.joint_name)
 
-    def copy_chain_with_rottrans(self,root,tip,rpy,xyz,f,r,flipy=None):
+    def copy_chain_with_rottrans(self,root,tip,rpy,xyz,f,r,mir_ax=None):
         """Fork the kinematic tree by copying a subchain and applying the desired rpy and xyz
         NOTE: this does NOT copy the root link, to allow branching"""
         #Copy all links in chain
@@ -1125,19 +1142,37 @@ class URDF(object):
         for l in linkchain[1:]:
             newlink=copy.deepcopy(self.links[l])
             newlink.name=re.sub(f,r,newlink.name)
-            newlink.collision.geometry.filename=re.sub(f,r,newlink.collision.geometry.filename)
-            newlink.visual.geometry.filename=re.sub(f,r,newlink.visual.geometry.filename)
+            if newlink.collision is not None:
+                newlink.collision.geometry.filename=re.sub(f,r,newlink.collision.geometry.filename)
+                newlink.visual.geometry.filename=re.sub(f,r,newlink.visual.geometry.filename)
             self.add_link(newlink)
             newlinks.append(newlink)
-            if flipy:
+            if mir_ax == 'x':
                 newlink.inertial.matrix['ixy']*=-1.
                 newlink.inertial.matrix['ixz']*=-1.
+            if mir_ax == 'y':
+                newlink.inertial.matrix['ixy']*=-1.
+                newlink.inertial.matrix['iyz']*=-1.
+            if mir_ax == 'z':
+                newlink.inertial.matrix['ixz']*=-1.
+                newlink.inertial.matrix['iyz']*=-1.
         for j in jointchain:
             newjoints.append(self.copy_joint(j,f,r))
-            if flipy:
+            if mir_ax == 'x':
+                newjoints[-1].origin.position[0]*=-1.0
+                newjoints[-1].origin.rotation[1]*=-1.0
+                newjoints[-1].origin.rotation[2]*=-1.0
+            if mir_ax == 'y':
                 newjoints[-1].origin.position[1]*=-1.0
                 newjoints[-1].origin.rotation[0]*=-1.0
                 newjoints[-1].origin.rotation[2]*=-1.0
+            if mir_ax == 'z':
+                newjoints[-1].origin.position[2]*=-1.0
+                newjoints[-1].origin.rotation[0]*=-1.0
+                newjoints[-1].origin.rotation[1]*=-1.0
+        for j in newjoints:
+            if j.mimic is not None:
+                j.mimic.joint_name=re.sub(f,r,j.mimic.joint_name)
 
         newjoints[0].origin.position+=array(xyz)
         newjoints[0].origin.rotation+=array(rpy)
@@ -1161,8 +1196,9 @@ class URDF(object):
 
     def apply_default_limits(self,effort,vel,lower,upper):
         for n,j in self.joints.items():
-            j.limits=JointLimit(effort,vel,lower,upper)
-            j.joint_type=Joint.REVOLUTE
+            if j.joint_type==Joint.CONTINUOUS or j.joint_type==Joint.REVOLUTE:
+                j.limits=JointLimit(effort,vel,lower,upper)
+                j.joint_type=Joint.REVOLUTE
 
 if __name__ == '__main__':
     #try:
