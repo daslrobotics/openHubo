@@ -35,20 +35,33 @@ def add_openrave(doc, base, element):
             base.appendChild(newelements)
 
 def pfloat(x):
+    """Print float value as string"""
     return "{0}".format(x).rstrip('.')
 
 def to_string(data=None):
+    """Convert data fromvarious types to urdf string format"""
     if data is None:
         return None
     if hasattr(data, '__iter__'):
-        return  " ".join( [pfloat(a) for a in data] )
+        outlist=[]
+        for a in data:
+            try:
+                if abs(a)>URDF.ZERO_THRESHOLD:
+                    outlist.append(pfloat(a))
+                else:
+                    outlist.append("0")
+            except TypeError:
+                outlist.append(pfloat(a))
+        return ' '.join(outlist)
+
     elif type(data) == type(0.0):
-        return pfloat(data)
+        return pfloat(data if abs(data)>URDF.ZERO_THRESHOLD else 0)
     elif type(data) != type(''):
         return str(data)
     return data
 
 def set_attribute(node, name, value):
+    """Set an attribute on an XML node, converting data to string format"""
     node.setAttribute(name, to_string(value))
 
 def set_content(doc,node,data):
@@ -85,6 +98,7 @@ def children(node):
     return children
 
 class Collision(object):
+    """Collision node stores collision geometry for a link."""
     def __init__(self, geometry=None, origin=None):
         self.geometry = geometry
         self.origin = origin
@@ -290,7 +304,8 @@ class Mesh(Geometry):
     def to_xml(self, doc):
         xml = doc.createElement("mesh")
         set_attribute(xml, "filename", self.filename)
-        set_attribute(xml, "scale", self.scale)
+        if self.scale != 1:
+            set_attribute(xml, "scale", self.scale)
         geom = doc.createElement('geometry')
         geom.appendChild(xml)
         return geom
@@ -819,13 +834,13 @@ class Visual(object):
         return s
 
 class URDF(object):
+    ZERO_THRESHOLD=0.000000001
     def __init__(self, name=""):
         self.name = name
         self.elements = []
         self.links = {}
         self.joints = {}
         self.materials = {}
-
         self.parent_map = {}
         self.child_map = {}
 
@@ -888,6 +903,7 @@ class URDF(object):
 
 
     def get_chain(self, root, tip, joints=True, links=True, fixed=True):
+        """Based on given link names root and tip, return either a joint or link chain as a list of names."""
         chain = []
         if links:
             chain.append(tip)
@@ -912,11 +928,18 @@ class URDF(object):
         assert root is not None, "No roots detected, invalid URDF."
         return root
 
-    def to_xml(self):
+    def to_xml(self,orderbytree=False,orderbytype=False):
         doc = Document()
         root = doc.createElement("robot")
         doc.appendChild(root)
         root.setAttribute("name", self.name)
+
+        baselink=self.parent_map
+        if orderbytree:
+            #Walk child map sequentially and export
+            pass
+        if orderbytype:
+            pass
 
         for element in self.elements:
             root.appendChild(element.to_xml(doc))
@@ -1035,16 +1058,22 @@ class URDF(object):
 
         return s
 
-    def walk_chain(self,link):
-        """Walk along the first branch of urdf tree to find last link"""
+    def walk_chain(self,link,branchorder=None):
+        """Walk along the first branch of urdf tree to find last link. Optionally specify which fork to take globally)."""
         child=link
+        if branchorder is None:
+            branchorder=0
+
         while self.child_map.has_key(child):
             children=self.child_map[link]
-            child=children[0][1]
+            l=len(children)
+            child=children[min(branchorder,l-1)][1]
 
         return child
 
     def rename_link(self,link,newlink):
+        """Rename a link, updating all internal references to the name, and
+        removing the old name from the links dict."""
         self.links[link].name=newlink
         self.links[newlink]=self.links[link]
         self.links.pop(link)
@@ -1080,6 +1109,9 @@ class URDF(object):
         print self.child_map
 
     def rename_joint(self,joint,newjoint):
+        """Find a joint and rename it to newjoint, updating all internal
+        structures and mimic joints with the new name. Removes the old joint
+        reference from the joints list."""
         self.joints[joint].name=newjoint
         self.joints[newjoint]=self.joints[joint]
         self.joints.pop(joint)
@@ -1112,6 +1144,10 @@ class URDF(object):
         return newjoint
 
     def move_chain_with_rottrans(self,root,tip,rpy,xyz,f,r):
+        """Find and rename a kinematic chain based on the given root and top
+        names. Renames all links and joints according to find and replace
+        terms.
+        """
         linkchain=self.get_chain(root,tip,links=True,joints=False)
         jointchain=self.get_chain(root,tip,joints=True,links=False)
         print linkchain
@@ -1129,9 +1165,13 @@ class URDF(object):
                 self.joints[newname].mimic.joint_name=re.sub(f,r,self.joints[newname].mimic.joint_name)
 
     def copy_chain_with_rottrans(self,root,tip,rpy,xyz,f,r,mir_ax=None):
-        """Fork the kinematic tree by copying a subchain and applying the desired rpy and xyz
-        NOTE: this does NOT copy the root link, to allow branching"""
-        #Copy all links in chain
+        """Copy a kinematic chain, renaming joints and links according to a regular expression.
+
+        Note that this is designed to work with the Hubo joint / body
+        convention, which has an easy pattern for joint and body names. If your
+        model has joints and links that are not systematically named, this
+        function won't be much use.
+        """
 
         linkchain=self.get_chain(root,tip,links=True,joints=False)
         jointchain=self.get_chain(root,tip,joints=True,links=False)
@@ -1184,6 +1224,7 @@ class URDF(object):
     #TODO: merge function to tie two chains together from disparate models
 
     def update_mesh_paths(self,package_name):
+        """Search and replace package paths in urdf with chosen package name"""
         for n,l in self.links.items():
             #TODO: check if mesh
             for g in [l.collision.geometry,l.visual.geometry]:
@@ -1194,11 +1235,14 @@ class URDF(object):
                 g.filename='package://'+cleanpath
             l.collision.geometry.filename=re.sub('Body','convhull',l.collision.geometry.filename)
 
-    def apply_default_limits(self,effort,vel,lower,upper):
+    def apply_default_limits(self,effort,vel,lower,upper,mask=None):
+        """Apply default limits to all joints and convert continous joints to revolute. Ignores fixed and other joint types."""
         for n,j in self.joints.items():
-            if j.joint_type==Joint.CONTINUOUS or j.joint_type==Joint.REVOLUTE:
-                j.limits=JointLimit(effort,vel,lower,upper)
-                j.joint_type=Joint.REVOLUTE
+            if mask is None or re.search(mask,n):
+                if j.joint_type==Joint.CONTINUOUS or j.joint_type==Joint.REVOLUTE:
+                    j.limits=JointLimit(effort,vel,lower,upper)
+                    j.joint_type=Joint.REVOLUTE
+
 
 if __name__ == '__main__':
     #try:

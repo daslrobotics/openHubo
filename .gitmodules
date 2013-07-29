@@ -7,6 +7,6 @@
 [submodule "comps-code"]
 	path = comps-code
 	url = git://github.com/robEllenberg/comps-code.git
-[submodule "robots/drchubo"]
+[submodule "drchubo"]
 	path = robots/drchubo
-	url = https://github.com/daslrobotics/drchubo
+	url = https://github.com/daslrobotics/drchubo.git
