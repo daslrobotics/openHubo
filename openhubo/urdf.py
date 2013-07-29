@@ -1190,12 +1190,15 @@ class URDF(object):
             if mir_ax == 'x':
                 newlink.inertial.matrix['ixy']*=-1.
                 newlink.inertial.matrix['ixz']*=-1.
+                newlink.inertial.origin.position[0]*=-1.
             if mir_ax == 'y':
                 newlink.inertial.matrix['ixy']*=-1.
                 newlink.inertial.matrix['iyz']*=-1.
+                newlink.inertial.origin.position[1]*=-1.
             if mir_ax == 'z':
                 newlink.inertial.matrix['ixz']*=-1.
                 newlink.inertial.matrix['iyz']*=-1.
+                newlink.inertial.origin.position[2]*=-1.
         for j in jointchain:
             newjoints.append(self.copy_joint(j,f,r))
             if mir_ax == 'x':
@@ -1242,6 +1245,14 @@ class URDF(object):
                 if j.joint_type==Joint.CONTINUOUS or j.joint_type==Joint.REVOLUTE:
                     j.limits=JointLimit(effort,vel,lower,upper)
                     j.joint_type=Joint.REVOLUTE
+
+    #def rot_from_rpy(r,p,y):
+        #return array([
+    #def get_link_origin(self,base,link):
+        #jointchain=self.get_chain(base,link,links=False,joints=True)
+
+        #rpy=[self.joints[n].origin.rotation for n in jointchain]
+        #xyz=[self.joints[n].origin.position for n in jointchain]
 
 
 if __name__ == '__main__':
