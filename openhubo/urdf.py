@@ -1199,6 +1199,7 @@ class URDF(object):
                 newlink.inertial.matrix['ixz']*=-1.
                 newlink.inertial.matrix['iyz']*=-1.
                 newlink.inertial.origin.position[2]*=-1.
+        #Hack to rotate just first joint
         for j in jointchain:
             newjoints.append(self.copy_joint(j,f,r))
             if mir_ax == 'x':
@@ -1213,6 +1214,10 @@ class URDF(object):
                 newjoints[-1].origin.position[2]*=-1.0
                 newjoints[-1].origin.rotation[0]*=-1.0
                 newjoints[-1].origin.rotation[1]*=-1.0
+
+        if mir_ax =='rotx':
+            newjoints[0].origin.position[1]*=-1.0
+
         for j in newjoints:
             if j.mimic is not None:
                 j.mimic.joint_name=re.sub(f,r,j.mimic.joint_name)
