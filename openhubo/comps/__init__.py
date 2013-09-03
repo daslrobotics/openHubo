@@ -492,6 +492,9 @@ class TSR:
         #all must be true, ignore manipindex
         return bool(_np.prod(tests))
 
+    def from_end_effector(self,link):
+        """ Copy transforms from specified link and make a TSR..."""
+        pass
     def Serialize(self):
         #hack to serialize link
         if self.link is None:
