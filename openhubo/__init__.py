@@ -23,7 +23,7 @@ OpenHubo python functions follow (mostly) the PEP recommended python coding styl
         form: Build a data structure or command using smaller input pieces.
 """
 
-__version__='0.8.0'
+__version__='0.8.1'
 
 import numpy as _np
 import matplotlib.pyplot as _plt
@@ -304,7 +304,7 @@ def load_scene(env,robotfile=None,scenefile=None,stop=None,physics=True,ghost=Fa
     else:
         (options,__)=get_options()
         options.robotfile=robotfile
-        options.scenefile=robotfile
+        options.scenefile=scenefile
         options.stop=stop
         if physics:
             options._physics='ode'
@@ -702,6 +702,11 @@ def _create_parser(parser=None):
                       help='Do not stop the simulation during scene / robot loading')
     parser.add_option('--video-capture-file', action="store", dest='recordfile',default=None,
                       help='Specify a video file for the video recorder to capture to.')
+
+    urdf_options=_optparse.OptionGroup(parser,'URDF export')
+    urdf_options.add_option('--export-urdf', action="store", dest='export-urdf',default=None,
+                            help='Specify a file name to export to openrave kinbody format')
+    parser.add_option_group(urdf_options)
     return parser
     #TODO: add callback to clean up "None"'s
 

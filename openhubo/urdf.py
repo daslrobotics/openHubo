@@ -6,8 +6,10 @@ import string
 from xml.dom.minidom import Document
 from xml.dom import minidom
 import sys
-from numpy import array,eye,reshape,pi
-import re
+from numpy import array,pi
+import re, copy
+
+HUBO_JOINT_SUFFIX_MASK=r'([HKASEWF][RPY12345])'
 
 def reindent(s, numSpaces):
     """Reindent a string for tree structure pretty printing."""
@@ -24,38 +26,49 @@ def add(doc, base, element):
 def add_openrave(doc, base, element):
     """Add an XML element for OpenRAVE XML export"""
     if element is not None:
+        #TODO: copy this iterable test elsewhere
         newelements=element.to_openrave_xml(doc)
-        if type(newelements)==type([]):
+        if hasattr(newelements, '__iter__'):
             for e in newelements:
                 base.appendChild(e)
         else:
             base.appendChild(newelements)
 
 def pfloat(x):
+    """Print float value as string"""
     return "{0}".format(x).rstrip('.')
 
+def to_string(data=None):
+    """Convert data fromvarious types to urdf string format"""
+    if data is None:
+        return None
+    if hasattr(data, '__iter__'):
+        outlist=[]
+        for a in data:
+            try:
+                if abs(a)>URDF.ZERO_THRESHOLD:
+                    outlist.append(pfloat(a))
+                else:
+                    outlist.append("0")
+            except TypeError:
+                outlist.append(pfloat(a))
+        return ' '.join(outlist)
+
+    elif type(data) == type(0.0):
+        return pfloat(data if abs(data)>URDF.ZERO_THRESHOLD else 0)
+    elif type(data) != type(''):
+        return str(data)
+    return data
+
 def set_attribute(node, name, value):
-    if value is None:
-        return
-    if type([]) == type(value) or type(()) == type(value):
-        value = " ".join( [pfloat(a) for a in value] )
-    elif type(value) == type(0.0):
-        value = pfloat(value)
-    elif type(value) != type(''):
-        value = str(value)
-    node.setAttribute(name, value)
+    """Set an attribute on an XML node, converting data to string format"""
+    node.setAttribute(name, to_string(value))
 
 def set_content(doc,node,data):
     """Create a text node and add it to the current element"""
     if data is None:
         return
-    if type([]) == type(data) or type(()) == type(data):
-        data = " ".join( [pfloat(a) for a in data] )
-    elif type(data) == type(0.0):
-        data = pfloat(data)
-    elif type(data) != type(''):
-        data = str(data)
-    node.appendChild(doc.createTextNode(data))
+    node.appendChild(doc.createTextNode(to_string(data)))
 
 def short(doc, name, key, value):
     element = doc.createElement(name)
@@ -64,15 +77,8 @@ def short(doc, name, key, value):
 
 def create_element(doc, name, contents=None, key=None, value=None):
     element = doc.createElement(name)
-    if contents:
-        if type([]) == type(contents) or type(()) == type(contents):
-            contents = " ".join( [pfloat(a) for a in contents] )
-        elif type(contents) == type(0.0):
-            contents = pfloat(contents)
-        elif type(contents) != type(''):
-            contents = str(contents)
-        element.appendChild(doc.createTextNode(contents))
-
+    if contents is not None:
+        set_content(doc,element,contents)
     if key is not None:
         set_attribute(element, key, value)
 
@@ -92,6 +98,7 @@ def children(node):
     return children
 
 class Collision(object):
+    """Collision node stores collision geometry for a link."""
     def __init__(self, geometry=None, origin=None):
         self.geometry = geometry
         self.origin = origin
@@ -291,21 +298,25 @@ class Mesh(Geometry):
             s = 1
         else:
             xyz = node.getAttribute('scale').split()
-            scale = map(float, xyz)
+            s = map(float, xyz)
         return Mesh(fn, s)
 
     def to_xml(self, doc):
         xml = doc.createElement("mesh")
         set_attribute(xml, "filename", self.filename)
-        set_attribute(xml, "scale", self.scale)
+        if self.scale != 1:
+            set_attribute(xml, "scale", self.scale)
         geom = doc.createElement('geometry')
         geom.appendChild(xml)
         return geom
 
     def to_openrave_xml(self, doc):
         xml = short(doc, "geometry","type","trimesh")
-        f=re.sub(r"package:\/\/","../../",self.filename)
-        xml.appendChild(create_element(doc, "data", [f, self.scale]))
+        f='../meshes/'+self.filename.split('/')[-1]
+        fhull=re.sub(r"Body","convhull",f)
+        #xml.appendChild(create_element(doc, "render", [f, self.scale]))
+        xml.appendChild(create_element(doc, "data", [fhull, self.scale]))
+        #set_attribute(xml, "render","true")
         return xml
 
     def __str__(self):
@@ -409,7 +420,7 @@ class Joint(object):
             elif child.localName == 'child':
                 joint.child = child.getAttribute('link')
             elif child.localName == 'axis':
-                joint.axis = child.getAttribute('xyz')
+                joint.axis = array([float(x) for x in child.getAttribute('xyz').split(' ')])
             elif child.localName == 'origin':
                 joint.origin = Pose.parse(child)
             elif child.localName == 'limit':
@@ -435,7 +446,7 @@ class Joint(object):
         xml.appendChild( short(doc, "child" , "link", self.child ) )
         add(doc, xml, self.origin)
         if self.axis is not None:
-            xml.appendChild( short(doc, "axis", "xyz", self.axis) )
+            xml.appendChild( short(doc, "axis", "xyz", to_string(self.axis) ) )
         add(doc, xml, self.limits)
         add(doc, xml, self.dynamics)
         add(doc, xml, self.safety)
@@ -462,6 +473,15 @@ class Joint(object):
             xml.appendChild( create_element(doc, "limits", "0 0") )
 
         set_attribute(xml, "type", s)
+        if self.mimic is not None:
+            multiplier=self.mimic.multiplier if self.mimic.multiplier is not None else 1.0
+            offset=self.mimic.offset if self.mimic.offset is not None else 0.0
+            #1) Follow openrave mimic joint format, disable joint:
+            set_attribute(xml,"enable","false")
+            #2) Create the position equation
+            set_attribute(xml,"mimic_pos","{0} * {1} + {2}".format(self.mimic.joint_name,multiplier,offset))
+            set_attribute(xml,"mimic_vel","|{0} {1}".format(self.mimic.joint_name,multiplier))
+
         xml.appendChild( create_element(doc, "body", self.parent) )
         xml.appendChild( create_element(doc, "body" , self.child ) )
         xml.appendChild( create_element(doc, "offsetfrom" , self.parent) )
@@ -550,6 +570,15 @@ class JointLimit(object):
 
     @staticmethod
     def parse(node):
+        jl = JointLimit( float( node.getAttribute('effort') ) ,
+                         float( node.getAttribute('velocity')))
+        if node.hasAttribute('lower'):
+            jl.lower = float( node.getAttribute('lower') )
+        if node.hasAttribute('upper'):
+            jl.upper = float( node.getAttribute('upper') )
+        return jl
+
+    def get_from_table(self,node):
         jl = JointLimit( float( node.getAttribute('effort') ) ,
                          float( node.getAttribute('velocity')))
         if node.hasAttribute('lower'):
@@ -690,18 +719,18 @@ class Material(object):
 
 class Pose(object):
     def __init__(self, position=None, rotation=None):
-        self.position = position
-        self.rotation = rotation
+        self.position = array(position)
+        self.rotation = array(rotation)
 
     @staticmethod
     def parse(node):
         pose = Pose()
         if node.hasAttribute("xyz"):
             xyz = node.getAttribute('xyz').split()
-            pose.position = map(float, xyz)
+            pose.position = array(map(float, xyz))
         if node.hasAttribute("rpy"):
             rpy = node.getAttribute('rpy').split()
-            pose.rotation = map(float, rpy)
+            pose.rotation = array(map(float, rpy))
         return pose
 
     def to_xml(self, doc):
@@ -805,13 +834,13 @@ class Visual(object):
         return s
 
 class URDF(object):
+    ZERO_THRESHOLD=0.000000001
     def __init__(self, name=""):
         self.name = name
         self.elements = []
         self.links = {}
         self.joints = {}
         self.materials = {}
-
         self.parent_map = {}
         self.child_map = {}
 
@@ -874,6 +903,7 @@ class URDF(object):
 
 
     def get_chain(self, root, tip, joints=True, links=True, fixed=True):
+        """Based on given link names root and tip, return either a joint or link chain as a list of names."""
         chain = []
         if links:
             chain.append(tip)
@@ -898,16 +928,29 @@ class URDF(object):
         assert root is not None, "No roots detected, invalid URDF."
         return root
 
-    def to_xml(self):
+    def to_xml(self,orderbytree=False,orderbytype=False):
         doc = Document()
         root = doc.createElement("robot")
         doc.appendChild(root)
         root.setAttribute("name", self.name)
 
+        baselink=self.parent_map
+        if orderbytree:
+            #Walk child map sequentially and export
+            pass
+        if orderbytype:
+            pass
+
         for element in self.elements:
             root.appendChild(element.to_xml(doc))
 
         return doc.toprettyxml()
+
+    def write_xml(self,outfile=None):
+        if outfile is None:
+            outfile=self.name+'.urdf'
+
+        self.write_reformatted(self.to_xml(),outfile)
 
     def make_openrave_kinbody(self,doc):
         kinbody = doc.createElement("kinbody")
@@ -930,6 +973,22 @@ class URDF(object):
         #Add adjacencies
         for j in self.joints.values():
             kinbody.appendChild(create_element(doc,"adjacent",[j.parent, j.child]))
+
+        #Add known extra adjacencies
+        badjoints={'LAR':'LKP','LWR':'LWY','LSY':'LSP','LHY':'LHP',
+                   'RAR':'RKP','RWR':'RWY','RSY':'RSP','RHY':'RHP',
+                   'NK1':'Torso'}
+        for k,v in badjoints.items():
+            #TODO: search all bodies for above pairs and add extra adjacency tags
+            b1=None
+            b2=None
+            for b in kinbody.getElementsByTagName('body'):
+                if re.search(k,b.getAttribute('name')):
+                    b1=b.getAttribute('name')
+                if re.search(v,b.getAttribute('name')):
+                    b2=b.getAttribute('name')
+            if b1 and b2:
+                kinbody.appendChild(create_element(doc,"adjacent",[b1, b2]))
 
         return kinbody
 
@@ -999,11 +1058,213 @@ class URDF(object):
 
         return s
 
+    def walk_chain(self,link,branchorder=None):
+        """Walk along the first branch of urdf tree to find last link. Optionally specify which fork to take globally)."""
+        child=link
+        if branchorder is None:
+            branchorder=0
+
+        while self.child_map.has_key(child):
+            children=self.child_map[link]
+            l=len(children)
+            child=children[min(branchorder,l-1)][1]
+
+        return child
+
+    def rename_link(self,link,newlink):
+        """Rename a link, updating all internal references to the name, and
+        removing the old name from the links dict."""
+        self.links[link].name=newlink
+        self.links[newlink]=self.links[link]
+        self.links.pop(link)
+        for k,v in self.parent_map.items():
+            if k==link:
+                self.parent_map[newlink]=v
+                self.parent_map.pop(k)
+                k=newlink
+            if v[0]==link:
+                new0=newlink
+                v=(new0,v[1])
+            if v[1]==link:
+                new1=newlink
+                v=(v[0],new1)
+            self.parent_map[k]=v
+        for k,v in self.child_map.items():
+            if k==link:
+                self.child_map[newlink]=v
+                self.child_map.pop(k)
+                k=newlink
+            vnew=[]
+            for el in v:
+                if el[1]==link:
+                    el=(el[0],newlink)
+                vnew.append(el)
+            print vnew
+            self.child_map[k]=vnew
+        for n,j in self.joints.items():
+            if j.parent==link:
+                j.parent=newlink
+            if j.child==link:
+                j.child=newlink
+        print self.child_map
+
+    def rename_joint(self,joint,newjoint):
+        """Find a joint and rename it to newjoint, updating all internal
+        structures and mimic joints with the new name. Removes the old joint
+        reference from the joints list."""
+        self.joints[joint].name=newjoint
+        self.joints[newjoint]=self.joints[joint]
+        self.joints.pop(joint)
+        for k,v in self.child_map.items():
+            vnew=[]
+            for el in v:
+                if el[0]==joint:
+                    el=(newjoint,el[1])
+                print el
+                vnew.append(el)
+            self.child_map[k]=vnew
+        for k,v in self.parent_map.items():
+            if v[0]==joint:
+                v=(newjoint,v[1])
+            print el
+            self.parent_map[k]=v
+        for n,j in self.joints.items():
+            if j.mimic is not None:
+                j.mimic.joint_name=newjoint if j.mimic.joint_name==joint else j.mimic.joint_name
+
+    def copy_joint(self,joint,f,r):
+        """Copy and rename a joint and it's parent/child by the f / r strings. Assumes links exist.
+        Note that it renames the parent and child, so use this with copy_link"""
+        newjoint=copy.deepcopy(self.joints[joint])
+        newjoint.name=re.sub(f,r,newjoint.name)
+        newjoint.parent=re.sub(f,r,newjoint.parent)
+        newjoint.child=re.sub(f,r,newjoint.child)
+
+        self.add_joint(newjoint)
+        return newjoint
+
+    def move_chain_with_rottrans(self,root,tip,rpy,xyz,f,r):
+        """Find and rename a kinematic chain based on the given root and top
+        names. Renames all links and joints according to find and replace
+        terms.
+        """
+        linkchain=self.get_chain(root,tip,links=True,joints=False)
+        jointchain=self.get_chain(root,tip,joints=True,links=False)
+        print linkchain
+        print jointchain
+
+        for l in linkchain[1:]:
+            newlink=re.sub(f,r,l)
+            self.rename_link(l,newlink)
+        for j in jointchain:
+            newname=re.sub(f,r,j)
+            self.rename_joint(j,newname)
+            self.joints[newname].origin.position+=array(xyz)
+            self.joints[newname].origin.rotation+=array(rpy)
+            if self.joints[newname].mimic is not None:
+                self.joints[newname].mimic.joint_name=re.sub(f,r,self.joints[newname].mimic.joint_name)
+
+    def copy_chain_with_rottrans(self,root,tip,rpy,xyz,f,r,mir_ax=None):
+        """Copy a kinematic chain, renaming joints and links according to a regular expression.
+
+        Note that this is designed to work with the Hubo joint / body
+        convention, which has an easy pattern for joint and body names. If your
+        model has joints and links that are not systematically named, this
+        function won't be much use.
+        """
+
+        linkchain=self.get_chain(root,tip,links=True,joints=False)
+        jointchain=self.get_chain(root,tip,joints=True,links=False)
+        print linkchain
+        print jointchain
+        newjoints=[]
+        newlinks=[]
+        for l in linkchain[1:]:
+            newlink=copy.deepcopy(self.links[l])
+            newlink.name=re.sub(f,r,newlink.name)
+            if newlink.collision is not None:
+                newlink.collision.geometry.filename=re.sub(f,r,newlink.collision.geometry.filename)
+                newlink.visual.geometry.filename=re.sub(f,r,newlink.visual.geometry.filename)
+            self.add_link(newlink)
+            newlinks.append(newlink)
+            if mir_ax == 'x':
+                newlink.inertial.matrix['ixy']*=-1.
+                newlink.inertial.matrix['ixz']*=-1.
+                newlink.inertial.origin.position[0]*=-1.
+            if mir_ax == 'y':
+                newlink.inertial.matrix['ixy']*=-1.
+                newlink.inertial.matrix['iyz']*=-1.
+                newlink.inertial.origin.position[1]*=-1.
+            if mir_ax == 'z':
+                newlink.inertial.matrix['ixz']*=-1.
+                newlink.inertial.matrix['iyz']*=-1.
+                newlink.inertial.origin.position[2]*=-1.
+        #Hack to rotate just first joint
+        for j in jointchain:
+            newjoints.append(self.copy_joint(j,f,r))
+            if mir_ax == 'x':
+                newjoints[-1].origin.position[0]*=-1.0
+                newjoints[-1].origin.rotation[1]*=-1.0
+                newjoints[-1].origin.rotation[2]*=-1.0
+            if mir_ax == 'y':
+                newjoints[-1].origin.position[1]*=-1.0
+                newjoints[-1].origin.rotation[0]*=-1.0
+                newjoints[-1].origin.rotation[2]*=-1.0
+            if mir_ax == 'z':
+                newjoints[-1].origin.position[2]*=-1.0
+                newjoints[-1].origin.rotation[0]*=-1.0
+                newjoints[-1].origin.rotation[1]*=-1.0
+
+        if mir_ax =='rotx':
+            newjoints[0].origin.position[1]*=-1.0
+
+        for j in newjoints:
+            if j.mimic is not None:
+                j.mimic.joint_name=re.sub(f,r,j.mimic.joint_name)
+
+        newjoints[0].origin.position+=array(xyz)
+        newjoints[0].origin.rotation+=array(rpy)
+
+    def fix_mesh_case(self):
+        for l in self.links:
+            fname=l.collision.geometry.filename
+            l.collision.geometry.filename=re.sub(r'\.[Ss][Tt][Ll]','.stl',fname)
+    #TODO: merge function to tie two chains together from disparate models
+
+    def update_mesh_paths(self,package_name):
+        """Search and replace package paths in urdf with chosen package name"""
+        for n,l in self.links.items():
+            #TODO: check if mesh
+            for g in [l.collision.geometry,l.visual.geometry]:
+                #save STL file name only
+                meshfile=g.filename.split('/')[-1]
+                newpath=[package_name,'meshes',meshfile]
+                cleanpath=re.sub('/+','/','/'.join(newpath))
+                g.filename='package://'+cleanpath
+            l.collision.geometry.filename=re.sub('Body','convhull',l.collision.geometry.filename)
+
+    def apply_default_limits(self,effort,vel,lower,upper,mask=None):
+        """Apply default limits to all joints and convert continous joints to revolute. Ignores fixed and other joint types."""
+        for n,j in self.joints.items():
+            if mask is None or re.search(mask,n):
+                if j.joint_type==Joint.CONTINUOUS or j.joint_type==Joint.REVOLUTE:
+                    j.limits=JointLimit(effort,vel,lower,upper)
+                    j.joint_type=Joint.REVOLUTE
+
+    #def rot_from_rpy(r,p,y):
+        #return array([
+    #def get_link_origin(self,base,link):
+        #jointchain=self.get_chain(base,link,links=False,joints=True)
+
+        #rpy=[self.joints[n].origin.rotation for n in jointchain]
+        #xyz=[self.joints[n].origin.position for n in jointchain]
+
+
 if __name__ == '__main__':
-    try:
-        import startup
-    except ImportError:
-        pass
+    #try:
+        #from openhubo import startup
+    #except ImportError:
+        #pass
 
     try:
         filename=sys.argv[1]

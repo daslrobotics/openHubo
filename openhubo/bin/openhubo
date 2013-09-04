@@ -18,6 +18,7 @@ print "**************************************************************"
 #Kludgy way to get ipython to launch with locals as interactive script
 cmd=[]
 cmd.append(options.interpreter)
+
 if options.interact:
     cmd.append('-i')
 if options.interpreter == 'ipython':

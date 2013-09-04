@@ -93,7 +93,7 @@ function check-submodules()
                 echo "Submodule update skipped..."
             else
                 echo "Updating plugin $PLUGIN_NAME to match the current openHubo commit..."
-                git submodule update $PLUGIN_NAME
+                git submodule update --init $PLUGIN_NAME
             fi
         fi
     done
