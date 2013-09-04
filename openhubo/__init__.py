@@ -64,13 +64,6 @@ class Pose:
             pose.send()
     """
 
-    def build_joint_index_map(self,robot):
-        jmap= {j.GetName():j.GetDOFIndex() for j in robot.GetJoints()}
-        for (k,v) in mapping.deprecated_names.iteritems():
-            if jmap.has_key(v):
-                jmap[k]=jmap[v]
-        return jmap
-
     def __init__(self,robot=None,ctrl=None,values=None,useregex=False):
         self.robot=robot
         self.jointmap=self.build_joint_index_map(robot)
@@ -94,33 +87,37 @@ class Pose:
 
         self.useregex=useregex
 
-    def update(self,newvalues=None):
+    def build_joint_index_map(self,robot):
+        jmap= {j.GetName():j.GetDOFIndex() for j in robot.GetJoints()}
+        for (k,v) in mapping.deprecated_names.iteritems():
+            if jmap.has_key(v):
+                jmap[k]=jmap[v]
+        return jmap
+
+
+    def update(self,newvalues=None,newtrans=None):
         """manually assign new values, or poll for new values from robot"""
         if newvalues is None:
             self.values=self.robot.GetDOFValues()
         elif len(newvalues)==len(self.values):
             self.values=array(newvalues)
+        if newtrans is None:
+            self.trans = self.robot.GetTransform()
             #TODO: exception throw here?
 
-    def reset(self,values=None,send=True,vel=False):
-        """Quick reset pose back to zero:
-            :param send: Additionally set the robot to the reset pose.
-            :param vel: Also reset the robot's DOF velocities (WARNING: this
-                will cause "hard" update that is non-physical.
-
-        This is a convenience function, consider using "with robot:" as a more robust alternative.
+    def reset(self):
+        """Hack simulation reset until we figure out the correct openrave way
+        to do this. Basically resets velocities, DOF, and transform in a way
+        that should override the current physical pose.
         """
 
-        if values is None:
-            values=zeros(self.robot.GetDOF())
-        self.values=values
+        self.values=zeros(self.robot.GetDOF())
+        self.trans=_np.eye(4)
 
-        if send:
-            with self.robot.GetEnv():
-                self.send()
-                if vel:
-                    self.robot.SetVelocity([0,0,0],[0,0,0])
-                    self.robot.SetDOFVelocities(self.values)
+        with self.robot.GetEnv():
+            self.send(True,True)
+            self.robot.SetVelocity([0,0,0],[0,0,0])
+            self.robot.SetDOFVelocities(self.values)
 
     def to_waypt(self,dt=1,affine=zeros(7)):
         #list constructor does shallow copy here
@@ -130,10 +127,13 @@ class Pose:
         waypt.append(dt)
         return waypt
 
-    def send(self,direct=False):
+    def send(self,direct=False,trans=False):
         if direct:
             self.robot.SetDOFValues(self.values)
+            if trans:
+                self.robot.SetTransform(self.trans)
         else:
+            #TODO send transform here too? not useful yet
             self.ctrl.SetDesired(self.values)
 
     def pretty(self):

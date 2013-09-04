@@ -21,6 +21,7 @@ def run_test(pose,jointmap,tilttime=20,waittime=10):
         oh.sleep(.1)
 
     oh.sleep(waittime)
+    print pose.robot.GetTransform()[2,3]
     if pose.robot.GetTransform()[2,3]<.8:
         return False
     else:
@@ -28,26 +29,36 @@ def run_test(pose,jointmap,tilttime=20,waittime=10):
         #robot has fallen
 
 
-def bisect_search(pose,jointmap):
+def bisect_search(pose,jointmap,trans,tilttime=20,waittime=10):
     lower={k:0.0 for k in jointmap.keys()}
     upper=jointmap
     tol=1.0
+
     while tol>0.01:
+        reset_simulation(pose,trans)
         testmap={}
-        for k,v in lower:
+        for k,v in lower.items():
             testmap[k]=(v+upper[k])/2
-        if run_test(pose,testmap):
+        if run_test(pose,testmap,tilttime,waittime):
             lower=testmap
         else:
             upper=testmap
         tol/=2
+        print "Tol:",tol
+        print "Lower:",lower
+        print "Upper:",upper
     return lower
 
-[env,options]=oh.setup('qtcoin')
+def reset_simulation(pose,trans):
+    pose.reset()
+    pose.robot.SetTransform(trans)
+    env.StartSimulation(oh.TIMESTEP)
+
+[env,options]=oh.setup()
 env.SetDebugLevel(4)
 
 options.physics=True
-options.ghost=True
+options.ghost=False
 
 [robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
 
@@ -55,9 +66,6 @@ options.ghost=True
 pose=oh.Pose(robot,ctrl)
 
 env.StartSimulation(oh.TIMESTEP)
-#.2 too high
-#.14 too low
-#.17 too low
 
-result=bisect_search(pose,{'LAP':-.24,'RAP':-.24})
+result=bisect_search(pose,{'LAP':-.3,'RAP':-.3},robot.GetTransform(),4,10)
 
