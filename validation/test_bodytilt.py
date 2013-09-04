@@ -2,9 +2,10 @@
 import openhubo as oh
 from openravepy import planningutils
 from openhubo import trajectory
-from numpy import pi
+from numpy import pi,mat,array
+from numpy.linalg import inv
 
-def run_test(pose,jointmap,tilttime=20,waittime=10):
+def run_test(pose,jointmap,trans,tilttime=20,waittime=10):
     [traj,config]=trajectory.create_trajectory(pose.robot)
     trajectory.traj_append(traj,pose.to_waypt(0.01))
 
@@ -14,6 +15,7 @@ def run_test(pose,jointmap,tilttime=20,waittime=10):
     trajectory.traj_append(traj,pose.to_waypt(tilttime))
 
     planningutils.RetimeActiveDOFTrajectory(traj,pose.robot,True)
+    reset_simulation(pose,trans)
 
     pose.ctrl.SetPath(traj)
     pose.ctrl.SendCommand('start')
@@ -28,6 +30,28 @@ def run_test(pose,jointmap,tilttime=20,waittime=10):
         return True
         #robot has fallen
 
+def run_quick_test(pose,jointmap,trans,waittime=10):
+    for j,v in jointmap.items():
+        pose[j]=v
+
+    pose.trans=trans
+    with pose.robot:
+        pose.reset()
+        ftrans=pose.robot.GetLink('leftFoot').GetTransform()
+        rot=inv(mat(ftrans))*mat(trans)
+        print rot
+        pose.trans=array(rot)
+
+    print pose.trans
+    pose.reset()
+
+    oh.sleep(waittime)
+    print pose.robot.GetTransform()[2,3]
+    if pose.robot.GetTransform()[2,3]<.8:
+        return False
+    else:
+        return True
+        #robot has fallen
 
 def bisect_search(pose,jointmap,trans,tilttime=20,waittime=10):
     lower={k:0.0 for k in jointmap.keys()}
@@ -35,11 +59,10 @@ def bisect_search(pose,jointmap,trans,tilttime=20,waittime=10):
     tol=1.0
 
     while tol>0.01:
-        reset_simulation(pose,trans)
         testmap={}
         for k,v in lower.items():
             testmap[k]=(v+upper[k])/2
-        if run_test(pose,testmap,tilttime,waittime):
+        if run_quick_test(pose,testmap,trans,waittime):
             lower=testmap
         else:
             upper=testmap

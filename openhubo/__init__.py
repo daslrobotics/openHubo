@@ -105,19 +105,24 @@ class Pose:
             self.trans = self.robot.GetTransform()
             #TODO: exception throw here?
 
-    def reset(self):
+    def reset(self,values=None,trans=None):
         """Hack simulation reset until we figure out the correct openrave way
         to do this. Basically resets velocities, DOF, and transform in a way
         that should override the current physical pose.
         """
 
-        self.values=zeros(self.robot.GetDOF())
-        self.trans=_np.eye(4)
+        if values:
+            self.values=zeros(self.robot.GetDOF())
+
+        if trans:
+            self.trans=_np.eye(4)
 
         with self.robot.GetEnv():
-            self.send(True,True)
             self.robot.SetVelocity([0,0,0],[0,0,0])
             self.robot.SetDOFVelocities(self.values)
+            self.robot.SetDOFValues(self.values)
+            self.robot.SetTransform(self.trans)
+            self.ctrl.SetDesired(self.values)
 
     def to_waypt(self,dt=1,affine=zeros(7)):
         #list constructor does shallow copy here
@@ -129,9 +134,10 @@ class Pose:
 
     def send(self,direct=False,trans=False):
         if direct:
-            self.robot.SetDOFValues(self.values)
-            if trans:
-                self.robot.SetTransform(self.trans)
+            with self.robot.GetEnv():
+                self.robot.SetDOFValues(self.values)
+                if trans:
+                    self.robot.SetTransform(self.trans)
         else:
             #TODO send transform here too? not useful yet
             self.ctrl.SetDesired(self.values)
