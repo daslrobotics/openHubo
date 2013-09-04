@@ -4,6 +4,7 @@ from openravepy import planningutils
 from openhubo import trajectory
 from numpy import pi,mat,array
 from numpy.linalg import inv
+import numpy as np
 
 def run_test(pose,jointmap,trans,tilttime=20,waittime=10):
     [traj,config]=trajectory.create_trajectory(pose.robot)
@@ -39,43 +40,59 @@ def run_quick_test(pose,jointmap,trans,waittime=10):
         pose.reset()
         ftrans=pose.robot.GetLink('leftFoot').GetTransform()
         rot=inv(mat(ftrans))*mat(trans)
-        print rot
         pose.trans=array(rot)
 
-    print pose.trans
     pose.reset()
 
-    oh.sleep(waittime)
-    print pose.robot.GetTransform()[2,3]
+    angles=log_joint_angles(pose,'LAP',waittime,.01)
+    #print pose.robot.GetTransform()[2,3]
     if pose.robot.GetTransform()[2,3]<.8:
-        return False
+        return False,angles
     else:
-        return True
+        return True,angles
         #robot has fallen
 
-def bisect_search(pose,jointmap,trans,tilttime=20,waittime=10):
+def bisect_search(pose,jointmap,trans,waittime=10):
     lower={k:0.0 for k in jointmap.keys()}
     upper=jointmap
-    tol=1.0
+    tol=abs(np.max(jointmap.values()))
 
-    while tol>0.01:
+    while tol>0.002:
         testmap={}
         for k,v in lower.items():
             testmap[k]=(v+upper[k])/2
-        if run_quick_test(pose,testmap,trans,waittime):
+        flag,newangles = run_quick_test(pose,testmap,trans,waittime)
+        if flag:
             lower=testmap
+            angles=newangles
         else:
             upper=testmap
-        tol/=2
         print "Tol:",tol
         print "Lower:",lower
         print "Upper:",upper
-    return lower
+        tol/=2
+
+    return lower,angles
 
 def reset_simulation(pose,trans):
     pose.reset()
     pose.robot.SetTransform(trans)
     env.StartSimulation(oh.TIMESTEP)
+
+def set_test_state(pose,maxvel,maxtorque):
+    """Set a given maxvel and maxtorque state for testing"""
+    for j in pose.robot.GetJoints():
+        j.SetVelocityLimits([maxvel])
+        j.SetTorqueLimits([maxtorque])
+
+def log_joint_angles(pose,joint,T,dt):
+
+    angles=[]
+    for n in xrange(int(T/dt)):
+        pose.update()
+        angles.append(pose[joint])
+        oh.sleep(dt)
+    return angles
 
 [env,options]=oh.setup()
 env.SetDebugLevel(4)
@@ -90,5 +107,4 @@ pose=oh.Pose(robot,ctrl)
 
 env.StartSimulation(oh.TIMESTEP)
 
-result=bisect_search(pose,{'LAP':-.3,'RAP':-.3},robot.GetTransform(),4,10)
-
+result,angles =bisect_search(pose,{'LAP':-.3,'RAP':-.3},robot.GetTransform(),10)
