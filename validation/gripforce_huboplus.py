@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-from numpy import pi,array
+from numpy import pi,array,ones,zeros
 import openravepy as rave
-from TransformMatrix import *
 import time
 from recorder import viewerrecorder
 import datetime
-import openhubo
+import openhubo as oh
 
 def set_finger_torque(robot,maxT,dt=0.0005):
     names=[u'rightIndexKnuckle1', u'rightIndexKnuckle2', u'rightIndexKnuckle3', u'rightMiddleKnuckle1', u'rightMiddleKnuckle2', u'rightMiddleKnuckle3', u'rightRingKnuckle1', u'rightRingKnuckle2', u'rightRingKnuckle3', u'rightPinkyKnuckle1', u'rightPinkyKnuckle2', u'rightPinkyKnuckle3', u'rightThumbKnuckle1', u'rightThumbKnuckle2', u'rightThumbKnuckle3']
@@ -26,13 +25,13 @@ def get_timestamp(lead='_'):
     return lead+datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 
 def pause(t=-1):
-    """ A simple pause function to emulate matlab's pause(t). 
+    """ A simple pause function to emulate matlab's pause(t).
     Useful for debugging and program stepping"""
     if t==-1:
         raw_input('Press any key to continue...')
     elif t>=0:
         time.sleep(t)
-        
+
 def makeNameToIndexConverter(robot):
     """ A closure to easily convert from a string joint name to the robot's
     actual DOF index, for use in creating/editing trajectories."""
@@ -91,7 +90,7 @@ def load_scene(env,scenename=None,stop=False,physics=True):
             robot.SetController(controller)
             controller.SendCommand('set gains 100 0 0')
             controller.SetDesired(pose/pose*pi/4*1.1)
-    
+
     time.sleep(.5)
     ind=makeNameToIndexConverter(robot)
 
@@ -99,12 +98,12 @@ def load_scene(env,scenename=None,stop=False,physics=True):
 
 
 if __name__=='__main__':
-    from openravepy import *
-    from servo import *
-    env=Environment()
-    env.SetDebugLevel(4)
-    (env,options)=openhubo.setup('qtcoin')
-    [robot,ctrl,ind,recorder]=load_scene(env,'gripper.env.xml',True,True)
+    """Basic environment setup"""
+    (env,options)=oh.setup('qtcoin')
+    options.scenefile='gripper.env.xml'
+    options.physics=True
+    [robot,ctrl,ind,recorder]=oh.load_scene(env,options)
+
     rod=env.GetKinBody('rod')
     trans=rod.GetTransform()
     pose=ones(robot.GetDOF())*.4
@@ -116,12 +115,12 @@ if __name__=='__main__':
     fail=False
 
     robot.SetDOFValues(pose)
-    rod.SetLinkVelocities((zeros(6),zeros(6))) 
+    rod.SetLinkVelocities((zeros(6),zeros(6)))
     rod.SetTransform(trans)
     T=.01
     set_finger_torque(robot,T)
     rod.Enable(False)
-    
+
     ctrl.SetDesired(pose*2)
     print "Finger torque is {}".format(T)
     print "Mass is {}".format(rod.GetLinks()[0].GetMass())

@@ -16,14 +16,14 @@ from __future__ import with_statement # for python 2.5
 __author__ = 'Robert Ellenberg'
 __license__ = 'GPLv3 license'
 
-from openravepy import *
-from numpy import *
+from openravepy import Sensor
+from numpy import pi,array,sin,zeros,arange
 import time
 import sys
-from servo import *
-import openhubo 
+import openhubo
 import pickle
 import datetime
+from matplotlib import pyplot as plt
 
 DT=0.0005
 
@@ -70,10 +70,10 @@ def sinusoidal_rock(robot,A,f,periods,joint1,joint2=None,phase=0.0):
 
         #Store data in array order LMx,LMy,LFz,RMx,RMy,RFz
         sensordata[0,k]=torque1[0]
-        sensordata[1,k]=torque1[1] 
+        sensordata[1,k]=torque1[1]
         sensordata[2,k]=force1[-1]
         sensordata[3,k]=torque1[0]
-        sensordata[4,k]=torque1[1] 
+        sensordata[4,k]=torque1[1]
         sensordata[5,k]=force2[-1]
     return [sensordata,(A,f,periods,joint1,joint2,phase)]
 
@@ -96,9 +96,8 @@ def setup_sensors(robot):
     robot.GetEnv().StopSimulation()
 
 def export_hubo_traj(robot,A,f,periods,joint1,joint2=None,phase=0.0):
-    
+
     omega=f*2*pi
-    env=robot.GetEnv()
     pose=robot.GetDOFValues()
     tvec=arange(0,2*pi/omega*periods,DT)
     angle1=A*(sin(omega*tvec))
@@ -116,9 +115,7 @@ def export_hubo_traj(robot,A,f,periods,joint1,joint2=None,phase=0.0):
 
 def run_experiment(tag,translation,params,Fzmin=-50.0,viewer=False):
 
-    env = Environment()
-    if viewer:
-        (env,options)=openhubo.setup('qtcoin')
+    (env,options)=openhubo.setup('qtcoin',viewer)
     env.SetDebugLevel(3)
     time.sleep(.25)
 
@@ -134,8 +131,8 @@ def run_experiment(tag,translation,params,Fzmin=-50.0,viewer=False):
     rcop_x=[]
     rcop_y=[]
 
-    for k in range(size(data,1)):
-        #Arbitrary cutoff to reject light contact...this could be augmented with sensor data, knowing overall body accelerations etc. 
+    for k in range(data.size(1)):
+        #Arbitrary cutoff to reject light contact...this could be augmented with sensor data, knowing overall body accelerations etc.
         if data[2,k]<Fzmin:
             lcop_x.append(-data[1,k]/data[2,k])
             lcop_y.append(-data[0,k]/data[2,k])
@@ -146,14 +143,14 @@ def run_experiment(tag,translation,params,Fzmin=-50.0,viewer=False):
     filename="contact_{}_{}.pickle".format(tag,datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
 
     with open(filename,'w') as f:
-        pickle.dump([data,params,lcop_x,lcop_y,rcop_x,rcop_y,translation],f) 
+        pickle.dump([data,params,lcop_x,lcop_y,rcop_x,rcop_y,translation],f)
 
     env.Destroy()
 
 def load_and_plot(filename):
 
     with open(filename,'r') as f:
-        data=pickle.load(f) 
+        data=pickle.load(f)
     print data[1],data[6]
     plt.plot(data[2],data[3],'+',data[4],data[5],'.')
     return data
@@ -176,5 +173,3 @@ if __name__=='__main__':
 
     else:
         run_experiment('debug_rightfoot',[.1,.5,0],(pi/80.0,.1,3,'RAR','RAP',pi/2.0),-50.0,True)
-        
-       
