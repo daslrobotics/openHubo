@@ -41,7 +41,7 @@ class StateLog:
                 t=float(datalist[1])
                 self.states.append(StateEntry(t))
             except ValueError:
-                print "time not found in "+datalist[1]
+                print "Skipping line: {}".format(raw_line)
 
     def read_from_file(self,filename):
         f=open(filename,'r')
@@ -52,12 +52,30 @@ class StateLog:
     def slice_states(self,name,field):
         return [s.joints[name][field] for s in self.states]
 
+    #TODO: slice by times?
+
     def write_joint_pair(self,j0,j1,destname='out.pair'):
         sl0=array(self.slice_states(j0,2))
         sl1=array(self.slice_states(j1,2))
         with open(destname,'w') as f:
             for p1,p2 in zip(sl0,sl1):
                 f.write('{},{}\n'.format(p1,p2))
+
+    def get_times(self,relative=True):
+        outtimes=array([s.t for s in self.states])
+        if relative:
+            outtimes-=outtimes[0]
+        return outtimes
+
+    def write_sysid_data(self,joint,destname='matlab_sysid.txt'):
+        ref=array(self.slice_states(joint,'ref'))
+        enc=array(self.slice_states(joint,'enc'))
+        #TODO: faster write with RAM
+        times=self.get_times()
+        with open(destname,'w') as f:
+            for t,p1,p2 in zip(times,ref,enc):
+                f.write('{},{},{}\n'.format(t,p1,p2))
+
 
 class JointTable:
     def __init__(self,filename=None):
