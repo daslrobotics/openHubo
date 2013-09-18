@@ -6,27 +6,31 @@ from numpy import pi,mat,array
 from numpy.linalg import inv
 import numpy as np
 
+
+def make_name(basename,tilt,rate):
+    return '{}_tilt_{:0.0f}deg_{:0.0f}Hz.traj'.format(basename,tilt*180/pi,1./rate)
+
 def build_trajectory(pose_array,times):
     """create a trajectory to link poses based on times. Kindof kludgy wrapper
     to trajectory...
     """
-    [traj,config]=trajectory.create_trajectory(pose.robot)
+    #this is ugly
+    robot=pose_array[0].robot
+    [traj,config]=trajectory.create_trajectory(robot)
     for p,t in zip(pose_array,times):
         trajectory.traj_append(traj,p.to_waypt(t))
 
-    planningutils.RetimeActiveDOFTrajectory(traj,pose.robot,True)
+    planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
     return traj
 
-def playback(traj,initpose=None):
-    if initpose:
-        reset_simulation(initpose)
-
-    pose.ctrl.SetPath(traj)
+def playback(traj,initpose):
+    reset_simulation(initpose)
+    initpose.ctrl.SetPath(traj)
     try:
-        pose.ctrl.SendCommand('start')
+        initpose.ctrl.SendCommand('start')
     except:
         pass
-    while not(pose.ctrl.IsDone()):
+    while not(initpose.ctrl.IsDone()):
         oh.sleep(.1)
 
 def run_test(pose,jointmap,trans,tilttime=20,waittime=10):
@@ -133,24 +137,94 @@ if __name__ == '__main__':
     env.StartSimulation(oh.TIMESTEP)
 
     #result,angles = bisect_search(pose,{'LAP':-.3,'RAP':-.3},robot.GetTransform(),10)
+    ts=0.02;
 
-    #Use the copy method to copy values
-    pose1=pose0.copy()
-    pose1['LKP']=.5
-    pose1['RKP']=.5
-    pose1['LSP']=.5
-    pose1['RSP']=.5
-    pose1.send()
-    traj=build_trajectory([pose0,pose1],[0.01,20])
-    #playback(traj)
-    trajectory.write_hubo_traj(traj,robot,0.01,'knee-shoulder.traj')
-
+    ##Process for one trajectory dump:
     pose0.send()
-    pose1['LKP']=.5
-    pose1['RKP']=.5
-    pose1['LSP']=.5
-    pose1['RSP']=.5
+    pose1=pose0.copy()
+    tilt=.5
+    pose1['LKP']=tilt
+    pose1['RKP']=tilt
+    pose1['LSP']=tilt
+    pose1['RSP']=tilt
     pose1.send()
-    traj=build_trajectory([pose0,pose1],[0.01,20])
+    traj=build_trajectory([pose0,pose1],[0.01,30])
+    filename=make_name('knee-shoulder-pitch',tilt,ts)
+    trajectory.write_hubo_traj(traj,robot,ts,filename)
+    #end trajectory dump
+    #
+    ##Process for one trajectory dump:
+    pose0.send()
+    init_angle=-pi/6
+    pose1=pose0.copy()
+    pose1['LSP']=init_angle
+    pose1['RSP']=init_angle
+    pose2=pose1.copy()
+    tilt=-0.15
+    pose2['LAP']=tilt
+    pose2['RAP']=tilt
+    pose2['LSP']+=tilt
+    pose2['RSP']+=tilt
+
+    traj=build_trajectory([pose0,pose1,pose2],[0.01,10,30])
+    filename=make_name('ankle-shoulder-pitch',tilt,ts)
+    trajectory.write_hubo_traj(traj,robot,0.02,filename)
+    #end trajectory dump
+    #
+    ##Process for one trajectory dump:
+    pose0.send()
+    pose1=pose0.copy()
+    pose1['LSP']=init_angle
+    pose1['RSP']=init_angle
+    pose2=pose1.copy()
+    tilt=-0.3
+    pose2['LHP']=tilt
+    pose2['RHP']=tilt
+    pose2['LSP']+=tilt
+    pose2['RSP']+=tilt
+
+    traj=build_trajectory([pose0,pose1,pose2],[0.01,10,30])
     #playback(traj)
-    trajectory.write_hubo_traj(traj,robot,0.01,'knee-shoulder.traj')
+    filename=make_name('hip-shoulder-pitch',tilt,ts)
+    trajectory.write_hubo_traj(traj,robot,0.02,filename)
+    #end trajectory dump
+    #
+    ##Process for one trajectory dump:
+    pose0.send()
+    pose1=pose0.copy()
+    init_angle=-pi/6
+    pose1['RSR']=init_angle
+    pose2=pose1.copy()
+    tilt=-pi/12
+    pose2['LHR']+=tilt
+    pose2['RHR']+=tilt
+    pose2['LAR']-=tilt
+    pose2['RAR']-=tilt
+    pose1['RSR']-=tilt
+
+    traj=build_trajectory([pose0,pose1,pose2],[0.01,10,30])
+    #playback(traj)
+    filename=make_name('hip-shoulder-roll',tilt,ts)
+    trajectory.write_hubo_traj(traj,robot,0.02,filename)
+    #end trajectory dump
+    #
+
+    ##Process for one trajectory dump:
+    pose0.send()
+    pose1=pose0.copy()
+    pose1['RSR']=-pi/2
+    pose1['REP']=-pi/2
+    pose2=pose1.copy()
+    tilt=-pi/12
+    pose2['LHR']+=tilt
+    pose2['RHR']-=tilt
+    pose2['LAR']+=tilt
+    pose2['RAR']-=tilt
+    pose1['RSR']-=tilt
+
+    traj=build_trajectory([pose0,pose1,pose2],[0.01,10,30])
+    #playback(traj)
+    filename=make_name('hip-shoulder-elbow-roll',tilt,ts)
+    trajectory.write_hubo_traj(traj,robot,0.02,filename)
+    #end trajectory dump
+    #
