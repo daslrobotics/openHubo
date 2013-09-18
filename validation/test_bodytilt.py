@@ -6,6 +6,29 @@ from numpy import pi,mat,array
 from numpy.linalg import inv
 import numpy as np
 
+def build_trajectory(pose_array,times):
+    """create a trajectory to link poses based on times. Kindof kludgy wrapper
+    to trajectory...
+    """
+    [traj,config]=trajectory.create_trajectory(pose.robot)
+    for p,t in zip(pose_array,times):
+        trajectory.traj_append(traj,p.to_waypt(t))
+
+    planningutils.RetimeActiveDOFTrajectory(traj,pose.robot,True)
+    return traj
+
+def playback(traj,initpose=None):
+    if initpose:
+        reset_simulation(initpose)
+
+    pose.ctrl.SetPath(traj)
+    try:
+        pose.ctrl.SendCommand('start')
+    except:
+        pass
+    while not(pose.ctrl.IsDone()):
+        oh.sleep(.1)
+
 def run_test(pose,jointmap,trans,tilttime=20,waittime=10):
     [traj,config]=trajectory.create_trajectory(pose.robot)
     trajectory.traj_append(traj,pose.to_waypt(0.01))
@@ -74,9 +97,10 @@ def bisect_search(pose,jointmap,trans,waittime=10):
 
     return lower,angles
 
-def reset_simulation(pose,trans):
+def reset_simulation(pose,trans=None):
     pose.reset()
-    pose.robot.SetTransform(trans)
+    if trans:
+        pose.robot.SetTransform(trans)
     env.StartSimulation(oh.TIMESTEP)
 
 def set_test_state(pose,maxvel,maxtorque):
@@ -86,7 +110,6 @@ def set_test_state(pose,maxvel,maxtorque):
         j.SetTorqueLimits([maxtorque])
 
 def log_joint_angles(pose,joint,T,dt):
-
     angles=[]
     for n in xrange(int(T/dt)):
         pose.update()
@@ -94,17 +117,40 @@ def log_joint_angles(pose,joint,T,dt):
         oh.sleep(dt)
     return angles
 
-[env,options]=oh.setup()
-env.SetDebugLevel(4)
+if __name__ == '__main__':
 
-options.physics=True
-options.ghost=False
+    [env,options]=oh.setup()
+    env.SetDebugLevel(4)
 
-[robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
+    #options.physics=True
+    options.ghost=False
 
-#Initialize pose object and trajectory for robot
-pose=oh.Pose(robot,ctrl)
+    [robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
 
-env.StartSimulation(oh.TIMESTEP)
+    #Initialize pose object and trajectory for robot
+    pose0=oh.Pose(robot,ctrl)
 
-result,angles =bisect_search(pose,{'LAP':-.3,'RAP':-.3},robot.GetTransform(),10)
+    env.StartSimulation(oh.TIMESTEP)
+
+    #result,angles = bisect_search(pose,{'LAP':-.3,'RAP':-.3},robot.GetTransform(),10)
+
+    #Use the copy method to copy values
+    pose1=pose0.copy()
+    pose1['LKP']=.5
+    pose1['RKP']=.5
+    pose1['LSP']=.5
+    pose1['RSP']=.5
+    pose1.send()
+    traj=build_trajectory([pose0,pose1],[0.01,20])
+    #playback(traj)
+    trajectory.write_hubo_traj(traj,robot,0.01,'knee-shoulder.traj')
+
+    pose0.send()
+    pose1['LKP']=.5
+    pose1['RKP']=.5
+    pose1['LSP']=.5
+    pose1['RSP']=.5
+    pose1.send()
+    traj=build_trajectory([pose0,pose1],[0.01,20])
+    #playback(traj)
+    trajectory.write_hubo_traj(traj,robot,0.01,'knee-shoulder.traj')

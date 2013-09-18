@@ -33,6 +33,7 @@ import os as _os
 import fnmatch as _fnmatch
 import re as _re
 import collections
+import copy
 
 import openravepy as _rave
 from recorder import viewerrecorder as _recorder
@@ -64,7 +65,7 @@ class Pose:
             pose.send()
     """
 
-    def __init__(self,robot=None,ctrl=None,values=None,useregex=False):
+    def __init__(self,robot=None,ctrl=None,values=None,useregex=False,other=None):
         self.robot=robot
         self.jointmap=self.build_joint_index_map(robot)
         if values is not None:
@@ -160,6 +161,11 @@ class Pose:
 
         if offset is not None:
             self.values+=self.joint_offsets
+
+    def copy(self):
+        newpose=copy.copy(self)
+        newpose.values=copy.deepcopy(self.values)
+        return newpose
 
     def __getitem__(self,key):
         """ Lookup the joint name and return the value"""
