@@ -7,8 +7,20 @@ from numpy.linalg import inv
 import numpy as np
 
 
-def make_name(basename,tilt,rate):
-    return '{}_tilt_{:0.0f}deg_{:0.0f}Hz.traj'.format(basename,tilt*180/pi,1./rate)
+class TiltTester:
+
+    def __init__(self,robot,ts=0.02,name=None):
+        self.robot=robot
+        self.ts=ts
+        if name is not None:
+            self.testname=name
+
+def make_name(basename,tilt,rate,reverse=False):
+    if reverse:
+        suffix='_restore'
+    else:
+        suffix=''
+    return '{}_tilt_{:0.0f}deg_{:0.0f}Hz{}.traj'.format(basename,tilt*180/pi,1./rate,suffix)
 
 def build_trajectory(pose_array,times):
     """create a trajectory to link poses based on times. Kindof kludgy wrapper
@@ -121,6 +133,8 @@ def log_joint_angles(pose,joint,T,dt):
         oh.sleep(dt)
     return angles
 
+
+
 if __name__ == '__main__':
 
     [env,options]=oh.setup()
@@ -195,12 +209,13 @@ if __name__ == '__main__':
     init_angle=-pi/6
     pose1['RSR']=init_angle
     pose2=pose1.copy()
-    tilt=-pi/12
+    tilt=pi/12
     pose2['LHR']+=tilt
     pose2['RHR']+=tilt
     pose2['LAR']-=tilt
     pose2['RAR']-=tilt
-    pose1['RSR']-=tilt
+    pose1['RSR']+=tilt
+    pose1['LSR']-=tilt
 
     traj=build_trajectory([pose0,pose1,pose2],[0.01,10,30])
     #playback(traj)
