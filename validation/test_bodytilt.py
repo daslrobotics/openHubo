@@ -9,115 +9,135 @@ import numpy as np
 
 class TiltTester:
 
-    def __init__(self,robot,ts=0.02,name=None):
-        self.robot=robot
+    def __init__(self,initial_pose,final_pose,ts=0.02,name=None,start_pose=None):
+        """Assume that the robot starts from the home position (all zeros).
+        Create a test trajectory and export it for the given initial and fial
+        pose.
+        """
+        self.initial_pose=initial_pose
+        self.robot=initial_pose.robot
+        self.final_pose=final_pose
+        [self.traj,__]=trajectory.create_trajectory(initial_pose.robot)
+        self.basename=name
         self.ts=ts
-        if name is not None:
-            self.testname=name
+        self.traj=None
+        if start_pose is None:
+            #Get the starting pose and trans from current pose
+            self.start_pose=oh.Pose(robot)
+            self.start_pose.update()
 
-def make_name(basename,tilt,rate,reverse=False):
-    if reverse:
-        suffix='_restore'
-    else:
-        suffix=''
-    return '{}_tilt_{:0.0f}deg_{:0.0f}Hz{}.traj'.format(basename,tilt*180/pi,1./rate,suffix)
+    def build_trajectory(self,pose_array=None):
+        """create a trajectory to link poses based on times. Kindof kludgy wrapper
+        to trajectory...
+        """
+        #this is ugly
+        [self.traj,config]=trajectory.create_trajectory(self.robot)
+        if pose_array is None:
+            pose_array=[self.initial_pose,self.final_pose]
+        for p in pose_array:
+            trajectory.traj_append(self.traj,p.to_waypt())
 
-def build_trajectory(pose_array,times):
-    """create a trajectory to link poses based on times. Kindof kludgy wrapper
-    to trajectory...
-    """
-    #this is ugly
-    robot=pose_array[0].robot
-    [traj,config]=trajectory.create_trajectory(robot)
-    for p,t in zip(pose_array,times):
-        trajectory.traj_append(traj,p.to_waypt(t))
+        planningutils.RetimeActiveDOFTrajectory(self.traj,self.robot,True)
+        return self.traj
 
-    planningutils.RetimeActiveDOFTrajectory(traj,robot,True)
-    return traj
+    def playback(self):
+        """Show the trajectory in simulation"""
+        self.reset_simulation()
+        self.robot.GetController().SetPath(self.traj)
+        try:
+            self.robot.GetController().SendCommand('start')
+        except:
+            pass
+        while not(self.robot.GetController().IsDone()):
+            oh.sleep(.1)
 
-def playback(traj,initpose):
-    reset_simulation(initpose)
-    initpose.ctrl.SetPath(traj)
-    try:
-        initpose.ctrl.SendCommand('start')
-    except:
-        pass
-    while not(initpose.ctrl.IsDone()):
-        oh.sleep(.1)
+    def reset_simulation(self,trans=None):
 
-def run_test(pose,jointmap,trans,tilttime=20,waittime=10):
-    [traj,config]=trajectory.create_trajectory(pose.robot)
-    trajectory.traj_append(traj,pose.to_waypt(0.01))
-
-    for j,v in jointmap.items():
-        pose[j]=v
-
-    trajectory.traj_append(traj,pose.to_waypt(tilttime))
-
-    planningutils.RetimeActiveDOFTrajectory(traj,pose.robot,True)
-    reset_simulation(pose,trans)
-
-    pose.ctrl.SetPath(traj)
-    pose.ctrl.SendCommand('start')
-    while not(pose.ctrl.IsDone()):
-        oh.sleep(.1)
-
-    oh.sleep(waittime)
-    print pose.robot.GetTransform()[2,3]
-    if pose.robot.GetTransform()[2,3]<.8:
-        return False
-    else:
-        return True
-        #robot has fallen
-
-def run_quick_test(pose,jointmap,trans,waittime=10):
-    for j,v in jointmap.items():
-        pose[j]=v
-
-    pose.trans=trans
-    with pose.robot:
+        pose=oh(self.robot)
+        env=self.robot.GetEnv()
+        env.StopSimulation()
         pose.reset()
-        ftrans=pose.robot.GetLink('leftFoot').GetTransform()
-        rot=inv(mat(ftrans))*mat(trans)
-        pose.trans=array(rot)
+        if trans:
+            pose.robot.SetTransform(trans)
+        env.StartSimulation(oh.TIMESTEP)
 
-    pose.reset()
-
-    angles=log_joint_angles(pose,'LAP',waittime,.01)
-    #print pose.robot.GetTransform()[2,3]
-    if pose.robot.GetTransform()[2,3]<.8:
-        return False,angles
-    else:
-        return True,angles
-        #robot has fallen
-
-def bisect_search(pose,jointmap,trans,waittime=10):
-    lower={k:0.0 for k in jointmap.keys()}
-    upper=jointmap
-    tol=abs(np.max(jointmap.values()))
-
-    while tol>0.002:
-        testmap={}
-        for k,v in lower.items():
-            testmap[k]=(v+upper[k])/2
-        flag,newangles = run_quick_test(pose,testmap,trans,waittime)
-        if flag:
-            lower=testmap
-            angles=newangles
+    def make_name(self,reverse=False):
+        if reverse:
+            suffix='_restore'
         else:
-            upper=testmap
-        print "Tol:",tol
-        print "Lower:",lower
-        print "Upper:",upper
-        tol/=2
+            suffix=''
+        return '{}_tilt_{:0.0f}Hz{}.traj'.format(self.basename,1./self.ts,suffix)
 
-    return lower,angles
+    def export(self,build=False):
+        if self.traj is None or build:
+            self.build_trajectory()
+        trajectory.write_hubo_traj(self.traj,self.robot,self.ts,self.make_name())
 
-def reset_simulation(pose,trans=None):
-    pose.reset()
-    if trans:
-        pose.robot.SetTransform(trans)
-    env.StartSimulation(oh.TIMESTEP)
+    def run_test(self,waittime,trans=None):
+        """Using physics, run a test trajectory to see where the robot falls"""
+        self.reset_simulation()
+        ctrl=self.robot.GetController()
+        ctrl.SetPath(self.traj)
+        ctrl.SendCommand('start')
+        while not(ctrl.IsDone()):
+            oh.sleep(.2)
+
+        oh.sleep(waittime)
+        print self.robot.GetTransform()[2,3]
+        if self.robot.GetTransform()[2,3]<.8:
+            return False
+        else:
+            return True
+            #robot has fallen
+
+    def run_quick_test(self,trans,waittime=10):
+        self.reset_simulation(trans)
+        with self.robot:
+
+            ftrans=self.robot.GetLink('leftFoot').GetTransform()
+            rot=inv(mat(ftrans))*mat(trans)
+            self.start_pose.trans=array(rot)
+
+        self.start_pose.reset()
+
+        angles=log_joint_angles('LAP',waittime,.01)
+        #print pose.robot.GetTransform()[2,3]
+        if self.robot.GetTransform()[2,3]<.8:
+            return False,angles
+        else:
+            return True,angles
+            #robot has fallen
+
+    def bisect_search(self,jointmap,trans,waittime=10):
+        lower={k:0.0 for k in jointmap.keys()}
+        upper=jointmap
+        tol=abs(np.max(jointmap.values()))
+
+        while tol>0.002:
+            testmap={}
+            for k,v in lower.items():
+                testmap[k]=(v+upper[k])/2
+            flag,newangles = self.run_quick_test(testmap,trans,waittime)
+            if flag:
+                lower=testmap
+                angles=newangles
+            else:
+                upper=testmap
+            print "Tol:",tol
+            print "Lower:",lower
+            print "Upper:",upper
+            tol/=2
+
+        return lower,angles
+
+    def log_joint_angles(self,joint,T,dt):
+        angles=[]
+        pose=self.initial_pose.copy()
+        for n in xrange(int(T/dt)):
+            pose.update()
+            angles.append(pose[joint])
+            oh.sleep(dt)
+        return angles
 
 def set_test_state(pose,maxvel,maxtorque):
     """Set a given maxvel and maxtorque state for testing"""
@@ -132,8 +152,6 @@ def log_joint_angles(pose,joint,T,dt):
         angles.append(pose[joint])
         oh.sleep(dt)
     return angles
-
-
 
 if __name__ == '__main__':
 
@@ -155,91 +173,18 @@ if __name__ == '__main__':
 
     ##Process for one trajectory dump:
     pose0.send()
+    pose0.dt=0.01
     pose1=pose0.copy()
-    tilt=.5
-    pose1['LKP']=tilt
-    pose1['RKP']=tilt
-    pose1['LSP']=tilt
-    pose1['RSP']=tilt
-    pose1.send()
-    traj=build_trajectory([pose0,pose1],[0.01,30])
-    filename=make_name('knee-shoulder-pitch',tilt,ts)
-    trajectory.write_hubo_traj(traj,robot,ts,filename)
-    #end trajectory dump
-    #
-    ##Process for one trajectory dump:
-    pose0.send()
-    init_angle=-pi/6
-    pose1=pose0.copy()
-    pose1['LSP']=init_angle
-    pose1['RSP']=init_angle
-    pose2=pose1.copy()
-    tilt=-0.15
-    pose2['LAP']=tilt
-    pose2['RAP']=tilt
-    pose2['LSP']+=tilt
-    pose2['RSP']+=tilt
-
-    traj=build_trajectory([pose0,pose1,pose2],[0.01,10,30])
-    filename=make_name('ankle-shoulder-pitch',tilt,ts)
-    trajectory.write_hubo_traj(traj,robot,0.02,filename)
-    #end trajectory dump
-    #
-    ##Process for one trajectory dump:
-    pose0.send()
-    pose1=pose0.copy()
-    pose1['LSP']=init_angle
-    pose1['RSP']=init_angle
-    pose2=pose1.copy()
-    tilt=-0.3
-    pose2['LHP']=tilt
-    pose2['RHP']=tilt
-    pose2['LSP']+=tilt
-    pose2['RSP']+=tilt
-
-    traj=build_trajectory([pose0,pose1,pose2],[0.01,10,30])
-    #playback(traj)
-    filename=make_name('hip-shoulder-pitch',tilt,ts)
-    trajectory.write_hubo_traj(traj,robot,0.02,filename)
-    #end trajectory dump
-    #
-    ##Process for one trajectory dump:
-    pose0.send()
-    pose1=pose0.copy()
-    init_angle=-pi/6
-    pose1['RSR']=init_angle
-    pose2=pose1.copy()
-    tilt=pi/12
-    pose2['LHR']+=tilt
-    pose2['RHR']+=tilt
-    pose2['LAR']-=tilt
-    pose2['RAR']-=tilt
-    pose1['RSR']+=tilt
-    pose1['LSR']-=tilt
-
-    traj=build_trajectory([pose0,pose1,pose2],[0.01,10,30])
-    #playback(traj)
-    filename=make_name('hip-shoulder-roll',tilt,ts)
-    trajectory.write_hubo_traj(traj,robot,0.02,filename)
-    #end trajectory dump
-    #
-
-    ##Process for one trajectory dump:
-    pose0.send()
-    pose1=pose0.copy()
-    pose1['RSR']=-pi/2
+    pose1.dt=5
+    pose1['LEP']=-pi/2
     pose1['REP']=-pi/2
+    pose1['LKP']=pi/24
+    pose1['RKP']=pi/24
+    tilt=pi/12
     pose2=pose1.copy()
-    tilt=-pi/12
-    pose2['LHR']+=tilt
-    pose2['RHR']-=tilt
-    pose2['LAR']+=tilt
-    pose2['RAR']-=tilt
-    pose1['RSR']-=tilt
-
-    traj=build_trajectory([pose0,pose1,pose2],[0.01,10,30])
-    #playback(traj)
-    filename=make_name('hip-shoulder-elbow-roll',tilt,ts)
-    trajectory.write_hubo_traj(traj,robot,0.02,filename)
-    #end trajectory dump
-    #
+    pose2['LKP']+=tilt
+    pose2['RKP']+=tilt
+    pose1['LEP']-=tilt
+    pose1['REP']-=tilt
+    tester=TiltTester(pose1,pose2,ts,'knee-elbow-pitch')
+    tester.export()
