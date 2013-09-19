@@ -65,9 +65,10 @@ class Pose:
             pose.send()
     """
 
-    def __init__(self,robot=None,ctrl=None,values=None,useregex=False,other=None):
+    def __init__(self,robot=None,ctrl=None,values=None,useregex=False,other=None,dt=None):
         self.robot=robot
         self.jointmap=self.build_joint_index_map(robot)
+        self.dt=dt
         if values is not None:
             #Will throw size exception if values is too short
             self.values=values
@@ -125,15 +126,27 @@ class Pose:
             self.robot.SetTransform(self.trans)
             self.ctrl.SetDesired(self.values)
 
-    def to_waypt(self,dt=1,affine=zeros(7)):
+    def to_waypt(self,dt=None,affine=zeros(7)):
+        """Export the current pose as a trajectory waypoint, assuming that the
+        affine pose is all zeros. This is designed for joint input only (not
+        yet supporting base tranformations)."""
         #list constructor does shallow copy here
         waypt =  [float(v) for v in self.values]
         #Add affine pose information if needed
         waypt.extend(affine)
+        if dt is None:
+            if self.dt is None:
+                dt=1
+            else:
+                dt=self.dt
         waypt.append(dt)
         return waypt
 
     def send(self,direct=False,trans=False):
+        """Send the current pose to the robot. Parameters:
+            direct - False uses the robot's controller, True uses the SetDOFValues method (non-physical)
+            trans - Transformation matrix to apply (only if direct is True)
+            """
         if direct:
             with self.robot.GetEnv():
                 self.robot.SetDOFValues(self.values)
@@ -144,6 +157,9 @@ class Pose:
             self.ctrl.SetDesired(self.values)
 
     def pretty(self):
+        """Print out the DOF values with named joints in a screen-friendly
+        format.
+        """
         for d, v in enumerate(self.values):
             print '{0} = {1}'.format(
                 self.robot.GetJointFromDOFIndex(d).GetName(),v)

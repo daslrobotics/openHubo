@@ -33,7 +33,7 @@ class TiltTester:
         #this is ugly
         [self.traj,config]=trajectory.create_trajectory(self.robot)
         if pose_array is None:
-            pose_array=[self.initial_pose,self.final_pose]
+            pose_array=[self.start_pose,self.initial_pose,self.final_pose]
         for p in pose_array:
             trajectory.traj_append(self.traj,p.to_waypt())
 
@@ -53,7 +53,7 @@ class TiltTester:
 
     def reset_simulation(self,trans=None):
 
-        pose=oh(self.robot)
+        pose=oh.Pose(self.robot)
         env=self.robot.GetEnv()
         env.StopSimulation()
         pose.reset()
@@ -176,15 +176,18 @@ if __name__ == '__main__':
     pose0.dt=0.01
     pose1=pose0.copy()
     pose1.dt=5
-    pose1['LEP']=-pi/2
-    pose1['REP']=-pi/2
-    pose1['LKP']=pi/24
-    pose1['RKP']=pi/24
-    tilt=pi/12
+    pose1['LSR']=pi/6
+    pose1['RSR']=-pi/6
+    tilt=pi/6
     pose2=pose1.copy()
+    pose2.dt=30
     pose2['LKP']+=tilt
     pose2['RKP']+=tilt
-    pose1['LEP']-=tilt
-    pose1['REP']-=tilt
-    tester=TiltTester(pose1,pose2,ts,'knee-elbow-pitch')
+    pose2['LAP']-=tilt
+    pose2['RAP']-=tilt
+    tester=TiltTester(pose1,pose2,ts,'parallelogram-legs-knee-ankle-pitch')
     tester.export()
+    if options._viewer:
+        tester.playback()
+
+
