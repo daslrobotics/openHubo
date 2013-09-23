@@ -5,6 +5,7 @@ from openhubo import trajectory
 from numpy import pi,mat,array
 from numpy.linalg import inv
 import numpy as np
+import os
 
 
 class TiltTester:
@@ -57,7 +58,7 @@ class TiltTester:
         env=self.robot.GetEnv()
         env.StopSimulation()
         pose.reset()
-        if trans:
+        if trans is not None:
             pose.robot.SetTransform(trans)
         env.StartSimulation(oh.TIMESTEP)
 
@@ -90,45 +91,42 @@ class TiltTester:
             return True
             #robot has fallen
 
-    def run_quick_test(self,trans,waittime=10):
+    def run_quick_test(self,test_pose,waittime=10):
+        trans=self.start_pose.trans
         self.reset_simulation(trans)
         with self.robot:
 
             ftrans=self.robot.GetLink('leftFoot').GetTransform()
             rot=inv(mat(ftrans))*mat(trans)
-            self.start_pose.trans=array(rot)
+            test_pose.trans=array(rot)
 
-        self.start_pose.reset()
-
-        angles=log_joint_angles('LAP',waittime,.01)
+        test_pose.reset()
+        oh.sleep(waittime)
         #print pose.robot.GetTransform()[2,3]
         if self.robot.GetTransform()[2,3]<.8:
-            return False,angles
+            return False
         else:
-            return True,angles
+            return True
             #robot has fallen
 
-    def bisect_search(self,jointmap,trans,waittime=10):
-        lower={k:0.0 for k in jointmap.keys()}
-        upper=jointmap
-        tol=abs(np.max(jointmap.values()))
+    def bisect_search(self,waittime=10):
+        lower=self.initial_pose
+        upper=self.final_pose
+        tol=abs(np.max(self.final_pose.values-self.initial_pose.values))
 
+        test_pose=self.initial_pose.copy()
         while tol>0.002:
-            testmap={}
-            for k,v in lower.items():
-                testmap[k]=(v+upper[k])/2
-            flag,newangles = self.run_quick_test(testmap,trans,waittime)
-            if flag:
-                lower=testmap
-                angles=newangles
+            test_pose.values=(lower+upper)/2
+            if self.run_quick_test(test_pose,waittime):
+                lower.values=test_pose.values
             else:
-                upper=testmap
+                upper.values=test_pose.values
             print "Tol:",tol
             print "Lower:",lower
             print "Upper:",upper
             tol/=2
 
-        return lower,angles
+        return lower
 
     def log_joint_angles(self,joint,T,dt):
         angles=[]
@@ -158,17 +156,13 @@ if __name__ == '__main__':
     [env,options]=oh.setup()
     env.SetDebugLevel(4)
 
-    #options.physics=True
     options.ghost=False
-
+    #options.physics=True
     [robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
 
     #Initialize pose object and trajectory for robot
     pose0=oh.Pose(robot,ctrl)
 
-    env.StartSimulation(oh.TIMESTEP)
-
-    #result,angles = bisect_search(pose,{'LAP':-.3,'RAP':-.3},robot.GetTransform(),10)
     ts=0.02;
 
     ##Process for one trajectory dump:
@@ -185,9 +179,100 @@ if __name__ == '__main__':
     pose2['RKP']+=tilt
     pose2['LAP']-=tilt
     pose2['RAP']-=tilt
-    tester=TiltTester(pose1,pose2,ts,'parallelogram-legs-knee-ankle-pitch')
+    tester=TiltTester(pose1,pose2,ts,'test1-parallelogram-legs-knee-ankle-pitch')
     tester.export()
-    if options._viewer:
-        tester.playback()
+    #env.StartSimulation(oh.TIMESTEP)
+    #if options._viewer and not oh.check_physics(env):
+        #tester.playback()
+
+    #if oh.check_physics(env):
+        #result = tester.bisect_search(10)
 
 
+    pose0.send()
+    pose0.dt=0.01
+    pose1=pose0.copy()
+    pose1.dt=5
+    pose1['LSR']=pi/6
+    pose1['RSR']=-pi/6
+    tilt=pi/6
+    pose2=pose1.copy()
+    pose2.dt=30
+    pose2['LHP']+=tilt
+    pose2['RHP']+=tilt
+    pose2['LAP']-=tilt
+    pose2['RAP']-=tilt
+    tester=TiltTester(pose1,pose2,ts,'test2-parallelogram-legs-hip-ankle-pitch')
+    tester.export()
+
+    pose0.send()
+    pose0.dt=0.01
+    pose1=pose0.copy()
+    pose1.dt=5
+    pose1['LSR']=pi/6
+    pose1['RSR']=-pi/6
+    tilt=pi/6
+    pose2=pose1.copy()
+    pose2.dt=30
+    pose2['LSP']+=tilt
+    pose2['RSP']+=tilt
+    pose2['LAP']-=tilt
+    pose2['RAP']-=tilt
+    tester=TiltTester(pose1,pose2,ts,'test3-parallelogram-ankle-shoulder-pitch')
+    tester.export()
+
+    pose0.send()
+    pose0.dt=0.01
+    pose1=pose0.copy()
+    pose1.dt=5
+    pose1['LSR']=pi/6
+    pose1['RSR']=-pi/6
+    tilt=pi/6
+    pose2=pose1.copy()
+    pose2.dt=30
+    pose2['LEP']+=tilt
+    pose2['REP']+=tilt
+    pose2['LAP']-=tilt
+    pose2['RAP']-=tilt
+    tester=TiltTester(pose1,pose2,ts,'test4-parallelogram-ankle-shoulder-pitch')
+    tester.export()
+
+    pose0.send()
+    pose0.dt=0.01
+    pose1=pose0.copy()
+    pose1.dt=5
+    pose1['LSR']=pi/6
+    pose1['RSR']=-pi/6
+    pose1['LHR']=-pi/18
+    pose1['RHR']=-pi/18
+    pose1['LAR']=pi/18
+    pose1['RAR']=pi/18
+    pose1['RHP']=-pi/12
+    pose1['RKP']=pi/6
+    pose1['RAP']=-pi/12
+    tilt=pi/12
+    pose2=pose1.copy()
+    pose2.dt=30
+    pose2['LAR']+=tilt
+    tester=TiltTester(pose1,pose2,ts,'test5-leftfoot-roll-balance1')
+    tester.export()
+
+    pose0.send()
+    pose0.dt=0.01
+    pose1=pose0.copy()
+    pose1.dt=5
+    pose1['LSR']=pi/6
+    pose1['RSR']=-pi/6
+    pose1['LHR']=-pi/24
+    pose1['RHR']=-pi/24
+    pose1['LAR']=pi/24
+    pose1['RAR']=pi/24
+    pose1['RHP']=-pi/12
+    pose1['RKP']=pi/6
+    pose1['RAP']=-pi/12
+    tilt=pi/12
+    pose2=pose1.copy()
+    pose2.dt=30
+    pose2['LAR']+=tilt
+    tester=TiltTester(pose1,pose2,ts,'test6-leftfoot-roll-balance2')
+    tester.export()
