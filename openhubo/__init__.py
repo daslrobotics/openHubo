@@ -29,10 +29,9 @@ import numpy as _np
 import matplotlib.pyplot as _plt
 import atexit as _atexit
 import optparse as _optparse
-import os as _os
-import fnmatch as _fnmatch
 import re as _re
 import collections
+import copy
 
 import openravepy as _rave
 from recorder import viewerrecorder as _recorder
@@ -44,6 +43,9 @@ from datetime import datetime
 from . import mapping
 from types import ModuleType
 from openravepy import KinBody
+
+# default imports from sub-packages for ease of use
+from util import find_files
 
 TIMESTEP=0.001
 
@@ -64,9 +66,10 @@ class Pose:
             pose.send()
     """
 
-    def __init__(self,robot=None,ctrl=None,values=None,useregex=False):
+    def __init__(self,robot=None,ctrl=None,values=None,useregex=False,other=None,dt=None):
         self.robot=robot
         self.jointmap=self.build_joint_index_map(robot)
+        self.dt=dt
         if values is not None:
             #Will throw size exception if values is too short
             self.values=values
@@ -124,15 +127,27 @@ class Pose:
             self.robot.SetTransform(self.trans)
             self.ctrl.SetDesired(self.values)
 
-    def to_waypt(self,dt=1,affine=zeros(7)):
+    def to_waypt(self,dt=None,affine=zeros(7)):
+        """Export the current pose as a trajectory waypoint, assuming that the
+        affine pose is all zeros. This is designed for joint input only (not
+        yet supporting base tranformations)."""
         #list constructor does shallow copy here
         waypt =  [float(v) for v in self.values]
         #Add affine pose information if needed
         waypt.extend(affine)
+        if dt is None:
+            if self.dt is None:
+                dt=1
+            else:
+                dt=self.dt
         waypt.append(dt)
         return waypt
 
     def send(self,direct=False,trans=False):
+        """Send the current pose to the robot. Parameters:
+            direct - False uses the robot's controller, True uses the SetDOFValues method (non-physical)
+            trans - Transformation matrix to apply (only if direct is True)
+            """
         if direct:
             with self.robot.GetEnv():
                 self.robot.SetDOFValues(self.values)
@@ -143,6 +158,9 @@ class Pose:
             self.ctrl.SetDesired(self.values)
 
     def pretty(self):
+        """Print out the DOF values with named joints in a screen-friendly
+        format.
+        """
         for d, v in enumerate(self.values):
             print '{0} = {1}'.format(
                 self.robot.GetJointFromDOFIndex(d).GetName(),v)
@@ -160,6 +178,11 @@ class Pose:
 
         if offset is not None:
             self.values+=self.joint_offsets
+
+    def copy(self):
+        newpose=copy.copy(self)
+        newpose.values=copy.deepcopy(self.values)
+        return newpose
 
     def __getitem__(self,key):
         """ Lookup the joint name and return the value"""
@@ -761,30 +784,4 @@ def get_options(viewername=None,parser=None):
 
     return (options,leftargs)
 
-def get_root_dir():
-    return _os.environ['OPENHUBO_DIR']
-
-def find_files(directory, pattern):
-    for root, dirs, files in _os.walk(directory):
-        for basename in files:
-            if _fnmatch.fnmatch(basename, pattern):
-                filename = _os.path.join(root, basename)
-                yield filename
-
-def find(rawname, path=None):
-    (fpath,fname)=_os.path.split(rawname)
-    #TODO: make better assumptions about name
-    if not path:
-        path=get_root_dir()
-    for root, dirs, files in _os.walk(path+'/'+fpath):
-        if fname in files:
-            return _os.path.join(root, fname)
-
-def list_robots(pattern='*.robot.xml',directory='robots'):
-    filenames=[]
-    for root, dirs, files in _os.walk(directory):
-        for basename in files:
-            if _fnmatch.fnmatch(basename, pattern):
-                filenames.append( _os.path.join(root, basename))
-    return filenames
 
