@@ -33,6 +33,7 @@ def add_openrave(doc, base, element):
                 base.appendChild(e)
         else:
             base.appendChild(newelements)
+    return base
 
 def pfloat(x):
     """Print float value as string"""
@@ -85,7 +86,7 @@ def create_element(doc, name, contents=None, key=None, value=None):
     return element
 
 def create_child(doc,name,contents=None,key=None,value=None):
-    doc.appendChild(create_element(doc, name, contents=None, key=None, value=None))
+    doc.appendChild(create_element(doc, name, contents, key, value))
 
 def children(node):
     children = []
@@ -125,6 +126,7 @@ class Collision(object):
 
         xml = self.geometry.to_openrave_xml(doc)
         add_openrave(doc,xml, self.origin)
+
         return xml
 
     def __str__(self):
@@ -146,9 +148,6 @@ class Color(object):
         xml = doc.createElement("color")
         set_attribute(xml, "rgba", self.rgba)
         return xml
-
-    def to_openrave_xml(self,doc):
-        return None
 
     def __str__(self):
         return "r: {0}, g: {1}, b: {2}, a: {3},".format(
@@ -208,12 +207,11 @@ class Box(Geometry):
         if dims is None:
             self.dims = None
         else:
-            self.dims = (dims[0], dims[1], dims[2])
-
+            self.dims = array(dims)
     @staticmethod
     def parse(node):
-        dims = node.getAttribute('size').split()
-        return Box([float(a) for a in dims])
+        dims = array(node.getAttribute('size').split())
+        return Box(array([float(a) for a in dims]))
 
     def to_xml(self, doc):
         xml = doc.createElement("box")
@@ -224,7 +222,7 @@ class Box(Geometry):
 
     def to_openrave_xml(self, doc):
         xml = short(doc, "geometry","type","box")
-        xml.appendChild(create_element(xml, "extents", self.dims))
+        xml.appendChild(create_element(doc, "extents", self.dims/2))
         return xml
 
     def __str__(self):
@@ -664,7 +662,11 @@ class Link(object):
     def to_openrave_xml(self, doc):
         xml = doc.createElement("body")
         xml.setAttribute("name", self.name)
-        add_openrave( doc, xml, self.collision)
+        col = add_openrave( doc, xml, self.collision)
+        if self.visual:
+            geom=col.getElementsByTagName("geometry")
+            add_openrave(doc,geom[0],self.visual.material)
+
         add_openrave( doc, xml, self.inertial)
         return xml
 
@@ -708,6 +710,15 @@ class Material(object):
             text.setAttribute('filename', self.texture)
             xml.appendChild(text)
         return xml
+
+    def to_openrave_xml(self, doc):
+        diffuse_color = doc.createElement("diffusecolor")
+        transparency = doc.createElement("transparency")
+        set_content(doc,diffuse_color,self.color.rgba[0:-1])
+        set_content(doc,transparency,1-self.color.rgba[3])
+
+        return [diffuse_color,transparency]
+
 
     def __str__(self):
         s = "Name: {0}\n".format(self.name)
@@ -934,7 +945,7 @@ class URDF(object):
         doc.appendChild(root)
         root.setAttribute("name", self.name)
 
-        baselink=self.parent_map
+        #baselink=self.parent_map
         if orderbytree:
             #Walk child map sequentially and export
             pass
