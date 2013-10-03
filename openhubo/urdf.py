@@ -116,6 +116,10 @@ class Collision(object):
                 print("Unknown collision element '%s'"%child.localName)
         return c
 
+    def mirror(self,mir_ax,f=None,r=None):
+        self.geometry.mirror(mir_ax,f,r)
+        self.origin.mirror(mir_ax,f,r)
+
     def to_xml(self, doc):
         xml = doc.createElement("collision")
         add(doc, xml, self.geometry)
@@ -182,7 +186,8 @@ class Dynamics(object):
 
 class Geometry(object):
     def __init__(self):
-        None
+        self.type=None
+        self.mirrored=False
 
     @staticmethod
     def parse(node, verbose=True):
@@ -208,13 +213,17 @@ class Box(Geometry):
             self.dims = None
         else:
             self.dims = array(dims)
+        self.type='box'
     @staticmethod
     def parse(node):
         dims = array(node.getAttribute('size').split())
         return Box(array([float(a) for a in dims]))
 
+    def mirror(self,mir_ax,f,r):
+        pass
+
     def to_xml(self, doc):
-        xml = doc.createElement("box")
+        xml = doc.createElement(self.type)
         set_attribute(xml, "size", self.dims)
         geom = doc.createElement('geometry')
         geom.appendChild(xml)
@@ -233,6 +242,7 @@ class Cylinder(Geometry):
     def __init__(self, radius=0.0, length=0.0):
         self.radius = radius
         self.length = length
+        self.type='cylinder'
 
     @staticmethod
     def parse(node):
@@ -240,8 +250,11 @@ class Cylinder(Geometry):
         l = node.getAttribute('length')
         return Cylinder(float(r), float(l))
 
+    def mirror(self,mir_ax,f,r):
+        pass
+
     def to_xml(self, doc):
-        xml = doc.createElement("cylinder")
+        xml = doc.createElement(self.type)
         set_attribute(xml, "radius", self.radius)
         set_attribute(xml, "length", self.length)
         geom = doc.createElement('geometry')
@@ -261,14 +274,19 @@ class Cylinder(Geometry):
 class Sphere(Geometry):
     def __init__(self, radius=0.0):
         self.radius = radius
+        self.type='sphere'
 
     @staticmethod
     def parse(node):
         r = node.getAttribute('radius')
         return Sphere(float(r))
 
+    def mirror(self,mir_ax,f,r):
+        pass
+
+
     def to_xml(self, doc):
-        xml = doc.createElement("sphere")
+        xml = doc.createElement(self.type)
         set_attribute(xml, "radius", self.radius)
         geom = doc.createElement('geometry')
         geom.appendChild(xml)
@@ -287,6 +305,8 @@ class Mesh(Geometry):
     def __init__(self, filename=None, scale=1):
         self.filename = filename
         self.scale = scale
+        self.type='mesh'
+        self.mirrored=False
 
     @staticmethod
     def parse(node):
@@ -299,8 +319,12 @@ class Mesh(Geometry):
             s = map(float, xyz)
         return Mesh(fn, s)
 
+    def mirror(self,mir_ax,f,r):
+        self.filename=re.sub(f,r,self.filename)
+        self.mirrored=not self.mirrored
+
     def to_xml(self, doc):
-        xml = doc.createElement("mesh")
+        xml = doc.createElement(self.type)
         set_attribute(xml, "filename", self.filename)
         if self.scale != 1:
             set_attribute(xml, "scale", self.scale)
@@ -333,6 +357,7 @@ class Inertial(object):
         self.matrix['izz'] = izz
         self.mass = mass
         self.origin = origin
+        self.mirrored=False
 
     @staticmethod
     def parse(node):
@@ -346,6 +371,24 @@ class Inertial(object):
             elif child.localName == 'origin':
                 inert.origin = Pose.parse(child)
         return inert
+
+    def mirror(self,mir_ax):
+        """Mirror the current inertia matrix about a given axis, x,y, or z"""
+        if mir_ax == 'x':
+            self.matrix['ixy']*=-1.
+            self.matrix['ixz']*=-1.
+            self.origin.position[0]*=-1.
+        elif mir_ax == 'y':
+            self.matrix['ixy']*=-1.
+            self.matrix['iyz']*=-1.
+            self.origin.position[1]*=-1.
+        elif mir_ax == 'z':
+            self.matrix['ixz']*=-1.
+            self.matrix['iyz']*=-1.
+            self.origin.position[2]*=-1.
+        else:
+            pass
+        self.mirrored=not self.mirrored
 
 
     def to_xml(self, doc):
@@ -407,6 +450,7 @@ class Joint(object):
         self.safety = safety
         self.calibration = calibration
         self.mimic = mimic
+        self.mirrored = False
 
     @staticmethod
     def parse(node, verbose=True):
@@ -435,6 +479,10 @@ class Joint(object):
                 if verbose:
                    print("Unknown joint element '%s'"%child.localName)
         return joint
+
+    def mirror(self,mir_ax,f=None,r=None):
+        self.origin.mirror(mir_ax)
+        self.mirrored=not self.mirrored
 
     def to_xml(self, doc):
         xml = doc.createElement("joint")
@@ -630,42 +678,60 @@ class JointMimic(object):
         return xml
 
 class Link(object):
-    def __init__(self, name, visual=None, inertial=None, collision=None):
+    def __init__(self, name, visuals=[], inertial=None, collisions=[]):
         self.name = name
-        self.visual = visual
-        self.inertial=inertial
-        self.collision=collision
+        self.visuals = visuals
+        self.inertial = inertial
+        self.collisions = collisions
+        self.mirrored=False
 
     @staticmethod
     def parse(node, verbose=True):
         link = Link(node.getAttribute('name'))
+        link.visuals=[]
+        link.collisions=[]
         for child in children(node):
             if child.localName == 'visual':
-                link.visual = Visual.parse(child, verbose)
+                link.visuals.append(Visual.parse(child, verbose))
             elif child.localName == 'collision':
-                link.collision = Collision.parse(child, verbose)
+                link.collisions.append(Collision.parse(child, verbose))
             elif child.localName == 'inertial':
                 link.inertial = Inertial.parse(child)
             else:
                 if verbose:
                     print("Unknown link element '%s'"%child.localName)
+        print link
         return link
+
+    def mirror(self,mir_ax,f=None,r=None):
+        """Mirror the link abpout the specified coordinate axis"""
+        for c in self.collisions:
+            c.mirror(mir_ax,f,r)
+        for v in self.visuals:
+            v.mirror(mir_ax,f,r)
+        self.name=re.sub(f,r,self.name)
+        self.inertial.mirror(mir_ax)
+        self.mirrored=not self.mirrored
 
     def to_xml(self, doc):
         xml = doc.createElement("link")
         xml.setAttribute("name", self.name)
-        add( doc, xml, self.visual)
-        add( doc, xml, self.collision)
+        for v in self.visuals:
+            add( doc, xml, v)
+
+        for c in self.collisions:
+            add( doc, xml, c)
         add( doc, xml, self.inertial)
         return xml
 
     def to_openrave_xml(self, doc):
         xml = doc.createElement("body")
         xml.setAttribute("name", self.name)
-        col = add_openrave( doc, xml, self.collision)
-        if self.visual:
-            geom=col.getElementsByTagName("geometry")
-            add_openrave(doc,geom[0],self.visual.material)
+        if len(self.visuals)==len(self.collisions):
+            for c,v in zip(self.collisions,self.visuals):
+                col = add_openrave( doc, xml, c)
+                geom=col.getElementsByTagName("geometry")
+                add_openrave(doc,geom[-1],v.material)
 
         add_openrave( doc, xml, self.inertial)
         return xml
@@ -675,7 +741,8 @@ class Link(object):
         s += "Inertial:\n"
         s += reindent(str(self.inertial), 1) + "\n"
         s += "Collision:\n"
-        s += reindent(str(self.collision), 1) + "\n"
+        for c in self.collisions:
+            s += reindent(str(c), 1) + "\n"
         return s
 
 class Material(object):
@@ -732,6 +799,7 @@ class Pose(object):
     def __init__(self, position=None, rotation=None):
         self.position = array(position)
         self.rotation = array(rotation)
+        self.mirrored = False
 
     @staticmethod
     def parse(node):
@@ -743,6 +811,21 @@ class Pose(object):
             rpy = node.getAttribute('rpy').split()
             pose.rotation = array(map(float, rpy))
         return pose
+
+    def mirror(self,mir_ax,f=None,r=None):
+        if mir_ax == 'x':
+            self.position[0]*=-1.0
+            self.rotation[1]*=-1.0
+            self.rotation[2]*=-1.0
+        elif mir_ax == 'y':
+            self.position[1]*=-1.0
+            self.rotation[0]*=-1.0
+            self.rotation[2]*=-1.0
+        elif mir_ax == 'z':
+            self.position[2]*=-1.0
+            self.rotation[0]*=-1.0
+            self.rotation[1]*=-1.0
+        self.mirrored = not self.mirrored
 
     def to_xml(self, doc):
         xml = doc.createElement("origin")
@@ -828,6 +911,10 @@ class Visual(object):
                 if verbose:
                     print("Unknown visual element '%s'"%child.localName)
         return v
+
+    def mirror(self,mir_ax,f=None,r=None):
+        self.geometry.mirror(mir_ax,f,r)
+        self.origin.mirror(mir_ax,f,r)
 
     def to_xml(self, doc):
         xml = doc.createElement("visual")
@@ -1110,14 +1197,14 @@ class URDF(object):
                 if el[1]==link:
                     el=(el[0],newlink)
                 vnew.append(el)
-            print vnew
+            #print vnew
             self.child_map[k]=vnew
         for n,j in self.joints.items():
             if j.parent==link:
                 j.parent=newlink
             if j.child==link:
                 j.child=newlink
-        print self.child_map
+        #print self.child_map
 
     def rename_joint(self,joint,newjoint):
         """Find a joint and rename it to newjoint, updating all internal
@@ -1131,13 +1218,13 @@ class URDF(object):
             for el in v:
                 if el[0]==joint:
                     el=(newjoint,el[1])
-                print el
+                #print el
                 vnew.append(el)
             self.child_map[k]=vnew
         for k,v in self.parent_map.items():
             if v[0]==joint:
                 v=(newjoint,v[1])
-            print el
+            #print el
             self.parent_map[k]=v
         for n,j in self.joints.items():
             if j.mimic is not None:
@@ -1161,8 +1248,8 @@ class URDF(object):
         """
         linkchain=self.get_chain(root,tip,links=True,joints=False)
         jointchain=self.get_chain(root,tip,joints=True,links=False)
-        print linkchain
-        print jointchain
+        #print linkchain
+        #print jointchain
 
         for l in linkchain[1:]:
             newlink=re.sub(f,r,l)
@@ -1175,6 +1262,7 @@ class URDF(object):
             if self.joints[newname].mimic is not None:
                 self.joints[newname].mimic.joint_name=re.sub(f,r,self.joints[newname].mimic.joint_name)
 
+
     def copy_chain_with_rottrans(self,root,tip,rpy,xyz,f,r,mir_ax=None):
         """Copy a kinematic chain, renaming joints and links according to a regular expression.
 
@@ -1186,46 +1274,25 @@ class URDF(object):
 
         linkchain=self.get_chain(root,tip,links=True,joints=False)
         jointchain=self.get_chain(root,tip,joints=True,links=False)
-        print linkchain
-        print jointchain
+        #print linkchain
+        #print jointchain
         newjoints=[]
         newlinks=[]
+
         for l in linkchain[1:]:
             newlink=copy.deepcopy(self.links[l])
-            newlink.name=re.sub(f,r,newlink.name)
-            if newlink.collision is not None:
-                newlink.collision.geometry.filename=re.sub(f,r,newlink.collision.geometry.filename)
-                newlink.visual.geometry.filename=re.sub(f,r,newlink.visual.geometry.filename)
+            #Rename mesh files to mirrored copies
+            newlink.mirror(mir_ax,f,r)
             self.add_link(newlink)
             newlinks.append(newlink)
-            if mir_ax == 'x':
-                newlink.inertial.matrix['ixy']*=-1.
-                newlink.inertial.matrix['ixz']*=-1.
-                newlink.inertial.origin.position[0]*=-1.
-            if mir_ax == 'y':
-                newlink.inertial.matrix['ixy']*=-1.
-                newlink.inertial.matrix['iyz']*=-1.
-                newlink.inertial.origin.position[1]*=-1.
-            if mir_ax == 'z':
-                newlink.inertial.matrix['ixz']*=-1.
-                newlink.inertial.matrix['iyz']*=-1.
-                newlink.inertial.origin.position[2]*=-1.
+
         #Hack to rotate just first joint
         for j in jointchain:
             newjoints.append(self.copy_joint(j,f,r))
-            if mir_ax == 'x':
-                newjoints[-1].origin.position[0]*=-1.0
-                newjoints[-1].origin.rotation[1]*=-1.0
-                newjoints[-1].origin.rotation[2]*=-1.0
-            if mir_ax == 'y':
-                newjoints[-1].origin.position[1]*=-1.0
-                newjoints[-1].origin.rotation[0]*=-1.0
-                newjoints[-1].origin.rotation[2]*=-1.0
-            if mir_ax == 'z':
-                newjoints[-1].origin.position[2]*=-1.0
-                newjoints[-1].origin.rotation[0]*=-1.0
-                newjoints[-1].origin.rotation[1]*=-1.0
+        for j in newjoints:
+            j.mirror(mir_ax,f,r)
 
+        #Exception for rotating the whole chain at the first joint
         if mir_ax =='rotx':
             newjoints[0].origin.position[1]*=-1.0
 
@@ -1238,21 +1305,24 @@ class URDF(object):
 
     def fix_mesh_case(self):
         for l in self.links:
-            fname=l.collision.geometry.filename
-            l.collision.geometry.filename=re.sub(r'\.[Ss][Tt][Ll]','.stl',fname)
-    #TODO: merge function to tie two chains together from disparate models
+            for c in l.collisions:
+                fname=c.geometry.filename
+                c.geometry.filename=re.sub(r'\.[Ss][Tt][Ll]','.stl',fname)
+            for c in l.visuals:
+                fname=c.geometry.filename
+                c.geometry.filename=re.sub(r'\.[Ss][Tt][Ll]','.stl',fname)
 
     def update_mesh_paths(self,package_name):
         """Search and replace package paths in urdf with chosen package name"""
         for n,l in self.links.items():
             #TODO: check if mesh
-            for g in [l.collision.geometry,l.visual.geometry]:
+            for g in self.get_geometry_items(l):
                 #save STL file name only
                 meshfile=g.filename.split('/')[-1]
                 newpath=[package_name,'meshes',meshfile]
                 cleanpath=re.sub('/+','/','/'.join(newpath))
                 g.filename='package://'+cleanpath
-            l.collision.geometry.filename=re.sub('Body','convhull',l.collision.geometry.filename)
+                g.filename=re.sub('Body','convhull',g.filename)
 
     def apply_default_limits(self,effort,vel,lower,upper,mask=None):
         """Apply default limits to all joints and convert continous joints to revolute. Ignores fixed and other joint types."""
@@ -1261,14 +1331,6 @@ class URDF(object):
                 if j.joint_type==Joint.CONTINUOUS or j.joint_type==Joint.REVOLUTE:
                     j.limits=JointLimit(effort,vel,lower,upper)
                     j.joint_type=Joint.REVOLUTE
-
-    #def rot_from_rpy(r,p,y):
-        #return array([
-    #def get_link_origin(self,base,link):
-        #jointchain=self.get_chain(base,link,links=False,joints=True)
-
-        #rpy=[self.joints[n].origin.rotation for n in jointchain]
-        #xyz=[self.joints[n].origin.position for n in jointchain]
 
 
 if __name__ == '__main__':
