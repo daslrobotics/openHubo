@@ -509,7 +509,11 @@ class TSR:
         return ' '.join(cmd)
 
     def endPose(self):
-        T0=Transform(self.link.GetTransform())
+        if self.link is None:
+            T0 = Transform(_np.eye(4))
+        else:
+            T0=Transform(self.link.GetTransform())
+
         return T0*self.T0_w*self.Tw_e
 
     def sample(self):
