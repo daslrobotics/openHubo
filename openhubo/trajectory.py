@@ -207,7 +207,8 @@ def convert_openrave_to_hubo_traj(robot,source,dest,dt):
     read_trajectory_from_file(traj,source)
     write_hubo_traj(traj,robot,dt,dest)
 
-def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
+# Added in an empty dict for now, if it's keyworded, it will be filled
+def write_hubo_traj(traj,robot,dt,filename='exported.traj',finger_cmds={}):
     """ Create a text trajectory for reading into hubo-read-trajectory."""
     #Find overall trajectory properties
     T=traj.GetDuration()
@@ -219,7 +220,8 @@ def write_hubo_traj(traj,robot,dt,filename='exported.traj'):
         for t in _np.arange(0,T,dt):
             vals=val_sampler(t)
             outdata=_np.zeros(max(hr_from_oh_map.values())+1)
-            mapped_vals={v:vals[k] if not mapping.is_finger(hubo_read_trajectory_map_inv[v]) else 0.0 for k,v in hr_from_oh_map.items()}
+            mapped_vals={v:vals[k] if not mapping.is_finger(hubo_read_trajectory_map_inv[v])\
+                         else finger_cmds[hubo_read_trajectory_map_inv[v]] for k,v in hr_from_oh_map.items()}
 
             for k,v in mapped_vals.items():
                 outdata[k]=v
