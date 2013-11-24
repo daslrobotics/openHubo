@@ -1,4 +1,3 @@
-import numpy as np
 import re as _re
 from numpy.random import rand
 #KLUDGE: hard code the mapping (how often will it change, really?). Include openhubo synonyms here for fast lookup.
@@ -39,7 +38,6 @@ oh_from_ha_names={k:(inv_synonyms[k] if k in inv_synonyms.keys() else k) for k i
 deprecated_names={'HPY':'WST',
                   'HDY':'NKY',
                   'HDP':'NK2',
-                  'HNR':'NK2',
                   'HDR':'NK1',
                   'HNR':'NK1',
                   'HNP':'NK2'}
