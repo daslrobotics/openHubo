@@ -14,8 +14,9 @@ def perform_cws(robot):
     for c in report.contacts:
         for theta in [0,pi/2,pi,3*pi/2]:
             w = zeros(6)
-            w[0:3] = c.norm+array([np.cos(theta),np.sin(theta),0])*.1
-            w[3:] = cross(c.pos,c.norm)
+            #TODO add force limits here
+            w[0:3] = (c.norm+array([np.cos(theta),np.sin(theta),0])*.1) * 1000.
+            w[3:] = cross(c.pos,w[0:3])
             CWS.append(w[0:5])
 
     w_g = zeros(6)
@@ -25,8 +26,8 @@ def perform_cws(robot):
 
     g = m*array([0,0,-9.81])
 
-    w_g[0:3] = g
-    w_g[3:6] = cross(r,g)
+    w_g[0:3] = -g
+    w_g[3:6] = cross(r,-g)
 
     #TODO evaluate convex hull of CWS here
     hull = ConvexHull(array(CWS))
@@ -62,7 +63,7 @@ if __name__ == '__main__':
     env.StartSimulation(oh.TIMESTEP)
     print "Move robot to colliding position"
     T=robot.GetTransform()
-    T[2,3]-=.002
+    T[2,3]-=.0015
     robot.SetTransform(T)
 
     hull, CWS, report = perform_cws(robot)
