@@ -4,6 +4,7 @@ import openhubo as oh
 from scipy.spatial import ConvexHull
 import numpy as np
 
+#TODO declare a vector of peak forces for each contact body?
 def perform_cws(robot):
     env=robot.GetEnv()
     report=CollisionReport()
@@ -14,7 +15,7 @@ def perform_cws(robot):
     for c in report.contacts:
         for theta in [0,pi/2,pi,3*pi/2]:
             w = zeros(6)
-            #TODO add force limits here
+            #TODO add force limits here based on body
             w[0:3] = (c.norm+array([np.cos(theta),np.sin(theta),0])*.1) * 1000.
             w[3:] = cross(c.pos,w[0:3])
             CWS.append(w[0:5])
