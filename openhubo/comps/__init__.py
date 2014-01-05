@@ -10,7 +10,7 @@ import time as _time
 from openhubo import Pose
 
 def Serialize1DMatrix(arr):
-    return ' '.join([str(x) for x in arr])
+    return ' '.join([str(x) for x in _np.squeeze(arr)])
 
 def SerializeTransform(tm):
     if isinstance(tm,Transform):
@@ -170,7 +170,6 @@ class Cbirrt:
         cmd.append('filename {}'.format(self.filename))
         cmd.append('timelimit {}'.format(self.timelimit))
         cmd.append('smoothingitrs {}'.format(self.smoothing))
-        goalSampling=False
 
         if len(self.jointgoals)>0:
             cmd.append('jointgoals {}'.format(len(self.jointgoals)))
@@ -180,10 +179,7 @@ class Cbirrt:
             cmd.append(Serialize1DMatrix(self.jointstarts))
         for chain in self.tsr_chains:
             cmd.append('{}'.format(chain.Serialize()))
-            if chain.bSampleStartFromChain or chain.bSampleGoalFromChain:
-                goalSampling=True
-        if goalSampling:
-            cmd.append('psample {}'.format(self.psample))
+        cmd.append('psample {}'.format(self.psample))
         if len(self.supportlinks)>0:
             cmd.append('supportlinks {} {}'.format(len(self.supportlinks),' '.join(self.supportlinks)))
             cmd.append('exactsupport {}'.format(int(self.exactsupport)))
@@ -236,10 +232,12 @@ class Cbirrt:
     @staticmethod
     def activateManipsByIndex(robot,maniplist,extramanips=[]):
         activedof=[]
+        manips = robot.GetManipulators()
+
         for i in maniplist:
-            activedof.extend(robot.GetManipulator(i).GetArmJoints().tolist())
+            activedof.extend(manips[i].GetArmJoints().tolist())
         for i in extramanips:
-            activedof.extend(robot.GetManipulator(i).GetArmJoints().tolist())
+            activedof.extend(manips[i].GetArmJoints().tolist())
         robot.SetActiveDOFs(activedof)
         return activedof
 
@@ -430,7 +428,7 @@ class GeneralIK:
 
 # -*- coding: utf-8 -*-
 
-from numpy import pi,array,mat,zeros,ones,eye,size,asarray,random
+from numpy import pi,array,zeros,size,asarray,random
 import copy
 
 #these are standalone functions for serialization but you should really use the classes

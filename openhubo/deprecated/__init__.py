@@ -64,11 +64,11 @@ def CloseLeftHand(robot,angle=_np.pi/2):
     fingers=['Index','Middle','Ring','Pinky','Thumb']
 
     prox=[robot.GetJoint(
-        'left{}Knuckle{}'.for_np.mat(x,1)).GetDOFIndex() for x in fingers]
+        'left{}Knuckle{}'.format(x,1)).GetDOFIndex() for x in fingers]
     med=[robot.GetJoint(
-        'left{}Knuckle{}'.for_np.mat(x,2)).GetDOFIndex() for x in fingers]
+        'left{}Knuckle{}'.format(x,2)).GetDOFIndex() for x in fingers]
     dist=[robot.GetJoint(
-        'left{}Knuckle{}'.for_np.mat(x,3)).GetDOFIndex() for x in fingers]
+        'left{}Knuckle{}'.format(x,3)).GetDOFIndex() for x in fingers]
     pose=robot.GetDOFValues()
 
     for k in prox:
@@ -95,11 +95,11 @@ def CloseRightHand(robot,angle=_np.pi/2):
     fingers=['Index','Middle','Ring','Pinky','Thumb']
 
     prox=[robot.GetJoint(
-        'right{}Knuckle{}'.for_np.mat(x,1)).GetDOFIndex() for x in fingers]
+        'right{}Knuckle{}'.format(x,1)).GetDOFIndex() for x in fingers]
     med=[robot.GetJoint(
-        'right{}Knuckle{}'.for_np.mat(x,2)).GetDOFIndex() for x in fingers]
+        'right{}Knuckle{}'.format(x,2)).GetDOFIndex() for x in fingers]
     dist=[robot.GetJoint(
-        'right{}Knuckle{}'.for_np.mat(x,3)).GetDOFIndex() for x in fingers]
+        'right{}Knuckle{}'.format(x,3)).GetDOFIndex() for x in fingers]
 
     #TODO: Fix this "cheat" of waiting a fixed amount of real time
     pose=robot.GetDOFValues()

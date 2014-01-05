@@ -95,7 +95,7 @@ for c in chains:
     first_pose.insertTSRChain(c)
 
 #Activate useful DOFs
-activedofs=first_pose.ActivateManipsByIndex(robot,[0,1])
+activedofs=first_pose.activateManipsByIndex(robot,[0,1])
 #Add in hip pitches
 activedofs.append(ind('LHP'))
 activedofs.append(ind('RHP'))
