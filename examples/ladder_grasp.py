@@ -10,8 +10,13 @@ from openhubo import planning
 import re
 from openravepy import RaveCreateProblem
 from numpy import mat,array
-from openhubo import pause
-from openhubo.deprecated import CloseLeftHand,CloseRightHand
+from openhubo import pause,mapping, cws
+
+def close_left_hand(robot, angle):
+    fingers = mapping.get_left_fingers(robot)
+    for f in fingers:
+        robot.SetDOFValues([angle],[f.GetDOFIndex()])
+
 
 def makeGripTransforms(links):
     """ Make pre-defined grip locations based on a pre-inspection of the ladder"""
@@ -62,7 +67,7 @@ planning.setInitialPose(robot)
 oh.sleep(1)
 
 #Define manips used and goals
-z1=.05
+z1=.1
 theta=0.5
 LH=0
 RH=8
@@ -73,8 +78,8 @@ LF=0
 RF=1
 
 #Post grips at shoulder height
-rgrip1=TSR(grips[3+RH],comps.Transform(None,[.0,-.015,0]).tm,mat([0,0, 0,0, -z1,z1, 0,0 ,0,0, -theta,theta]),1)
-lgrip1=TSR(grips[3],comps.Transform(None,[.0,.015,0]).tm,mat([0,0, 0,0, -z1,z1, 0,0 ,0,0, -theta,theta]),0)
+rgrip1=TSR(grips[3+RH],comps.Transform(None,[.0,-.02,0]).tm,mat([0,0, 0,0, 0,z1, 0,0 ,0,0, -theta,theta]),1)
+lgrip1=TSR(grips[3],comps.Transform(None,[.0,.02,0]).tm,mat([0,0, 0,0, 0,z1, 0,0 ,0,0, -theta,theta]),0)
 
 # Define keyframe poses in terms of manips
 pose1={'rightArm':rgrip1,'leftArm':lgrip1}
@@ -82,7 +87,16 @@ pose1={'rightArm':rgrip1,'leftArm':lgrip1}
 print "Place the robot in the desired starting position"
 #TODO: Sample the Right foot floating base pose, passed in as a separate TSR chain?
 
-#solveWholeBodyPose(robot,probs_cbirrt,pose1)
+planning.solveWholeBodyPose(robot,probs_cbirrt,pose1,10)
+
+
+T=robot.GetTransform()
+T[2,3]-=.0015
+robot.SetTransform(T)
+oh.plot_contacts(robot)
+pause()
+
+stable, hull, CWS, report = cws.perform_cws(robot,['leftFoot','rightFoot','leftPalm','rightPalm'])
 
 first_pose=comps.Cbirrt(probs_cbirrt)
 
@@ -110,6 +124,5 @@ pause()
 env.StartSimulation(oh.TIMESTEP)
 planning.RunTrajectoryFromFile(robot,first_pose)
 
-CloseLeftHand(robot,1.05)
-CloseRightHand(robot,1.05)
+close_left_hand(robot,0)
 

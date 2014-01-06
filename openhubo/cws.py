@@ -29,7 +29,7 @@ def perform_cws(robot,links):
     r = oh.find_com(robot)
     m = oh.find_mass(robot)
 
-    w_g[0:3] = m*array([0,0,-g])
+    w_g[0:3] = m*array([0,0,g])
     w_g[3:6] = cross(r,w_g[0:3])
 
     #TODO evaluate convex hull of CWS here
@@ -72,6 +72,6 @@ if __name__ == '__main__':
     robot.SetTransform(T)
     oh.pause()
 
-    stable, hull, CWS, report = perform_cws(robot,['leftFoot','rightFoot'])
+    stable, hull, CWS, report = perform_cws(robot,['leftFoot','rightFoot','leftPalm','rightPalm'])
 
 

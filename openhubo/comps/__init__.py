@@ -510,13 +510,17 @@ class TSR:
         return ' '.join(cmd)
 
     def endPose(self):
-        T0=Transform(self.link.GetTransform())
+        if self.link:
+            T0=Transform(self.link.GetTransform())
+        else:
+            T0=Transform()
         return T0*self.T0_w*self.Tw_e
 
     def sample(self):
-        b_range=self.Bw[1::2]-self.Bw[0::2]
-        b_center=(self.Bw[1::2]+self.Bw[0::2])/2
-        w=array(random.rand(6))*asarray(b_range)+asarray(b_center)
+        print self.Bw
+        b_range=self.Bw[:,1::2]-self.Bw[:,0::2]
+        b_center=(self.Bw[:,1::2]+self.Bw[:,0::2])/2
+        w=array(random.rand(6))*_np.squeeze(b_range)+_np.squeeze(b_center)
         return self.endPose()*TSR.buildT(w)
 
 class TSRChain:

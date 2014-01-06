@@ -10,6 +10,7 @@ __license__ = 'GPLv3 license'
 import openravepy as _rave
 import numpy as _np
 import comps as _comps
+from openhubo import mapping
 
 from numpy import pi
 
@@ -169,10 +170,11 @@ def setInitialPose(robot):
     robot.SetActiveDOFValues([0,pi/4,0,-.5,0,0,0])
     robot.SetActiveDOFs(robot.GetManipulator('rightArm').GetArmIndices())
     robot.SetActiveDOFValues([0,-pi/4,0,-.5,0,0,0])
-    #hack to close the fingers enough to avoid other body parts.
-    #TODO: grasping routine?
-    robot.SetDOFValues([pi/8,pi/8,pi/8],[robot.GetJointIndex('rightThumbKnuckle1'),robot.GetJointIndex('rightThumbKnuckle2'),robot.GetJointIndex('rightThumbKnuckle3')])
-    robot.SetDOFValues([pi/8,pi/8,pi/8],[robot.GetJointIndex('leftThumbKnuckle1'),robot.GetJointIndex('leftThumbKnuckle2'),robot.GetJointIndex('leftThumbKnuckle3')])
+    #Hack for DRCHubo
+    fingers = mapping.get_fingers(robot);
+    for f in fingers:
+        robot.SetDOFValues([-.6],[f.GetDOFIndex()])
+
 
 def findPoseIntersection(robot,problem,init,final):
     trans={}
@@ -183,7 +185,7 @@ def findPoseIntersection(robot,problem,init,final):
                 trans.setdefault(k,init[k])
     return trans
 
-def solveWholeBodyPose(robot,problem,tsrs):
+def solveWholeBodyPose(robot,problem,tsrs,reps=1000):
     """Useful GeneralIK wrapper to check if a goal combination is reasonable"""
     supportlinks=[]
     #find all supporting end effectors from manips
@@ -193,7 +195,7 @@ def solveWholeBodyPose(robot,problem,tsrs):
     ik=_comps.GeneralIK(robot,problem,tsrs.values())
 
     #TODO: make this run even if solution is found?
-    ik.continuousSolve(1000,True,[3])
+    ik.continuousSolve(reps,True,[3])
 
     if ik.solved():
         ik.goto()

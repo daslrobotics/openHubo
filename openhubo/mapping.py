@@ -107,6 +107,15 @@ def is_finger(name):
     else:
         return False
 
+def get_fingers(robot):
+    return [j for j in robot.GetJoints() if is_finger(j.GetName())]
+
+def get_right_fingers(robot):
+    return [f for f in get_fingers(robot) if _re.search('R|right',f.GetName())]
+
+def get_left_fingers(robot):
+    return [f for f in get_fingers(robot) if _re.search('L|left',f.GetName())]
+
 def write_yaml_file(filename='mapout.yaml'):
     outdict={}
     urdf_mapping={oh_from_ha(k):{'huboachid':v} for k,v in hubo_ach_map.items()}
