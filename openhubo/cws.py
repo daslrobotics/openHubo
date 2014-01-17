@@ -1,6 +1,7 @@
 from openravepy import CollisionReport
 from numpy import linalg,zeros, cross, array, pi
 import openhubo as oh
+from openhubo.comps import Transform
 from scipy.spatial import ConvexHull
 import numpy as np
 
@@ -44,9 +45,7 @@ def check_interior(hull, point, thorough=False):
     """Slowest possible way to check for interior, by brute force over all planes."""
 
     inside = True
-    points=hull.points
     for n,s in enumerate(hull.equations):
-
         res = s[0:5].dot(point[0:5])+s[5]
         if res>0:
             inside = False
@@ -58,6 +57,54 @@ def check_interior(hull, point, thorough=False):
 
     return inside
 
+def test_cws(robot):
+    T=robot.GetTransform()
+    T[2,3]-=.0015
+    robot.SetTransform(T)
+    print "Move robot to colliding position"
+    oh.pause()
+    stable, hull, CWS, report = perform_cws(robot,['leftFoot','rightFoot','leftPalm','rightPalm'])
+    return stable
+
+class ContactSphere:
+    suffix=0
+
+    def __init__(self, robot, transform,linkname):
+        self.robot = robot
+        self.link = robot.GetLink(linkname)
+        self.transform = Transform(transform)
+        env = robot.GetEnv()
+        env.Load('contactsphere.kinbody.xml')
+        self.sphere = env.GetKinBody('contactsphere')
+        self.sphere.SetName('contactsphere_{}'.format(ContactSphere.suffix))
+        ContactSphere.suffix+=1
+
+    def update(self):
+        global_transform = Transform(self.link.GetTransform()) * self.transform
+        self.sphere.SetTransform(array(global_transform))
+
+    def check(self):
+        self.sphere.Enable(True)
+        env = self.robot.GetEnv()
+        res = env.CheckCollision(self.sphere,bodyexcluded=[self.robot],linkexcluded=self.robot.GetLinks())
+        self.sphere.Enable(False)
+        return res
+
+class ContactSphereSet:
+    def __init__(self):
+        self.spheres = []
+
+    def append(self,sphere):
+        self.spheres.append(sphere)
+
+    def update(self):
+        for s in self.spheres:
+            s.update()
+
+    def check(self):
+        contacts = [s.check() for s in self.spheres]
+        return contacts
+
 if __name__ == '__main__':
 
     (env,options)=oh.setup('qtcoin',True)
@@ -65,13 +112,11 @@ if __name__ == '__main__':
     #TODO fix hard name here
     options.robotfile='../robots/drchubo/drchubo_v3/robots/drchubo_v3.robot.xml'
     [robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
-    env.StartSimulation(oh.TIMESTEP)
-    print "Move robot to colliding position"
-    T=robot.GetTransform()
-    T[2,3]-=.0015
-    robot.SetTransform(T)
-    oh.pause()
 
-    stable, hull, CWS, report = perform_cws(robot,['leftFoot','rightFoot','leftPalm','rightPalm'])
+    rightFootSpheres=ContactSphereSet()
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,0.058,-0.003]),'rightFoot'))
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,-0.058,-0.003]),'rightFoot'))
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.093,0.058,-0.003]),'rightFoot'))
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.093,-0.058,-0.003]),'rightFoot'))
 
 
