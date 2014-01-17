@@ -1,5 +1,5 @@
 from openravepy import CollisionReport
-from numpy import linalg,zeros, cross, array, pi
+from numpy import zeros, cross, array, pi
 import openhubo as oh
 from openhubo.comps import Transform
 from scipy.spatial import ConvexHull
@@ -84,9 +84,10 @@ class ContactSphere:
         self.sphere.SetTransform(array(global_transform))
 
     def check(self):
+        report = CollisionReport()
         self.sphere.Enable(True)
         env = self.robot.GetEnv()
-        res = env.CheckCollision(self.sphere,bodyexcluded=[self.robot],linkexcluded=self.robot.GetLinks())
+        res = env.CheckCollision(self.sphere,report=report)
         self.sphere.Enable(False)
         return res
 
@@ -105,6 +106,21 @@ class ContactSphereSet:
         contacts = [s.check() for s in self.spheres]
         return contacts
 
+class CWSCheck:
+    def __init__(self,robot):
+        self.robot = robot
+        self.contactsets={}
+        self.activecontacts = {}
+
+    def insert_contacts(self, linkname, contactset):
+        self.contactsets.setdefault(linkname,contactset)
+
+    def build_active_sets(self):
+        for l,s in self.contactsets.items():
+            s.update()
+            self.activecontacts.setdefault(l,s.check())
+
+
 if __name__ == '__main__':
 
     (env,options)=oh.setup('qtcoin',True)
@@ -114,9 +130,12 @@ if __name__ == '__main__':
     [robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
 
     rightFootSpheres=ContactSphereSet()
-    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,0.058,-0.003]),'rightFoot'))
-    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,-0.058,-0.003]),'rightFoot'))
-    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.093,0.058,-0.003]),'rightFoot'))
-    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.093,-0.058,-0.003]),'rightFoot'))
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,0.058,-0.005]),'rightFoot'))
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,-0.058,-0.005]),'rightFoot'))
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.093,0.058,-0.005]),'rightFoot'))
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.093,-0.058,-0.005]),'rightFoot'))
 
+    check = CWSCheck(robot)
+    check.insert_contacts('rightFoot', rightFootSpheres)
+    check.build_active_sets()
 
