@@ -120,6 +120,40 @@ class CWSCheck:
             s.update()
             self.activecontacts.setdefault(l,s.check())
 
+f_standoff = 0.003
+def create_right_foot(robot):
+    rightFootSpheres=ContactSphereSet()
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,0.058,-f_standoff]),'rightFoot'))
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,-0.065,-f_standoff]),'rightFoot'))
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.133,0.058,-f_standoff]),'rightFoot'))
+    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.133,-0.065,-f_standoff]),'rightFoot'))
+    return rightFootSpheres
+
+def create_left_foot(robot):
+    leftFootSpheres=ContactSphereSet()
+    leftFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,-0.058,-f_standoff]),'leftFoot'))
+    leftFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,0.065,-f_standoff]),'leftFoot'))
+    leftFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.133,-0.058,-f_standoff]),'leftFoot'))
+    leftFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.133,0.065,-f_standoff]),'leftFoot'))
+    return leftFootSpheres
+
+h_standoff = 0.0006
+
+def create_right_palm(robot):
+    rightPalmSpheres=ContactSphereSet()
+    rightPalmSpheres.append(ContactSphere(robot,Transform(trans=[0.011,h_standoff,0.031]),'rightPalm'))
+    rightPalmSpheres.append(ContactSphere(robot,Transform(trans=[0.011,h_standoff,-0.031]),'rightPalm'))
+    rightPalmSpheres.append(ContactSphere(robot,Transform(trans=[-0.011,h_standoff,0.031]),'rightPalm'))
+    rightPalmSpheres.append(ContactSphere(robot,Transform(trans=[-0.011,h_standoff,-0.031]),'rightPalm'))
+    return rightPalmSpheres
+
+def create_left_palm(robot):
+    leftPalmSpheres=ContactSphereSet()
+    leftPalmSpheres.append(ContactSphere(robot,Transform(trans=[0.011,-h_standoff,0.031]),'leftPalm'))
+    leftPalmSpheres.append(ContactSphere(robot,Transform(trans=[0.011,-h_standoff,-0.031]),'leftPalm'))
+    leftPalmSpheres.append(ContactSphere(robot,Transform(trans=[-0.011,-h_standoff,0.031]),'leftPalm'))
+    leftPalmSpheres.append(ContactSphere(robot,Transform(trans=[-0.011,-h_standoff,-0.031]),'leftPalm'))
+    return leftPalmSpheres
 
 if __name__ == '__main__':
 
@@ -129,13 +163,16 @@ if __name__ == '__main__':
     options.robotfile='../robots/drchubo/drchubo_v3/robots/drchubo_v3.robot.xml'
     [robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
 
-    rightFootSpheres=ContactSphereSet()
-    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,0.058,-0.005]),'rightFoot'))
-    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[0.063,-0.058,-0.005]),'rightFoot'))
-    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.093,0.058,-0.005]),'rightFoot'))
-    rightFootSpheres.append(ContactSphere(robot,Transform(trans=[-0.093,-0.058,-0.005]),'rightFoot'))
 
     check = CWSCheck(robot)
-    check.insert_contacts('rightFoot', rightFootSpheres)
+    check.insert_contacts('rightFoot', create_right_foot(robot))
+    check.insert_contacts('leftFoot', create_left_foot(robot))
+    check.insert_contacts('rightPalm', create_right_palm(robot))
+    check.insert_contacts('leftPalm', create_left_palm(robot))
+    pose=oh.Pose(robot)
+    pose['LF1']=-pi/3
+    pose['RF1']=-pi/3
+    pose['RF2']=-pi/3
+    pose.send()
     check.build_active_sets()
 

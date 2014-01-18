@@ -1,0 +1,12 @@
+<kinbody name="contactsphere">
+    <body type="dynamic" enable="false">
+        <geom type="sphere">
+            <radius>0.0005</radius>
+            <diffusecolor>.81 .8 .4</diffusecolor>
+            <ambientcolor>0.8 0.5 0.6</ambientcolor>
+        </geom>
+        <mass type="mimicgeom">
+            <total>1</total>
+        </mass>
+    </body>
+</kinbody>
