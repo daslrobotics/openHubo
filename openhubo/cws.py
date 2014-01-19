@@ -6,6 +6,7 @@ from scipy.spatial import ConvexHull
 from scipy.spatial.qhull import QhullError
 import numpy as np
 from nullspace import nullspace
+import time
 
 #TODO declare a vector of peak forces for each contact body?
 
@@ -101,18 +102,14 @@ class ContactCheck:
             self.min_dist = -1
             return False
         point = self.build_gravity_wrench()
-        self.distances = zeros(np.size(self.hull.equations,0))
+        self.min_dist=np.infty
         for n,s in enumerate(self.hull.equations):
             res = s[0:6].dot(point[0:6])+s[6]
-            self.distances[n]=res
+            dist_internal = abs(min(res,0))
+            self.min_dist=min(self.min_dist,dist_internal)
             if res>0:
                 inside = False
-                if quick:
-                    return inside
-                #print "point is outside of face {}".format(n)
-            #else:
-                #print "point inside of face P{}".format(n)
-        self.min_dist = min(self.distances)
+        print self.min_dist
         return inside
 
 def test_cws(robot):
@@ -121,12 +118,14 @@ def test_cws(robot):
     check.insert_link('rightFoot')
     check.insert_link('rightPalm')
     check.insert_link('leftPalm')
-    print check.build_cws()
+    #print check.build_cws()
     return check
 
 def check_fallen(robot,T_orig,tol=0.03):
     T=robot.GetTransform()
-    if T_orig[2,3] - T[2,3] > tol:
+    #print T_orig
+    #print T
+    if np.linalg.norm(T_orig[:,3] - T[:,3]) > tol:
         return True
     else:
         return False
@@ -157,9 +156,9 @@ if __name__ == '__main__':
     pose['LF1']=-pi/6
     pose['RF1']=-pi/6
     pose['RF2']=-pi/6
-    pose['LSP']=-0.2
-    pose['RSP']=-0.2
-    leg_tilt=0.1
+    pose['LSP']=-0.4
+    pose['RSP']=-0.4
+    leg_tilt=0.16
     pose['LHP']=leg_tilt
     pose['RHP']=leg_tilt
     pose['LAP']=-leg_tilt
@@ -173,20 +172,35 @@ if __name__ == '__main__':
     steps=50
     ZMP_check=zeros(steps)
     CWS_check=zeros(steps)
-    fallen=zeros(steps)
+    real_stable=zeros(steps)
     min_dist=zeros(steps)
 
-    for k in xrange(steps):
+    tol = 0.005
+    upper = 1.0
+    lower = 0.0
+    test = (lower+upper)/2
+    k=0
+    while upper-lower > tol:
         env.StopSimulation()
-        pose['LSP']-=0.02
-        pose['RSP']-=0.02
+        pose['LSP']=-test
+        pose['RSP']=-test
         pose.take_init_pose()
         #FIXME this won't work if the ankle orientation changes (simulation could explode)
         pose.reset(True,True)
-        CWS_check[k]=check.build_cws()
+        t0=time.time()
+        check.build_cws()
+        CWS_check[k]=check.check()
+        t1=time.time()
         env.StartSimulation(oh.TIMESTEP)
-        oh.pause(8)
-        fallen[k]=check_fallen(robot,T)
+        oh.pause(10)
+        real_stable[k]=not(check_fallen(robot,T))
         min_dist[k]=check.min_dist
-        print CWS_check[k],fallen[k],min_dist[k]
+        print CWS_check[k],real_stable[k],min_dist[k]
+        if real_stable[k] == 0:
+            upper = test
+        else:
+            lower = test
+        test = (upper+lower)/2
+        k+=1
+
 
