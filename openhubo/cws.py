@@ -219,24 +219,20 @@ if __name__ == '__main__':
     [robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
 
 
-    #check = CWSCheck(robot)
-    #check.insert_contacts('rightFoot', create_right_foot(robot))
-    #check.insert_contacts('leftFoot', create_left_foot(robot))
-    #check.insert_contacts('rightPalm', create_right_palm(robot))
-    #check.insert_contacts('leftPalm', create_left_palm(robot))
-    oh.pause()
     env.StartSimulation(oh.TIMESTEP)
     pose=oh.Pose(robot)
-    pose['LF1']=-pi/3
-    pose['RF1']=-pi/3
-    pose['RF2']=-pi/3
+    pose['LF1']=-pi/6
+    pose['RF1']=-pi/6
+    pose['RF2']=-pi/6
     pose.send()
-    #check.build_active_sets()
 
-    check = test_cws(robot)
+    check=test_cws(robot)
 
     for k in xrange(100):
-        oh.pause(0.5)
+        pose['LSP']-=0.05
+        pose['RSP']-=0.05
+        pose.send()
+        oh.pause(2)
         env.StopSimulation()
         check.build_cws()
         print check.check_static_stability()
