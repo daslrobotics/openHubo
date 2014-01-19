@@ -66,10 +66,12 @@ class Pose:
             pose.send()
     """
 
-    def __init__(self,robot=None,ctrl=None,values=None,useregex=False,other=None,dt=None):
+    def __init__(self,robot=None,ctrl=None,values=None,useregex=False,other=None,dt=None,init_pose=None,init_trans=None):
         self.robot=robot
         self.jointmap=self.build_joint_index_map(robot)
         self.dt=dt
+        self.init_pose = init_pose
+        self.init_trans = init_trans
         if values is not None:
             #Will throw size exception if values is too short
             self.values=values
@@ -89,6 +91,15 @@ class Pose:
                 self.ctrl=self.robot.GetController()
 
         self.useregex=useregex
+
+    def take_init_pose(self,trans=None):
+        self.init_pose = self.values
+        if hasattr(trans,'__iter__'):
+            #boolean input -> get from robot
+            self.init_trans=trans
+        elif trans is not None:
+            #assume we pass in a matrix
+            self.init_trans=self.robot.GetTransform()
 
     def build_joint_index_map(self,robot):
         jmap= {j.GetName():j.GetDOFIndex() for j in robot.GetJoints()}
@@ -115,16 +126,26 @@ class Pose:
         """
 
         if values:
-            self.values=zeros(self.robot.GetDOF())
+            if self.init_pose is not None:
+                #TODO error check this?
+                self.values = self.init_pose
+            else:
+                self.values=zeros(self.robot.GetDOF())
 
         if trans:
-            self.trans=_np.eye(4)
+            if self.init_trans is not None:
+                self.trans = self.init_trans
+            else:
+                self.trans=_np.eye(4)
 
         with self.robot.GetEnv():
             self.robot.SetVelocity([0,0,0],[0,0,0])
             self.robot.SetDOFVelocities(self.values)
+            #Ugly way to force everything to stop moving
+            self.robot.SetLinkVelocities(self.robot.GetLinkVelocities()*0)
             self.robot.SetDOFValues(self.values)
-            self.robot.SetTransform(self.trans)
+            if trans:
+                self.robot.SetTransform(self.trans)
             self.ctrl.SetDesired(self.values)
 
     def to_waypt(self,dt=None,affine=zeros(7)):
@@ -153,9 +174,8 @@ class Pose:
                 self.robot.SetDOFValues(self.values)
                 if trans:
                     self.robot.SetTransform(self.trans)
-        else:
-            #TODO send transform here too? not useful yet
-            self.ctrl.SetDesired(self.values)
+        #TODO send transform here too? not useful yet
+        self.ctrl.SetDesired(self.values)
 
     def pretty(self):
         """Print out the DOF values with named joints in a screen-friendly

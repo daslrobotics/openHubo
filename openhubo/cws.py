@@ -50,6 +50,13 @@ class ContactCheck:
                     self.CWS.append(w[0:6])
                     self.positions.append(c.pos)
 
+        try:
+            self.hull = ConvexHull(array(self.CWS))
+            return True
+        except QhullError:
+            print "can't build CWS, assuming unstable!"
+            return False
+
     def plot_cones(self,scale = 0.0002):
         normals = array(self.CWS)[:,0:3]
         if len(self.positions):
@@ -66,7 +73,7 @@ class ContactCheck:
         else:
             self.handles = None
 
-    def check_static_stability(self):
+    def build_gravity_wrench(self):
         m = oh.find_mass(self.robot)
         g = 9.81
 
@@ -78,44 +85,41 @@ class ContactCheck:
         w_g[0:3] = m*array([0,0,g])
         w_g[3:6] = cross(r,w_g[0:3])
 
-        #TODO evaluate convex hull of CWS here
-        try:
-            self.hull = ConvexHull(array(self.CWS))
-        except QhullError:
-            print "can't build CWS, assuming unstable!"
-            return False
-        inside = check_interior(self.hull,w_g[0:6])
+        return w_g
 
+    def build_inertia_wrench(self):
+        w_i = zeros(6)
+        print "not implemented"
+        return w_i
+
+    def check(self, quick=False):
+        """Slowest possible way to check for interior, by brute force over all planes."""
+        inside = True
+        #print "point:", point
+        if self.hull is None:
+        #TODO exception?
+            return False
+        point = self.build_gravity_wrench()
+        self.distances = zeros(np.size(self.hull.equations,0))
+        for n,s in enumerate(self.hull.equations):
+            res = s[0:6].dot(point[0:6])+s[6]
+            self.distances[n]=res
+            if res>0:
+                inside = False
+                if quick:
+                    return inside
+                #print "point is outside of face {}".format(n)
+            #else:
+                #print "point inside of face P{}".format(n)
+        self.min_dist = min(self.distances)
         return inside
 
-def check_interior(hull, point, quick=False):
-    """Slowest possible way to check for interior, by brute force over all planes."""
-
-    inside = True
-    #print "point:", point
-    for n,s in enumerate(hull.equations):
-        res = s[0:6].dot(point[0:6])+s[6]
-        if res>0:
-            inside = False
-            if quick:
-                return inside
-            #print "point is outside of face {}".format(n)
-        #else:
-            #print "point inside of face P{}".format(n)
-
-    return inside
-
 def test_cws(robot):
-    T=robot.GetTransform()
-    T[2,3]-=.0015
-    robot.SetTransform(T)
-    print "Move robot to colliding position"
-    oh.pause()
     check=ContactCheck(robot)
     check.insert_link('leftFoot')
-    check.insert_link('leftPalm')
     check.insert_link('rightFoot')
     check.insert_link('rightPalm')
+    check.insert_link('leftPalm')
     print check.build_cws()
     return check
 
@@ -209,31 +213,70 @@ def create_left_palm(robot):
     leftPalmSpheres.append(ContactSphere(robot,Transform(trans=[-0.011,-h_standoff,-0.031]),'leftPalm'))
     return leftPalmSpheres
 
+
+def check_fallen(robot,T_orig,tol=0.03):
+    T=robot.GetTransform()
+    if T_orig[2,3] - T[2,3] > tol:
+        return True
+    else:
+        return False
+
+def make_average_initial_pose(pose,steps=100):
+    env=pose.robot.GetEnv()
+    env.StopSimulation()
+    pose.send(direct=True)
+    T=robot.GetTransform()
+    for k in xrange(steps):
+        env.StepSimulation(oh.TIMESTEP)
+        T+=pose.robot.GetTransform()
+    T/=(steps+1)
+    #Hack to "average" transform
+    pose.take_init_pose(trans=T)
+    return T
+
 if __name__ == '__main__':
 
     (env,options)=oh.setup('qtcoin',True)
     env.SetDebugLevel(4)
     #TODO fix hard name here
     options.robotfile='../robots/drchubo/drchubo_v3/robots/drchubo_v3.robot.xml'
-    options.scenefile='../scenes/ladderclimb.env.xml'
+    #options.scenefile='../scenes/ladderclimb.env.xml'
     [robot,ctrl,ind,ref,recorder]=oh.load_scene(env,options)
 
-
-    env.StartSimulation(oh.TIMESTEP)
     pose=oh.Pose(robot)
     pose['LF1']=-pi/6
     pose['RF1']=-pi/6
     pose['RF2']=-pi/6
-    pose.send()
-
+    pose['LSP']=-0.3
+    pose['RSP']=-0.3
+    leg_tilt=0.12
+    pose['LHP']=leg_tilt
+    pose['RHP']=leg_tilt
+    pose['LAP']=-leg_tilt
+    pose['RAP']=-leg_tilt
+    pose.send(direct=True)
+    env.StartSimulation(oh.TIMESTEP)
+    oh.pause(2)
+    T = make_average_initial_pose(pose)
     check=test_cws(robot)
 
-    for k in xrange(100):
-        pose['LSP']-=0.05
-        pose['RSP']-=0.05
-        pose.send()
-        oh.pause(2)
+    steps=50
+    ZMP_check=zeros(steps)
+    CWS_check=zeros(steps)
+    fallen=zeros(steps)
+    min_dist=zeros(steps)
+
+    for k in xrange(steps):
         env.StopSimulation()
-        check.build_cws()
-        print check.check_static_stability()
+        pose['LSP']-=0.02
+        pose['RSP']-=0.02
+        pose.take_init_pose()
+        #FIXME this won't work if the ankle orientation changes (simulation could explode)
+        pose.reset(True,True)
+        CWS_check[k]=check.build_cws()
         env.StartSimulation(oh.TIMESTEP)
+        oh.pause(8)
+        fallen[k]=check_fallen(robot,T)
+        min_dist[k]=check.min_dist
+        print CWS_check[k],fallen[k],min_dist[k]
+
