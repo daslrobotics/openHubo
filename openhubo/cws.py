@@ -29,13 +29,12 @@ class ContactCheck:
         for n,l in self.links.items():
             l.Enable(False)
 
-    def perform_cws(self):
+    def build_cws(self):
         report=CollisionReport()
 
-        m = oh.find_mass(self.robot)
-        g = 9.81
 
-        self.CWS=[array([0,0,0,0,0])]
+        self.CWS=[zeros(6)]
+        self.positions=[zeros(3)]
         for n,l in self.links.items():
 
             env.CheckCollision(l,report)
@@ -45,9 +44,31 @@ class ContactCheck:
                     w = zeros(6)
                     # arbitrary scale factor
                     vec = cos(theta) * array(basis[:,0])+sin(theta)*array(basis[:,1])
-                    w[0:3] = np.squeeze(array(c.norm) + np.squeeze(vec) * self.mu) * 2 * m*g
+                    #TODO limit force by link
+                    w[0:3] = np.squeeze(array(c.norm) + np.squeeze(vec) * self.mu) * 1000
                     w[3:] = cross(c.pos, w[0:3])
-                    self.CWS.append(w[0:5])
+                    self.CWS.append(w[0:6])
+                    self.positions.append(c.pos)
+
+    def plot_cones(self,scale = 0.0002):
+        normals = array(self.CWS)[:,0:3]
+        if len(self.positions):
+            plist=np.hstack((array(self.positions),array(self.positions)+normals*scale))
+            self.handles = env.drawlinelist(np.reshape(plist,(1,-1)),.5)
+        else:
+            self.handles = None
+
+    def plot_wrenches(self,scale = 0.0002):
+        wrenches = array(self.CWS)[:,3:6]
+        if len(self.positions):
+            plist=np.hstack((array(self.positions),array(self.positions)+wrenches*scale))
+            self.handles = env.drawlinelist(np.reshape(plist,(1,-1)),.5)
+        else:
+            self.handles = None
+
+    def check_static_stability(self):
+        m = oh.find_mass(self.robot)
+        g = 9.81
 
         w_g = zeros(6)
 
@@ -63,19 +84,20 @@ class ContactCheck:
         except QhullError:
             print "can't build CWS, assuming unstable!"
             return False
-        inside = check_interior(self.hull,w_g[0:5])
+        inside = check_interior(self.hull,w_g[0:6])
 
         return inside
 
-def check_interior(hull, point, thorough=False):
+def check_interior(hull, point, quick=False):
     """Slowest possible way to check for interior, by brute force over all planes."""
 
     inside = True
+    #print "point:", point
     for n,s in enumerate(hull.equations):
-        res = s[0:5].dot(point[0:5])+s[5]
+        res = s[0:6].dot(point[0:6])+s[6]
         if res>0:
             inside = False
-            if thorough:
+            if quick:
                 return inside
             #print "point is outside of face {}".format(n)
         #else:
@@ -94,7 +116,7 @@ def test_cws(robot):
     check.insert_link('leftPalm')
     check.insert_link('rightFoot')
     check.insert_link('rightPalm')
-    print check.perform_cws()
+    print check.build_cws()
     return check
 
 
@@ -216,5 +238,6 @@ if __name__ == '__main__':
     for k in xrange(100):
         oh.pause(0.5)
         env.StopSimulation()
-        print check.perform_cws()
+        check.build_cws()
+        print check.check_static_stability()
         env.StartSimulation(oh.TIMESTEP)
