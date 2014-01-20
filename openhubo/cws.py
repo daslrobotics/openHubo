@@ -17,9 +17,10 @@ class ContactCheck:
         self.links = {}
         self.mu = mu
         self.min_dist=-1
+        self.hull = None
 
     def insert_link(self,linkname):
-        l = robot.GetLink(linkname)
+        l = self.robot.GetLink(linkname)
         if l is not None:
             self.links[linkname]=l
 
@@ -34,7 +35,7 @@ class ContactCheck:
     def build_cws(self):
         report=CollisionReport()
 
-
+        env = self.robot.GetEnv()
         self.CWS=[zeros(6)]
         self.positions=[zeros(3)]
         for n,l in self.links.items():
@@ -56,6 +57,7 @@ class ContactCheck:
             self.hull = ConvexHull(array(self.CWS))
             return True
         except QhullError:
+            self.hull = None
             print "can't build CWS, assuming unstable!"
             return False
 
@@ -112,6 +114,13 @@ class ContactCheck:
         print self.min_dist
         return inside
 
+    def fall(self,T_orig,tol=0.03):
+        T=self.robot.GetTransform()
+        if np.linalg.norm(T_orig[:,3] - T[:,3]) > tol:
+            return True
+        else:
+            return False
+
 def test_cws(robot):
     check=ContactCheck(robot)
     check.insert_link('leftFoot')
@@ -134,7 +143,7 @@ def make_average_initial_pose(pose,steps=100):
     env=pose.robot.GetEnv()
     env.StopSimulation()
     pose.send(direct=True)
-    T=robot.GetTransform()
+    T=pose.robot.GetTransform()
     for k in xrange(steps):
         env.StepSimulation(oh.TIMESTEP)
         T+=pose.robot.GetTransform()
