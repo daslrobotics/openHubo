@@ -162,18 +162,18 @@ def getManipIndex(robot,manipName):
 
 def setInitialPose(robot):
     #Define a manual initial pose for IK solution
-    robot.SetActiveDOFs(robot.GetManipulator('leftFoot').GetArmIndices())
-    robot.SetActiveDOFValues([0,0,-.2,.4,-.2,0])
-    robot.SetActiveDOFs(robot.GetManipulator('rightFoot').GetArmIndices())
-    robot.SetActiveDOFValues([0,0,-.2,.4,-.2,0])
-    robot.SetActiveDOFs(robot.GetManipulator('leftArm').GetArmIndices())
-    robot.SetActiveDOFValues([0,pi/4,0,-.5,0,0,0])
-    robot.SetActiveDOFs(robot.GetManipulator('rightArm').GetArmIndices())
-    robot.SetActiveDOFValues([0,-pi/4,0,-.5,0,0,0])
+    ind = robot.GetManipulator('leftFoot').GetArmIndices()
+    robot.SetDOFValues([0,0,-.2,.4,-.2,0],ind)
+    ind = robot.GetManipulator('rightFoot').GetArmIndices()
+    robot.SetDOFValues([0,0,-.2,.4,-.2,0],ind)
+    ind = robot.GetManipulator('leftArm').GetArmIndices()
+    robot.SetDOFValues([0,pi/4,0,-.5,0,0,0], ind)
+    ind = robot.GetManipulator('rightArm').GetArmIndices()
+    robot.SetDOFValues([0,-pi/4,0,-.5,0,0,0],ind)
     #Hack for DRCHubo
     fingers = mapping.get_fingers(robot);
     for f in fingers:
-        robot.SetDOFValues([-.6],[f.GetDOFIndex()])
+        robot.SetDOFValues([-.8],[f.GetDOFIndex()])
 
 
 def findPoseIntersection(robot,problem,init,final):
@@ -189,13 +189,14 @@ def solveWholeBodyPose(robot,problem,tsrs,reps=1000):
     """Useful GeneralIK wrapper to check if a goal combination is reasonable"""
     supportlinks=[]
     #find all supporting end effectors from manips
-    for k in tsrs.keys():
-        supportlinks.append(robot.GetManipulator(k).GetEndEffector().GetName())
+    #for k in tsrs.keys():
+        #supportlinks.append(robot.GetManipulator(k).GetEndEffector().GetName())
 
     ik=_comps.GeneralIK(robot,problem,tsrs.values())
+    ik.bcollisions = True
 
     #TODO: make this run even if solution is found?
-    ik.continuousSolve(reps,True,[3])
+    ik.continuousSolve(reps,True, quitonsolve = True)
 
     if ik.solved():
         ik.goto()

@@ -348,22 +348,23 @@ class GeneralIK:
             self.activate(extra)
         response=self.problem.SendCommand(self.Serialize())
 
-        if len(response)>0:
-            collisions=_rave.CollisionReport()
-            if self.robot.CheckSelfCollision(collisions):
-                print "Self-collision between links {} and {}!".format(collisions.plink1,collisions.plink2)
-                return False
-            if self.robot.GetEnv().CheckCollision(self.robot,collisions):
-                print "Environment collision between links {} and {}!".format(collisions.plink1,collisions.plink2)
-                return False
-            self.soln=[float(x) for x in response[:-1].split(' ')]
-            return True
+        if len(response)==0:
+            return False
+
+        collisions=_rave.CollisionReport()
+        if self.robot.CheckSelfCollision(collisions):
+            print "Self-collision between links {} and {}!".format(collisions.plink1,collisions.plink2)
+            return False
+        if self.robot.GetEnv().CheckCollision(self.robot,collisions):
+            print "Environment collision between links {} and {}!".format(collisions.plink1,collisions.plink2)
+            return False
+        self.soln=[float(x) for x in response[:-1].split(' ')]
+        return True
 
     def goto(self):
         """Move the robot to the current solved position (direct move, not controller command!)"""
         self.activate()
-        self.robot.SetDOFValues(self.soln,self.activedofs)
-        self.robot.WaitForController(.2)
+        self.robot.SetActiveDOFValues(self.soln)
 
     def solved(self):
         return len(self.soln)>0
@@ -377,17 +378,19 @@ class GeneralIK:
         and doesn't. Note that TSR's based on object poses are not recalculated
         if an object is moved."""
         report=_rave.CollisionReport()
+        report2=_rave.CollisionReport()
         env=self.robot.GetEnv()
         pose=Pose(self.robot)
         for k in xrange(itrs):
             pose.send()
             with self.robot:
                 self.run(auto,extra)
-                colcheck = env.CheckCollision(self.robot,report=report) and self.robot.CheckSelfCollision() if self.bcollisions else False
+                colcheck = (env.CheckCollision(self.robot,report=report) or self.robot.CheckSelfCollision(report=report2)) if self.bcollisions else False
 
-            if show:
+
+            if show and len(self.soln) >0:
                 self.goto()
-                _time.sleep(.1)
+                _time.sleep(.5)
             if self.solved and not colcheck and quitonsolve:
                 break
 
@@ -474,7 +477,7 @@ Output:
 class TSR:
     @staticmethod
     def buildT(w):
-        print w
+        #print w
         return Transform(w[3:],w[0:3])
 
     def __init__(self, T0_w_in = None, Tw_e_in = None, Bw_in = zeros(12), manipindex_in = None, link_in = None):

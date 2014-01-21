@@ -78,11 +78,13 @@ LF=0
 RF=1
 
 #Post grips at shoulder height
-rgrip1=TSR(grips[3+RH],comps.Transform(None,[.0,-.02,0]).tm,mat([0,0, 0,0, 0,z1, 0,0 ,0,0, -theta,theta]),1)
-lgrip1=TSR(grips[3],comps.Transform(None,[.0,.02,0]).tm,mat([0,0, 0,0, 0,z1, 0,0 ,0,0, -theta,theta]),0)
+rgrip1=TSR(grips[4+RH],comps.Transform(None,[.0,-.02,0]).tm,mat([0,0, 0,0, 0,z1, 0,0 ,0,0, -theta,theta]),1)
+lgrip1=TSR(grips[4],comps.Transform(None,[.0,.02,0]).tm,mat([0,0, 0,0, 0,z1, 0,0 ,0,0, -theta,theta]),0)
+rrung=TSR(grips[RUNG0+RH],comps.Transform(None,[.0,-.02,0]).tm,mat([0,0, 0,0, 0,z1, 0,0 ,0,0, -theta,theta]),1)
+lrung=TSR(grips[RUNG0],comps.Transform(None,[.0,.02,0]).tm,mat([0,0, 0,0, 0,z1, 0,0 ,0,0, -theta,theta]),0)
 
 # Define keyframe poses in terms of manips
-pose1={'rightArm':rgrip1,'leftArm':lgrip1}
+pose1={'rightArm':rgrip1,'leftArm':lgrip1,'leftLeg',lrung,'rightLeg',rrung}
 
 print "Place the robot in the desired starting position"
 #TODO: Sample the Right foot floating base pose, passed in as a separate TSR chain?
@@ -109,10 +111,12 @@ for c in chains:
     first_pose.insertTSRChain(c)
 
 #Activate useful DOFs
-activedofs=first_pose.activateManipsByIndex(robot,[0,1])
+activedofs=first_pose.activateManipsByIndex(robot,[0,1,2,3])
 #Add in hip pitches
 activedofs.append(ind('LHP'))
 activedofs.append(ind('RHP'))
+
+
 robot.SetActiveDOFs(activedofs)
 
 first_pose.supportlinks=['leftFoot','rightFoot']
