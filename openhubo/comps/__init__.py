@@ -347,9 +347,9 @@ class GeneralIK:
         if auto:
             self.activate(extra)
         response=self.problem.SendCommand(self.Serialize())
-
         if len(response)==0:
             return False
+        self.soln=[float(x) for x in response[:-1].split(' ')]
 
         collisions=_rave.CollisionReport()
         if self.robot.CheckSelfCollision(collisions):
@@ -358,13 +358,13 @@ class GeneralIK:
         if self.robot.GetEnv().CheckCollision(self.robot,collisions):
             print "Environment collision between links {} and {}!".format(collisions.plink1,collisions.plink2)
             return False
-        self.soln=[float(x) for x in response[:-1].split(' ')]
         return True
 
     def goto(self):
         """Move the robot to the current solved position (direct move, not controller command!)"""
         self.activate()
         self.robot.SetActiveDOFValues(self.soln)
+        self.robot.WaitForController(0.2)
 
     def solved(self):
         return len(self.soln)>0
@@ -386,7 +386,6 @@ class GeneralIK:
             with self.robot:
                 self.run(auto,extra)
                 colcheck = (env.CheckCollision(self.robot,report=report) or self.robot.CheckSelfCollision(report=report2)) if self.bcollisions else False
-
 
             if show and len(self.soln) >0:
                 self.goto()

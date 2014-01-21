@@ -7,25 +7,25 @@
             <diffuseColor>.8 .6 .6</diffuseColor>
         </Geom>
     </Body>
-    <Body name="post1" type="static">
+    <Body name="post1" type="static" enable="true">
         <offsetfrom>footplate</offsetfrom>
         <Translation>0 0.3286 0</Translation>
         <Geom type="cylinder">
             <translation> 0 0 1.778</translation>
             <rotationaxis>1 0 0 90</rotationaxis>
-            <radius>0.02</radius>
+            <radius>0.023</radius>
             <height>3.556</height>
             <diffuseColor>.8 .6 .6</diffuseColor>
         </Geom>
     </Body>
 
-    <Body name="post2" type="static">
+    <Body name="post2" type="static" enable="true">
         <offsetfrom>footplate</offsetfrom>
         <Translation>0 -0.3286 0</Translation>
         <Geom type="cylinder">
             <translation> 0 0 1.778</translation>
             <rotationaxis>1 0 0 90</rotationaxis>
-            <radius>0.02</radius>
+            <radius>0.023</radius>
             <height>3.556</height>
             <diffuseColor>.8 .6 .6</diffuseColor>
         </Geom>
@@ -107,14 +107,14 @@
             <diffuseColor>.8 .7 .6</diffuseColor>
         </Geom>
     </Body>
-    <Body name="building" type="static">
-        <offsetfrom>footplate</offsetfrom>
-        <Translation>0.203 0 0</Translation>
-        <Translation>1.35 0 1.35</Translation>
-        <Geom type="box">
-            <extents>1.35 1.35 1.35</extents>
-            <diffuseColor>.8 .8 .6</diffuseColor>
-        </Geom>
-    </Body>
+    <!--<Body name="building" type="static">-->
+        <!--<offsetfrom>footplate</offsetfrom>-->
+        <!--<Translation>0.253 0 0</Translation>-->
+        <!--<Translation>1.35 0 1.35</Translation>-->
+        <!--<Geom type="box">-->
+            <!--<extents>1.35 1.35 1.35</extents>-->
+            <!--<diffuseColor>.8 .8 .6</diffuseColor>-->
+        <!--</Geom>-->
+    <!--</Body>-->
 </KinBody>
 

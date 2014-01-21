@@ -205,11 +205,11 @@ def solveWholeBodyPose(robot,problem,tsrs,reps=1000):
             response=problem.SendCommand('CheckSupport supportlinks {} {}'.format(len(supportlinks),' '.join(supportlinks)))
             collision=robot.GetEnv().CheckCollision(robot)
             if response[0]=='1' and not(collision):
-                return True
+                return True,ik
         else:
-            return True
+            return True,ik
 
-    return False
+    return False,ik
 
 def planSequence(robot,problem,init,final=[],trans=[]):
     #init is a list of tsr starts, including the affine pose
