@@ -60,12 +60,12 @@ col.SetCollisionOptions(0)
 
 T=robot.GetTransform()
 
-T[0,3]+=(np.random.rand(1) -.5) * .05
-T[1,3]+=(np.random.rand(1) -.5) * .05
+T[0,3]+=(np.random.rand(1) -.5) * .10
+T[2,3]+=(np.random.rand(1) -.5) * .05
 robot.SetTransform(T)
 
 print "Adjusted start pose is:"
-print T
+print T[0:3,3]
 
 stairs=env.GetKinBody('ladder')
 links=stairs.GetLinks()
@@ -112,8 +112,8 @@ phi = -pi/6
 
 radial_vec = array([sin(phi), 0, cos(phi)])*.024
 
-rrung=TSR(grips[RUNG0+RF],comps.Transform(None,radial_vec).tm,mat([0,0, 0,0, 0,0, 0,0 , phi-theta,phi+theta,0,0]),3)
-lrung=TSR(grips[RUNG0+LF],comps.Transform(None,radial_vec).tm,mat([0,0, 0,0, 0,0, 0,0 , phi-theta,phi+theta,0,0]),2)
+rrung=TSR(grips[RUNG0+RF],comps.Transform(None,radial_vec).tm,mat([-.00,-.00, 0,0, 0,0, 0,0 , phi-theta,phi+theta,0,0]),3)
+lrung=TSR(grips[RUNG0+LF],comps.Transform(None,radial_vec).tm,mat([-.00,-.00, 0,0, 0,0, 0,0 , phi-theta,phi+theta,0,0]),2)
 
 # Define keyframe poses in terms of manips
 #pose1={'rightArm':rgrip1,'leftArm':lgrip1,'leftFoot':lrung,'rightFoot':rrung}
@@ -124,6 +124,10 @@ pose1={'rightArm':rgrip1,'leftArm':lgrip1,'leftFoot':lrung,'rightFoot':rrung}
 res,ik = planning.solveWholeBodyPose(robot,probs_cbirrt,pose1,10)
 
 planning.close_fingers(robot)
+LAP=robot.GetJoint('LAP')
+RAP=robot.GetJoint('RAP')
+planning.bisect_close(robot,LAP,LAP.GetValue(0)+.05)
+planning.bisect_close(robot,RAP,RAP.GetValue(0)+.05)
 
 pose = oh.Pose(robot)
 pose.update()
@@ -155,6 +159,7 @@ pose['RF*']-=.1
 env.StartSimulation(oh.TIMESTEP)
 
 oh.pause(2)
+env.StopSimulation()
 
 lwr = robot.GetJoint('LWR')
 rwr = robot.GetJoint('RWR')
@@ -174,26 +179,97 @@ for k in range(99):
 out_force/=100
 print out_force
 
-nominal_force = 10*g / 3.0
+nominal_force = 12*g / 3.0
 f_length = 0.038
 min_finger_torque = abs(out_force[0]) / 3.0  * f_length
 finger_torque = nominal_force * f_length
 set_finger_torque_limits( robot, finger_torque)
 
-check=cws.ContactCheck(robot)
+check=cws.ContactCheck(robot,.4)
 finger_force_nominal = out_force[0] / 3.0
 check.insert_link('leftFoot', m * g * leg_force_scale)
 check.insert_link('rightFoot', m * g * leg_force_scale)
-check.insert_link('leftPalm', m * g * arm_force_scale)
-check.insert_link('rightPalm', m * g * arm_force_scale)
-check.insert_link('BodyLF12', finger_force_nominal)
-check.insert_link('BodyLF22', finger_force_nominal)
-check.insert_link('BodyLF32', finger_force_nominal)
-check.insert_link('BodyRF12', finger_force_nominal)
-check.insert_link('BodyRF22', finger_force_nominal)
-check.insert_link('BodyRF32', finger_force_nominal)
-check.insert_link('BodyRF42', finger_force_nominal)
+check.insert_link('leftPalm', m * g *  arm_force_scale)
+check.insert_link('rightPalm', m * g *  arm_force_scale)
+check.insert_link('Body_LF12', finger_force_nominal)
+check.insert_link('Body_LF22', finger_force_nominal)
+check.insert_link('Body_LF32', finger_force_nominal)
+check.insert_link('Body_LF13', finger_force_nominal)
+check.insert_link('Body_LF23', finger_force_nominal)
+check.insert_link('Body_LF33', finger_force_nominal)
+check.insert_link('Body_RF12', finger_force_nominal)
+check.insert_link('Body_RF22', finger_force_nominal)
+check.insert_link('Body_RF32', finger_force_nominal)
+check.insert_link('Body_RF42', finger_force_nominal)
+check.insert_link('Body_RF13', finger_force_nominal)
+check.insert_link('Body_RF23', finger_force_nominal)
+check.insert_link('Body_RF33', finger_force_nominal)
+check.insert_link('Body_RF43', finger_force_nominal)
 
 check.build_cws()
 print check.check()
 
+for l in range(5):
+    check.forcelimits['leftFoot']+=m*g*2
+    check.forcelimits['rightFoot']+=m*g*2
+    check.build_cws()
+    print check.check()
+    print check.forcelimits['leftFoot']
+
+
+check.forcelimits['leftFoot']=m*g*leg_force_scale
+check.forcelimits['rightFoot']=m*g*leg_force_scale
+check.forcelimits['Body_LF12']+=(finger_force_nominal*3)
+check.forcelimits['Body_LF13']+=(finger_force_nominal*3)
+check.forcelimits['Body_LF22']+=(finger_force_nominal*3)
+check.forcelimits['Body_LF23']+=(finger_force_nominal*3)
+check.forcelimits['Body_LF32']+=(finger_force_nominal*3)
+check.forcelimits['Body_LF33']+=(finger_force_nominal*3)
+check.forcelimits['Body_RF12']+=(finger_force_nominal*3)
+check.forcelimits['Body_RF13']+=(finger_force_nominal*3)
+check.forcelimits['Body_RF22']+=(finger_force_nominal*3)
+check.forcelimits['Body_RF23']+=(finger_force_nominal*3)
+check.forcelimits['Body_RF32']+=(finger_force_nominal*3)
+check.forcelimits['Body_RF33']+=(finger_force_nominal*3)
+check.build_cws()
+print check.check()
+print check.forcelimits['Body_LF12']
+
+
+check.forcelimits['leftFoot']=m*g*2
+check.forcelimits['rightFoot']=m*g*2
+check.forcelimits['Body_LF12']+=(finger_force_nominal*6)
+check.forcelimits['Body_LF13']+=(finger_force_nominal*6)
+check.forcelimits['Body_LF22']+=(finger_force_nominal*6)
+check.forcelimits['Body_LF23']+=(finger_force_nominal*6)
+check.forcelimits['Body_LF32']+=(finger_force_nominal*6)
+check.forcelimits['Body_LF33']+=(finger_force_nominal*6)
+check.forcelimits['Body_RF12']+=(finger_force_nominal*6)
+check.forcelimits['Body_RF13']+=(finger_force_nominal*6)
+check.forcelimits['Body_RF22']+=(finger_force_nominal*6)
+check.forcelimits['Body_RF23']+=(finger_force_nominal*6)
+check.forcelimits['Body_RF32']+=(finger_force_nominal*6)
+check.forcelimits['Body_RF33']+=(finger_force_nominal*6)
+check.build_cws()
+print check.check()
+print check.forcelimits['Body_LF12']
+
+oh.plot_contacts(robot)
+
+check.forcelimits['leftFoot']=m*g*4
+check.forcelimits['rightFoot']=m*g*4
+check.forcelimits['Body_LF12']+=(finger_force_nominal*12)
+check.forcelimits['Body_LF13']+=(finger_force_nominal*12)
+check.forcelimits['Body_LF22']+=(finger_force_nominal*12)
+check.forcelimits['Body_LF23']+=(finger_force_nominal*12)
+check.forcelimits['Body_LF32']+=(finger_force_nominal*12)
+check.forcelimits['Body_LF33']+=(finger_force_nominal*12)
+check.forcelimits['Body_RF12']+=(finger_force_nominal*12)
+check.forcelimits['Body_RF13']+=(finger_force_nominal*12)
+check.forcelimits['Body_RF22']+=(finger_force_nominal*12)
+check.forcelimits['Body_RF23']+=(finger_force_nominal*12)
+check.forcelimits['Body_RF32']+=(finger_force_nominal*12)
+check.forcelimits['Body_RF33']+=(finger_force_nominal*12)
+check.build_cws()
+print check.check()
+print check.forcelimits['Body_LF12']

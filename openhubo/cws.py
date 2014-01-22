@@ -11,7 +11,7 @@ import time
 #TODO declare a vector of peak forces for each contact body?
 
 class ContactCheck:
-    def __init__(self,robot, mu=0.2):
+    def __init__(self,robot, mu=0.4):
         self.robot = robot
         self.env = robot.GetEnv()
         self.links = {}
@@ -115,8 +115,7 @@ class ContactCheck:
         self.min_dist=np.infty
         for n,s in enumerate(self.hull.equations):
             res = s[0:6].dot(point[0:6])+s[6]
-            dist_internal = abs(min(res,0))
-            self.min_dist=min(self.min_dist,dist_internal)
+            self.min_dist=min(self.min_dist,-res)
             if res>0:
                 inside = False
         print self.min_dist
