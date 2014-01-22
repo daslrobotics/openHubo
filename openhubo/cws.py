@@ -15,14 +15,16 @@ class ContactCheck:
         self.robot = robot
         self.env = robot.GetEnv()
         self.links = {}
+        self.forcelimits = {}
         self.mu = mu
         self.min_dist=-1
         self.hull = None
 
-    def insert_link(self,linkname):
+    def insert_link(self,linkname, forcelimit=None):
         l = self.robot.GetLink(linkname)
         if l is not None:
             self.links[linkname]=l
+            self.forcelimits[linkname]=forcelimit
 
     def enable(self):
         for n,l in self.links.items():
@@ -41,6 +43,12 @@ class ContactCheck:
         for n,l in self.links.items():
 
             env.CheckCollision(l,report)
+            if self.forcelimits[n] is not None:
+                force = self.forcelimits[n]
+            else:
+                print "no force limit for {0}!".format(n)
+                force = 0.0
+
             for c in report.contacts:
                 basis = nullspace(mat(c.norm))
                 for theta in [0,pi/2,pi,3*pi/2]:
@@ -48,7 +56,7 @@ class ContactCheck:
                     # arbitrary scale factor
                     vec = cos(theta) * array(basis[:,0])+sin(theta)*array(basis[:,1])
                     #TODO limit force by link
-                    w[0:3] = np.squeeze(array(c.norm) + np.squeeze(vec) * self.mu) * 1000
+                    w[0:3] = np.squeeze(array(c.norm) + np.squeeze(vec) * self.mu) * force
                     w[3:] = cross(c.pos, w[0:3])
                     self.CWS.append(w[0:6])
                     self.positions.append(c.pos)

@@ -289,7 +289,7 @@ class GeneralIK:
     """ Wrapper class to hold solution settings for an IK problem. This class
     can use TSR's to define IK problems, and sample IK solutions from the
     TSR's."""
-    def __init__(self,robot,problem,tsrlist=[],sample_bw=True,bcollisions=True):
+    def  __init__(self,robot,problem,tsrlist=[],sample_bw=True,bcollisions=True):
         self.robot=robot
         self.problem=problem
         self.sample_bw=sample_bw
@@ -519,7 +519,7 @@ class TSR:
         return T0*self.T0_w*self.Tw_e
 
     def sample(self):
-        print self.Bw
+        #print self.Bw
         b_range=self.Bw[:,1::2]-self.Bw[:,0::2]
         b_center=(self.Bw[:,1::2]+self.Bw[:,0::2])/2
         w=array(random.rand(6))*_np.squeeze(b_range)+_np.squeeze(b_center)
@@ -540,7 +540,7 @@ class TSRChain:
         self.TSRs.append(copy.deepcopy(tsr_in))
 
     def Serialize(self):
-        print self.TSRs[0]
+        #print self.TSRs[0]
         allTSRstring = ' '.join([tsr.Serialize() for tsr in self.TSRs])
         numTSRs = len(self.TSRs)
         outstring = ' TSRChain %d %d %d %d %s %s'%(self.bSampleStartFromChain, self.bSampleGoalFromChain, self.bConstrainToChain, numTSRs, allTSRstring, self.mimicbodyname)

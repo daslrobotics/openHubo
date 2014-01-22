@@ -17,7 +17,35 @@ from numpy import pi
 from openhubo import plot_projected_com
 import time as _time
 
+
+def bisect_close(robot,j,guess):
+    """Close a joint around an object. Only works if robot is not in collision at start."""
+    lower = j.GetValue(0)
+    upper = guess
+    tol = 0.001
+    env = robot.GetEnv()
+    report = _rave.CollisionReport()
+    col = env.GetCollisionChecker()
+    col.SetCollisionOptions(0)
+
+    iters = 0
+    while abs(upper-lower) > tol and iters < 100:
+        test = (lower+upper) / 2.0
+        robot.SetDOFValues([test],[j.GetDOFIndex()])
+        if env.CheckCollision(robot):
+            upper = test
+        else:
+            lower = test
+        iters+=1
+    robot.SetDOFValues([lower],[j.GetDOFIndex()])
+    return lower
+
 #TODO: rename functions to fit new style
+def close_fingers(robot):
+
+    fingers = mapping.get_fingers(robot);
+    for f in fingers:
+        bisect_close(robot,f,0)
 
 def MakeInPlaceConstraint(robot,manipname):
     manips=robot.GetManipulators()
@@ -222,7 +250,6 @@ def planSequence(robot,problem,init,final=[],trans=[]):
 
     init_ik=_comps.GeneralIK(robot,problem,init.values())
 
-    print init_ik.Serialize()
     init_ik.activate()
     init_ik.findSolution(50)
 
