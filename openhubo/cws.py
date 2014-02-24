@@ -1,7 +1,6 @@
 from openravepy import CollisionReport
 from numpy import zeros, cross, array, pi, cos, sin, mat
 import openhubo as oh
-from openhubo.comps import Transform
 from scipy.spatial import ConvexHull
 from scipy.spatial.qhull import QhullError
 import numpy as np
@@ -34,11 +33,16 @@ class ContactCheck:
         for n,l in self.links.items():
             l.Enable(False)
 
-    def build_cws(self):
+    #def print_limits(self):
+        #for n,f in self.forcelimits.items():
+            #print "
+
+    def build_cws(self,clear_current=True):
         report=CollisionReport()
 
         env = self.robot.GetEnv()
-        self.CWS=[zeros(6)]
+        if clear_current:
+            self.CWS=[zeros(6)]
         self.positions=[zeros(3)]
         for n,l in self.links.items():
 
@@ -118,7 +122,7 @@ class ContactCheck:
             self.min_dist=min(self.min_dist,-res)
             if res>0:
                 inside = False
-        print self.min_dist
+        #print self.min_dist
         return inside
 
     def fall(self,T_orig,tol=0.03):
@@ -202,7 +206,7 @@ if __name__ == '__main__':
         pose['RSP']=-test
         pose.take_init_pose()
         #FIXME this won't work if the ankle orientation changes (simulation could explode)
-        pose.reset(True,True)
+        pose.reset(True, True)
         t0=time.time()
         check.build_cws()
         CWS_check[k]=check.check()

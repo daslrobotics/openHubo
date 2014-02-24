@@ -13,6 +13,7 @@ from numpy import mat, array, pi, cos, sin
 from openhubo import mapping
 from openhubo import cws
 import numpy as np
+import sys
 
 def set_finger_torque_limits(robot,limit):
     fingers = mapping.get_fingers(robot)
@@ -29,7 +30,6 @@ def makeGripTransforms(links):
     grips = []
     for k,link in enumerate(links):
         T = comps.Transform(link.GetTransform())
-        print T
 
         if re.search('post',link.GetName()):
             for j in range(8):
@@ -44,7 +44,7 @@ def makeGripTransforms(links):
 
 
 (env,options)=oh.setup('qtcoin')
-env.SetDebugLevel(4)
+env.SetDebugLevel(1)
 
 # Load the environment
 
@@ -61,7 +61,6 @@ col.SetCollisionOptions(0)
 T=robot.GetTransform()
 
 T[0,3]+=(np.random.rand(1) -.5) * .10
-T[2,3]+=(np.random.rand(1) -.5) * .05
 robot.SetTransform(T)
 
 print "Adjusted start pose is:"
@@ -102,32 +101,32 @@ RF=1
 rphi = -pi/3
 lphi = -pi/3
 
-r_radial_vec = array([sin(rphi), -cos(rphi),0])*.026
-l_radial_vec = array([sin(lphi), cos(lphi),0])*.026
-rgrip1=TSR(grips[3+RH],comps.Transform(None,r_radial_vec).tm,mat([0,0, 0,0, -z1,z1, 0,0 ,0,0, rphi,rphi]),1)
-lgrip1=TSR(grips[3+LH],comps.Transform(None,l_radial_vec).tm,mat([0,0, 0,0, -z1,z1, 0,0 ,0,0, -lphi,-lphi]),0)
+r_radial_vec = array([sin(rphi), -cos(rphi), 0])*.026
+l_radial_vec = array([sin(lphi), cos(lphi), 0])*.026
+rgrip1=TSR(grips[3 + RH],comps.Transform(None,r_radial_vec).tm,mat([0,0, 0,0, -z1,z1, 0,0 ,0,0, rphi,rphi]),1)
+lgrip1=TSR(grips[3 + LH],comps.Transform(None,l_radial_vec).tm,mat([0,0, 0,0, -z1,z1, 0,0 ,0,0, -lphi,-lphi]),0)
 
 #Post grips at shoulder height
 phi = -pi/6
 
 radial_vec = array([sin(phi), 0, cos(phi)])*.024
 
-rrung=TSR(grips[RUNG0+RF],comps.Transform(None,radial_vec).tm,mat([-.00,-.00, 0,0, 0,0, 0,0 , phi-theta,phi+theta,0,0]),3)
-lrung=TSR(grips[RUNG0+LF],comps.Transform(None,radial_vec).tm,mat([-.00,-.00, 0,0, 0,0, 0,0 , phi-theta,phi+theta,0,0]),2)
+rrung=TSR(grips[RUNG0+RF],comps.Transform(None,radial_vec).tm,mat([-.00, -.00, 0,0, 0,0, 0,0 , phi-theta,phi+theta,0,0]),3)
+lrung=TSR(grips[RUNG0+LF],comps.Transform(None,radial_vec).tm,mat([-.00, -.00, 0,0, 0,0, 0,0 , phi-theta,phi+theta,0,0]),2)
 
 # Define keyframe poses in terms of manips
-#pose1={'rightArm':rgrip1,'leftArm':lgrip1,'leftFoot':lrung,'rightFoot':rrung}
-#pose1={'rightArm':rgrip1,'leftArm':lgrip1, 'rightFoot':rrung}
-#pose1={'rightFoot':rrung}
 pose1={'rightArm':rgrip1,'leftArm':lgrip1,'leftFoot':lrung,'rightFoot':rrung}
 
 res,ik = planning.solveWholeBodyPose(robot,probs_cbirrt,pose1,10)
+if not res:
+    print "solution failed, aborting"
+    sys.exit()
 
 planning.close_fingers(robot)
 LAP=robot.GetJoint('LAP')
 RAP=robot.GetJoint('RAP')
-planning.bisect_close(robot,LAP,LAP.GetValue(0)+.05)
-planning.bisect_close(robot,RAP,RAP.GetValue(0)+.05)
+planning.bisect_close(robot,LAP,LAP.GetValue(0)+.08)
+planning.bisect_close(robot,RAP,RAP.GetValue(0)+.08)
 
 pose = oh.Pose(robot)
 pose.update()
@@ -206,70 +205,56 @@ check.insert_link('Body_RF23', finger_force_nominal)
 check.insert_link('Body_RF33', finger_force_nominal)
 check.insert_link('Body_RF43', finger_force_nominal)
 
-check.build_cws()
-print check.check()
+#Clear out CWS and build from scratch
+check.build_cws(True)
+#for k in xrange(10):
+    #env.StepSimulation(oh.TIMESTEP)
+#check.build_cws(False)
+#Wait a bit for contact jiggle and do it again
 
-for l in range(5):
-    check.forcelimits['leftFoot']+=m*g*2
-    check.forcelimits['rightFoot']+=m*g*2
-    check.build_cws()
-    print check.check()
-    print check.forcelimits['leftFoot']
+solution_data = []
+for j in array(range(4))+6:
+    print "Finger force scale = {}".format(j)
 
+    check.forcelimits['leftFoot']=m*g * leg_force_scale
+    check.forcelimits['rightFoot']=m*g* leg_force_scale
+    check.forcelimits['Body_LF12']=(finger_force_nominal*j)
+    check.forcelimits['Body_LF13']=(finger_force_nominal*j)
+    check.forcelimits['Body_LF22']=(finger_force_nominal*j)
+    check.forcelimits['Body_LF23']=(finger_force_nominal*j)
+    check.forcelimits['Body_LF32']=(finger_force_nominal*j)
+    check.forcelimits['Body_LF33']=(finger_force_nominal*j)
+    check.forcelimits['Body_RF12']=(finger_force_nominal*j)
+    check.forcelimits['Body_RF13']=(finger_force_nominal*j)
+    check.forcelimits['Body_RF22']=(finger_force_nominal*j)
+    check.forcelimits['Body_RF23']=(finger_force_nominal*j)
+    check.forcelimits['Body_RF32']=(finger_force_nominal*j)
+    check.forcelimits['Body_RF33']=(finger_force_nominal*j)
 
-check.forcelimits['leftFoot']=m*g*leg_force_scale
-check.forcelimits['rightFoot']=m*g*leg_force_scale
-check.forcelimits['Body_LF12']+=(finger_force_nominal*3)
-check.forcelimits['Body_LF13']+=(finger_force_nominal*3)
-check.forcelimits['Body_LF22']+=(finger_force_nominal*3)
-check.forcelimits['Body_LF23']+=(finger_force_nominal*3)
-check.forcelimits['Body_LF32']+=(finger_force_nominal*3)
-check.forcelimits['Body_LF33']+=(finger_force_nominal*3)
-check.forcelimits['Body_RF12']+=(finger_force_nominal*3)
-check.forcelimits['Body_RF13']+=(finger_force_nominal*3)
-check.forcelimits['Body_RF22']+=(finger_force_nominal*3)
-check.forcelimits['Body_RF23']+=(finger_force_nominal*3)
-check.forcelimits['Body_RF32']+=(finger_force_nominal*3)
-check.forcelimits['Body_RF33']+=(finger_force_nominal*3)
-check.build_cws()
-print check.check()
-print check.forcelimits['Body_LF12']
+    for k in array(range(12))+2:
+        check.forcelimits['leftFoot']+=m*g/2
+        check.forcelimits['rightFoot']+=m*g/2
+        check.build_cws()
+        res = check.check()
+        foot_scale = check.forcelimits['leftFoot']/(m*g)
+        hand_scale = check.forcelimits['Body_LF12']/finger_force_nominal
+        if res:
+            break
 
-
-check.forcelimits['leftFoot']=m*g*2
-check.forcelimits['rightFoot']=m*g*2
-check.forcelimits['Body_LF12']+=(finger_force_nominal*6)
-check.forcelimits['Body_LF13']+=(finger_force_nominal*6)
-check.forcelimits['Body_LF22']+=(finger_force_nominal*6)
-check.forcelimits['Body_LF23']+=(finger_force_nominal*6)
-check.forcelimits['Body_LF32']+=(finger_force_nominal*6)
-check.forcelimits['Body_LF33']+=(finger_force_nominal*6)
-check.forcelimits['Body_RF12']+=(finger_force_nominal*6)
-check.forcelimits['Body_RF13']+=(finger_force_nominal*6)
-check.forcelimits['Body_RF22']+=(finger_force_nominal*6)
-check.forcelimits['Body_RF23']+=(finger_force_nominal*6)
-check.forcelimits['Body_RF32']+=(finger_force_nominal*6)
-check.forcelimits['Body_RF33']+=(finger_force_nominal*6)
-check.build_cws()
-print check.check()
-print check.forcelimits['Body_LF12']
+    solution_data.append([foot_scale,hand_scale,res])
+    print solution_data[-1]
 
 oh.plot_contacts(robot)
 
-check.forcelimits['leftFoot']=m*g*4
-check.forcelimits['rightFoot']=m*g*4
-check.forcelimits['Body_LF12']+=(finger_force_nominal*12)
-check.forcelimits['Body_LF13']+=(finger_force_nominal*12)
-check.forcelimits['Body_LF22']+=(finger_force_nominal*12)
-check.forcelimits['Body_LF23']+=(finger_force_nominal*12)
-check.forcelimits['Body_LF32']+=(finger_force_nominal*12)
-check.forcelimits['Body_LF33']+=(finger_force_nominal*12)
-check.forcelimits['Body_RF12']+=(finger_force_nominal*12)
-check.forcelimits['Body_RF13']+=(finger_force_nominal*12)
-check.forcelimits['Body_RF22']+=(finger_force_nominal*12)
-check.forcelimits['Body_RF23']+=(finger_force_nominal*12)
-check.forcelimits['Body_RF32']+=(finger_force_nominal*12)
-check.forcelimits['Body_RF33']+=(finger_force_nominal*12)
-check.build_cws()
-print check.check()
-print check.forcelimits['Body_LF12']
+T1=robot.GetTransform()
+env.StartSimulation(oh.TIMESTEP)
+for k in range(20):
+    oh.pause(1)
+    T2 = robot.GetTransform()
+    fallen = False
+    if T2[2,3] < (T1[2,3]-0.02):
+        fallen=True
+        break
+print not fallen
+
+
